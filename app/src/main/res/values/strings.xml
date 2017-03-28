@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">MADProject</string>
+    <string name="title_activity_insert_ex">InsertExActivity</string>
 </resources>
