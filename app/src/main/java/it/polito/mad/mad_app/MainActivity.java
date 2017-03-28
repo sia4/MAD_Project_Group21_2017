@@ -83,7 +83,8 @@ public class MainActivity extends AppCompatActivity {
                 Intent intent=new Intent(
                         getApplicationContext(),GroupActivity.class
                 );
-                intent.putExtra("ID1","ciao");
+                //intent.putExtra("ID1","ciao");
+                startActivity(intent);
 
             }
         });
