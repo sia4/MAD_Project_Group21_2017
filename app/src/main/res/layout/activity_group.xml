@@ -11,6 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:id="@+id/lv_ex"
+        android:textSize="32sp"
         />
     <!--
     <android.support.design.widget.AppBarLayout
@@ -40,6 +41,8 @@
         android:layout_marginBottom="14dp"
         android:layout_marginEnd="20dp"
         android:layout_marginRight="20dp"
+        android:tint="@color/icons"
+        app:rippleColor="@color/icons"
         app:srcCompat="@android:drawable/ic_input_add" />
 
 
