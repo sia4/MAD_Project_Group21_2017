@@ -6,13 +6,14 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".GroupActivity">
-
     <ListView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:id="@+id/lv_ex"
-        android:textSize="32sp"
-        />
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="309dp" />
     <!--
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
@@ -41,9 +42,21 @@
         android:layout_marginBottom="14dp"
         android:layout_marginEnd="20dp"
         android:layout_marginRight="20dp"
-        android:tint="@color/icons"
-        app:rippleColor="@color/icons"
         app:srcCompat="@android:drawable/ic_input_add" />
+
+    <Button
+        android:id="@+id/button3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Balance"
+        android:layout_marginLeft="33dp"
+        android:layout_marginStart="33dp"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="43dp"
+        android:onClick="BudgetActivity"
+        />
 
 
 </RelativeLayout>
