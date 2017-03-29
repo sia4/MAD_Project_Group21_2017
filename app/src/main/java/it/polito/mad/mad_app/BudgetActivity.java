@@ -1,29 +1,24 @@
 package it.polito.mad.mad_app;
 
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.widget.ListView;
-
-import java.util.ArrayList;
-
-import it.polito.mad.mad_app.R;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import java.util.ArrayList;
+
 
 public class BudgetActivity extends AppCompatActivity {
 
     class cred_deb {
         private String name;
-        private int value;
+        private String value;
 
-        public cred_deb(String name,int value) {
+        public cred_deb(String name,String value) {
             this.name = name;
             this.value=value;
         }
@@ -31,36 +26,36 @@ public class BudgetActivity extends AppCompatActivity {
             return name;
         }
 
-        public int getValue() {
+        public String getValue() {
             return value;
         }
     }
     private ListView lvalues;
-    private ArrayList<BudgetActivity.cred_deb> data = new ArrayList<>();
+    private ArrayList<BudgetActivity.cred_deb> users = new ArrayList<>();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_budget);
-        Intent intent = getIntent();
+        //Intent intent = getIntent();
         lvalues = (ListView) findViewById(R.id.lv_bud);
-        cred_deb n = new cred_deb("Edoardo", 25);
-        data.add(n);
-        n = new cred_deb("Luca", -48);
-        data.add(n);
-        n = new cred_deb("Silvia", 27);
-        data.add(n);
-        n = new cred_deb("Lucia", 81);
-        data.add(n);
+        cred_deb n = new cred_deb("Edoardo", "25€");
+        users.add(n);
+        n = new cred_deb("Luca", "-48€");
+        users.add(n);
+        n = new cred_deb("Silvia", "27€");
+        users.add(n);
+        n = new cred_deb("Lucia", "81€");
+        users.add(n);
 
         BaseAdapter a=new BaseAdapter() {
             @Override
             public int getCount() {
-                return data.size();
+                return users.size();
             }
 
             @Override
             public Object getItem(int position) {
-                return data.get(position);
+                return users.get(position);
             }
 
             @Override
@@ -76,7 +71,7 @@ public class BudgetActivity extends AppCompatActivity {
                 }
                 TextView name1=(TextView)convertView.findViewById(R.id.right_item);
                 TextView name2=(TextView)convertView.findViewById(R.id.left_item);
-                BudgetActivity.cred_deb di=data.get(position);
+                BudgetActivity.cred_deb di=users.get(position);
                 name1.setText(di.getName());
                 name2.setText(di.getValue());
                 return convertView;
