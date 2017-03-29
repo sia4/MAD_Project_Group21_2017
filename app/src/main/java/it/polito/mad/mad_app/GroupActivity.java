@@ -38,6 +38,12 @@ public class GroupActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_group);
         Intent intent = getIntent();
+
+        //Get information from previuos Activity
+        String name = intent.getStringExtra("name");
+        setTitle(name);
+
+
         lv = (ListView) findViewById(R.id.lv_ex);
         Ex di = new Ex("Pane","10$");
         data.add(di);

@@ -1,6 +1,7 @@
 package it.polito.mad.mad_app;
 
 import android.content.Intent;
+import android.database.Cursor;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -9,6 +10,7 @@ import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -83,7 +85,12 @@ public class MainActivity extends AppCompatActivity {
                 Intent intent=new Intent(
                         getApplicationContext(),GroupActivity.class
                 );
-                //intent.putExtra("ID1","ciao");
+
+                String groupName = data.get(position).getName().toString();// ((TextView) view.findViewById(R.id.lv)).getText().toString();
+                //Toast toast = Toast.makeText(getApplicationContext(), groupName, Toast.LENGTH_SHORT);
+                //toast.show();
+                intent.putExtra("name",groupName);
+
                 startActivity(intent);
 
             }
