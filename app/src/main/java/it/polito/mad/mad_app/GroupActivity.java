@@ -12,27 +12,12 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class GroupActivity extends AppCompatActivity {
 
-    class Ex {
-        private String name;
-        private String money;
-
-        public Ex(String name,String money) {
-            this.name = name;
-            this.money=money;
-        }
-        public String getName() {
-            return name;
-        }
-
-        public String getPrice() {
-            return money;
-        }
-    }
     private ListView lv;
-    private ArrayList<GroupActivity.Ex> data = new ArrayList<>();
+    private List<ExpensiveData> data = new ArrayList<>();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -45,12 +30,7 @@ public class GroupActivity extends AppCompatActivity {
 
 
         lv = (ListView) findViewById(R.id.lv_ex);
-        Ex di = new Ex("Pane","10$");
-        data.add(di);
-        di = new Ex("Carta Igenica","6$");
-        data.add(di);
-        di = new Ex("Dolci","3$");
-        data.add(di);
+        data = GroupData.getExpensies();
 
 
         BaseAdapter a=new BaseAdapter() {
@@ -77,9 +57,16 @@ public class GroupActivity extends AppCompatActivity {
                 }
                 TextView name=(TextView)convertView.findViewById(R.id.name_ex);
                 TextView money=(TextView)convertView.findViewById(R.id.money_ex);
-                GroupActivity.Ex di=data.get(position);
+                TextView category=(TextView)convertView.findViewById(R.id.category_ex);
+                TextView currency=(TextView)convertView.findViewById(R.id.currency_ex);
+                TextView description=(TextView)convertView.findViewById(R.id.description_ex);
+
+                ExpensiveData di=data.get(position);
                 name.setText(di.getName());
-                money.setText(di.getPrice());
+                money.setText(di.getValue());
+                category.setText(di.getCategory());
+                currency.setText(di.getCurrency());
+                description.setText(di.getDescription());
                 return convertView;
             }
         };
@@ -92,11 +79,9 @@ public class GroupActivity extends AppCompatActivity {
                 Intent intent=new Intent(
                         getApplicationContext(),InsertExActivity.class
                 );
-                //intent.putExtra("ID1","ciao");
+
                 startActivity(intent);
 
-                //Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                 //       .setAction("Action", null).show();
             }
         });
         Button btn = (Button)findViewById(R.id.button3);
@@ -108,5 +93,14 @@ public class GroupActivity extends AppCompatActivity {
             }
         });
 
+    }
+    protected void onResume(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        /*
+        una volta tornati in questa attività dopo l'aggiunta di una spesa
+        bisogna refreshare in qualche modo l'adapter
+        vedi:
+            - notifyDataChanged()
+         */
     }
 }
