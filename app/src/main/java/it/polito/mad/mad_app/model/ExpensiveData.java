@@ -1,8 +1,4 @@
-package it.polito.mad.mad_app;
-
-/**
- * Created by Luca on 31/03/2017.
- */
+package it.polito.mad.mad_app.model;
 
 public class ExpensiveData {
 
@@ -10,29 +6,33 @@ public class ExpensiveData {
     private String descr;
     private String category;
     private String currency;
-    private int value;
+    private float value;
 
-    public ExpensiveData(String n, String d, String ca, String cu, int value){
+    public ExpensiveData(String n, String d, String ca, String cu, float value){
         this.name = n;
         this.descr = d;
         this.category = ca;
         this.currency = cu;
         this.value = value;
     }
+
     public String getName(){
         return this.name;
     }
+
     public String getDescription(){
         return this.descr;
     }
+
     public String getCategory(){
         return this.category;
     }
+
     public String getCurrency(){
         return this.currency;
     }
-    public int getValue(){
-        return this.value;
 
+    public float getValue(){
+        return this.value;
     }
 }

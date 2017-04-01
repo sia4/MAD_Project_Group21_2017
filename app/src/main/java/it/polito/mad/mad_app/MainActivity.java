@@ -14,6 +14,8 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 
+import it.polito.mad.mad_app.model.GroupData;
+
 public class MainActivity extends AppCompatActivity {
 
     class Group {
@@ -34,18 +36,18 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private ListView lv;
-    private ArrayList<Group> data = new ArrayList<>();
+    private ArrayList<GroupData> data = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         lv = (ListView) findViewById(R.id.lv);
-        Group di = new Group("Coinquilini");
+        GroupData di = new GroupData("Coinquilini");
         data.add(di);
-        di = new Group("Regalo Laurea");
+        di = new GroupData("Regalo Laurea");
         data.add(di);
-        di = new Group("Colleghi");
+        di = new GroupData("Colleghi");
         data.add(di);
 
         BaseAdapter a=new BaseAdapter() {
@@ -71,7 +73,7 @@ public class MainActivity extends AppCompatActivity {
 
                 }
                 TextView name=(TextView)convertView.findViewById(R.id.name_tv);
-                Group di=data.get(position);
+                GroupData di=data.get(position);
                 name.setText(di.getName());
                 return convertView;
             }

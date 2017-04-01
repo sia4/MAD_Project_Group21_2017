@@ -8,6 +8,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
 
+import it.polito.mad.mad_app.model.GroupData;
+
 public class InsertExActivity extends AppCompatActivity {
     private String name;
     private String description;

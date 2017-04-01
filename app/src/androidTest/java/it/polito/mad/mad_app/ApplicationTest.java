@@ -1,4 +1,4 @@
-package it.polito.mad.madproject;
+package it.polito.mad.mad_app;
 
 import android.app.Application;
 import android.test.ApplicationTestCase;

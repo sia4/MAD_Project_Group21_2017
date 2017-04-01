@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="wrap_content">
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:orientation="horizontal" android:layout_width="match_parent"
         android:layout_height="wrap_content">
@@ -12,7 +12,6 @@
             android:gravity="left"
             android:textSize="24sp"
             android:layout_weight="0.3"
-            android:drawableLeft="@mipmap/ic_launcher"
             />
         <TextView
             android:id="@+id/money_ex"
@@ -20,8 +19,7 @@
             android:layout_height="wrap_content"
             android:gravity="right"
             android:textSize="24sp"
-            android:layout_weight="0.7"
-            android:drawableLeft="@mipmap/ic_launcher" />
+            android:layout_weight="0.7" />
 
 
     </LinearLayout>
@@ -35,7 +33,6 @@
         android:gravity="left"
         android:textSize="10sp"
         android:layout_weight="0.3"
-        android:drawableLeft="@mipmap/ic_launcher"
         />
     <TextView
         android:id="@+id/currency_ex"
@@ -44,7 +41,6 @@
         android:gravity="left"
         android:textSize="10sp"
         android:layout_weight="0.3"
-        android:drawableLeft="@mipmap/ic_launcher"
         />
     </LinearLayout>
     <TextView
@@ -53,6 +49,5 @@
         android:layout_height="wrap_content"
         android:gravity="left"
         android:textSize="10sp"
-        android:drawableLeft="@mipmap/ic_launcher"
         />
 </LinearLayout>
