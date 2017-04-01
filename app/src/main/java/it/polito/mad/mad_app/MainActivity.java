@@ -44,7 +44,7 @@ public class MainActivity extends AppCompatActivity {
 
         Toolbar myToolbar = (Toolbar) findViewById(R.id.my_toolbar);
         setSupportActionBar(myToolbar);
-        getSupportActionBar().setTitle("SplitEasy");
+        getSupportActionBar().setTitle("MADAPP");
         getSupportActionBar().setLogo(R.drawable.ic_monetization_on_black_24dp);
 
         lv = (ListView) findViewById(R.id.lv);
