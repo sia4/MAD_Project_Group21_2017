@@ -72,8 +72,8 @@ public class BudgetActivity extends AppCompatActivity {
                 TextView name1=(TextView)convertView.findViewById(R.id.right_item);
                 TextView name2=(TextView)convertView.findViewById(R.id.left_item);
                 BudgetActivity.cred_deb di=users.get(position);
-                name1.setText(di.getName());
-                name2.setText(di.getValue());
+                name2.setText(di.getName());
+                name1.setText(di.getValue());
                 return convertView;
             }
         };

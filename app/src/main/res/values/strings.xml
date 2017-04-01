@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">Alla Romana</string>
     <string name="title_activity_insert_ex">InsertExActivity</string>
+    <string name="test" />
 </resources>

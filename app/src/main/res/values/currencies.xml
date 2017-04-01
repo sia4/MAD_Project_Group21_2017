@@ -1,0 +1,229 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string-array name="currencies">
+        <item>Select currency</item>
+         <item>
+            America (United States of America),
+            Dollars
+            USD
+            $</item>
+        <item> Argentina, Pesos
+            ARS
+            $</item>
+        <item> Aruba, Guilders (also called Florins)
+            AWG
+            ƒ</item>
+        <item>Australia, Dollars
+            AUD
+            $</item>
+        <item>Bahamas, Dollars
+            BSD
+            $</item>
+        <item>Barbados, Dollars
+            BBD
+            $</item>
+        <item>Belgium, Francs (obsolete)
+            BEF
+            ₣</item>
+        <item>Belize, Dollars
+            BZD
+            $</item>
+        <item>Bermuda, Dollars
+            BMD
+            $</item>
+        <item> Bolivia, Bolivianos
+            BOB
+            $</item>
+        <item>Brazil, Reais
+            BRL
+            R$</item>
+
+        <item>Brazil, Cruzeiros (obsolete)
+            BRC
+            ₢</item>
+        <item> Britain (United Kingdom), Pounds
+            GBP
+            £</item>
+        <item>  Brunei Darussalam, Dollars
+            BND
+            $</item>
+        <item>Cambodia, Riels
+            KHR
+            </item>
+        <item>Canada, Dollars
+            CAD
+            $</item>
+        <item>Cayman Islands, Dollars
+            KYD
+            $</item>
+        <item>Chile, Pesos
+            CLP
+            $</item>
+        <item>China, Yuan Renminbi
+            CNY
+            </item>
+        <item>Colombia, Pesos
+            COP
+            </item>
+        <item>Costa Rica, Colón
+            CRC
+            ₡</item>
+        <item>Cuba, Pesos
+            CUP
+            </item>
+        <item>Cyprus, Pounds
+            CYP
+            £</item>
+        <item>Denmark, Kroner
+            DKK
+            kr</item>
+        <item>Dominican Republic, Pesos
+            DOP
+            </item>
+        <item>East Caribbean, Dollars
+            XCD
+            $</item>
+        <item>Laos, Kips
+            LAK
+            ₭</item>
+        <item>Lebanon, Pounds
+            LBP
+            £</item>
+        <item>Liberia, Dollars
+            LRD
+            $</item>
+        <item>Luxembourg, Francs (obsolete)
+            LUF
+            ₣</item>
+        <item>Malta, Liri
+            MTL
+            ₤</item>
+        <item>Mauritius, Rupees
+            MUR
+            Rs</item>
+        <item>Mexico, Pesos
+            MXN
+            $</item>
+        <item>Mongolia, Tugriks
+            MNT
+            ₮</item>
+        <item>Namibia, Dollars
+            NAD
+            $</item>
+        <item>Nepal, Rupees
+            NPR
+            Rs</item>
+        <item>Netherlands Antilles, Guilders (also
+            called Florins)
+            ANG
+            ƒ</item>
+        <item>Netherlands, Guil
+            ders (obsolete)
+            NLG
+            ƒ</item>
+        <item>New Zealand, Dollars
+            NZD
+            $</item>
+        <item>Nigeria, Nairas
+            NGN
+            ₦</item>
+        <item>North Korea, Won
+            KPW
+            ₩</item>
+        <item>Oman, Rials
+            OMR
+            </item>
+        <item>Pakistan, Rupees
+            PKR
+            </item>
+        <item>Peru, Nuevos Soles
+            PEN
+            </item>
+        <item>Philippines, Pesos
+            PHP
+            </item>
+        <item>Qatar, Rials
+            QAR
+            </item>
+        <item>Russia, Rubles
+            RUB
+            </item>
+        <item>Saint Helena, Pounds
+            SHP
+            £</item>
+        <item>Saudi Arabia, Riyals
+            SAR
+            </item>
+        <item>Seychelles, Rupees
+            SCR
+            Rs</item>
+        <item>Singapore, Dollars
+            SGD
+            $</item>
+        <item>Solomon Islands, Dollars
+            SBD
+            $</item>
+        <item>South Africa, Rand
+            ZAR
+            R</item>
+        <item>South Korea, Won
+            KRW
+            ₩</item>
+        <item>Spain, Pesetas (obsolete)
+            ESP
+            ₧</item>
+        <item>Sri Lanka, Rupees
+            LKR
+            Rs</item>
+        <item>Sweden, Kronor
+            SEK
+            kr</item>
+        <item>Suriname, Dollars
+            SRD
+            $</item>
+        <item>Syria, Pounds
+            SYP
+            £</item>
+        <item>Taiwan, New Dollars
+            TWD
+            </item>
+        <item>Thailand, Baht
+            THB
+            ฿</item>
+        <item>Trinidad and Tobago, Dollars
+            TTD
+            $</item>
+        <item>Turkey, New Lira
+            TRY
+            ₤</item>
+        <item>Turkey, Liras
+            TRL
+            ₤</item>
+        <item>Tuvalu, Dollars
+            TVD
+            $</item>
+        <item>United Kingdom, Pounds
+            GBP
+            £</item>
+        <item>United States of America, Dollars
+            USD
+            $</item>
+        <item>Uruguay, Pesos
+            UYU
+            </item>
+        <item>Vatican City, Lire (obsolete)
+            VAL
+            ₤</item>
+        <item>Vietnam, Dong
+            VND
+            </item>
+        <item>Yemen, Rials
+            YER
+            </item>
+        <item>Zimbabwe, Dollars
+            ZWD
+            $</item>
+
+    </string-array>
+</resources>

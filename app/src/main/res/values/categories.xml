@@ -1,0 +1,205 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="categories">
+        <item>Select category</item>
+        <item>Air Fresheners</item>
+        <item>Alcoholic Beverages</item>
+        <item>All-Purpose Cleaners</item>
+        <item>Allergy, Asthma, and Sinus Medicine</item>
+        <item>Alternative Medicine</item>
+        <item>Antifungals</item>
+        <item>Aromatherapy</item>
+        <item>Baby Bath and Hair Care</item>
+        <item>Baby Care</item>
+        <item>Baby Diapers and Diaper Care</item>
+        <item>Baby Feeding</item>
+        <item>Baby Food</item>
+        <item>Baby Medicine and Vitamins</item>
+        <item>Baby Skin Care</item>
+        <item>Baby Teeth Care</item>
+        <item>Baking Ingredients</item>
+        <item>Baking Products</item>
+        <item>Bandages and Gauzes</item>
+        <item>Bath Products</item>
+        <item>Bathroom Cleaners</item>
+        <item>Beans</item>
+        <item>Beverages</item>
+        <item>Bird Care</item>
+        <item>Bird Food</item>
+        <item>Blush</item>
+        <item>Body Art</item>
+        <item>Body Lotions, Oils, Creams, Sprays</item>
+        <item>Body Scrubs and Muds</item>
+        <item>Body Soaps and Gels</item>
+        <item>Bread</item>
+        <item>Breakfast Foods</item>
+        <item>Breath Fresheners and Gums</item>
+        <item>Burns, Wounds, Scars</item>
+        <item>Butters</item>
+        <item>Cakes</item>
+        <item>Candy</item>
+        <item>Canned Food</item>
+        <item>Canned Fruits and Vegetables</item>
+        <item>Cat Food</item>
+        <item>Cat Supplies</item>
+        <item>Cat Treats</item>
+        <item>Cheeses</item>
+        <item>Children’s Health</item>
+        <item>Chips</item>
+        <item>Chocolate</item>
+        <item>Cleaning Supplies</item>
+        <item>Cloths and Wipes</item>
+        <item>Cold, Flu, Cough, Sore Throat</item>
+        <item>Condiments</item>
+        <item>Contact Lens Care</item>
+        <item>Cookies</item>
+        <item>Cooking Oils and Sprays</item>
+        <item>Cosmetics</item>
+        <item>Crackers</item>
+        <item>Crusts, Shells, Stuffing</item>
+        <item>Cuticle Care</item>
+        <item>Dairy and Dairy-Substitute Products</item>
+        <item>Dental Care</item>
+        <item>Denture Care</item>
+        <item>Deodorants and Antiperspirants</item>
+        <item>Dessert Toppings</item>
+        <item>Detergent</item>
+        <item>Diabetic Care</item>
+        <item>Digestive Care</item>
+        <item>Dips</item>
+        <item>Dish Detergent</item>
+        <item>Dishwasher Detergent</item>
+        <item>Dog Food</item>
+        <item>Dog Health</item>
+        <item>Dog Supplies</item>
+        <item>Dog Training and Behavior Aids</item>
+        <item>Dog Treats</item>
+        <item>Drain Care</item>
+        <item>Drink Mixers</item>
+        <item>Drink Mixes</item>
+        <item>Ear Care</item>
+        <item>Eggs</item>
+        <item>Energy Drinks</item>
+        <item>Extracts, Herbs and Spices</item>
+        <item>Eye and Eyebrow Makeup</item>
+        <item>Eye Drops, Lubricants and Washes</item>
+        <item>Eyeglasses Care</item>
+        <item>Fabric Softener</item>
+        <item> Face Cleansers and Scrubs</item>
+        <item> Face Makeup</item>
+        <item> Face Moisturizers</item>
+        <item> Face Toners and Astringents</item>
+        <item>  Face Treatments</item>
+        <item>  Family Planning</item>
+        <item> Feminine Care</item>
+        <item>   First Aid Care</item>
+        <item>  Fish Care</item>
+        <item> Fish Food</item>
+        <item>Floor and Carpet Cleaners and Deodorizers</item>
+        <item>Flours</item>
+        <item>Food</item>
+        <item>Food Storage</item>
+        <item>Foot Care</item>
+        <item>Fragrances</item>
+        <item>Frozen Foods</item>
+        <item>Fruit Snacks</item>
+        <item>Fruits</item>
+        <item>Garlic</item>
+        <item>Gift Sets</item>
+        <item>Glass Cleaners</item>
+        <item>Gourmet Food Gifts</item>
+        <item>Grains</item>
+        <item>Granola Bars</item>
+        <item>Hair Care</item>
+        <item>Hair Color</item>
+        <item>Hair Conditioners</item>
+        <item>Hair Relaxers, Perms, Chemicals</item>
+        <item>Hair Removal</item>
+        <item>Hair Shampoo</item>
+        <item>Hair Styling Aids</item>
+        <item>Hand Creams and Lotions</item>
+        <item>Hand Soaps</item>
+        <item>Health and Medicine</item>
+        <item>Hemorrhoid Care</item>
+        <item>Home Brewing and Wine Making</item>
+        <item>Home Tests</item>
+        <item>Honey</item>
+        <item>Hot Cocoa</item>
+        <item>Household Polishes</item>
+        <item>Household Supplies</item>
+        <item>Ice Cream and Frozen Desserts</item>
+        <item>Incontinence Care</item>
+        <item>Insect and Pest Repellent</item>
+        <item>Insects Care</item>
+        <item>Jams and Jellies</item>
+        <item>Juices</item>
+        <item>Kitchen Cleaners</item>
+        <item>Lentils</item>
+        <item>Lice Care</item>
+        <item>Lip Care</item>
+        <item>Lip Makeup</item>
+        <item>Makeup Removers</item>
+        <item>Massage Lotions, Oils, Creams</item>
+        <item>Meat Alternatives</item>
+        <item>Meat, Poultry, Seafood Products</item>
+        <item>Medical Creams and Lotions</item>
+        <item>Milk and Milk Substitutes</item>
+        <item>Motion Sickness and Nausea</item>
+        <item>Nail Care</item>
+        <item>Nail Makeup</item>
+        <item>Nasal Care</item>
+        <item>Noodles and Pasta</item>
+        <item>Nutritional Bars, Drinks, and Shakes</item>
+        <item>Nuts</item>
+        <item>Olives</item>
+        <item>Oral Care</item>
+        <item>Packaged Foods</item>
+        <item>Pain Relief Medicine</item>
+        <item>Pain Relief Pads, Packs and Patches</item>
+        <item>Party Mix</item>
+        <item>Pastries, Desserts and Pastry Products</item>
+        <item>Personal Care</item>
+        <item>Pest Control</item>
+        <item>Pet Beds and Carriers</item>
+        <item>Pet Care</item>
+        <item>Pet Flea, Lice and Tick Control</item>
+        <item>Pet Furniture</item>
+        <item>Pet Litterbox and Cleanup</item>
+        <item>Pet Toys</item>
+        <item>Popcorn</item>
+        <item>Prepared Meals</item>
+        <item>Pudding</item>
+        <item>Reptiles and Amphibians Care</item>
+        <item>Rice</item>
+        <item>Salad Dressings</item>
+        <item>Salsas</item>
+        <item>Sauces</item>
+        <item>Seasonings</item>
+        <item>Sexual Wellness</item>
+        <item>Shaving Products</item>
+        <item>Skin Care</item>
+        <item>Sleep Aids</item>
+        <item>Small Animals Food</item>
+        <item>Smoking Cessation</item>
+        <item>Snacks</item>
+        <item>Soda</item>
+        <item>Soups and Stocks</item>
+        <item>Stain Remover</item>
+        <item>Stress Reduction</item>
+        <item>Sugars and Sweeteners</item>
+        <item>Syrups</item>
+        <item>Tea and Coffee</item>
+        <item>Therapeutic Skin Care</item>
+        <item>Tissues and Paper Towels</item>
+        <item>Training Pants</item>
+        <item>Trash Bags</item>
+        <item>Urinary Tract Infection Treatments</item>
+        <item>Vegetables</item>
+        <item>Vinegars</item>
+        <item>Vitamins and Supplements</item>
+        <item>Water</item>
+        <item>Weight Loss Products and Supplements</item>
+        <item>Wheat Flours and Meals</item>
+        <item>Yogurt</item>
+    </string-array>
+</resources>
