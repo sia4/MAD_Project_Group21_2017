@@ -13,13 +13,6 @@ public class GroupData {
     public GroupData(String n, String d){
         this.name = n;
         this.description = d;
-
-        /*
-        lexpensive.add(new ExpensiveData("luca", "sushi", "cene", "EUR", (float)12.3));
-        lexpensive.add(new ExpensiveData("lucia", "pasta", "spesa", "EUR", (float)1.1));
-        lexpensive.add(new ExpensiveData("edo", "winnie the pooh", "cinema", "EUR", (float)7));
-        lexpensive.add(new ExpensiveData("sia", "pane", "spesa", "EUR", (float)44));
-        */
     }
 
     public String getName(){
@@ -31,12 +24,18 @@ public class GroupData {
     public static void addExpensive(String name, String descr, String category, String currency, float value, String algorithm){
         lexpensive.add(new ExpensiveData(name, descr, category, currency, value, algorithm));
     }
+
     public static  void addUser(String email){
         lUsers.add(new UserData(email));
     }
+
     public static List<ExpensiveData> getExpensies(){
+
+        lexpensive.add(new ExpensiveData("Spesa 2", "spesa", "spesa", "EUR", (float)10.2, "alla romana"));
+        lexpensive.add(new ExpensiveData("Spesa 2", "spesa", "spesa", "EUR", 888, "alla romana"));
         return lexpensive;
     }
+
     public static List<UserData> getlUsers() { return lUsers;}
 
 }

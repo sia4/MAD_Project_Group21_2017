@@ -43,14 +43,10 @@ public class BudgetFragment extends Fragment {
         RecyclerView recyclerView = (RecyclerView) view;
         recyclerView.setLayoutManager(new LinearLayoutManager(context));
 
-        cred_deb n = new cred_deb("Edoardo", "25€");
-        users.add(n);
-        n = new cred_deb("Luca", "-48€");
-        users.add(n);
-        n = new cred_deb("Silvia", "27€");
-        users.add(n);
-        n = new cred_deb("Lucia", "81€");
-        users.add(n);
+        users.add(new cred_deb("Luca", "25€"));
+        users.add(new cred_deb("Luca", "-48€"));
+        users.add(new cred_deb("Silvia", "27€"));
+        users.add(new cred_deb("Lucia", "81€"));
 
         BudgetAdapter bAdapter = new BudgetAdapter(users);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(context);
