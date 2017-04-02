@@ -45,7 +45,26 @@
                 android:hint="Add Description..."
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
-
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            tools:context="it.polito.mad.mad_app.InsertGroupActivity">
+                <EditText
+                    android:id="@+id/User1"
+                    android:hint="Add User..."
+                    android:layout_width="wrap_content"
+                    android:layout_weight="10"
+                    android:layout_gravity="left"
+                    android:layout_height="wrap_content" />
+                <Button
+                    android:id="@+id/Adduser1"
+                    android:text="+"
+                    android:layout_weight="0.2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="right"/>
+            </LinearLayout>
             <Button
                 android:id="@+id/CreateGroup"
                 android:text="Create Group"
