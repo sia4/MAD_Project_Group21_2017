@@ -23,6 +23,8 @@ public class MainData {
     public List<GroupData> getGroupList(){
         return this.lGroups;
     }
+    public String getMyUsername(){ return this.myUsername;}
+    public String getMyPassword(){ return  this.myPassword;}
 
 
 
