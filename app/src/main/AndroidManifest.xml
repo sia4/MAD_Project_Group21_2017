@@ -28,8 +28,9 @@
             android:name=".InsertExActivity"
             android:label="@string/title_activity_insert_ex"
             android:parentActivityName=".MainActivity"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
-        <activity android:name=".BudgetActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".BudgetActivity"
             android:label="BudgetActivity"
             android:parentActivityName=".GroupActivity">
 
@@ -38,6 +39,12 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".GroupActivity" />
         </activity>
+        <activity
+            android:name=".InsertGroupActivity"
+            android:label="Create Group"
+            android:parentActivityName=".MainActivity"
+            android:theme="@style/AppTheme.NoActionBar"
+            />
     </application>
 
 </manifest>

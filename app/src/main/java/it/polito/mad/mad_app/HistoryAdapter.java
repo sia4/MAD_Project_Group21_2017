@@ -15,7 +15,7 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.MyViewHo
     private List<ExpensiveData> expensiveData;
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
-        public TextView name_ex, currency_ex, description_ex,  money_ex, category_ex;
+        public TextView name_ex, currency_ex, description_ex,  money_ex, category_ex, algorithm_ex;
 
         public MyViewHolder(View view) {
             super(view);
@@ -24,6 +24,7 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.MyViewHo
             description_ex = (TextView) view.findViewById(R.id.description_ex);
             money_ex = (TextView) view.findViewById(R.id.money_ex);
             category_ex = (TextView) view.findViewById(R.id.category_ex);
+            algorithm_ex = (TextView) view.findViewById(R.id.algorithm_ex);
         }
     }
 
@@ -48,6 +49,7 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.MyViewHo
         holder.description_ex.setText(expense.getDescription());
         holder.money_ex.setText(String.valueOf(expense.getValue()));
         holder.category_ex.setText(expense.getCategory());
+        holder.algorithm_ex.setText(expense.getAlgorithm());
     }
 
     @Override

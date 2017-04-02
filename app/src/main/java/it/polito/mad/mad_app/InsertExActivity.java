@@ -16,6 +16,7 @@ public class InsertExActivity extends AppCompatActivity {
     private String category;
     private String currency;
     private int value;
+    private String algorithm;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -26,6 +27,7 @@ public class InsertExActivity extends AppCompatActivity {
         final EditText Tdescription = (EditText) findViewById(R.id.Description);
         final Spinner Tcategory = (Spinner)findViewById(R.id.Category);
         final Spinner Tcurrency = (Spinner)findViewById(R.id.Currency);
+        final Spinner Talgorithm = (Spinner)findViewById(R.id.ChooseAlgorithm);
         final EditText Tvalue = (EditText) findViewById(R.id.value);
 
         btn.setOnClickListener(new View.OnClickListener() {
@@ -37,8 +39,8 @@ public class InsertExActivity extends AppCompatActivity {
                 category = Tcategory.getSelectedItem().toString();
                 currency = Tcurrency.getSelectedItem().toString();
                 value = Integer.parseInt(Tvalue.getText().toString());
-
-                GroupData.addExpensive(name, description, category, currency, value);
+                algorithm = Talgorithm.getSelectedItem().toString();
+                GroupData.addExpensive(name, description, category, currency, value, algorithm);
 
                 startActivity(new Intent(InsertExActivity.this, GroupActivity.class));
             }
