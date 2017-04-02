@@ -14,6 +14,8 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
+import it.polito.mad.mad_app.model.MainData;
+
 public class MainActivity extends AppCompatActivity {
 
     class Group {
@@ -33,7 +35,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
     }
-
+    private MainData myData;
     private ListView lv;
     private ArrayList<Group> data = new ArrayList<>();
 
@@ -47,6 +49,9 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(myToolbar);
         getSupportActionBar().setTitle("MADAPP");
         getSupportActionBar().setLogo(R.drawable.ic_monetization_on_black_24dp);
+
+
+        myData = new MainData("malnati", "0000");
 
         lv = (ListView) findViewById(R.id.lv);
 
