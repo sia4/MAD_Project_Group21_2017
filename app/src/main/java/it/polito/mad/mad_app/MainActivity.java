@@ -1,16 +1,15 @@
 package it.polito.mad.mad_app;
 
 import android.content.Intent;
-import android.database.Cursor;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
+import android.support.v7.widget.Toolbar;
 
 import java.util.ArrayList;
 
@@ -42,6 +41,12 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        Toolbar myToolbar = (Toolbar) findViewById(R.id.my_toolbar);
+        setSupportActionBar(myToolbar);
+        getSupportActionBar().setTitle("MADAPP");
+        getSupportActionBar().setLogo(R.drawable.ic_monetization_on_black_24dp);
+
         lv = (ListView) findViewById(R.id.lv);
         GroupData di = new GroupData("Coinquilini");
         data.add(di);
