@@ -2,6 +2,7 @@ package it.polito.mad.mad_app;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
@@ -34,19 +35,21 @@ public class GroupActivity extends AppCompatActivity {
         setContentView(R.layout.activity_group);
         Intent intent = getIntent();
 
-        Toolbar groupToolbar = (Toolbar) findViewById(R.id.group_toolbar);
-        setSupportActionBar(groupToolbar);
+        final Toolbar toolbar = (Toolbar) findViewById(R.id.group_toolbar);
+        setSupportActionBar(toolbar);
+        if (getSupportActionBar() != null)
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        groupToolbar.setClickable(true);
+        //getSupportActionBar().setClickable(true);
         //Get information from previuos Activity
         String name = intent.getStringExtra("name");
 
-        groupToolbar.setTitle(name);
+        getSupportActionBar().setTitle(name);
+        //final CollapsingToolbarLayout collapsingToolbar = (CollapsingToolbarLayout) findViewById(R.id.group_c_toolbar);
+        //collapsingToolbar.setTitle("test");
         //TODO migliorare toolbar and set title
         //getSupportActionBar().setTitle(name);
        // getActionBar().setTitle(name);
-
-        //groupToolbar.setDisplayHomeAsUpEnabled(true);
 
         FragmentManager fm = getSupportFragmentManager();
         FragmentTransaction transaction = fm.beginTransaction();

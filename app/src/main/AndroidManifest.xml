@@ -31,7 +31,7 @@
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".GroupOptionActivity"
-            android:label="BudgetActivity"
+            android:label="GroupOptionActivity"
             android:parentActivityName=".GroupActivity">
 
             <!-- The meta-data tag is required if you support API level 15 and lower -->

@@ -12,18 +12,19 @@
         android:layout_height="wrap_content"
         android:theme="@style/AppTheme">
 
-        <android.support.design.widget.CollapsingToolbarLayout
+       <!-- <android.support.design.widget.CollapsingToolbarLayout
+            android:id="@+id/group_c_toolbar"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             app:contentScrim="?attr/colorPrimary"
             app:layout_scrollFlags="scroll|exitUntilCollapsed"
-            app:toolbarId="@+id/group_toolbar">
+            app:toolbarId="@+id/group_toolbar">-->
 
             <android.support.v7.widget.Toolbar
                 android:id="@+id/group_toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize" />
-        </android.support.design.widget.CollapsingToolbarLayout>
+    <!--    </android.support.design.widget.CollapsingToolbarLayout>-->
 
         <android.support.design.widget.TabLayout
             android:id="@+id/tabsGroup"
