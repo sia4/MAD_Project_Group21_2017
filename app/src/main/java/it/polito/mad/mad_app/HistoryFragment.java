@@ -22,7 +22,6 @@ import it.polito.mad.mad_app.model.*;
 
 public class HistoryFragment extends Fragment {
 
-    //private ListView lv;
     private List<ExpensiveData> data = new ArrayList<>();
     private Context context;
 
@@ -33,9 +32,9 @@ public class HistoryFragment extends Fragment {
 
         // Set the adapter
         //if (view instanceof RecyclerView) {
-            context = view.getContext();
-            RecyclerView recyclerView = (RecyclerView) view;
-                recyclerView.setLayoutManager(new LinearLayoutManager(context));
+        context = view.getContext();
+        RecyclerView recyclerView = (RecyclerView) view;
+        recyclerView.setLayoutManager(new LinearLayoutManager(context));
 
             //lv = (ListView) view.findViewById(R.id.lv_ex);
 

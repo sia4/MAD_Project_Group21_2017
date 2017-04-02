@@ -11,7 +11,7 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
-
+/*
 public class BudgetActivity extends AppCompatActivity {
 
     class cred_deb {
@@ -35,7 +35,7 @@ public class BudgetActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_budget);
+        setContentView(R.layout.fragment_budget);
         //Intent intent = getIntent();
         lvalues = (ListView) findViewById(R.id.lv_bud);
         cred_deb n = new cred_deb("Edoardo", "25€");
@@ -80,4 +80,4 @@ public class BudgetActivity extends AppCompatActivity {
         lvalues.setAdapter(a);
 
     }
-}
+}*/

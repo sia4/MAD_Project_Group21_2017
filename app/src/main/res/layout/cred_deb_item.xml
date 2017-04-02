@@ -1,24 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="horizontal"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="wrap_content">
     <TextView
-        android:id="@+id/left_item"
+        android:id="@+id/name_cred_deb"
         android:gravity="left"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textSize="28sp"
-        android:drawableLeft="@mipmap/ic_launcher"
+        android:textSize="20sp"
         android:layout_weight="0.3"
         />
     <TextView
-        android:id="@+id/right_item"
+        android:id="@+id/value_cred_deb"
         android:gravity="right"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textSize="28sp"
-        android:drawableLeft="@mipmap/ic_launcher"
+        android:textSize="20sp"
         android:layout_weight="0.7"
         />
-</LinearLayout>
+</RelativeLayout>

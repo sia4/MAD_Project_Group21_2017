@@ -3,10 +3,6 @@ package it.polito.mad.mad_app.model;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by Luca on 02/04/2017.
- */
-
 public class MainData {
     private String myUsername;
     private String myPassword;
