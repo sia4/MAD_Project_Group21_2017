@@ -3,9 +3,7 @@ package it.polito.mad.mad_app;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.DefaultItemAnimator;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.*;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -47,6 +45,9 @@ public class BudgetFragment extends Fragment {
         users.add(new cred_deb("Luca", "-48€"));
         users.add(new cred_deb("Silvia", "27€"));
         users.add(new cred_deb("Lucia", "81€"));
+
+        recyclerView.addItemDecoration(new android.support.v7.widget.DividerItemDecoration(getActivity(),
+                android.support.v7.widget.DividerItemDecoration.VERTICAL));
 
         BudgetAdapter bAdapter = new BudgetAdapter(users);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(context);

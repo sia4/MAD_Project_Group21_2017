@@ -128,4 +128,5 @@ public class GroupOptionActivity extends AppCompatActivity {
 
         return super.onOptionsItemSelected(item);
     }
+
 }

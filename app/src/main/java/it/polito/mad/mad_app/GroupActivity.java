@@ -40,16 +40,9 @@ public class GroupActivity extends AppCompatActivity {
         if (getSupportActionBar() != null)
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        //getSupportActionBar().setClickable(true);
-        //Get information from previuos Activity
         String name = intent.getStringExtra("name");
 
         getSupportActionBar().setTitle(name);
-        //final CollapsingToolbarLayout collapsingToolbar = (CollapsingToolbarLayout) findViewById(R.id.group_c_toolbar);
-        //collapsingToolbar.setTitle("test");
-        //TODO migliorare toolbar and set title
-        //getSupportActionBar().setTitle(name);
-       // getActionBar().setTitle(name);
 
         FragmentManager fm = getSupportFragmentManager();
         FragmentTransaction transaction = fm.beginTransaction();
@@ -111,8 +104,6 @@ public class GroupActivity extends AppCompatActivity {
         return true;
     }
 
-
-    //TODO tasto back
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {

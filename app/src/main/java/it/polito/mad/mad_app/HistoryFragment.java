@@ -5,6 +5,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -22,6 +23,8 @@ import it.polito.mad.mad_app.model.*;
 
 public class HistoryFragment extends Fragment {
 
+    private static final int VERTICAL_ITEM_SPACE = 48;
+
     private List<ExpensiveData> data = new ArrayList<>();
     private Context context;
 
@@ -37,6 +40,17 @@ public class HistoryFragment extends Fragment {
         recyclerView.setLayoutManager(new LinearLayoutManager(context));
 
             //lv = (ListView) view.findViewById(R.id.lv_ex);
+
+        recyclerView.addItemDecoration(new DividerItemDecoration(getActivity(),
+                DividerItemDecoration.VERTICAL));
+
+        //add ItemDecoration
+        //recyclerView.addItemDecoration(new VerticalSpaceItemDecoration(VERTICAL_ITEM_SPACE));
+        //or
+        //recyclerView.addItemDecoration(new DividerItemDecoration(getActivity()));
+        //or
+        //recyclerView.addItemDecoration(
+        //        new DividerItemDecoration(getActivity(), R.drawable.divider));
 
         data = GroupData.getExpensies();
         HistoryAdapter hAdapter = new HistoryAdapter(data);
