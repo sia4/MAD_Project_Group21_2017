@@ -6,20 +6,20 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
-        <item name="android:textColor">@color/colorPrimaryText</item>
-        <item name="android:textColorSecondary">@color/colorSecondaryText</item>
+        <item name="android:textColorPrimary">@color/colorText</item>
+        <item name="android:textColorSecondary">@color/colorPrimaryLight</item>
     </style>
 
     <style name="ToolbarTheme" parent="ThemeOverlay.AppCompat.Light">
-
-        <item name="android:textColorPrimary">@color/colorPrimaryText</item>
-        <item name="android:textColorSecondary">@color/colorSecondaryText</item>
+        <item name="android:actionMenuTextAppearance">@color/primaryTextColor</item>
+        <item name="android:textColorPrimary">@color/colorText</item>
+        <item name="android:textColorSecondary">@color/colorText</item>
 
     </style>
 
     <style name="PopupTheme" parent="ThemeOverlay.AppCompat.Light">
 
-        <item name="android:textColorPrimary">@color/colorPrimaryText</item>
+        <item name="android:textColorPrimary">@color/colorText</item>
         <item name="android:background">@color/colorPrimaryLight</item>
 
     </style>

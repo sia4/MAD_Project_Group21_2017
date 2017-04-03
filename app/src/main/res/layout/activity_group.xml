@@ -66,12 +66,11 @@
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
         android:layout_gravity="bottom|end"
-        android:layout_marginBottom="14dp"
-        android:layout_marginEnd="20dp"
-        android:layout_marginRight="20dp"
-        app:backgroundTint="@color/colorAccent"
-        app:rippleColor="@color/icons"
+        app:srcCompat="@android:drawable/ic_input_add"
         android:tint="@android:color/white"
-        app:srcCompat="@android:drawable/ic_input_add" />
+        android:layout_marginBottom="@dimen/activity_margin"
+        android:layout_marginEnd="@dimen/activity_margin"
+        android:layout_marginRight="@dimen/activity_margin"
+        app:backgroundTint="@color/colorAccent" />
 
 </android.support.design.widget.CoordinatorLayout>
