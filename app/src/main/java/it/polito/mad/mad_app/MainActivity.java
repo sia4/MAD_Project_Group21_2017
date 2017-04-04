@@ -291,14 +291,15 @@ public class MainActivity extends AppCompatActivity {
                 );
 
                 startActivity(intent);
+                finish();
 
             }
         });
     }
-    /*
-    protected void onRestart(Bundle savedInstanceState) {
+/*
+    protected void onResume(Bundle savedInstanceState) {
 
-        super.onRestart();
+        super.onResume();
 
         Fragment frag = getSupportFragmentManager().findFragmentByTag("GroupsFragment");
         final FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
@@ -307,6 +308,5 @@ public class MainActivity extends AppCompatActivity {
         ft.commit();
 
     }
-    */
-
+*/
 }

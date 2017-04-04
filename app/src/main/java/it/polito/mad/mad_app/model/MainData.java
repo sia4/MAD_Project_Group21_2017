@@ -25,6 +25,9 @@ public class MainData {
     public  GroupData getGroup(String name){
         return lGroups.get(name);
     }
+    public void addExpensiveToGroup(String Gname, String name, String descr, String category, String currency, float value, String algorithm){
+        this.lGroups.get(Gname).addExpensive(name, descr, category, currency, value, algorithm);
+    }
     public String getMyUsername(){ return this.myUsername;}
     public String getMyPassword(){ return  this.myPassword;}
 

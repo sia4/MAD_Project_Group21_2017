@@ -46,4 +46,5 @@ public class GroupsFragment extends Fragment {
         recyclerView.setAdapter(gAdapter);
         return view;
     }
+
 }
