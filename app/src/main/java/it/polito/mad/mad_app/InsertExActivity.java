@@ -46,8 +46,10 @@ public class InsertExActivity extends AppCompatActivity {
 
                 g.addExpensive(name, description, category, currency, value, algorithm);
                 Intent i = new Intent(InsertExActivity.this, GroupActivity.class);
+
                 i.putExtra("name", Gname);
                 startActivity(i);
+                finish();
 
             }
         });

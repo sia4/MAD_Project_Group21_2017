@@ -295,5 +295,18 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
+    /*
+    protected void onRestart(Bundle savedInstanceState) {
+
+        super.onRestart();
+
+        Fragment frag = getSupportFragmentManager().findFragmentByTag("GroupsFragment");
+        final FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+        ft.detach(frag);
+        ft.attach(frag);
+        ft.commit();
+
+    }
+    */
 
 }

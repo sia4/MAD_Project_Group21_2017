@@ -10,6 +10,8 @@ public class GroupData {
     private static List<ExpensiveData> lexpensive = new ArrayList<>();
     private static List<UserData> lUsers = new ArrayList<>();
 
+
+
     public GroupData(String n, String d){
         this.name = n;
         this.description = d;

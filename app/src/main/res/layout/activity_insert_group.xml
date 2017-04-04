@@ -43,6 +43,7 @@
             <EditText
                 android:id="@+id/GroupDescription"
                 android:hint="Add Description..."
+                android:text="Hello I'm on Alla Romana"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
         <LinearLayout
