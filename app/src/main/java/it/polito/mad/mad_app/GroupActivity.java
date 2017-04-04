@@ -98,7 +98,7 @@ public class GroupActivity extends AppCompatActivity {
                 );
                 intent.putExtra("GroupName", gname);
                 startActivity(intent);
-
+                finish();
             }
         });
     }

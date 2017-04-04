@@ -43,8 +43,8 @@ public class InsertExActivity extends AppCompatActivity {
                 currency = Tcurrency.getSelectedItem().toString();
                 value = Float.parseFloat(Tvalue.getText().toString());
                 algorithm = Talgorithm.getSelectedItem().toString();
-
-                g.addExpensive(name, description, category, currency, value, algorithm);
+                MainActivity.getMyData().addExpensiveToGroup(Gname, name, description, category, currency, value, algorithm);
+                //g.addExpensive(name, description, category, currency, value, algorithm);
                 Intent i = new Intent(InsertExActivity.this, GroupActivity.class);
 
                 i.putExtra("name", Gname);

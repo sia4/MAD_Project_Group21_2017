@@ -7,7 +7,7 @@ public class GroupData {
 
     private String name;
     private String description;
-    private static List<ExpensiveData> lexpensive = new ArrayList<>();
+    private List<ExpensiveData> lexpensive = new ArrayList<>();
     private static List<UserData> lUsers = new ArrayList<>();
 
 
@@ -27,8 +27,8 @@ public class GroupData {
     public String getDescription() { return this.description;}
 
 
-    public static void addExpensive(String name, String descr, String category, String currency, float value, String algorithm){
-        lexpensive.add(new ExpensiveData(name, descr, category, currency, value, algorithm));
+    public  void addExpensive(String name, String descr, String category, String currency, float value, String algorithm){
+        this.lexpensive.add(new ExpensiveData(name, descr, category, currency, value, algorithm));
     }
 
     public static  void addUser(String email){
