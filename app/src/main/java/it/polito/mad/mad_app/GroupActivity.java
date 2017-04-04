@@ -40,13 +40,18 @@ public class GroupActivity extends AppCompatActivity {
         if (getSupportActionBar() != null)
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        String name = intent.getStringExtra("name");
+        final String gname = intent.getStringExtra("name");
+        final Bundle b = new Bundle();
+        b.putString("GroupName", gname);
 
-        getSupportActionBar().setTitle(name);
-
+        getSupportActionBar().setTitle(gname);
+        Fragment hfrag = new HistoryFragment();
+        hfrag.setArguments(b);
         FragmentManager fm = getSupportFragmentManager();
         FragmentTransaction transaction = fm.beginTransaction();
-        transaction.replace(R.id.group_framelayout, new HistoryFragment());
+
+
+        transaction.replace(R.id.group_framelayout, hfrag);
         transaction.commit();
 
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabsGroup);
@@ -65,6 +70,7 @@ public class GroupActivity extends AppCompatActivity {
                         frag = new HistoryFragment();
                         break;
                 }
+                frag.setArguments(b);
                 FragmentManager fm = getSupportFragmentManager();
                 FragmentTransaction transaction = fm.beginTransaction();
                 transaction.replace(R.id.group_framelayout, frag);
@@ -90,7 +96,7 @@ public class GroupActivity extends AppCompatActivity {
                 Intent intent = new Intent(
                         getApplicationContext(), InsertExActivity.class
                 );
-
+                intent.putExtra("GroupName", gname);
                 startActivity(intent);
 
             }

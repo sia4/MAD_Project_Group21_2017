@@ -32,10 +32,11 @@ public class InsertGroupActivity extends AppCompatActivity {
                 GroupName = Gname.getText().toString();
                 GroupDescription = Gdescription.getText().toString();
 
-
+                MainActivity.getMyData().addGroup(GroupName, GroupDescription);
 
 
                 startActivity(new Intent(InsertGroupActivity.this, MainActivity.class));
+
             }
         });
     }

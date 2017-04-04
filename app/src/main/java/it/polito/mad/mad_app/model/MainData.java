@@ -2,22 +2,28 @@ package it.polito.mad.mad_app.model;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
+
 
 public class MainData {
     private String myUsername;
     private String myPassword;
-    private static List<GroupData> lGroups = new ArrayList<>();
+    private static Map<String, GroupData> lGroups = new TreeMap<>();
 
     public MainData(String s, String p){
         this.myUsername = s;
         this.myPassword = p;
     }
 
-    public static void addGroup(String n, String d){
-        lGroups.add(new GroupData(n, d));
+    public void addGroup(String n, String d){
+        lGroups.put(n, new GroupData(n, d));
     }
-    public static List<GroupData> getGroupList(){
-        return lGroups;
+    public List<GroupData> getGroupList(){
+        return new ArrayList<GroupData>(lGroups.values());
+    }
+    public  GroupData getGroup(String name){
+        return lGroups.get(name);
     }
     public String getMyUsername(){ return this.myUsername;}
     public String getMyPassword(){ return  this.myPassword;}

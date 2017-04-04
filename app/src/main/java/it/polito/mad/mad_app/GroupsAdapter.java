@@ -50,7 +50,7 @@ public class GroupsAdapter extends RecyclerView.Adapter<GroupsAdapter.MyViewHold
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent().setClass(v.getContext(), GroupActivity.class);
-                String groupName = g.getName().toString();
+                String groupName = g.getName();
                 intent.putExtra("name",groupName);
                 v.getContext().startActivity(intent);
             }

@@ -37,11 +37,8 @@ public class GroupsFragment extends Fragment {
 
         //lv = (ListView) view.findViewById(R.id.lv_ex);
 
-        MainData.addGroup("Coinquilini", "Gruppo di via Tolmino 7");
-        MainData.addGroup("Regalo di laurea", "Regalo per Martina");
-        MainData.addGroup("Colleghi", "Spese dell'ufficio");
 
-        d = MainData.getGroupList();
+        d = MainActivity.getMyData().getGroupList();
         GroupsAdapter gAdapter = new GroupsAdapter(d);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(context);
         recyclerView.setLayoutManager(mLayoutManager);

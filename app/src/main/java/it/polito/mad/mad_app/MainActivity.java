@@ -140,6 +140,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
+//import android.support.v7.util.ThreadUtil;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.ViewGroup;
@@ -156,7 +157,10 @@ import it.polito.mad.mad_app.model.MainData;
 public class MainActivity extends AppCompatActivity {
 
 
-    private MainData myData;
+    private static MainData myData = new MainData("malnati", "0000");
+
+
+    public static MainData getMyData(){ return myData;}
     //private ListView lv;
     private ArrayList<GroupData> data = new ArrayList<>();
 
@@ -165,6 +169,9 @@ public class MainActivity extends AppCompatActivity {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+
+
         /*Toolbar myToolbar = (Toolbar) findViewById(R.id.my_toolbar);
         setSupportActionBar(myToolbar);
         getSupportActionBar().setTitle("MADAPP");

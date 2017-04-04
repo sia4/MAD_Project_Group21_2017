@@ -51,8 +51,8 @@ public class HistoryFragment extends Fragment {
         //or
         //recyclerView.addItemDecoration(
         //        new DividerItemDecoration(getActivity(), R.drawable.divider));
-
-        data = GroupData.getExpensies();
+        String GroupName = getArguments().getString("GroupName");
+        data = MainActivity.getMyData().getGroup(GroupName).getExpensies();
         HistoryAdapter hAdapter = new HistoryAdapter(data);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(context);
         recyclerView.setLayoutManager(mLayoutManager);
