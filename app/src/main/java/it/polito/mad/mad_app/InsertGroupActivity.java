@@ -1,15 +1,10 @@
 package it.polito.mad.mad_app;
 
-import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Spinner;
-
-import it.polito.mad.mad_app.model.GroupData;
-import it.polito.mad.mad_app.model.MainData;
 
 public class InsertGroupActivity extends AppCompatActivity {
 
@@ -34,12 +29,15 @@ public class InsertGroupActivity extends AppCompatActivity {
 
 
                 MainActivity.getMyData().addGroup(GroupName, GroupDescription);
-                Intent gotomain = new Intent(InsertGroupActivity.this, MainActivity.class);
+                //Intent gotomain = new Intent(InsertGroupActivity.this, MainActivity.class);
                 //gotomain.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
-                startActivity(gotomain);
+                //startActivity(gotomain);
 
+                setResult(RESULT_OK, null);
                 finish();
+
             }
+
         });
     }
 }

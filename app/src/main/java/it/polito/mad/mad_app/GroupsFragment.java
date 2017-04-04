@@ -1,7 +1,6 @@
 package it.polito.mad.mad_app;
 
 import android.content.Context;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -14,7 +13,7 @@ import android.view.ViewGroup;
 import java.util.ArrayList;
 import java.util.List;
 
-import it.polito.mad.mad_app.model.*;
+import it.polito.mad.mad_app.model.GroupData;
 
 
 public class GroupsFragment extends Fragment {
@@ -36,7 +35,6 @@ public class GroupsFragment extends Fragment {
                 android.support.v7.widget.DividerItemDecoration.VERTICAL));
 
         //lv = (ListView) view.findViewById(R.id.lv_ex);
-
 
         d = MainActivity.getMyData().getGroupList();
         GroupsAdapter gAdapter = new GroupsAdapter(d);

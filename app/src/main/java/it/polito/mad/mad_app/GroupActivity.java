@@ -2,22 +2,17 @@ package it.polito.mad.mad_app;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v4.app.NavUtils;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.Button;
-import android.widget.FrameLayout;
 import android.widget.ListView;
 
 import java.util.ArrayList;
@@ -29,6 +24,7 @@ public class GroupActivity extends AppCompatActivity {
 
     private ListView lv;
     private List<ExpensiveData> data = new ArrayList<>();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -97,10 +93,23 @@ public class GroupActivity extends AppCompatActivity {
                         getApplicationContext(), InsertExActivity.class
                 );
                 intent.putExtra("GroupName", gname);
-                startActivity(intent);
-                finish();
+                startActivityForResult(intent, 1);
             }
         });
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (resultCode == RESULT_OK) {
+            final String gname = data.getStringExtra("name");
+            Intent refresh = new Intent(this, GroupActivity.class);
+            refresh.putExtra("name", gname);
+            startActivity(refresh);
+            this.finish();
+        }
     }
 
     @Override

@@ -140,19 +140,15 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
-//import android.support.v7.util.ThreadUtil;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.BaseAdapter;
-import android.widget.ListView;
-import android.widget.TextView;
 
 import java.util.ArrayList;
 
 import it.polito.mad.mad_app.model.GroupData;
 import it.polito.mad.mad_app.model.MainData;
+
+//import android.support.v7.util.ThreadUtil;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -290,11 +286,23 @@ public class MainActivity extends AppCompatActivity {
                         getApplicationContext(),InsertGroupActivity.class
                 );
 
-                startActivity(intent);
-                finish();
+                startActivityForResult(intent, 1);
 
             }
         });
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (resultCode == RESULT_OK) {
+            Intent refresh = new Intent(this, MainActivity.class);
+            startActivity(refresh);
+            this.finish();
+        }
+
     }
 /*
     protected void onResume(Bundle savedInstanceState) {

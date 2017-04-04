@@ -7,6 +7,7 @@ import java.util.TreeMap;
 
 
 public class MainData {
+
     private String myUsername;
     private String myPassword;
     private static Map<String, GroupData> lGroups = new TreeMap<>();
