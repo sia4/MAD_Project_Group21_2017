@@ -16,6 +16,12 @@ public class UserData {
     public UserData(String email){
         this.email = email;
     }
+    public UserData(String email, String name, String surname, int phonenumber) {
+        this.email = email;
+        this.name = name;
+        this.surname = surname;
+        this.phonenumber = phonenumber;
+    }
 
     public void setName(String n){ this.name = n;}
     public void setSurname(String n){ this.surname = n;}

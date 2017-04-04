@@ -1,5 +1,6 @@
 package it.polito.mad.mad_app;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -9,6 +10,7 @@ import android.widget.EditText;
 import android.widget.Spinner;
 
 import it.polito.mad.mad_app.model.GroupData;
+import it.polito.mad.mad_app.model.MainData;
 
 public class InsertExActivity extends AppCompatActivity {
 
@@ -37,8 +39,7 @@ public class InsertExActivity extends AppCompatActivity {
         Intent i = getIntent();
 
         final String Gname = i.getStringExtra("GroupName");
-        final GroupData g = MainActivity.getMyData().getGroup(Gname);
-
+        final GroupData g = MainData.getInstance().getGroup(Gname);
         btn.setOnClickListener(new View.OnClickListener() {
 
 
@@ -50,9 +51,10 @@ public class InsertExActivity extends AppCompatActivity {
                 currency = Tcurrency.getSelectedItem().toString();
                 value = Float.parseFloat(Tvalue.getText().toString());
                 algorithm = Talgorithm.getSelectedItem().toString();
-                MainActivity.getMyData().addExpensiveToGroup(Gname, name, description, category, currency, value, algorithm);
+                MainData.getInstance().addExpensiveToGroup(Gname, name, description, category, currency, value, algorithm);
                 //g.addExpensive(name, description, category, currency, value, algorithm);
                 Intent i = new Intent(InsertExActivity.this, GroupActivity.class);
+
                 i.putExtra("name", Gname);
                 //startActivity(i);
                 //finish();

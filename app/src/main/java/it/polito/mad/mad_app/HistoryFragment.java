@@ -52,7 +52,7 @@ public class HistoryFragment extends Fragment {
         //recyclerView.addItemDecoration(
         //        new DividerItemDecoration(getActivity(), R.drawable.divider));
         String GroupName = getArguments().getString("GroupName");
-        data = MainActivity.getMyData().getGroup(GroupName).getExpensies();
+        data = MainData.getInstance().getGroup(GroupName).getExpensies();
         HistoryAdapter hAdapter = new HistoryAdapter(data);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(context);
         recyclerView.setLayoutManager(mLayoutManager);

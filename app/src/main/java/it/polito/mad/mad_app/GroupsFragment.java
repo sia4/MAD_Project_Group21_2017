@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import it.polito.mad.mad_app.model.GroupData;
+import it.polito.mad.mad_app.model.MainData;
 
 
 public class GroupsFragment extends Fragment {
@@ -25,8 +26,6 @@ public class GroupsFragment extends Fragment {
                              Bundle savedInstanceState) {
         final View view = inflater.inflate(R.layout.fragment_groups, container, false);
 
-        // Set the adapter
-        //if (view instanceof RecyclerView) {
         context = view.getContext();
         RecyclerView recyclerView = (RecyclerView) view;
         recyclerView.setLayoutManager(new LinearLayoutManager(context));
@@ -34,9 +33,7 @@ public class GroupsFragment extends Fragment {
         recyclerView.addItemDecoration(new android.support.v7.widget.DividerItemDecoration(getActivity(),
                 android.support.v7.widget.DividerItemDecoration.VERTICAL));
 
-        //lv = (ListView) view.findViewById(R.id.lv_ex);
-
-        d = MainActivity.getMyData().getGroupList();
+        d = MainData.getInstance().getGroupList();
         GroupsAdapter gAdapter = new GroupsAdapter(d);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(context);
         recyclerView.setLayoutManager(mLayoutManager);
