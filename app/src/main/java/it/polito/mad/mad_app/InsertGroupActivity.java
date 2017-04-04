@@ -31,12 +31,13 @@ public class InsertGroupActivity extends AppCompatActivity {
             public void onClick(View v) {
                 GroupName = Gname.getText().toString();
                 GroupDescription = Gdescription.getText().toString();
+                if(GroupDescription.isEmpty())
 
                 MainActivity.getMyData().addGroup(GroupName, GroupDescription);
-
-
-                startActivity(new Intent(InsertGroupActivity.this, MainActivity.class));
-
+                Intent gotomain = new Intent(InsertGroupActivity.this, MainActivity.class);
+                //gotomain.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+                startActivity(gotomain);
+                finish();
             }
         });
     }
