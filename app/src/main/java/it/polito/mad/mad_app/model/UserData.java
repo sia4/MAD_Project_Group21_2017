@@ -11,6 +11,7 @@ public class UserData {
     private String username;
     private String email;
     private int phonenumber;
+    private float value;
 
 
     public UserData(String email){
@@ -31,4 +32,6 @@ public class UserData {
     public String getSurname(){ return this.surname;}
     public String getUsername(){ return this.username;}
     public int getPhonenumber(){ return this.phonenumber;}
+    public float getValue(){return this.value;}
+    public void addValue(float value){this.value += value;}
 }

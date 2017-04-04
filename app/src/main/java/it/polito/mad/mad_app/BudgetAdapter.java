@@ -8,9 +8,11 @@ import android.widget.TextView;
 
 import java.util.List;
 
+import it.polito.mad.mad_app.model.BalanceData;
+
 public class BudgetAdapter extends RecyclerView.Adapter<BudgetAdapter.MyViewHolder> {
 
-    private List<BudgetFragment.cred_deb> budgetData;
+    private List<BalanceData> budgetData;
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
         public TextView name_cred_deb, value_cred_deb;
@@ -23,7 +25,7 @@ public class BudgetAdapter extends RecyclerView.Adapter<BudgetAdapter.MyViewHold
     }
 
 
-    public BudgetAdapter(List<BudgetFragment.cred_deb> budgetData) {
+    public BudgetAdapter(List<BalanceData> budgetData) {
         this.budgetData = budgetData;
     }
 
@@ -37,9 +39,9 @@ public class BudgetAdapter extends RecyclerView.Adapter<BudgetAdapter.MyViewHold
 
     @Override
     public void onBindViewHolder(MyViewHolder holder, int position) {
-        BudgetFragment.cred_deb budget = budgetData.get(position);
+        BalanceData budget = budgetData.get(position);
         holder.name_cred_deb.setText(budget.getName());
-        holder.value_cred_deb.setText(budget.getValue());
+        holder.value_cred_deb.setText(String.valueOf(budget.getValue()));
     }
 
     @Override

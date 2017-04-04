@@ -32,13 +32,13 @@
                 android:id="@+id/impact_pos_ex"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textSize="20sp"
+                android:textSize="15sp"
                 android:layout_weight="0.5" />
             <TextView
                 android:id="@+id/impact_neg_ex"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textSize="20sp"
+                android:textSize="15sp"
                 android:layout_weight="0.5" />
         </LinearLayout>
     </LinearLayout>

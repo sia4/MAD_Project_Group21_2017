@@ -63,8 +63,8 @@ public class GroupsAdapter extends RecyclerView.Adapter<GroupsAdapter.MyViewHold
                 v.getContext().startActivity(intent);
             }
         });
-        holder.impact_pos.setText("Devi:"+"13");//TODO insert the correct value
-        holder.impact_neg.setText("Ti devono:"+"17");//TODO insert the correct value
+        holder.impact_pos.setText("Devi:"+String.valueOf(g.getNegExpenses()));//TODO insert the correct value
+        holder.impact_neg.setText("Ti devono:"+String.valueOf(g.getPosExpenses()));//TODO insert the correct value
         holder.impact_neg.setTextColor(Color.GREEN);
         holder.impact_pos.setTextColor(Color.RED);
     }
