@@ -6,15 +6,9 @@
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:orientation="horizontal" android:layout_width="match_parent"
         android:layout_height="wrap_content">
-
-        <it.polito.mad.mad_app.CircularImageView
-            android:id="@+id/user_1_circle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerInParent="true"/>
-
         <TextView
             android:id="@+id/name_ex"
+            android:textColor="@color/primaryTextColor"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="left"
@@ -22,7 +16,7 @@
             android:layout_weight="0.3"
             />
         <TextView
-            android:id="@+id/money_ex"
+            android:id="@+id/impact_ex"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="right"
@@ -34,39 +28,39 @@
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:orientation="horizontal" android:layout_width="match_parent"
         android:layout_height="wrap_content">
-    <TextView
-        android:id="@+id/category_ex"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:gravity="left"
-        android:textSize="16sp"
-        android:layout_weight="0.3"
-        />
-    <TextView
-        android:id="@+id/currency_ex"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:gravity="right"
-        android:textSize="16sp"
-        android:layout_weight="0.3"
-        />
+        <TextView
+            android:id="@+id/data_ex"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="left"
+            android:textSize="16sp"
+            android:layout_weight="0.3"
+            />
+        <TextView
+            android:id="@+id/money_ex"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="right"
+            android:textSize="16sp"
+            android:layout_weight="0.3"
+            />
     </LinearLayout>
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:orientation="horizontal" android:layout_width="match_parent"
         android:layout_height="wrap_content">
         <TextView
-            android:id="@+id/description_ex"
+            android:id="@+id/creator_ex"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="left"
             android:textSize="16sp"
             />
-        <TextView
+        <!--<TextView
             android:id="@+id/algorithm_ex"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="right"
             android:textSize="16sp"
-            />
-        </LinearLayout>
+            />-->
+    </LinearLayout>
 </LinearLayout>

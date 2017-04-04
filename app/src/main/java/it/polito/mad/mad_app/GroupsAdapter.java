@@ -1,10 +1,12 @@
 package it.polito.mad.mad_app;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -20,11 +22,17 @@ public class GroupsAdapter extends RecyclerView.Adapter<GroupsAdapter.MyViewHold
     private List<GroupData> GData;
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
-        public TextView text;
+        public TextView name;
+        public TextView impact_pos;
+        public TextView impact_neg;
+        public ImageView im;
 
         public MyViewHolder(View view) {
             super(view);
-            text= (TextView) view.findViewById(R.id.name_tv);
+            name= (TextView) view.findViewById(R.id.name_tv);
+            impact_pos= (TextView) view.findViewById(R.id.impact_pos_ex);
+            impact_neg= (TextView) view.findViewById(R.id.impact_neg_ex);
+            im=(ImageView) view.findViewById(R.id.im);
         }
     }
 
@@ -44,9 +52,9 @@ public class GroupsAdapter extends RecyclerView.Adapter<GroupsAdapter.MyViewHold
     @Override
     public void onBindViewHolder(GroupsAdapter.MyViewHolder holder, int position) {
         final GroupData g = GData.get(position);
-        holder.text.setText(g.getName());
-
-        holder.text.setOnClickListener(new View.OnClickListener() {
+        holder.name.setText(g.getName());
+        holder.im.setImageResource(R.drawable.casa);
+        holder.name.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent().setClass(v.getContext(), GroupActivity.class);
@@ -55,6 +63,10 @@ public class GroupsAdapter extends RecyclerView.Adapter<GroupsAdapter.MyViewHold
                 v.getContext().startActivity(intent);
             }
         });
+        holder.impact_pos.setText("Devi:"+"13");//TODO insert the correct value
+        holder.impact_neg.setText("Ti devono:"+"17");//TODO insert the correct value
+        holder.impact_neg.setTextColor(Color.GREEN);
+        holder.impact_pos.setTextColor(Color.RED);
     }
 
     @Override
