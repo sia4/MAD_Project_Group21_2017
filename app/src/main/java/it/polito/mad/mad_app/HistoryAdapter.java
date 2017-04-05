@@ -9,12 +9,12 @@ import android.widget.TextView;
 
 import java.util.List;
 
-import it.polito.mad.mad_app.model.ExpensiveData;
+import it.polito.mad.mad_app.model.ExpenseData;
 import it.polito.mad.mad_app.model.MainData;
 
 public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.MyViewHolder> {
 
-    private List<ExpensiveData> expensiveData;
+    private List<ExpenseData> expenseData;
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
         public TextView name_ex, data_ex,  money_ex, impact_ex,creator_ex;
@@ -30,8 +30,8 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.MyViewHo
     }
 
 
-    public HistoryAdapter(List<ExpensiveData> expensiveData) {
-        this.expensiveData = expensiveData;
+    public HistoryAdapter(List<ExpenseData> expenseData) {
+        this.expenseData = expenseData;
     }
 
     @Override
@@ -44,7 +44,7 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.MyViewHo
 
     @Override
     public void onBindViewHolder(MyViewHolder holder, int position) {
-        ExpensiveData expense = expensiveData.get(position);
+        ExpenseData expense = expenseData.get(position);
         holder.name_ex.setText(expense.getName());
         holder.data_ex.setText("04/04/2017");//TODO change this, insert getDATA
         holder.money_ex.setText(String.format("%.2f", expense.getMyvalue()));
@@ -58,6 +58,6 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.MyViewHo
 
     @Override
     public int getItemCount() {
-        return expensiveData.size();
+        return expenseData.size();
     }
 }

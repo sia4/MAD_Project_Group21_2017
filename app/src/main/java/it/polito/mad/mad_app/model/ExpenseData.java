@@ -1,6 +1,6 @@
 package it.polito.mad.mad_app.model;
 
-public class ExpensiveData {
+public class ExpenseData {
 
     private String name;
     private String descr;
@@ -10,7 +10,7 @@ public class ExpensiveData {
     private float myvalue;
     private String algorithm;
 
-    public ExpensiveData(String n, String d, String ca, String cu, float value, float myvalue, String algorithm){
+    public ExpenseData(String n, String d, String ca, String cu, float value,float myvalue, String algorithm){
         this.name = n;
         this.descr = d;
         this.category = ca;
