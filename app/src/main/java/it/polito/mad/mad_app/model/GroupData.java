@@ -13,7 +13,8 @@ public class GroupData {
     private List<ExpenseData> lexpensive = new ArrayList<>();
     private List<UserData> lUsers = new ArrayList<>();
     private Map<String, BalanceData> lBudget = new TreeMap<>();
-
+    private Map<String, Float> uPercentuage = new TreeMap<>();
+    private Map<String, Float> uImport = new TreeMap<>();
 
     public GroupData(String n, String d){
         this.name = n;
@@ -43,6 +44,14 @@ public class GroupData {
         for (UserData key: lUsers)
              addExpenseToUser(key.getName(), quote);
     }
+    public void byPercentuage(float value){
+        for (UserData key: lUsers)
+            addExpenseToUser(key.getName(), value*uPercentuage.get(key.getEmail())/100);
+    }
+    public void byImport(float value){
+        for (UserData key: lUsers)
+            addExpenseToUser(key.getName(), uImport.get(key.getEmail()));
+    }
     public float getExpense(String name){
         return this.lBudget.get(name).getValue();
     }
@@ -66,25 +75,16 @@ public class GroupData {
              sum += lBudget.get(key).getValue();
         return sum;
     }
-    public List<BalanceData> getExpensesList(){
-        return new ArrayList<BalanceData>(lBudget.values());
-    }
-
-
-
+    public List<BalanceData> getExpensesList(){return new ArrayList<BalanceData>(lBudget.values());}
+    public Map<String, Float> getuPercentuageMap(){return this.uPercentuage;}
+    public Map<String, Float> getuImport(){return this.uImport;}
     public  void addExpensive(String name, String descr, String category, String currency, float value, float myvalue, String algorithm){
         this.lexpensive.add(new ExpenseData(name, descr, category, currency, value,myvalue, algorithm));
     }
-
     public void addUser(UserData user){
         lUsers.add(user);
     }
-
-    public List<ExpenseData> getExpensies(){
-
-        return lexpensive;
-    }
-
+    public List<ExpenseData> getExpensies(){return lexpensive;}
     public List<UserData> getlUsers() { return lUsers;}
 
 }

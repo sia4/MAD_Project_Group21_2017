@@ -2,4 +2,5 @@
     <string name="app_name">Alla Romana</string>
     <string name="title_activity_insert_ex">InsertExActivity</string>
     <string name="test" />
+    <string name="title_activity_expense_info">ExpenseInfoActivity</string>
 </resources>

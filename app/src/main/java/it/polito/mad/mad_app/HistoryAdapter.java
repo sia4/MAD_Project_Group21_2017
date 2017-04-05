@@ -1,5 +1,6 @@
 package it.polito.mad.mad_app;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -54,9 +55,18 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.MyViewHo
         holder.money_ex.setText(String.format("%.2f", expense.getMyvalue()));
         holder.creator_ex.setText(MainData.getInstance().getMyName());//TODO change with getCreator
 
-            holder.impact_ex.setTextColor(Color.GREEN);
-            holder.impact_ex.setText("Ti devono:");
-            holder.money_ex.setTextColor(Color.GREEN);
+        holder.impact_ex.setTextColor(Color.GREEN);
+        holder.impact_ex.setText("Ti devono:");
+        holder.money_ex.setTextColor(Color.GREEN);
+        /*
+        @Override
+        public void onClick(View v) {
+            Intent intent = new Intent().setClass(v.getContext(), GroupActivity.class);
+            String groupName = g.getName();
+            intent.putExtra("name",groupName);
+            v.getContext().startActivity(intent);
+        }
+        */
 
     }
 
