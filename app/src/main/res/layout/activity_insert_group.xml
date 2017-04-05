@@ -69,6 +69,14 @@
                         android:layout_gravity="right"/>
 
             </LinearLayout>
+
+            <android.support.v7.widget.RecyclerView
+                android:scrollbars="vertical"
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:id="@+id/usersToAdd" />
+
             <!--<Button
                 android:id="@+id/CreateGroup"
                 android:text="Create Group"

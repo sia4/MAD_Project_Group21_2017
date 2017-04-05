@@ -1,5 +1,6 @@
 package it.polito.mad.mad_app.model;
 
+import java.security.acl.Group;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -69,20 +70,24 @@ public class MainData {
         lGroups.put(group1.getName(), group1);
         lGroups.put(group2.getName(), group2);
         lGroups.put(group3.getName(), group3);
-        lUser.put(user1.getName(), user1);
-        lUser.put(user2.getName(), user2);
-        lUser.put(user3.getName(), user3);
-        lUser.put(user4.getName(), user4);
-        lUser.put(user5.getName(), user5);
-        lUser.put(user6.getName(), user6);
-        lUser.put(user7.getName(), user7);
-        lUser.put(user8.getName(), user8);
-        lUser.put(user9.getName(), user9);
-        lUser.put(user10.getName(), user10);
+        lUser.put(user1.getEmail(), user1);
+        lUser.put(user2.getEmail(), user2);
+        lUser.put(user3.getEmail(), user3);
+        lUser.put(user4.getEmail(), user4);
+        lUser.put(user5.getEmail(), user5);
+        lUser.put(user6.getEmail(), user6);
+        lUser.put(user7.getEmail(), user7);
+        lUser.put(user8.getEmail(), user8);
+        lUser.put(user9.getEmail(), user9);
+        lUser.put(user10.getEmail(), user10);
 
     }
-    public void addGroup(String n, String d){
-        lGroups.put(n, new GroupData(n, d));
+    public GroupData addGroup(String n, String d){
+
+        GroupData g = new GroupData(n, d);
+        lGroups.put(n, g);
+
+        return g;
     }
     public List<GroupData> getGroupList(){
         return new ArrayList<GroupData>(lGroups.values());
@@ -97,5 +102,11 @@ public class MainData {
         this.lGroups.get(Gname).addExpensive(name, descr, category, currency, value, algorithm);
     }
 
+    public UserData findUserByMail(String email) {
+        if(!lUser.containsKey(email))
+            return null;
+        else
+            return lUser.get(email);
+    }
 
 }
