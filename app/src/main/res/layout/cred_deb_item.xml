@@ -9,7 +9,7 @@
         android:gravity="left"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textSize="20sp"
+        android:textSize="@dimen/high_text"
         android:layout_weight="0.3"
         />
     <TextView
@@ -17,7 +17,7 @@
         android:gravity="right"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textSize="20sp"
+        android:textSize="@dimen/high_text"
         android:layout_weight="0.7"
         />
 </RelativeLayout>

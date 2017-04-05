@@ -54,9 +54,9 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.MyViewHo
         holder.money_ex.setText(String.format("%.2f", expense.getMyvalue()));
         holder.creator_ex.setText(MainData.getInstance().getMyName());//TODO change with getCreator
 
-            holder.impact_ex.setTextColor(Color.GREEN);
+            holder.impact_ex.setTextColor(Color.parseColor("#27B011"));
             holder.impact_ex.setText("Ti devono:");
-            holder.money_ex.setTextColor(Color.GREEN);
+            holder.money_ex.setTextColor(Color.parseColor("#27B011"));
 
     }
 
