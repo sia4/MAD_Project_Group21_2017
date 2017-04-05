@@ -18,12 +18,12 @@ import android.widget.ListView;
 import java.util.ArrayList;
 import java.util.List;
 
-import it.polito.mad.mad_app.model.ExpensiveData;
+import it.polito.mad.mad_app.model.ExpenseData;
 
 public class GroupActivity extends AppCompatActivity {
 
     private ListView lv;
-    private List<ExpensiveData> data = new ArrayList<>();
+    private List<ExpenseData> data = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

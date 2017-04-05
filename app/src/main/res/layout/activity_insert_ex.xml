@@ -5,24 +5,22 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".InsertExActivity">
+
     <android.support.design.widget.AppBarLayout
-        android:id="@+id/appbar"
+        android:id="@+id/insert_ex_bar"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_width="match_parent">
+        android:theme="@style/AppTheme">
 
-        <android.support.design.widget.CollapsingToolbarLayout
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/insert_ex_toolbar"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            app:toolbarId="@+id/toolbar"
-            app:layout_scrollFlags="scroll|exitUntilCollapsed"
-            app:contentScrim="?attr/colorPrimary">
+            android:layout_height="?attr/actionBarSize"
+            app:theme="@style/ToolbarTheme"
+            app:popupTheme="@style/PopupTheme"/>
 
-            <android.support.v7.widget.Toolbar
-                android:id="@+id/toolbar"
-                android:layout_height="?attr/actionBarSize"
-                android:layout_width="match_parent"/>
-        </android.support.design.widget.CollapsingToolbarLayout>
     </android.support.design.widget.AppBarLayout>
+
     <android.support.v4.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -32,37 +30,39 @@
             android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            tools:context="it.polito.mad.mad_app.InsertExActivity">
+            android:layout_margin="@dimen/activity_margin">
 
             <EditText
                 android:id="@+id/Name"
                 android:hint="Add Name..."
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_weight="0.5"
+                android:layout_height="60sp" />
+
             <EditText
                 android:id="@+id/Description"
                 android:hint="Add Description..."
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="60sp"  />
             <EditText
                 android:id="@+id/value"
                 android:hint="Add value..."
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="60sp"
                 android:ems="10"
                 android:inputType="number" />
             <Spinner
                 android:id="@+id/Category"
                 android:entries="@array/categories"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="60sp"
                 />
 
             <Spinner
                 android:id="@+id/Currency"
                 android:entries="@array/currencies"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="60sp"
                 />
             <LinearLayout
                 android:orientation="horizontal"
@@ -75,10 +75,7 @@
                     android:gravity="left"
                     android:text="Algorithm:"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textSize="15sp"
-
-
+                    android:layout_height="60sp"
                     />
 
                 <Spinner
@@ -86,17 +83,17 @@
                     android:gravity="right"
                     android:entries="@array/algorithms"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="60sp"
                     />
             </LinearLayout>
 
-            <Button
+            <!--<Button
                 android:id="@+id/EnterButton"
                 android:text="Insert"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="right"/>
-
+-->
         </LinearLayout>
     </android.support.v4.widget.NestedScrollView>
 </android.support.design.widget.CoordinatorLayout>

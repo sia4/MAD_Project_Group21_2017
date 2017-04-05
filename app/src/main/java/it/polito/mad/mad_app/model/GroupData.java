@@ -10,7 +10,7 @@ public class GroupData {
 
     private String name;
     private String description;
-    private List<ExpensiveData> lexpensive = new ArrayList<>();
+    private List<ExpenseData> lexpensive = new ArrayList<>();
     private List<UserData> lUsers = new ArrayList<>();
     private Map<String, BalanceData> lBudget = new TreeMap<>();
 
@@ -68,14 +68,14 @@ public class GroupData {
 
 
     public  void addExpensive(String name, String descr, String category, String currency, float value, String algorithm){
-        this.lexpensive.add(new ExpensiveData(name, descr, category, currency, value, algorithm));
+        this.lexpensive.add(new ExpenseData(name, descr, category, currency, value, algorithm));
     }
 
     public void addUser(UserData user){
         lUsers.add(user);
     }
 
-    public List<ExpensiveData> getExpensies(){
+    public List<ExpenseData> getExpensies(){
 
         return lexpensive;
     }
