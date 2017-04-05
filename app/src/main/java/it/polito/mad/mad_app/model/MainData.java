@@ -1,6 +1,7 @@
 package it.polito.mad.mad_app.model;
 
-import java.security.acl.Group;
+import android.app.Activity;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -10,18 +11,23 @@ import java.util.TreeMap;
 public class MainData {
 
     private static final MainData ourInstance = new MainData();
+    private String myName;
+    private String mySurname;
     private String myEmail;
     private String myPassword;
     private Map<String, GroupData> lGroups = new TreeMap<>();
     private Map<String, UserData> lUser = new TreeMap<>();
+    private List<ActivityData> lActivities = new ArrayList<>();
 
     public static MainData getInstance() {
         return ourInstance;
     }
 
     private MainData() {
-        myEmail = "Malnati";
+        myEmail = "marco.rossi@gmail.it";
         myPassword = "0000";
+        myName = "Marco";
+        mySurname = "Rossi";
         GroupData group1 = new GroupData("Coinquilini", "Gruppo dei coinquilini di via Tolmino 7");
         GroupData group2 = new GroupData("Quartiere", "Gruppo dei vicini di quartiere Crocetta");
         GroupData group3 = new GroupData("Viaggio", "Gruppo dei compagni di viaggio");
@@ -49,12 +55,12 @@ public class MainData {
         group3.addUser(user6);
         group3.addUser(user9);
         group3.addUser(user10);
-        group1.addExpensive("Pane", "Pane per domani a pranzo", "Spesa", "EUR", (float)10.2, "Alla Romana");
-        group1.addExpensive("Vino", "Vino per domani a pranzo", "Spesa", "EUR", (float)17.2, "Alla Romana");
-        group2.addExpensive("Tosaerba", "Tosaerba per il prato in comune", "Giardino", "EUR", (float)150.7, "Alla Romana");
-        group2.addExpensive("Intonaco", "Rifacimento facciata condominio", "Muratura", "EUR", (float)210.2, "Alla Romana");
-        group3.addExpensive("Volo", "Volo per Valencia", "Trasporti", "EUR", (float)80.2, "Alla Romana");
-        group3.addExpensive("Museo", "Entrata città delle scienze", "Cultura", "EUR", (float)14.9, "Alla Romana");
+        group1.addExpensive("Pane", "Pane per domani a pranzo", "Spesa", "EUR", (float)10.2,(float)10.2, "Alla Romana");
+        group1.addExpensive("Vino", "Vino per domani a pranzo", "Spesa", "EUR", (float)17.2,(float)17.2, "Alla Romana");
+        group2.addExpensive("Tosaerba", "Tosaerba per il prato in comune", "Giardino", "EUR", (float)150.7,(float)150.7, "Alla Romana");
+        group2.addExpensive("Intonaco", "Rifacimento facciata condominio", "Muratura", "EUR", (float)210.2,(float)210.2, "Alla Romana");
+        group3.addExpensive("Volo", "Volo per Valencia", "Trasporti", "EUR", (float)80.2,(float)80.2, "Alla Romana");
+        group3.addExpensive("Museo", "Entrata città delle scienze", "Cultura", "EUR", (float)14.9,(float)14.9, "Alla Romana");
         group1.addExpenseToUser(user1.getName(), 4);
         group1.addExpenseToUser(user6.getName(), -144);
         group1.addExpenseToUser(user2.getName(), 7);
@@ -81,6 +87,11 @@ public class MainData {
         lUser.put(user9.getEmail(), user9);
         lUser.put(user10.getEmail(), user10);
 
+        lActivities.add(new ActivityData("gianpaolo.cabodi@gmail.it", "Gianpaolo added an expense on group Coinquilini", "4 apr 2017, 11:45"));
+        lActivities.add(new ActivityData("stefano.quer@gmail.it", "Stefano added an expense on group Viaggio", "4 apr 2017, 18:21"));
+        lActivities.add(new ActivityData("giovanni.malnati@gmail.it", "Giovanni invited you on group MAD21", "8 mar 2017, 8:17"));
+        lActivities.add(new ActivityData("silvia.chiusano@gmail.it", "Silvia added an user on group Quartiere", "4 apr 2017, 19:44"));
+
     }
     public GroupData addGroup(String n, String d){
 
@@ -89,17 +100,27 @@ public class MainData {
 
         return g;
     }
+
+    public void addActivity(String email, String text, String date){this.lActivities.add(new ActivityData(email, text, date));    }
+    public List<ActivityData> getActivitiesList(){return lActivities;}
+
     public List<GroupData> getGroupList(){
         return new ArrayList<GroupData>(lGroups.values());
     }
     public  GroupData getGroup(String name){
         return lGroups.get(name);
     }
-    public String getEmail(){ return this.myEmail;}
+    public String getMyEmail(){ return this.myEmail;}
     public String getMyPassword(){ return  this.myPassword;}
+    public String getMyName(){return this.myName;}
+    public String getMySurname(){return this.mySurname;}
+    public void setMyEmail(String email){this.myEmail = email;}
+    public void setMyName(String name){this.myName = name;}
+    public void setMySurname(String surname){this.mySurname = surname;}
+    public void setMyPassword(String password){this.myPassword = password;}
 
-    public void addExpensiveToGroup(String Gname, String name, String descr, String category, String currency, float value, String algorithm){
-        this.lGroups.get(Gname).addExpensive(name, descr, category, currency, value, algorithm);
+    public void addExpensiveToGroup(String Gname, String name, String descr, String category, String currency, float value, float myvalue, String algorithm){
+        this.lGroups.get(Gname).addExpensive(name, descr, category, currency, value, myvalue, algorithm);
     }
 
     public UserData findUserByMail(String email) {

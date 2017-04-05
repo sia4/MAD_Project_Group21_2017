@@ -8,44 +8,45 @@ import android.widget.TextView;
 
 import java.util.List;
 
+import it.polito.mad.mad_app.model.ActivityData;
 import it.polito.mad.mad_app.model.BalanceData;
 
-public class BudgetAdapter extends RecyclerView.Adapter<BudgetAdapter.MyViewHolder> {
+public class ActivitiesAdapter extends RecyclerView.Adapter<ActivitiesAdapter.MyViewHolder> {
 
-    private List<BalanceData> budgetData;
+    private List<ActivityData> activityData;
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
-        public TextView name_cred_deb, value_cred_deb;
+        public TextView date, text;
 
         public MyViewHolder(View view) {
             super(view);
-            name_cred_deb = (TextView) view.findViewById(R.id.name_cred_deb);
-            value_cred_deb = (TextView) view.findViewById(R.id.value_cred_deb);
+            date = (TextView) view.findViewById(R.id.date_act);
+            text = (TextView) view.findViewById(R.id.text_act);
         }
     }
 
 
-    public BudgetAdapter(List<BalanceData> budgetData) {
-        this.budgetData = budgetData;
+    public ActivitiesAdapter(List<ActivityData> activityData) {
+        this.activityData = activityData;
     }
 
     @Override
     public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View itemView = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.cred_deb_item, parent, false);
+                .inflate(R.layout.activity_item, parent, false);
 
         return new MyViewHolder(itemView);
     }
 
     @Override
     public void onBindViewHolder(MyViewHolder holder, int position) {
-        BalanceData budget = budgetData.get(position);
-        holder.name_cred_deb.setText(budget.getName());
-        holder.value_cred_deb.setText(String.format("%.2f",budget.getValue()));
+        ActivityData activity = activityData.get(position);
+        holder.date.setText(activity.getDate());
+        holder.text.setText(activity.getText());
     }
 
     @Override
     public int getItemCount() {
-        return budgetData.size();
+        return activityData.size();
     }
 }

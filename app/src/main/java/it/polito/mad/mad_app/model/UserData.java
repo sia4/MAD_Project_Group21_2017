@@ -21,7 +21,7 @@ public class UserData {
         this.surname = surname;
         this.phonenumber = phonenumber;
     }
-
+    public String getEmail(){return this.email;}
     public void setName(String n){ this.name = n;}
     public void setSurname(String n){ this.surname = n;}
     public void setUsername(String n){ this.username = n;}
