@@ -1,6 +1,7 @@
 package it.polito.mad.mad_app;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -15,9 +16,12 @@ import java.util.List;
 
 import it.polito.mad.mad_app.model.GroupData;
 import it.polito.mad.mad_app.model.MainData;
+//import it.polito.mad.mad_app.model.RecyclerItemClickListener;
+import it.polito.mad.mad_app.model.RecyclerTouchListener;
 
 
 public class GroupsFragment extends Fragment {
+
 
     private Context context;
     private List<GroupData> d = new ArrayList<>();
@@ -29,16 +33,30 @@ public class GroupsFragment extends Fragment {
         context = view.getContext();
         RecyclerView recyclerView = (RecyclerView) view;
         recyclerView.setLayoutManager(new LinearLayoutManager(context));
-
-        recyclerView.addItemDecoration(new android.support.v7.widget.DividerItemDecoration(getActivity(),
-                android.support.v7.widget.DividerItemDecoration.VERTICAL));
-
+        /*recyclerView.addItemDecoration(new android.support.v7.widget.DividerItemDecoration(getActivity(),
+                android.support.v7.widget.DividerItemDecoration.VERTICAL));*/
+        recyclerView.addItemDecoration(new DividerItemDecoration(context, LinearLayoutManager.VERTICAL));
         d = MainData.getInstance().getGroupList();
         GroupsAdapter gAdapter = new GroupsAdapter(d);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(context);
         recyclerView.setLayoutManager(mLayoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setAdapter(gAdapter);
+        recyclerView.addOnItemTouchListener(new RecyclerTouchListener(context, recyclerView, new RecyclerTouchListener.ClickListener() {
+            @Override
+            public void onClick(View view, int position) {
+                final GroupData g = d.get(position);
+                Intent intent = new Intent().setClass(view.getContext(), GroupActivity.class);
+                String groupName = g.getName();
+                intent.putExtra("name",groupName);
+                view.getContext().startActivity(intent);
+            }
+
+            @Override
+            public void onLongClick(View view, int position) {
+
+            }
+        }));
         return view;
     }
 

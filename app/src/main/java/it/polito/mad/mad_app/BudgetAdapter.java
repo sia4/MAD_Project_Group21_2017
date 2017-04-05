@@ -1,5 +1,6 @@
 package it.polito.mad.mad_app;
 
+import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -41,7 +42,15 @@ public class BudgetAdapter extends RecyclerView.Adapter<BudgetAdapter.MyViewHold
     public void onBindViewHolder(MyViewHolder holder, int position) {
         BalanceData budget = budgetData.get(position);
         holder.name_cred_deb.setText(budget.getName());
+        float n=budget.getValue();
         holder.value_cred_deb.setText(String.format("%.2f",budget.getValue()));
+        if(n>0){
+           holder.value_cred_deb.setTextColor(Color.parseColor("#27B011"));
+        }
+        else{
+            holder.value_cred_deb.setTextColor(Color.parseColor("#D51111"));
+        }
+
     }
 
     @Override
