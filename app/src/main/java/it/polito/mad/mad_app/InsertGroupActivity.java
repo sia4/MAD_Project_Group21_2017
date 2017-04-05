@@ -56,7 +56,7 @@ public class InsertGroupActivity extends AppCompatActivity {
 
         userbutton.setOnClickListener(new View.OnClickListener()  {
             public void onClick(View v) {
-                UserEmail = Uemail.getText().toString();
+                UserEmail = Uemail.getText().toString().toLowerCase();
                 UserData ud = MainData.getInstance().findUserByMail(UserEmail);
                 if(ud == null) {
                     Toast.makeText(InsertGroupActivity.this, "The user doesn't exist!", Toast.LENGTH_LONG).show();
