@@ -48,25 +48,34 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.MyViewHo
 
     @Override
     public void onBindViewHolder(MyViewHolder holder, int position) {
-        ExpenseData expense = expenseData.get(position);
+        final ExpenseData expense = expenseData.get(position);
         holder.name_ex.setText(expense.getName());
 
-        holder.data_ex.setText(expense.getDate());//TODO change this, insert getDATA
+        holder.data_ex.setText(expense.getDate());
         holder.money_ex.setText(String.format("%.2f", expense.getMyvalue()));
         holder.creator_ex.setText(MainData.getInstance().getMyName());//TODO change with getCreator
-
-       /*
+        holder.impact_ex.setTextColor(Color.parseColor("#27B011"));
+        holder.impact_ex.setText("Ti devono:");
+        holder.money_ex.setTextColor(Color.parseColor("#27B011"));
+        holder.name_ex.setOnClickListener(new View.OnClickListener() {
         @Override
-        public void onClick(View v) {
-            Intent intent = new Intent().setClass(v.getContext(), GroupActivity.class);
-            String groupName = g.getName();
-            intent.putExtra("name",groupName);
-            v.getContext().startActivity(intent);
-        }
-        */
-            holder.impact_ex.setTextColor(Color.parseColor("#27B011"));
-            holder.impact_ex.setText("Ti devono:");
-            holder.money_ex.setTextColor(Color.parseColor("#27B011"));
+                public void onClick(View v) {
+                Intent intent = new Intent().setClass(v.getContext(), ExpenseInfoActivity.class);
+                intent.putExtra("name", expense.getName());
+                intent.putExtra("category", expense.getCategory());
+                intent.putExtra("currency", expense.getCurrency());
+                intent.putExtra("algorithm", expense.getAlgorithm());
+                intent.putExtra("description", expense.getDescription());
+                intent.putExtra("myvalue", String.format("%.2f", expense.getMyvalue()));
+                intent.putExtra("value", String.format("%.2f", expense.getValue()));
+                intent.putExtra("creator", MainData.getInstance().getMyName());//TODO change with getCreator
+                intent.putExtra("date", expense.getDate());
+                v.getContext().startActivity(intent);
+            }
+        });
+
+
+
 
     }
 

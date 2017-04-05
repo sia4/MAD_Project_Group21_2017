@@ -54,7 +54,7 @@ public class GroupsAdapter extends RecyclerView.Adapter<GroupsAdapter.MyViewHold
     public void onBindViewHolder(GroupsAdapter.MyViewHolder holder, int position) {
         final GroupData g = GData.get(position);
         holder.name.setText(g.getName());
-        holder.im.setImageResource(R.drawable.casa);
+        holder.im.setImageResource(R.drawable.group_default);
         holder.name.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
