@@ -30,6 +30,5 @@ public class UserData {
     public String getSurname(){ return this.surname;}
     public String getUsername(){ return this.username;}
     public int getPhonenumber(){ return this.phonenumber;}
-    public String getEmail() { return this.email; }
 
 }

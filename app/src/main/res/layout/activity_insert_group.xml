@@ -27,55 +27,55 @@
         app:layout_behavior="android.support.design.widget.AppBarLayout$ScrollingViewBehavior">
 
         <LinearLayout
-            android:orientation="vertical"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_margin="@dimen/activity_margin">
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/activity_margin"
+            android:orientation="vertical">
 
             <EditText
                 android:id="@+id/GroupName"
-                android:hint="Add Name..."
                 android:layout_width="match_parent"
                 android:layout_height="60sp"
-                android:textSize="20sp"
-                android:layout_weight="0.5" />
+                android:layout_weight="0.5"
+                android:hint="Add Name..."
+                android:textSize="20sp" />
 
             <EditText
                 android:id="@+id/GroupDescription"
-                android:hint="Add Description..."
-                android:text="Hello I'm on Alla Romana"
                 android:layout_width="match_parent"
-                android:layout_height="60sp" />
+                android:layout_height="60sp"
+                android:hint="Add Description..."
+                android:text="Hello I'm on Alla Romana" />
 
             <LinearLayout
-                android:orientation="horizontal"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
 
-                    <EditText
-                        android:id="@+id/User1"
-                        android:hint="Add User..."
-                        android:layout_width="wrap_content"
-                        android:layout_weight="10"
-                        android:layout_gravity="left"
-                        android:layout_height="60sp" />
+                <EditText
+                    android:id="@+id/User1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="60sp"
+                    android:layout_gravity="left"
+                    android:layout_weight="10"
+                    android:hint="Add User..." />
 
-                    <Button
-                        android:id="@+id/Adduser1"
-                        android:text="+"
-                        android:layout_weight="0.2"
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:layout_gravity="right"/>
+                <Button
+                    android:id="@+id/Adduser1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="right"
+                    android:layout_weight="0.2"
+                    android:text="+" />
 
             </LinearLayout>
 
             <android.support.v7.widget.RecyclerView
-                android:scrollbars="vertical"
-                android:orientation="vertical"
+                android:id="@+id/usersToAdd"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:id="@+id/usersToAdd" />
+                android:layout_height="314dp"
+                android:orientation="vertical"
+                android:scrollbars="vertical" />
 
             <!--<Button
                 android:id="@+id/CreateGroup"
