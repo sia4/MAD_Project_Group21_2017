@@ -1,5 +1,9 @@
 package it.polito.mad.mad_app.model;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+
 public class ExpenseData {
 
     private String name;
@@ -9,6 +13,7 @@ public class ExpenseData {
     private float value;
     private float myvalue;
     private String algorithm;
+    private String date;
 
     public ExpenseData(String n, String d, String ca, String cu, float value,float myvalue, String algorithm){
         this.name = n;
@@ -18,8 +23,10 @@ public class ExpenseData {
         this.value = value;
         this.myvalue = myvalue;
         this.algorithm = algorithm;
+        DateFormat df = new SimpleDateFormat("d MMM yyyy, HH:mm");
+        this.date = df.format(Calendar.getInstance().getTime());
     }
-
+    public String getDate(){ return this.date;}
     public String getName(){
         return this.name;
     }

@@ -46,7 +46,7 @@ public class MainActivity extends AppCompatActivity {
                         frag = new GroupsFragment();
                         break;
                     case 1:
-                        frag = new GroupsFragment();
+                        frag = new ActivitiesFragment();
                         break;
                     default:
                         frag = new GroupsFragment();

@@ -1,5 +1,7 @@
 package it.polito.mad.mad_app.model;
 
+import android.app.Activity;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -15,6 +17,7 @@ public class MainData {
     private String myPassword;
     private Map<String, GroupData> lGroups = new TreeMap<>();
     private Map<String, UserData> lUser = new TreeMap<>();
+    private List<ActivityData> lActivities = new ArrayList<>();
 
     public static MainData getInstance() {
         return ourInstance;
@@ -84,7 +87,14 @@ public class MainData {
         lUser.put(user9.getName(), user9);
         lUser.put(user10.getName(), user10);
 
+        lActivities.add(new ActivityData("gianpaolo.cabodi@gmail.it", "Gianpaolo added an expense on group Coinquilini", "4 apr 2017, 11:45"));
+        lActivities.add(new ActivityData("stefano.quer@gmail.it", "Stefano added an expense on group Viaggio", "4 apr 2017, 18:21"));
+        lActivities.add(new ActivityData("giovanni.malnati@gmail.it", "Giovanni invited you on group MAD21", "8 mar 2017, 8:17"));
+        lActivities.add(new ActivityData("silvia.chiusano@gmail.it", "Silvia added an user on group Quartiere", "4 apr 2017, 19:44"));
+
     }
+    public void addActivity(String email, String text, String date){this.lActivities.add(new ActivityData(email, text, date));    }
+    public List<ActivityData> getActivitiesList(){return lActivities;}
     public void addGroup(String n, String d){
         lGroups.put(n, new GroupData(n, d));
     }
