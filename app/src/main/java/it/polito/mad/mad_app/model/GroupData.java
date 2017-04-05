@@ -38,6 +38,11 @@ public class GroupData {
         lBudget.put(name, new BalanceData(name, tmp));
 
     }
+    public void allaRomana(float value){
+        float quote = value/(lUsers.size()+1);
+        for (UserData key: lUsers)
+             addExpenseToUser(key.getName(), quote);
+    }
     public float getExpense(String name){
         return this.lBudget.get(name).getValue();
     }
@@ -67,8 +72,8 @@ public class GroupData {
 
 
 
-    public  void addExpensive(String name, String descr, String category, String currency, float value, String algorithm){
-        this.lexpensive.add(new ExpensiveData(name, descr, category, currency, value, algorithm));
+    public  void addExpensive(String name, String descr, String category, String currency, float value, float myvalue, String algorithm){
+        this.lexpensive.add(new ExpensiveData(name, descr, category, currency, value,myvalue, algorithm));
     }
 
     public void addUser(UserData user){

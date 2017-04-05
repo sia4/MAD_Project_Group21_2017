@@ -41,7 +41,7 @@ public class BudgetAdapter extends RecyclerView.Adapter<BudgetAdapter.MyViewHold
     public void onBindViewHolder(MyViewHolder holder, int position) {
         BalanceData budget = budgetData.get(position);
         holder.name_cred_deb.setText(budget.getName());
-        holder.value_cred_deb.setText(String.valueOf(budget.getValue()));
+        holder.value_cred_deb.setText(String.format("%.2f",budget.getValue()));
     }
 
     @Override

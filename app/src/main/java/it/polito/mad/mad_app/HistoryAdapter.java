@@ -10,6 +10,7 @@ import android.widget.TextView;
 import java.util.List;
 
 import it.polito.mad.mad_app.model.ExpensiveData;
+import it.polito.mad.mad_app.model.MainData;
 
 public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.MyViewHolder> {
 
@@ -46,18 +47,13 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.MyViewHo
         ExpensiveData expense = expensiveData.get(position);
         holder.name_ex.setText(expense.getName());
         holder.data_ex.setText("04/04/2017");//TODO change this, insert getDATA
-        holder.money_ex.setText(String.valueOf(expense.getValue()));
-        holder.creator_ex.setText("Marco");//TODO change with getCreator
-        if(true){//TODO chage the check
-            holder.impact_ex.setTextColor(Color.RED);
-            holder.impact_ex.setText("Devi:");
-            holder.money_ex.setTextColor(Color.RED);
-        }
-        else{
+        holder.money_ex.setText(String.format("%.2f", expense.getMyvalue()));
+        holder.creator_ex.setText(MainData.getInstance().getMyName());//TODO change with getCreator
+
             holder.impact_ex.setTextColor(Color.GREEN);
             holder.impact_ex.setText("Ti devono:");
             holder.money_ex.setTextColor(Color.GREEN);
-        }
+
     }
 
     @Override
