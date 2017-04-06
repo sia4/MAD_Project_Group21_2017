@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal" android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+    <TextView
+        android:id="@+id/alg_name"
+        android:layout_width="match_parent"
+        android:layout_height="40sp"
+        android:gravity="left"
+        android:textSize="20sp"
+        android:layout_weight="0.2"
+        />
+
+    <EditText
+        android:id="@+id/alg_value"
+        android:layout_width="match_parent"
+        android:layout_height="50sp"
+        android:layout_weight="0.8"
+        android:gravity="right"
+        android:ems="10"
+        android:inputType="number"
+        android:textSize="20sp" />
+</LinearLayout>

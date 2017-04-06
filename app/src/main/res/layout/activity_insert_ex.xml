@@ -86,7 +86,12 @@
                     android:layout_height="60sp"
                     />
             </LinearLayout>
-
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/algorithmParameters"
+                android:layout_width="match_parent"
+                android:layout_height="314dp"
+                android:orientation="vertical"
+                android:scrollbars="vertical" />
             <!--<Button
                 android:id="@+id/EnterButton"
                 android:text="Insert"

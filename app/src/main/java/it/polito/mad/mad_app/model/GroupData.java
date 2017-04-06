@@ -77,7 +77,7 @@ public class GroupData {
     }
     public List<BalanceData> getExpensesList(){return new ArrayList<BalanceData>(lBudget.values());}
     public Map<String, Float> getuPercentuageMap(){return this.uPercentuage;}
-    public Map<String, Float> getuImport(){return this.uImport;}
+    public Map<String, Float> getuImportMap(){return this.uImport;}
     public  void addExpensive(String name, String descr, String category, String currency, float value, float myvalue, String algorithm){
         this.lexpensive.add(new ExpenseData(name, descr, category, currency, value,myvalue, algorithm));
     }
