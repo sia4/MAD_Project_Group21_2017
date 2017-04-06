@@ -1,23 +1,69 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal"
     android:layout_margin="@dimen/activity_margin"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
     <TextView
         android:id="@+id/name_cred_deb"
-        android:gravity="left"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textSize="@dimen/high_text"
-        android:layout_weight="0.3"
-        />
+        android:layout_weight="0.7"
+        android:gravity="left"
+        android:textSize="@dimen/high_text" />
+
     <TextView
         android:id="@+id/value_cred_deb"
-        android:gravity="right"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textSize="@dimen/high_text"
-        android:layout_weight="0.7"
-        />
-</RelativeLayout>
+        android:layout_weight="0.8"
+        android:gravity="left"
+        android:textSize="@dimen/high_text" />
+
+    <Button
+        android:id="@+id/Par"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="0.6"
+        android:visibility="invisible"/>
+</LinearLayout>
+<!--<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:focusable="true"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        android:paddingTop="20dp"
+        android:paddingBottom="20dp">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <TextView
+                    android:id="@+id/name_cred_deb"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.6"
+                    android:gravity="left|center"
+                    android:textSize="18sp" />
+
+                <TextView
+                    android:id="@+id/value_cred_deb"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.8"
+                    android:gravity="left"
+                    android:textSize="18sp" />
+
+                <TextView
+                    android:id="@+id/Par"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="right"
+                    android:textSize="18sp"
+                    android:layout_weight="0.6"/>
+            </LinearLayout>
+        <View style="@style/Divider"/>
+</LinearLayout>
+-->

@@ -35,8 +35,9 @@ public class GroupActivity extends AppCompatActivity {
 
         final Toolbar toolbar = (Toolbar) findViewById(R.id.group_toolbar);
         setSupportActionBar(toolbar);
-        if (getSupportActionBar() != null)
+        if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
         final String gname = intent.getStringExtra("name");
         name=gname;
         final Bundle b = new Bundle();

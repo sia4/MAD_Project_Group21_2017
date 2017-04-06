@@ -9,4 +9,5 @@
     <dimen name="activity_margin_quarter">4dp</dimen>
     <dimen name="group_high_text">18sp</dimen>
     <dimen name="high_text">20sp</dimen>
-    </resources>
+    <dimen name="fab_margin">16dp</dimen>
+</resources>

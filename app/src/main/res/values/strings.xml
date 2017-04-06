@@ -3,4 +3,5 @@
     <string name="title_activity_insert_ex">InsertExActivity</string>
     <string name="test" />
     <string name="title_activity_expense_info">ExpenseInfoActivity</string>
+    <string name="title_activity_balance">BalanceActivity</string>
 </resources>

@@ -23,8 +23,10 @@ public class GroupInfoActivity extends AppCompatActivity {
         setContentView(R.layout.activity_group_info);
         Toolbar toolbar = (Toolbar) findViewById(R.id.info_group_toolbar);
         setSupportActionBar(toolbar);
-        if (getSupportActionBar() != null)
+        if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setDisplayShowHomeEnabled(true);
+        }
         Intent i = getIntent();
         String name=i.getStringExtra("name");
         GD=MainData.getInstance().getGroup(name);
