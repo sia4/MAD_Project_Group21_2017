@@ -47,7 +47,11 @@
         <activity
             android:name=".ExpenseInfoActivity"
             android:label="@string/title_activity_expense_info"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar"></activity>
+            android:parentActivityName=".GroupActivity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+        <activity
+            android:name=".GroupInfoActivity"
+            android:parentActivityName=".MainActivity"/>
     </application>
 
 </manifest>

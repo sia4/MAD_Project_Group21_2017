@@ -19,9 +19,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import it.polito.mad.mad_app.model.ExpenseData;
+import it.polito.mad.mad_app.model.GroupData;
+import it.polito.mad.mad_app.model.MainData;
 
 public class GroupActivity extends AppCompatActivity {
-
+    private String name;
     private ListView lv;
     private List<ExpenseData> data = new ArrayList<>();
 
@@ -35,8 +37,8 @@ public class GroupActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         if (getSupportActionBar() != null)
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
         final String gname = intent.getStringExtra("name");
+        name=gname;
         final Bundle b = new Bundle();
         b.putString("GroupName", gname);
 
@@ -121,15 +123,29 @@ public class GroupActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        Intent intent=new Intent(getApplicationContext(), GroupInfoActivity.class);
+        intent.putExtra("name", name);
         switch (item.getItemId()) {
             case R.id.options:
-                startActivity(new Intent(
-                        getApplicationContext(),GroupOptionActivity.class
-                ));
+                startActivity(intent);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
     }
-
+    /*startActivity(new Intent(
+            getApplicationContext(),GroupOptionActivity.class
+                ));*/
 }
+/*Intent intent = new Intent().setClass(view.getContext(), ExpenseInfoActivity.class);
+                intent.putExtra("name", expense.getName());
+                intent.putExtra("category", expense.getCategory());
+                intent.putExtra("currency", expense.getCurrency());
+                intent.putExtra("algorithm", expense.getAlgorithm());
+                intent.putExtra("description", expense.getDescription());
+                //String.format("%.2f", expense.getMyvalue())
+                intent.putExtra("myvalue",String.format("%.2f", expense.getMyvalue()) );
+                intent.putExtra("value", String.format("%.2f", expense.getValue()));
+                intent.putExtra("creator", MainData.getInstance().getMyName());//TODO change with getCreator
+                intent.putExtra("date", expense.getDate());
+                view.getContext().startActivity(intent);*/
