@@ -8,6 +8,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
@@ -66,6 +67,23 @@ public class ExpenseInfoActivity extends AppCompatActivity {
             myvalue_ex.setTextColor(Color.parseColor("#D51111"));
             s_ex.setText("Import to pay:");
         }
+    }
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item){
+        Intent i = getIntent();
+        String GroupName = i.getStringExtra("GroupName");
+        switch(item.getItemId()){
+            case android.R.id.home:
+                Intent intent = new Intent(this, GroupActivity.class);
+                intent.putExtra("name", GroupName);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(intent);
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+
+
     }
 
 }

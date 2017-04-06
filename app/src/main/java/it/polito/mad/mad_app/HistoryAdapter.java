@@ -53,7 +53,7 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.MyViewHo
 
         holder.data_ex.setText(expense.getDate());
         holder.money_ex.setText(String.format("%.2f", expense.getMyvalue()));
-        holder.creator_ex.setText(MainData.getInstance().getMyName());//TODO change with getCreator
+        holder.creator_ex.setText(MainData.getInstance().getMyName());
         holder.impact_ex.setTextColor(Color.parseColor("#27B011"));
         holder.impact_ex.setText("They owe you:");
         holder.money_ex.setTextColor(Color.parseColor("#27B011"));
@@ -68,7 +68,7 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.MyViewHo
                 intent.putExtra("description", expense.getDescription());
                 intent.putExtra("myvalue", String.format("%.2f", expense.getMyvalue()));
                 intent.putExtra("value", String.format("%.2f", expense.getValue()));
-                intent.putExtra("creator", MainData.getInstance().getMyName());//TODO change with getCreator
+                intent.putExtra("creator", MainData.getInstance().getMyName());
                 intent.putExtra("date", expense.getDate());
                 v.getContext().startActivity(intent);
             }

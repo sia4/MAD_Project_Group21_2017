@@ -51,7 +51,10 @@ public class HistoryFragment extends Fragment {
                 intent.putExtra("value", String.format("%.2f", expense.getValue()));
                 intent.putExtra("creator", MainData.getInstance().getMyName());//TODO change with getCreator
                 intent.putExtra("date", expense.getDate());
+                String GroupName = getArguments().getString("GroupName");
+                intent.putExtra("GroupName", GroupName);
                 view.getContext().startActivity(intent);
+
             }
 
             @Override

@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.view.MenuItem;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -40,5 +41,23 @@ public class GroupInfoActivity extends AppCompatActivity {
         userRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         final UsersAdapter uAdapter = new UsersAdapter(GD.getlUsers());
         userRecyclerView.setAdapter(uAdapter);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item){
+        Intent i = getIntent();
+        String GroupName = i.getStringExtra("name");
+        switch(item.getItemId()){
+            case android.R.id.home:
+                Intent intent = new Intent(this, GroupActivity.class);
+                intent.putExtra("name", GroupName);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(intent);
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+
+
     }
 }
