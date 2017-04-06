@@ -55,6 +55,7 @@ public class GroupsAdapter extends RecyclerView.Adapter<GroupsAdapter.MyViewHold
         final GroupData g = GData.get(position);
         holder.name.setText(g.getName());
         holder.im.setImageResource(R.drawable.group_default);
+        //holder.im.setImageResource(R.drawable.casa);
         holder.name.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -64,8 +65,8 @@ public class GroupsAdapter extends RecyclerView.Adapter<GroupsAdapter.MyViewHold
                 v.getContext().startActivity(intent);
             }
         });
-        holder.impact_pos.setText("Devi:"+String.format("%.2f", g.getNegExpenses()));//TODO insert the correct value
-        holder.impact_neg.setText("Ti devono:"+String.format("%.2f",g.getPosExpenses()));//TODO insert the correct value
+        holder.impact_pos.setText("You owe:"+String.format("%.2f", g.getNegExpenses()));//TODO insert the correct value
+        holder.impact_neg.setText("They owe you:"+String.format("%.2f",g.getPosExpenses()));//TODO insert the correct value
         holder.impact_neg.setTextColor(Color.parseColor("#27B011"));
         holder.impact_pos.setTextColor(Color.parseColor("#D51111"));
     }

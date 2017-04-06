@@ -119,8 +119,8 @@ public class GroupOptionActivity extends AppCompatActivity {
             case android.R.id.home:
                 finish();
                 return true;
-           // case R.id.action_settings:
-           //     return true;
+            // case R.id.action_settings:
+            //     return true;
         }
         if (item.getTitle() == "Add") {
             Toast.makeText(this, "clicked add", Toast.LENGTH_SHORT).show();

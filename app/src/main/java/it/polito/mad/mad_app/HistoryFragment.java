@@ -2,6 +2,7 @@ package it.polito.mad.mad_app;
 
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -32,9 +33,32 @@ public class HistoryFragment extends Fragment {
         context = view.getContext();
         RecyclerView recyclerView = (RecyclerView) view;
         recyclerView.setLayoutManager(new LinearLayoutManager(context));
-        recyclerView.addItemDecoration(new DividerItemDecoration(getActivity(),
-                DividerItemDecoration.VERTICAL));
+        //recyclerView.addItemDecoration(new DividerItemDecoration(getActivity(),
+         //       DividerItemDecoration.VERTICAL));
+        recyclerView.addItemDecoration(new it.polito.mad.mad_app.DividerItemDecoration(context, LinearLayoutManager.VERTICAL));
+        recyclerView.addOnItemTouchListener(new RecyclerTouchListener(context, recyclerView, new RecyclerTouchListener.ClickListener() {
+            @Override
+            public void onClick(View view, int position) {
+                final ExpenseData expense = data.get(position);
+                Intent intent = new Intent().setClass(view.getContext(), ExpenseInfoActivity.class);
+                intent.putExtra("name", expense.getName());
+                intent.putExtra("category", expense.getCategory());
+                intent.putExtra("currency", expense.getCurrency());
+                intent.putExtra("algorithm", expense.getAlgorithm());
+                intent.putExtra("description", expense.getDescription());
+                //String.format("%.2f", expense.getMyvalue())
+                intent.putExtra("myvalue",String.format("%.2f", expense.getMyvalue()) );
+                intent.putExtra("value", String.format("%.2f", expense.getValue()));
+                intent.putExtra("creator", MainData.getInstance().getMyName());//TODO change with getCreator
+                intent.putExtra("date", expense.getDate());
+                view.getContext().startActivity(intent);
+            }
 
+            @Override
+            public void onLongClick(View view, int position) {
+
+            }
+        }));
         String GroupName = getArguments().getString("GroupName");
         data = MainData.getInstance().getGroup(GroupName).getExpensies();
         HistoryAdapter hAdapter = new HistoryAdapter(data);

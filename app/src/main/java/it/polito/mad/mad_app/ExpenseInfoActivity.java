@@ -2,6 +2,7 @@ package it.polito.mad.mad_app;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -12,9 +13,8 @@ import android.widget.TextView;
 
 public class ExpenseInfoActivity extends AppCompatActivity {
 
-
-    public TextView name_ex, date_ex,  value_ex, description_ex,creator_ex, category_ex, currency_ex, myvalue_ex, algorithm_ex;
-
+    int n;
+    public TextView name_ex,date_ex, s_ex, value_ex, description_ex,creator_ex, category_ex, currency_ex, myvalue_ex, algorithm_ex;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -22,6 +22,9 @@ public class ExpenseInfoActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.info_expense_toolbar);
         setSupportActionBar(toolbar);
         Intent i = getIntent();
+        if (getSupportActionBar() != null)
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setTitle("Expense Information");
         String name, value, creator, description, category, currency, myvalue, algorithm, date;
         name = i.getStringExtra("name");
         value = i.getStringExtra("value");
@@ -30,9 +33,10 @@ public class ExpenseInfoActivity extends AppCompatActivity {
         category = i.getStringExtra("category");
         currency = i.getStringExtra("currency");
         myvalue = i.getStringExtra("myvalue");
+        n=Integer.parseInt(myvalue.replaceAll("[\\D]",""));;
         algorithm = i.getStringExtra("algorithm");
         date = i.getStringExtra("date");
-
+        s_ex=(TextView) findViewById(R.id.iMyvalue);
         name_ex = (TextView) findViewById(R.id.exName);
         value_ex = (TextView) findViewById(R.id.exValue);
         creator_ex = (TextView) findViewById(R.id.exCreator);
@@ -52,8 +56,16 @@ public class ExpenseInfoActivity extends AppCompatActivity {
         myvalue_ex.setText(myvalue);
         algorithm_ex.setText(algorithm);
         date_ex.setText(date);
-
-
+        if(n>0){
+            s_ex.setTextColor(Color.parseColor("#27B011"));
+            myvalue_ex.setTextColor(Color.parseColor("#27B011"));
+            s_ex.setText("Import to receive:");
+        }
+        else{
+            s_ex.setTextColor(Color.parseColor("#D51111"));
+            myvalue_ex.setTextColor(Color.parseColor("#D51111"));
+            s_ex.setText("Import to pay:");
+        }
     }
 
 }

@@ -6,41 +6,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context=".GroupActivity">
 
-    <android.support.design.widget.AppBarLayout
-        android:id="@+id/group_bar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:theme="@style/AppTheme">
-
-    <android.support.v7.widget.Toolbar
-        android:id="@+id/group_toolbar"
-        android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        app:theme="@style/ToolbarTheme"
-        app:popupTheme="@style/PopupTheme"/>
-
-        <android.support.design.widget.TabLayout
-            android:id="@+id/tabsGroup"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:gravity="fill"
-            app:tabMode="scrollable"
-            app:theme="@style/ToolbarTheme">
-
-            <android.support.design.widget.TabItem
-                android:id="@+id/tabHistory"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="History" />
-
-            <android.support.design.widget.TabItem
-                android:id="@+id/tabBudget"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Budget" />
-        </android.support.design.widget.TabLayout>
-    </android.support.design.widget.AppBarLayout>
-
     <android.support.v4.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -68,5 +33,40 @@
         android:layout_marginEnd="@dimen/activity_margin"
         android:layout_marginRight="@dimen/activity_margin"
         app:backgroundTint="@color/colorAccent" />
+
+    <android.support.design.widget.AppBarLayout
+        android:id="@+id/group_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:theme="@style/AppTheme">
+
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/group_toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            app:popupTheme="@style/PopupTheme"
+            app:theme="@style/ToolbarTheme" />
+
+        <android.support.design.widget.TabLayout
+            android:id="@+id/tabsGroup"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="fill"
+            app:tabMode="scrollable"
+            app:theme="@style/ToolbarTheme">
+
+            <android.support.design.widget.TabItem
+                android:id="@+id/tabHistory"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="History" />
+
+            <android.support.design.widget.TabItem
+                android:id="@+id/tabBudget"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Budget" />
+        </android.support.design.widget.TabLayout>
+    </android.support.design.widget.AppBarLayout>
 
 </android.support.design.widget.CoordinatorLayout>

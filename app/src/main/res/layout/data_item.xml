@@ -13,11 +13,11 @@
         android:id="@+id/im"
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:layout_weight="0.7" />
+        android:layout_weight="0.8" />
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_weight="0.3"
+        android:layout_weight="0.2"
         android:orientation="vertical">
         <TextView
             android:id="@+id/name_tv"
@@ -38,13 +38,13 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textSize="15sp"
-                android:layout_weight="0.5" />
+                android:layout_weight="0.55" />
             <TextView
                 android:id="@+id/impact_neg_ex"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textSize="15sp"
-                android:layout_weight="0.5" />
+                android:layout_weight="0.45" />
         </LinearLayout>
     </LinearLayout>
 </LinearLayout>
