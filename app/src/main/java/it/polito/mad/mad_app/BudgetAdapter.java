@@ -1,5 +1,6 @@
 package it.polito.mad.mad_app;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
@@ -16,7 +17,7 @@ import it.polito.mad.mad_app.model.BalanceData;
 public class BudgetAdapter extends RecyclerView.Adapter<BudgetAdapter.MyViewHolder> {
 
     private List<BalanceData> budgetData;
-
+    Context mContext;
     public class MyViewHolder extends RecyclerView.ViewHolder {
         public TextView name_cred_deb, value_cred_deb, b;
 
@@ -38,6 +39,7 @@ public class BudgetAdapter extends RecyclerView.Adapter<BudgetAdapter.MyViewHold
         View itemView = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.cred_deb_item, parent, false);
 
+        mContext = parent.getContext();
         return new MyViewHolder(itemView);
     }
 
@@ -61,7 +63,13 @@ public class BudgetAdapter extends RecyclerView.Adapter<BudgetAdapter.MyViewHold
                 public void onClick(View v) {
                     Intent intent = new Intent().setClass(v.getContext(), BalanceActivity.class);
                     String uname = budget.getName();
-                    intent.putExtra("name",uname);
+                    String gname = budget.getGName();
+                    String bValue = Float.toString(budget.getValue());
+                    String currency = budget.getCurrency();
+                    intent.putExtra("gname",gname);
+                    intent.putExtra("uname",uname);
+                    intent.putExtra("value", bValue);
+                    intent.putExtra("currency", currency);
                     v.getContext().startActivity(intent);
                 }
             });

@@ -26,7 +26,7 @@ public class GroupData {
     }
     public String getDescription() { return this.description;}
 
-    public  void addExpenseToUser(String name, float value){
+    public  void addExpenseToUser(String name, float value, String currency){
 
         float tmp;
         if(lBudget.containsKey(name)){
@@ -36,21 +36,21 @@ public class GroupData {
         {
             tmp = value;
         }
-        lBudget.put(name, new BalanceData(name, tmp));
+        lBudget.put(name, new BalanceData(name, this.name, tmp, currency));
 
     }
-    public void allaRomana(float value){
+    public void allaRomana(float value, String currency){
         float quote = value/(lUsers.size()+1);
         for (UserData key: lUsers)
-             addExpenseToUser(key.getName(), quote);
+             addExpenseToUser(key.getName(), quote, currency);
     }
-    public void byPercentuage(float value){
+    public void byPercentuage(float value, String currency){
         for (UserData key: lUsers)
-            addExpenseToUser(key.getName(), value*uPercentuage.get(key.getEmail())/100);
+            addExpenseToUser(key.getName(), value*uPercentuage.get(key.getEmail())/100, currency);
     }
-    public void byImport(float value){
+    public void byImport(float value, String currency){
         for (UserData key: lUsers)
-            addExpenseToUser(key.getName(), uImport.get(key.getEmail()));
+            addExpenseToUser(key.getName(), uImport.get(key.getEmail()), currency);
     }
     public float getExpense(String name){
         return this.lBudget.get(name).getValue();
@@ -76,6 +76,11 @@ public class GroupData {
         return sum;
     }
     public List<BalanceData> getExpensesList(){return new ArrayList<BalanceData>(lBudget.values());}
+    public void updateExpense(String name, float value) {
+        if(lBudget.containsKey(name)) {
+            lBudget.get(name).changeValue(value);
+        }
+    }
     public Map<String, Float> getuPercentuageMap(){return this.uPercentuage;}
     public Map<String, Float> getuImportMap(){return this.uImport;}
     public  void addExpensive(String name, String descr, String category, String currency, float value, float myvalue, String algorithm){

@@ -31,13 +31,15 @@
         <TextView
             android:id="@+id/uName"
             android:layout_width="match_parent"
-            android:textSize="25dp"
-            android:layout_height="40sp"
+            android:layout_margin="@dimen/activity_margin"
+            android:textSize="20sp"
+            android:layout_height="wrap_content"
             />
         <EditText
             android:id="@+id/iValue"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_margin="@dimen/activity_margin"
             android:layout_weight="0.5"
             android:hint="Add Value..."
             android:textSize="20sp" />

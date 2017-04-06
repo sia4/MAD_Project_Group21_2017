@@ -14,8 +14,8 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
-import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -84,15 +84,20 @@ public class InsertExActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
+
+            case android.R.id.home:
+                finish();
+                return true;
+
             case R.id.action_menu_done:
                 Intent i1 = getIntent();
                 final String Gname = i1.getStringExtra("GroupName");
 
                 final EditText Tname = (EditText) findViewById(R.id.Name);
                 final EditText Tdescription = (EditText) findViewById(R.id.Description);
-                final Spinner Tcategory = (Spinner)findViewById(R.id.Category);
-                final Spinner Tcurrency = (Spinner)findViewById(R.id.Currency);
-                final Spinner Talgorithm = (Spinner)findViewById(R.id.ChooseAlgorithm);
+                final Spinner Tcategory = (Spinner) findViewById(R.id.Category);
+                final Spinner Tcurrency = (Spinner) findViewById(R.id.Currency);
+                final Spinner Talgorithm = (Spinner) findViewById(R.id.ChooseAlgorithm);
                 final EditText Tvalue = (EditText) findViewById(R.id.value);
 
 
@@ -101,13 +106,24 @@ public class InsertExActivity extends AppCompatActivity {
                 description = Tdescription.getText().toString();
                 category = Tcategory.getSelectedItem().toString();
                 currency = Tcurrency.getSelectedItem().toString();
-                value = Float.parseFloat(Tvalue.getText().toString());
                 algorithm = Talgorithm.getSelectedItem().toString();
-                if(algorithm.equals("Alla Romana")) {
-                    MainData.getInstance().addExpensiveToGroup(Gname, name, description, category, currency, value, value - (value / (MainData.getInstance().getGroup(Gname).getlUsers().size() + 1)), algorithm);
-                    MainData.getInstance().getGroup(Gname).allaRomana(value);
-                    flagok = 1;
-                }
+                if(name.equals("")) {
+                    Toast.makeText(InsertExActivity.this, "Please insert name.", Toast.LENGTH_LONG).show();
+                } else if(description.equals("")) {
+                    Toast.makeText(InsertExActivity.this, "Please insert description.", Toast.LENGTH_LONG).show();
+                } else if(currency.equals("Select currency")) {
+                    Toast.makeText(InsertExActivity.this, "Please insert currency.", Toast.LENGTH_LONG).show();
+                } else if(Tvalue.getText().toString().equals("")) {
+                    Toast.makeText(InsertExActivity.this, "Please insert value.", Toast.LENGTH_LONG).show();
+                } else {
+
+                    value = Float.parseFloat(Tvalue.getText().toString());
+
+                    if (algorithm.equals("Alla Romana")) {
+                        MainData.getInstance().addExpensiveToGroup(Gname, name, description, category, currency, value, value - (value / (MainData.getInstance().getGroup(Gname).getlUsers().size() + 1)), algorithm);
+                        MainData.getInstance().getGroup(Gname).allaRomana(value, currency);
+                        flagok = 1;
+                    }
                 //TODO IL CODICE SOTTOSTANTE SONO GLI ALGORITMI BY PERCENTUAGE E BY IMPORT, COMMENTATO PERCHE' CRASHA; DA RISOLVERE
                 /*
                 else{
@@ -151,17 +167,16 @@ public class InsertExActivity extends AppCompatActivity {
 
                 }
                 */
-               if(flagok==1) {
-                    Intent i2 = new Intent(InsertExActivity.this, GroupActivity.class);
-                    i2.putExtra("name", Gname);
-                    setResult(RESULT_OK, i2);
-                    finish();
+                    if (flagok == 1) {
+                        Intent i2 = new Intent(InsertExActivity.this, GroupActivity.class);
+                        i2.putExtra("name", Gname);
+                        setResult(RESULT_OK, i2);
+                        finish();
 
-                    return true;
-               }
-                else
-                {
-                    return super.onOptionsItemSelected(item);
+                        return true;
+                    } else {
+                        return super.onOptionsItemSelected(item);
+                    }
                 }
             default:
                 return super.onOptionsItemSelected(item);

@@ -13,6 +13,7 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import java.security.acl.Group;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -105,19 +106,29 @@ public class InsertGroupActivity extends AppCompatActivity {
                 GroupName = Gname.getText().toString();
                 GroupDescription = Gdescription.getText().toString();
 
-                //Intent gotomain = new Intent(InsertGroupActivity.this, MainActivity.class);
-                GroupData newGroup = MainData.getInstance().addGroup(GroupName, GroupDescription);
-
-                for(UserData u : users) {
-                    newGroup.addUser(u);
+                if(GroupName.toString().equals("")) {
+                    Toast.makeText(InsertGroupActivity.this, "Please insert group name.", Toast.LENGTH_LONG).show();
+                } else if(GroupDescription.toString().equals("")) {
+                    Toast.makeText(InsertGroupActivity.this, "Please insert group description.", Toast.LENGTH_LONG).show();
                 }
+                else if(users.isEmpty()) {
+                    Toast.makeText(InsertGroupActivity.this, "Please insert at least one other member.", Toast.LENGTH_LONG).show();
+                } else {
 
-                Intent gotomain = new Intent(InsertGroupActivity.this, MainActivity.class);
-                //gotomain.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
-                //startActivity(gotomain);
+                    //Intent gotomain = new Intent(InsertGroupActivity.this, MainActivity.class);
+                    GroupData newGroup = MainData.getInstance().addGroup(GroupName, GroupDescription);
 
-                setResult(RESULT_OK, null);
-                finish();
+                    for (UserData u : users) {
+                        newGroup.addUser(u);
+                    }
+
+                    Intent gotomain = new Intent(InsertGroupActivity.this, MainActivity.class);
+                    //gotomain.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+                    //startActivity(gotomain);
+
+                    setResult(RESULT_OK, null);
+                    finish();
+                }
                 return true;
 
             default:
