@@ -33,8 +33,8 @@ public class InsertExActivity extends AppCompatActivity {
     private float value;
     private String algorithm;
     private List<UserData> users = new ArrayList<>();
-    private RecyclerView userRecyclerView;
-    private AlgorithmParametersAdapter uAdapter;
+    static private RecyclerView userRecyclerView;
+    static private AlgorithmParametersAdapter uAdapter;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -58,13 +58,22 @@ public class InsertExActivity extends AppCompatActivity {
         users = MainData.getInstance().getGroup(Gname).getlUsers();
         //users.add(0, new UserData("null", "Me", "", 000));
         final Spinner Talgorithm = (Spinner)findViewById(R.id.ChooseAlgorithm);
-        uAdapter = new AlgorithmParametersAdapter(users);
+        final EditText Tvalue = (EditText) findViewById(R.id.value);
         Talgorithm.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                    if(position!=0) {
+                    if(position==1) {
+                        uAdapter = new AlgorithmParametersAdapter(users, position, 10);
                         userRecyclerView.setAdapter(uAdapter);
+                    }
+                    else if(position == 2){
 
+                        uAdapter = new AlgorithmParametersAdapter(users, position, Float.parseFloat(Tvalue.getText().toString()));
+                        userRecyclerView.setAdapter(uAdapter);
+                    }
+                    else
+                    {
+                        userRecyclerView.setAdapter(new AlgorithmParametersAdapter(new ArrayList<UserData>(), position, 10));
                     }
             }
 
@@ -124,6 +133,10 @@ public class InsertExActivity extends AppCompatActivity {
                         MainData.getInstance().getGroup(Gname).allaRomana(value, currency);
                         flagok = 1;
                     }
+                    else{
+                        flagok=0;
+                        Toast.makeText(InsertExActivity.this, "Just Alla Romana algorithm is already implemented.", Toast.LENGTH_LONG).show();
+                    }
                 //TODO IL CODICE SOTTOSTANTE SONO GLI ALGORITMI BY PERCENTUAGE E BY IMPORT, COMMENTATO PERCHE' CRASHA; DA RISOLVERE
                 /*
                 else{
@@ -145,13 +158,13 @@ public class InsertExActivity extends AppCompatActivity {
 
                     if((algorithm.equals("by percentuage") && algSum==100)) {
                         MainData.getInstance().addExpensiveToGroup(Gname, name, description, category, currency, value, value - (value*meValue/100), algorithm);
-                        MainData.getInstance().getGroup(Gname).byPercentuage(value);
+                        MainData.getInstance().getGroup(Gname).byPercentuage(value, currency);
                         flagok = 1;
                     }
 
                     if((algorithm.equals("by import") && algSum==value)) {
                         MainData.getInstance().addExpensiveToGroup(Gname, name, description, category, currency, value, (value- meValue) , algorithm);
-                        MainData.getInstance().getGroup(Gname).byImport(value);
+                        MainData.getInstance().getGroup(Gname).byImport(value, currency);
                         flagok = 1;
                     }
 
