@@ -55,7 +55,7 @@ public class GroupActivity extends AppCompatActivity {
 
             datigruppo = d.get(i);
 
-            if (datigruppo.getName() == gname) {
+            if (datigruppo.getName().equals(gname)) {
                 break;
             }
 
