@@ -1,8 +1,8 @@
 package it.polito.mad.mad_app;
 
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -33,6 +33,7 @@ public class GroupInfoActivity extends AppCompatActivity {
         if (getSupportActionBar() != null)
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle("Group Information");
+
         im=(ImageView) findViewById(R.id.im_g);
         im.setImageResource(R.drawable.group_default);
         namet=(TextView) findViewById(R.id.name_g);

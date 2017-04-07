@@ -52,8 +52,10 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:gravity="fill"
-            app:tabMode="scrollable"
-            app:theme="@style/ToolbarTheme">
+            app:tabMode="fixed"
+            app:theme="@style/ToolbarTheme"
+            app:tabMaxWidth="0dp"
+            app:tabGravity="fill">
 
             <android.support.design.widget.TabItem
                 android:id="@+id/tabHistory"

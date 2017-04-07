@@ -20,12 +20,12 @@ import java.util.List;
 
 import it.polito.mad.mad_app.model.ExpenseData;
 import it.polito.mad.mad_app.model.GroupData;
-import it.polito.mad.mad_app.model.MainData;
 
 public class GroupActivity extends AppCompatActivity {
     private String name;
     private ListView lv;
     private List<ExpenseData> data = new ArrayList<>();
+    private List<GroupData> GData;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,7 +43,30 @@ public class GroupActivity extends AppCompatActivity {
         final Bundle b = new Bundle();
         b.putString("GroupName", gname);
 
+        //TODO: Input Dati
+
+        int i, n;
+        n = data.size();
+        Float somma = new Float(0);
+
+        for (i = 0; i < n; i++) {
+            ExpenseData e = data.get(i);
+            somma += e.getMyvalue();
+        }
+
+        String subtitle;
+
+        if (somma > 0) {
+            subtitle = "They owe you: ";
+        } else {
+            subtitle = "You Owe: ";
+        }
+
+        subtitle += somma.toString();
+
         getSupportActionBar().setTitle(gname);
+        getSupportActionBar().setSubtitle(subtitle);
+
         Fragment hfrag = new HistoryFragment();
         hfrag.setArguments(b);
         FragmentManager fm = getSupportFragmentManager();
