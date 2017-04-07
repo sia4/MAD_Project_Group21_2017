@@ -16,8 +16,9 @@ import java.util.List;
 
 import it.polito.mad.mad_app.model.GroupData;
 import it.polito.mad.mad_app.model.MainData;
-//import it.polito.mad.mad_app.model.RecyclerItemClickListener;
 import it.polito.mad.mad_app.model.RecyclerTouchListener;
+
+//import it.polito.mad.mad_app.model.RecyclerItemClickListener;
 
 
 public class GroupsFragment extends Fragment {
@@ -36,6 +37,7 @@ public class GroupsFragment extends Fragment {
         /*recyclerView.addItemDecoration(new android.support.v7.widget.DividerItemDecoration(getActivity(),
                 android.support.v7.widget.DividerItemDecoration.VERTICAL));*/
         recyclerView.addItemDecoration(new DividerItemDecoration(context, LinearLayoutManager.VERTICAL));
+
         d = MainData.getInstance().getGroupList();
         GroupsAdapter gAdapter = new GroupsAdapter(d);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(context);

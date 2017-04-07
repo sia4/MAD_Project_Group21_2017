@@ -20,6 +20,7 @@ import java.util.List;
 
 import it.polito.mad.mad_app.model.ExpenseData;
 import it.polito.mad.mad_app.model.GroupData;
+import it.polito.mad.mad_app.model.MainData;
 
 public class GroupActivity extends AppCompatActivity {
     private String name;
@@ -44,25 +45,28 @@ public class GroupActivity extends AppCompatActivity {
         b.putString("GroupName", gname);
 
         //TODO: Input Dati
+        List<GroupData> d = MainData.getInstance().getGroupList();
 
+        GroupData datigruppo = null;
         int i, n;
-        n = data.size();
-        Float somma = new Float(0);
+        n = d.size();
 
         for (i = 0; i < n; i++) {
-            ExpenseData e = data.get(i);
-            somma += e.getMyvalue();
+
+            datigruppo = d.get(i);
+
+            if (datigruppo.getName() == gname) {
+                break;
+            }
+
         }
 
-        String subtitle;
+        Float pos = datigruppo.getPosExpenses();
+        Float neg = datigruppo.getNegExpenses();
 
-        if (somma > 0) {
-            subtitle = "They owe you: ";
-        } else {
-            subtitle = "You Owe: ";
-        }
+        String subtitle = "";
+        subtitle += "They Owe You: " + pos.toString() + " - You Owe: " + neg.toString();
 
-        subtitle += somma.toString();
 
         getSupportActionBar().setTitle(gname);
         getSupportActionBar().setSubtitle(subtitle);
