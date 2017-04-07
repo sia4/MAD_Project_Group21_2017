@@ -15,6 +15,8 @@ import it.polito.mad.mad_app.model.UserData;
 public class AlgorithmParametersAdapter extends RecyclerView.Adapter<AlgorithmParametersAdapter.MyViewHolder> {
 
     private List<UserData> usersData;
+    private int alg;
+    private float val;
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
         public TextView name;
@@ -28,8 +30,10 @@ public class AlgorithmParametersAdapter extends RecyclerView.Adapter<AlgorithmPa
     }
 
 
-    public AlgorithmParametersAdapter(List<UserData> usersData) {
+    public AlgorithmParametersAdapter(List<UserData> usersData, int alg, float val) {
         this.usersData = usersData;
+        this.alg = alg;
+        this.val = val;
     }
 
     @Override
@@ -44,7 +48,10 @@ public class AlgorithmParametersAdapter extends RecyclerView.Adapter<AlgorithmPa
     public void onBindViewHolder(MyViewHolder holder, int position) {
         UserData user = usersData.get(position);
         holder.name.setText(user.getName()+" "+user.getSurname());
-        holder.value.setText(String.format("%.2f", (float)100/(usersData.size())));
+        if(alg == 1)
+            holder.value.setText(String.format("%.2f", (float)100/(usersData.size())));
+        if(alg == 2)
+            holder.value.setText(String.format("%.2f", (float)val/(usersData.size())));
     }
 
     @Override
