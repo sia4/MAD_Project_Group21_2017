@@ -72,14 +72,14 @@ public class BalanceActivity extends AppCompatActivity {
                 } else {
                     float insertValue = Float.parseFloat(iValue.getText().toString());
 
-                    if (insertValue > -(MainData.getInstance().getGroup(groupName).getExpense(userName))) {
-                        Toast.makeText(BalanceActivity.this, "The value is too high!", Toast.LENGTH_LONG).show();
-                    } else {
+                    //if (insertValue > -(MainData.getInstance().getGroup(groupName).getExpense(userName))) {
+                       // Toast.makeText(BalanceActivity.this, "The value is too high!", Toast.LENGTH_LONG).show();
+                    //} else {
                         MainData.getInstance().getGroup(groupName).updateExpense(userName, insertValue);
                         //    Toast.makeText(BalanceActivity.this, String.valueOf(MainData.getInstance().getGroup(groupName).getExpense(userName)+insertValue), Toast.LENGTH_LONG).show();
                         setResult(RESULT_OK, null);
                         finish();
-                    }
+                    //}
                 }
                 return true;
 

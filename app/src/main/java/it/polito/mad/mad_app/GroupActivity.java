@@ -9,12 +9,15 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ListView;
+import android.widget.TextView;
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -41,6 +44,7 @@ public class GroupActivity extends AppCompatActivity {
         }
         final String gname = intent.getStringExtra("name");
         name=gname;
+
         final Bundle b = new Bundle();
         b.putString("GroupName", gname);
 
@@ -70,7 +74,20 @@ public class GroupActivity extends AppCompatActivity {
 
         getSupportActionBar().setTitle(gname);
         getSupportActionBar().setSubtitle(subtitle);
-
+        try{
+            Field field = Toolbar.class.getDeclaredField( "mSubtitleTextView" );
+            field.setAccessible( true );
+            TextView subtitleTextView = (TextView)field.get( toolbar );
+            subtitleTextView.setEllipsize(TextUtils.TruncateAt.MARQUEE);
+            subtitleTextView.setFocusable(true);
+            subtitleTextView.setFocusableInTouchMode(true);
+            subtitleTextView.requestFocus();
+            subtitleTextView.setSingleLine(true);
+            subtitleTextView.setSelected(true);
+            subtitleTextView.setMarqueeRepeatLimit(-1);
+        }catch (NoSuchFieldException e) {
+        } catch (IllegalAccessException e) {
+        }
         Fragment hfrag = new HistoryFragment();
         hfrag.setArguments(b);
         FragmentManager fm = getSupportFragmentManager();

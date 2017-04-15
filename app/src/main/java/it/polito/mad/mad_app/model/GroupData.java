@@ -76,6 +76,7 @@ public class GroupData {
         return sum;
     }
     public List<BalanceData> getExpensesList(){return new ArrayList<BalanceData>(lBudget.values());}
+
     public void updateExpense(String name, float value) {
         if(lBudget.containsKey(name)) {
             lBudget.get(name).changeValue(value);

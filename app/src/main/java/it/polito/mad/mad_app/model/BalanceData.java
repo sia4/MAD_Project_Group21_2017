@@ -24,7 +24,7 @@ public class BalanceData {
     public String getGName(){return this.gname;}
     public float getValue(){return this.value;}
     public String getCurrency(){return this.currency;}
-    public void changeValue(float value){this.value += value;}
+    public void changeValue(float value){this.value -= value;}
 
 
 
