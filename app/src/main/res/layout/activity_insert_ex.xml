@@ -34,7 +34,7 @@
 
             <EditText
                 android:id="@+id/Name"
-                android:hint="Add Name..."
+                android:hint="Add product name..."
                 android:layout_width="match_parent"
                 android:layout_weight="0.5"
                 android:layout_height="60sp" />
@@ -50,7 +50,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="60sp"
                 android:ems="10"
-                android:inputType="number" />
+                android:inputType="numberDecimal|numberSigned" />
             <Spinner
                 android:id="@+id/Category"
                 android:entries="@array/categories"

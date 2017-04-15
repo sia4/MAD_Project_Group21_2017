@@ -7,6 +7,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -67,9 +69,14 @@ public class InsertExActivity extends AppCompatActivity {
                         userRecyclerView.setAdapter(uAdapter);
                     }
                     else if(position == 2){
-
-                        uAdapter = new AlgorithmParametersAdapter(users, position, Float.parseFloat(Tvalue.getText().toString()));
-                        userRecyclerView.setAdapter(uAdapter);
+                        if(!Tvalue.getText().toString().isEmpty()) {
+                            uAdapter = new AlgorithmParametersAdapter(users, position, Float.parseFloat(Tvalue.getText().toString()));
+                            userRecyclerView.setAdapter(uAdapter);
+                        }
+                        else{
+                            uAdapter = new AlgorithmParametersAdapter(users, position, 0);
+                            userRecyclerView.setAdapter(uAdapter);
+                        }
                     }
                     else
                     {
@@ -81,7 +88,32 @@ public class InsertExActivity extends AppCompatActivity {
             public void onNothingSelected(AdapterView<?> parent) {
             }
         } );
+       Tvalue.addTextChangedListener(new TextWatcher() {
+           int p;
+           @Override
+           public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
+           }
+
+           @Override
+           public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+           }
+
+           @Override
+           public void afterTextChanged(Editable s) {
+               if(Talgorithm.getSelectedItem().toString().equals("by import")) {
+                   if(!Tvalue.getText().toString().isEmpty()) {
+                       uAdapter = new AlgorithmParametersAdapter(users, 2, Float.parseFloat(Tvalue.getText().toString()));
+                       userRecyclerView.setAdapter(uAdapter);
+                   }
+                   else{
+                       uAdapter = new AlgorithmParametersAdapter(users, 2, 0);
+                       userRecyclerView.setAdapter(uAdapter);
+                   }
+               }
+           }
+       });
     }
 
     @Override
