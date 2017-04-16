@@ -15,6 +15,7 @@ public class MainData {
     private String mySurname;
     private String myEmail;
     private String myPassword;
+    private UserData me;
     private Map<String, GroupData> lGroups = new TreeMap<>();
     private Map<String, UserData> lUser = new TreeMap<>();
     private List<ActivityData> lActivities = new ArrayList<>();
@@ -27,7 +28,10 @@ public class MainData {
         myEmail = "marco.rossi@gmail.it";
         myPassword = "0000";
         myName = "Marco";
-        mySurname = "Rossi";
+        mySurname = "Rossi (Io)";
+
+        me = new UserData(myEmail, myName, mySurname, 33333332);
+
         GroupData group1 = new GroupData("Coinquilini", "Gruppo dei coinquilini di via Tolmino 7");
         GroupData group2 = new GroupData("Quartiere", "Gruppo dei vicini di quartiere Crocetta");
         GroupData group3 = new GroupData("Viaggio", "Gruppo dei compagni di viaggio");
@@ -61,18 +65,18 @@ public class MainData {
         group2.addExpensive("Intonaco", "Rifacimento facciata condominio", "Muratura", "EUR", (float)210.2,(float)210.2, "Alla Romana");
         group3.addExpensive("Volo", "Volo per Valencia", "Trasporti", "EUR", (float)80.2,(float)80.2, "Alla Romana");
         group3.addExpensive("Museo", "Entrata città delle scienze", "Cultura", "EUR", (float)14.9,(float)14.9, "Alla Romana");
-        group1.addExpenseToUser(user1.getName(), 4, "EUR");
-        group1.addExpenseToUser(user6.getName(), -144, "EUR");
-        group1.addExpenseToUser(user2.getName(), 7, "EUR");
-        group1.addExpenseToUser(user3.getName(), 14, "EUR");
-        group2.addExpenseToUser(user4.getName(), -4, "EUR");
-        group2.addExpenseToUser(user5.getName(), 40, "EUR");
-        group2.addExpenseToUser(user6.getName(), 24, "EUR");
-        group2.addExpenseToUser(user7.getName(), -94, "EUR");
-        group3.addExpenseToUser(user8.getName(), -74, "EUR");
-        group3.addExpenseToUser(user6.getName(), -54, "EUR");
-        group3.addExpenseToUser(user9.getName(), 61, "EUR");
-        group3.addExpenseToUser(user10.getName(), 42, "EUR");
+        group1.addExpenseToUser(user1.getEmail(), 4, "EUR");
+        group1.addExpenseToUser(user6.getEmail(), -144, "EUR");
+        group1.addExpenseToUser(user2.getEmail(), 7, "EUR");
+        group1.addExpenseToUser(user3.getEmail(), 14, "EUR");
+        group2.addExpenseToUser(user4.getEmail(), -4, "EUR");
+        group2.addExpenseToUser(user5.getEmail(), 40, "EUR");
+        group2.addExpenseToUser(user6.getEmail(), 24, "EUR");
+        group2.addExpenseToUser(user7.getEmail(), -94, "EUR");
+        group3.addExpenseToUser(user8.getEmail(), -74, "EUR");
+        group3.addExpenseToUser(user6.getEmail(), -54, "EUR");
+        group3.addExpenseToUser(user9.getEmail(), 61, "EUR");
+        group3.addExpenseToUser(user10.getEmail(), 42, "EUR");
         lGroups.put(group1.getName(), group1);
         lGroups.put(group2.getName(), group2);
         lGroups.put(group3.getName(), group3);
@@ -118,6 +122,7 @@ public class MainData {
     public void setMyName(String name){this.myName = name;}
     public void setMySurname(String surname){this.mySurname = surname;}
     public void setMyPassword(String password){this.myPassword = password;}
+    public UserData returnMyData() {return me;}
 
     public void addExpensiveToGroup(String Gname, String name, String descr, String category, String currency, float value, float myvalue, String algorithm){
         this.lGroups.get(Gname).addExpensive(name, descr, category, currency, value, myvalue, algorithm);

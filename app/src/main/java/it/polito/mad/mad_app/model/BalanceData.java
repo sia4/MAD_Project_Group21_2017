@@ -6,21 +6,21 @@ package it.polito.mad.mad_app.model;
 
 public class BalanceData {
 
-    private String name;
+    private String email;
     private float value;
     private String gname;
     private String currency;
 
 
-    public BalanceData(String name, String gname, float value, String currency){
+    public BalanceData(String email, String gname, float value, String currency){
 
-        this.name = name;
+        this.email = email;
         this.gname = gname;
         this.value = value;
         this.currency = currency;
     }
 
-    public String getName(){return this.name;}
+    public String getEmail(){return this.email;}
     public String getGName(){return this.gname;}
     public float getValue(){return this.value;}
     public String getCurrency(){return this.currency;}

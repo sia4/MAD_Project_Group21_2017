@@ -13,8 +13,8 @@ public class GroupData {
     private List<ExpenseData> lexpensive = new ArrayList<>();
     private List<UserData> lUsers = new ArrayList<>();
     private Map<String, BalanceData> lBudget = new TreeMap<>();
-    private Map<String, Float> uPercentuage = new TreeMap<>();
-    private Map<String, Float> uImport = new TreeMap<>();
+    private Map<String, Integer> uPercentuage = new TreeMap<>();
+    private Map<String, Integer> uImport = new TreeMap<>();
 
     public GroupData(String n, String d){
         this.name = n;
@@ -26,31 +26,31 @@ public class GroupData {
     }
     public String getDescription() { return this.description;}
 
-    public  void addExpenseToUser(String name, float value, String currency){
+    public  void addExpenseToUser(String email, float value, String currency){
 
         float tmp;
-        if(lBudget.containsKey(name)){
-            tmp = lBudget.get(name).getValue() + value;
+        if(lBudget.containsKey(email)){
+            tmp = lBudget.get(email).getValue() + value;
         }
         else
         {
             tmp = value;
         }
-        lBudget.put(name, new BalanceData(name, this.name, tmp, currency));
+        lBudget.put(email, new BalanceData(email, this.name, tmp, currency));
 
     }
     public void allaRomana(float value, String currency){
         float quote = value/(lUsers.size()+1);
         for (UserData key: lUsers)
-             addExpenseToUser(key.getName(), quote, currency);
+             addExpenseToUser(key.getEmail(), quote, currency);
     }
     public void byPercentuage(float value, String currency){
         for (UserData key: lUsers)
-            addExpenseToUser(key.getName(), value*uPercentuage.get(key.getEmail())/100, currency);
+            addExpenseToUser(key.getEmail(), value*uPercentuage.get(key.getEmail())/100, currency);
     }
     public void byImport(float value, String currency){
         for (UserData key: lUsers)
-            addExpenseToUser(key.getName(), uImport.get(key.getEmail()), currency);
+            addExpenseToUser(key.getEmail(), uImport.get(key.getEmail()), currency);
     }
     public float getExpense(String name){
         return this.lBudget.get(name).getValue();
@@ -82,8 +82,12 @@ public class GroupData {
             lBudget.get(name).changeValue(value);
         }
     }
-    public Map<String, Float> getuPercentuageMap(){return this.uPercentuage;}
-    public Map<String, Float> getuImportMap(){return this.uImport;}
+    public void addTouPercentuageMap(String email, int algValue) {
+        uPercentuage.put(email, algValue);
+    }
+    public void addTouImportMap(String email, int algValue) {
+        uImport.put(email, algValue);
+    }
     public  void addExpensive(String name, String descr, String category, String currency, float value, float myvalue, String algorithm){
         this.lexpensive.add(new ExpenseData(name, descr, category, currency, value,myvalue, algorithm));
     }

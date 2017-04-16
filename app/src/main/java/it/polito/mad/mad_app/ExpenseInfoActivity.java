@@ -51,7 +51,10 @@ public class ExpenseInfoActivity extends AppCompatActivity {
         name_ex.setText(name);
         value_ex.setText(value);
         creator_ex.setText(creator);
-        description_ex.setText(description);
+        if(description.equals(""))
+            description_ex.setText("  -");
+        else
+            description_ex.setText(description);
         category_ex.setText(category);
         currency_ex.setText(currency);
         myvalue_ex.setText(myvalue);

@@ -44,13 +44,29 @@
                 android:hint="Add Description..."
                 android:layout_width="match_parent"
                 android:layout_height="60sp"  />
-            <EditText
-                android:id="@+id/value"
-                android:hint="Add value..."
+
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="60sp"
-                android:ems="10"
-                android:inputType="numberDecimal|numberSigned" />
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+
+                <EditText
+                    android:id="@+id/value"
+                    android:layout_width="match_parent"
+                    android:layout_height="60sp"
+                    android:ems="10"
+                    android:hint="Add value..."
+                    android:layout_weight="0.5"
+                    android:inputType="numberDecimal|numberSigned" />
+
+                <Spinner
+                    android:id="@+id/Currency"
+                    android:layout_width="match_parent"
+                    android:layout_height="60sp"
+                    android:layout_weight="0.5"
+                    android:entries="@array/currencies" />
+            </LinearLayout>
+
             <Spinner
                 android:id="@+id/Category"
                 android:entries="@array/categories"
@@ -58,12 +74,6 @@
                 android:layout_height="60sp"
                 />
 
-            <Spinner
-                android:id="@+id/Currency"
-                android:entries="@array/currencies"
-                android:layout_width="match_parent"
-                android:layout_height="60sp"
-                />
             <LinearLayout
                 android:orientation="horizontal"
                 android:layout_width="match_parent"
@@ -73,7 +83,7 @@
                 <TextView
                     android:id="@+id/Algorithm"
                     android:gravity="left"
-                    android:text="Algorithm:"
+                    android:text="Divided:"
                     android:layout_width="wrap_content"
                     android:layout_height="60sp"
                     />
@@ -86,12 +96,33 @@
                     android:layout_height="60sp"
                     />
             </LinearLayout>
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/algorithmParameters"
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="314dp"
-                android:orientation="vertical"
-                android:scrollbars="vertical" />
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/alg_info"
+                    android:layout_width="match_parent"
+                    android:layout_height="40sp"
+                    android:textColor="@color/primaryTextColor"
+                    android:gravity="center"
+                    android:textSize="20sp" />
+                <TextView
+                    android:id="@+id/alg_info_small"
+                    android:layout_width="match_parent"
+                    android:layout_height="40sp"
+                    android:textColor="@color/primaryTextColor"
+                    android:gravity="center"
+                    android:textSize="14sp" />
+
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/algorithmParameters"
+                    android:layout_width="match_parent"
+                    android:layout_height="314dp"
+                    android:orientation="vertical"
+                    android:scrollbars="vertical" />
+            </LinearLayout>
             <!--<Button
                 android:id="@+id/EnterButton"
                 android:text="Insert"

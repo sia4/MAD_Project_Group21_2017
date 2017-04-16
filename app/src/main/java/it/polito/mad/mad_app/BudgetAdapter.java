@@ -14,6 +14,7 @@ import android.widget.TextView;
 import java.util.List;
 
 import it.polito.mad.mad_app.model.BalanceData;
+import it.polito.mad.mad_app.model.MainData;
 
 public class BudgetAdapter extends RecyclerView.Adapter<BudgetAdapter.MyViewHolder> {
 
@@ -55,7 +56,7 @@ public class BudgetAdapter extends RecyclerView.Adapter<BudgetAdapter.MyViewHold
         float n=budget.getValue();
         holder.value_cred_deb.setText(String.format("%.2f",budget.getValue()));
         if(n>0){
-            holder.name_cred_deb.setText(budget.getName()+" own you:");
+            holder.name_cred_deb.setText(MainData.getInstance().findUserByMail(budget.getEmail()).getName()+" own you:");
             holder.value_cred_deb.setTextColor(Color.parseColor("#27B011"));
             if(holder.button==null) {
                 holder.button = new Button(mContext);
@@ -65,7 +66,7 @@ public class BudgetAdapter extends RecyclerView.Adapter<BudgetAdapter.MyViewHold
                     @Override
                     public void onClick(View v) {
                         Intent intent = new Intent().setClass(v.getContext(), BalanceActivity.class);
-                        String uname = budget.getName();
+                        String uname = MainData.getInstance().findUserByMail(budget.getEmail()).getName();
                         String gname = budget.getGName();
                         String bValue = Float.toString(budget.getValue());
                         String currency = budget.getCurrency();
@@ -100,7 +101,7 @@ public class BudgetAdapter extends RecyclerView.Adapter<BudgetAdapter.MyViewHold
                 holder.buttonContainer.removeView(holder.button);
             }
             holder.value_cred_deb.setTextColor(Color.parseColor("#D51111"));
-            holder.name_cred_deb.setText("You own to "+budget.getName()+":");
+            holder.name_cred_deb.setText("You own to "+MainData.getInstance().findUserByMail(budget.getEmail()).getName()+":");
         }
 
     }

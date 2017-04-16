@@ -21,6 +21,7 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.TreeMap;
 
 import it.polito.mad.mad_app.model.GroupData;
 import it.polito.mad.mad_app.model.MainData;
@@ -34,9 +35,10 @@ public class InsertExActivity extends AppCompatActivity {
     private String currency;
     private float value;
     private String algorithm;
-    private List<UserData> users = new ArrayList<>();
+    private TreeMap<Integer, UserData> users = new TreeMap<>();
     static private RecyclerView userRecyclerView;
     static private AlgorithmParametersAdapter uAdapter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -57,31 +59,51 @@ public class InsertExActivity extends AppCompatActivity {
 
         Intent intent = getIntent();
         final String Gname = intent.getStringExtra("GroupName");
-        users = MainData.getInstance().getGroup(Gname).getlUsers();
+        int i = 0;
+        for(UserData u :MainData.getInstance().getGroup(Gname).getlUsers()) {
+            users.put(i,u);
+            i++;
+        }
         //users.add(0, new UserData("null", "Me", "", 000));
         final Spinner Talgorithm = (Spinner)findViewById(R.id.ChooseAlgorithm);
         final EditText Tvalue = (EditText) findViewById(R.id.value);
+        final Spinner Tcurrency = (Spinner) findViewById(R.id.Currency);
+        final TextView algInfo = (TextView) findViewById(R.id.alg_info);
+        final TextView algInfoSmall = (TextView) findViewById(R.id.alg_info_small);
         Talgorithm.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                    if(position==1) {
-                        uAdapter = new AlgorithmParametersAdapter(users, position, 10);
+
+                if(position==1) {
+                    if(Tvalue.getText().toString().equals("")) {
+                        Toast.makeText(InsertExActivity.this, "Please insert the expense value.", Toast.LENGTH_LONG).show();
+                        Talgorithm.setSelection(0);
+                    } else {
+                        users.put(users.lastKey()+1,MainData.getInstance().returnMyData());
+                        uAdapter = new AlgorithmParametersAdapter(new ArrayList<>(users.values()), position, 10, algInfo, algInfoSmall);
                         userRecyclerView.setAdapter(uAdapter);
                     }
-                    else if(position == 2){
-                        if(!Tvalue.getText().toString().isEmpty()) {
-                            uAdapter = new AlgorithmParametersAdapter(users, position, Float.parseFloat(Tvalue.getText().toString()));
-                            userRecyclerView.setAdapter(uAdapter);
-                        }
-                        else{
-                            uAdapter = new AlgorithmParametersAdapter(users, position, 0);
-                            userRecyclerView.setAdapter(uAdapter);
-                        }
+
+                }
+                else if(position == 2) {
+                    if (Tvalue.getText().toString().equals("")) {
+                        Toast.makeText(InsertExActivity.this, "Please insert the expense value.", Toast.LENGTH_LONG).show();
+                        Talgorithm.setSelection(0);
+                        /*
+                        uAdapter = new AlgorithmParametersAdapter(users, position, 0);
+                        userRecyclerView.setAdapter(uAdapter);
+                        */
+                    } else if( Tcurrency.getSelectedItem().toString().equals("Select currency")) {
+                        Toast.makeText(InsertExActivity.this, "Please insert currency.", Toast.LENGTH_LONG).show();
+                    } else {
+                        users.put(users.lastKey()+1,MainData.getInstance().returnMyData());
+                        uAdapter = new AlgorithmParametersAdapter(new ArrayList<UserData>(users.values()), position, Float.parseFloat(Tvalue.getText().toString()), Tcurrency.getSelectedItem().toString(), algInfo, algInfoSmall);
+                        userRecyclerView.setAdapter(uAdapter);
                     }
-                    else
-                    {
-                        userRecyclerView.setAdapter(new AlgorithmParametersAdapter(new ArrayList<UserData>(), position, 10));
-                    }
+                } else {
+                    userRecyclerView.setAdapter(new AlgorithmParametersAdapter(new ArrayList<UserData>(), position, 10, algInfo, algInfoSmall));
+                }
+
             }
 
             @Override
@@ -102,18 +124,20 @@ public class InsertExActivity extends AppCompatActivity {
 
            @Override
            public void afterTextChanged(Editable s) {
-               if(Talgorithm.getSelectedItem().toString().equals("by import")) {
+               if(Talgorithm.getSelectedItem().toString().equals("by import") && !Tcurrency.getSelectedItem().toString().equals("Select currency")) {
                    if(!Tvalue.getText().toString().isEmpty()) {
-                       uAdapter = new AlgorithmParametersAdapter(users, 2, Float.parseFloat(Tvalue.getText().toString()));
+                       uAdapter = new AlgorithmParametersAdapter(new ArrayList<UserData>(users.values()), 2, Float.parseFloat(Tvalue.getText().toString()), Tcurrency.getSelectedItem().toString(), algInfo, algInfoSmall);
                        userRecyclerView.setAdapter(uAdapter);
                    }
                    else{
-                       uAdapter = new AlgorithmParametersAdapter(users, 2, 0);
+                       uAdapter = new AlgorithmParametersAdapter(new ArrayList<UserData>(users.values()), 2, 0, Tcurrency.getSelectedItem().toString(), algInfo, algInfoSmall);
                        userRecyclerView.setAdapter(uAdapter);
                    }
                }
            }
        });
+
+        String s = "";
     }
 
     @Override
@@ -150,41 +174,45 @@ public class InsertExActivity extends AppCompatActivity {
                 algorithm = Talgorithm.getSelectedItem().toString();
                 if(name.equals("")) {
                     Toast.makeText(InsertExActivity.this, "Please insert name.", Toast.LENGTH_LONG).show();
-                } else if(description.equals("")) {
-                    Toast.makeText(InsertExActivity.this, "Please insert description.", Toast.LENGTH_LONG).show();
                 } else if(currency.equals("Select currency")) {
                     Toast.makeText(InsertExActivity.this, "Please insert currency.", Toast.LENGTH_LONG).show();
                 } else if(Tvalue.getText().toString().equals("")) {
                     Toast.makeText(InsertExActivity.this, "Please insert value.", Toast.LENGTH_LONG).show();
+                } else if(category.equals("Select category")) {
+                    Toast.makeText(InsertExActivity.this, "Please insert category.", Toast.LENGTH_LONG).show();
                 } else {
-
                     value = Float.parseFloat(Tvalue.getText().toString());
 
-                    if (algorithm.equals("Alla Romana")) {
+                   if (algorithm.equals("equally")) {
                         MainData.getInstance().addExpensiveToGroup(Gname, name, description, category, currency, value, value - (value / (MainData.getInstance().getGroup(Gname).getlUsers().size() + 1)), algorithm);
                         MainData.getInstance().getGroup(Gname).allaRomana(value, currency);
                         flagok = 1;
                     }
-                    else{
+                /*    else{
                         flagok=0;
                         Toast.makeText(InsertExActivity.this, "Just Alla Romana algorithm is already implemented.", Toast.LENGTH_LONG).show();
                     }
+                */
                 //TODO IL CODICE SOTTOSTANTE SONO GLI ALGORITMI BY PERCENTUAGE E BY IMPORT, COMMENTATO PERCHE' CRASHA; DA RISOLVERE
-                /*
+
                 else{
                     float algValue, algSum=0, meValue=0;
                     int i;
                     for(i = 0; i< uAdapter.getItemCount(); i++){
                         View view = userRecyclerView.getChildAt(i);
-                        TextView TextName = (TextView)view.findViewById(R.id.alg_name);
                         EditText EditValue = (EditText)view.findViewById(R.id.alg_value);
-                        String userName = TextName.getText().toString();
-                        algValue = Float.parseFloat(EditValue.getText().toString());
-                        if(i==0) meValue = algValue;
-                        if(algorithm.equals("by percentuage"))
-                            MainData.getInstance().getGroup(Gname).getuPercentuageMap().put(userName, algValue);
+                        if(EditValue.getText().toString().equals(""))
+                            algValue = 0;
                         else
-                            MainData.getInstance().getGroup(Gname).getuImportMap().put(userName, algValue);
+                            algValue = Float.parseFloat(EditValue.getText().toString());
+                        if(i==uAdapter.getItemCount()-1)
+                            meValue = algValue;
+                        else {
+                            if (algorithm.equals("by percentuage"))
+                                MainData.getInstance().getGroup(Gname).addTouPercentuageMap(users.get(i).getEmail(), (int)algValue);
+                            else
+                                MainData.getInstance().getGroup(Gname).addTouImportMap(users.get(i).getEmail(), (int)algValue);
+                        }
                         algSum += algValue;
                     }
 
@@ -202,7 +230,7 @@ public class InsertExActivity extends AppCompatActivity {
 
                     if((algorithm.equals("by percentuage") && algSum!=100)){
                         flagok = 0;
-                        String text = String.format("Percentuage sum values must be equal to 100! (now: %.2f) i = %d", algSum, i);
+                        String text = String.format("Percentuage sum values must be equal to 100!", algSum, i);
                         Toast.makeText(InsertExActivity.this, text, Toast.LENGTH_LONG).show();
                     }
                     if((algorithm.equals("by import") && algSum!=value)){
@@ -211,7 +239,7 @@ public class InsertExActivity extends AppCompatActivity {
                     }
 
                 }
-                */
+
                     if (flagok == 1) {
                         Intent i2 = new Intent(InsertExActivity.this, GroupActivity.class);
                         i2.putExtra("name", Gname);
