@@ -96,6 +96,9 @@ public class BudgetAdapter extends RecyclerView.Adapter<BudgetAdapter.MyViewHold
             });*/
         }
         else{
+            if(holder.button!=null){
+                holder.buttonContainer.removeView(holder.button);
+            }
             holder.value_cred_deb.setTextColor(Color.parseColor("#D51111"));
             holder.name_cred_deb.setText("You own to "+budget.getName()+":");
         }

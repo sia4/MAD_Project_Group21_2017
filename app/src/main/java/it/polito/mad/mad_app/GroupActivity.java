@@ -84,7 +84,8 @@ public class GroupActivity extends AppCompatActivity {
             subtitleTextView.requestFocus();
             subtitleTextView.setSingleLine(true);
             subtitleTextView.setSelected(true);
-            subtitleTextView.setMarqueeRepeatLimit(-1);
+            subtitleTextView.setMarqueeRepeatLimit(1);
+            //subtitleTextView.setMarqueeRepeatLimit(-1); //continua all'infinito
         }catch (NoSuchFieldException e) {
         } catch (IllegalAccessException e) {
         }
