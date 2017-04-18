@@ -5,4 +5,8 @@
         android:id="@+id/options"
         android:title="Options"
         app:itemTextColor="@color/primaryTextColor"></item>
+    <item
+        android:id="@+id/addcurrency"
+        android:title="Add Currency"
+        app:itemTextColor="@color/primaryTextColor"></item>
 </menu>

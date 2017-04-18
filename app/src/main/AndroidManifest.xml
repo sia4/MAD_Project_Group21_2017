@@ -53,6 +53,10 @@
             android:name=".GroupInfoActivity"
             android:parentActivityName=".MainActivity" />
         <activity
+            android:name=".InsertCurrencyActivity"
+            android:parentActivityName=".MainActivity" />
+
+        <activity
             android:name=".BalanceActivity"
             android:label="@string/title_activity_balance"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar"></activity>

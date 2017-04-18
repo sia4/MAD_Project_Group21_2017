@@ -4,11 +4,24 @@
     <string-array name="currencies">
         <item>Select currency</item>
          <item>
-            America (United States of America),
-            Dollars
+            US Dollars
             USD
             $</item>
-        <item> Argentina, Pesos
+        <item>
+            Euro
+            EUR
+            €</item>
+        <item>
+            Pounds
+            GBP
+            £</item>
+        <item>
+            Yen
+            JPY
+            ¥</item>
+
+
+        <!--<item> Argentina, Pesos
             ARS
             $</item>
         <item> Aruba, Guilders (also called Florins)
@@ -223,7 +236,7 @@
             </item>
         <item>Zimbabwe, Dollars
             ZWD
-            $</item>
+            $</item> -->
 
     </string-array>
 </resources>

@@ -82,7 +82,25 @@
             android:layout_marginRight="16sp"
             android:layout_marginLeft="16sp"
             android:layout_width="match_parent"
-            android:layout_height="314dp"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:scrollbars="vertical" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="20sp"
+            android:text="Currencies:"
+            android:textSize="13sp"
+            android:layout_marginRight="16sp"
+            android:layout_marginLeft="16sp"
+            android:layout_marginTop="5dp" />
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/currencies"
+            android:layout_marginRight="16sp"
+            android:layout_marginLeft="16sp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:orientation="vertical"
             android:scrollbars="vertical" />
     </LinearLayout>

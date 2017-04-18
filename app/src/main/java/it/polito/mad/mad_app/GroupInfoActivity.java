@@ -40,10 +40,16 @@ public class GroupInfoActivity extends AppCompatActivity {
         namet.setText(name);
         desc=(TextView) findViewById(R.id.de_g);
         desc.setText(GD.getDescription());
+
         RecyclerView userRecyclerView = (RecyclerView) findViewById(R.id.users);
         userRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         final UsersAdapter uAdapter = new UsersAdapter(GD.getlUsers());
         userRecyclerView.setAdapter(uAdapter);
+
+        RecyclerView CurrenciesRecyclerView = (RecyclerView) findViewById(R.id.currencies);
+        CurrenciesRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        final CurrenciesAdapter cAdapter = new CurrenciesAdapter(GD.getCurrencies());
+        CurrenciesRecyclerView.setAdapter(cAdapter);
     }
 
     @Override

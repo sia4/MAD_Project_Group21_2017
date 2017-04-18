@@ -18,6 +18,7 @@ public class BalanceData {
         this.gname = gname;
         this.value = value;
         this.currency = currency;
+
     }
 
     public String getEmail(){return this.email;}

@@ -3,17 +3,17 @@ package it.polito.mad.mad_app;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.*;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
 
-import java.security.acl.Group;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,11 +31,13 @@ public class InsertGroupActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_insert_group);
 
         final Toolbar toolbar = (Toolbar) findViewById(R.id.insert_group_toolbar);
         setSupportActionBar(toolbar);
+
         if (getSupportActionBar() != null)
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
@@ -102,21 +104,31 @@ public class InsertGroupActivity extends AppCompatActivity {
             case R.id.action_menu_done:
                 final EditText Gname = (EditText) findViewById(R.id.GroupName);
                 final EditText Gdescription = (EditText) findViewById(R.id.GroupDescription);
+                final Spinner Tcurrency = (Spinner) findViewById(R.id.GroupCurrency);
 
                 GroupName = Gname.getText().toString();
                 GroupDescription = Gdescription.getText().toString();
 
-                if(GroupName.toString().equals("")) {
+                if (GroupName.equals("")) {
+
                     Toast.makeText(InsertGroupActivity.this, "Please insert group name.", Toast.LENGTH_LONG).show();
-                } else if(GroupDescription.toString().equals("")) {
+
+                } else if (GroupDescription.equals("")) {
+
                     Toast.makeText(InsertGroupActivity.this, "Please insert group description.", Toast.LENGTH_LONG).show();
-                }
-                else if(users.isEmpty()) {
+
+                } else if (users.isEmpty()) {
+
                     Toast.makeText(InsertGroupActivity.this, "Please insert at least one other member.", Toast.LENGTH_LONG).show();
+
+                } else if (Tcurrency.getSelectedItem().toString().equals("Select currency")) {
+
+                    Toast.makeText(InsertGroupActivity.this, "Please insert currency.", Toast.LENGTH_LONG).show();
+
                 } else {
 
                     //Intent gotomain = new Intent(InsertGroupActivity.this, MainActivity.class);
-                    GroupData newGroup = MainData.getInstance().addGroup(GroupName, GroupDescription);
+                    GroupData newGroup = MainData.getInstance().addGroup(GroupName, GroupDescription, Tcurrency.getSelectedItem().toString());
 
                     for (UserData u : users) {
                         newGroup.addUser(u);

@@ -1,6 +1,5 @@
 package it.polito.mad.mad_app;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -13,19 +12,20 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.Button;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.Spinner;
-import android.widget.Toast;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.TreeMap;
 
-import it.polito.mad.mad_app.model.GroupData;
 import it.polito.mad.mad_app.model.MainData;
 import it.polito.mad.mad_app.model.UserData;
+
 
 public class InsertExActivity extends AppCompatActivity {
 
@@ -64,6 +64,20 @@ public class InsertExActivity extends AppCompatActivity {
             users.put(i,u);
             i++;
         }
+
+        Spinner spinner = (Spinner) findViewById(R.id.Currency);
+        // Create an ArrayAdapter using the string array and a default spinner layout
+        Set<String> CS = MainData.getInstance().getGroup(Gname).getCurrencies().keySet();
+        List<String> Currencies = new ArrayList<>();
+
+        Currencies.addAll(CS);
+
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, R.layout.currency_item, Currencies);
+        // Specify the layout to use when the list of choices appears
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        // Apply the adapter to the spinner
+        spinner.setAdapter(adapter);
+
         //users.add(0, new UserData("null", "Me", "", 000));
         final Spinner Talgorithm = (Spinner)findViewById(R.id.ChooseAlgorithm);
         final EditText Tvalue = (EditText) findViewById(R.id.value);

@@ -48,7 +48,6 @@ public class GroupActivity extends AppCompatActivity {
         final Bundle b = new Bundle();
         b.putString("GroupName", gname);
 
-        //TODO: Input Dati
         List<GroupData> d = MainData.getInstance().getGroupList();
 
         GroupData datigruppo = null;
@@ -169,12 +168,20 @@ public class GroupActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        Intent intent=new Intent(getApplicationContext(), GroupInfoActivity.class);
-        intent.putExtra("name", name);
+
         switch (item.getItemId()) {
             case R.id.options:
+                Intent intent = new Intent(getApplicationContext(), GroupInfoActivity.class);
+                intent.putExtra("name", name);
                 startActivity(intent);
                 return true;
+
+            case R.id.addcurrency:
+                Intent i2 = new Intent(getApplicationContext(), InsertCurrencyActivity.class);
+                i2.putExtra("name", name);
+                startActivity(i2);
+                return true;
+
             default:
                 return super.onOptionsItemSelected(item);
         }

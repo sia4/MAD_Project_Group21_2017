@@ -15,10 +15,14 @@ public class GroupData {
     private Map<String, BalanceData> lBudget = new TreeMap<>();
     private Map<String, Integer> uPercentuage = new TreeMap<>();
     private Map<String, Integer> uImport = new TreeMap<>();
+    private Map<String, Float> currencies = new TreeMap<>();
 
-    public GroupData(String n, String d){
+
+    public GroupData(String n, String d, String c) {
         this.name = n;
         this.description = d;
+        Float f = new Float(1);
+        currencies.put(c, f);
     }
 
     public String getName(){
@@ -96,5 +100,83 @@ public class GroupData {
     }
     public List<ExpenseData> getExpensies(){return lexpensive;}
     public List<UserData> getlUsers() { return lUsers;}
+
+    /* Funzioni per la gestione delle currencies relative al gruppo*/
+
+    public void addCurrency(String c, Float change) {
+        if (!currencies.containsKey(c)) {
+            currencies.put(c, change);
+        }
+    }
+
+    public Map<String, Float> getCurrencies() {
+        return currencies;
+    }
+
+    public Float getChange(String c) {
+
+        if (currencies.containsKey(c)) {
+            return currencies.get(c);
+        } else {
+            return new Float(0);
+        }
+
+    }
+
+    public float getPosExpensesChanged() {
+
+        float sum = 0;
+        float value = 0;
+        BalanceData b;
+        float change;
+        String c;
+
+        for (String key : lBudget.keySet()) {
+
+            b = lBudget.get(key);
+
+            if (b.getValue() > 0) {
+
+                c = b.getCurrency();
+                change = getChange(c);
+                value = b.getValue();
+                value = value * change;
+                sum += value;
+
+            }
+
+        }
+
+        return sum;
+
+    }
+
+    public float getNegExpensesChanged() {
+
+        float sum = 0;
+        float value = 0;
+        BalanceData b;
+        float change;
+        String c;
+
+        for (String key : lBudget.keySet()) {
+
+            b = lBudget.get(key);
+
+            if (b.getValue() < 0) {
+
+                c = b.getCurrency();
+                change = getChange(c);
+                value = b.getValue();
+                value = value * change;
+                sum += value;
+
+            }
+
+        }
+
+        return sum;
+
+    }
 
 }

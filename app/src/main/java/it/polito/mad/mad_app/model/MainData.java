@@ -1,7 +1,5 @@
 package it.polito.mad.mad_app.model;
 
-import android.app.Activity;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -32,9 +30,9 @@ public class MainData {
 
         me = new UserData(myEmail, myName, mySurname, 33333332);
 
-        GroupData group1 = new GroupData("Coinquilini", "Gruppo dei coinquilini di via Tolmino 7");
-        GroupData group2 = new GroupData("Quartiere", "Gruppo dei vicini di quartiere Crocetta");
-        GroupData group3 = new GroupData("Viaggio", "Gruppo dei compagni di viaggio");
+        GroupData group1 = new GroupData("Coinquilini", "Gruppo dei coinquilini di via Tolmino 7", "Euro EUR €");
+        GroupData group2 = new GroupData("Quartiere", "Gruppo dei vicini di quartiere Crocetta", "Euro EUR €");
+        GroupData group3 = new GroupData("Viaggio", "Gruppo dei compagni di viaggio", "Euro EUR €");
         UserData user1 = new UserData("edoardo.operti@gmail.com", "Edoardo", "Operti", 33333333);
         UserData user2 = new UserData("lucia.larocca@gmail.com", "Lucia", "Larocca", 444444444);
         UserData user3 = new UserData("luca.mazzucco@gmail.com", "Luca", "Mazzucco", 337773333);
@@ -97,9 +95,10 @@ public class MainData {
         lActivities.add(new ActivityData("silvia.chiusano@gmail.it", "Silvia added an user on group Quartiere", "4 apr 2017, 19:44"));
 
     }
-    public GroupData addGroup(String n, String d){
 
-        GroupData g = new GroupData(n, d);
+    public GroupData addGroup(String n, String d, String c) {
+
+        GroupData g = new GroupData(n, d, c);
         lGroups.put(n, g);
 
         return g;
