@@ -44,7 +44,7 @@ public class GroupData {
 
     }
     public void allaRomana(float value, String currency){
-        float quote = value/(lUsers.size());
+        float quote = value/(lUsers.size()+1);
         for (UserData key: lUsers)
              addExpenseToUser(key.getEmail(), quote, currency);
     }

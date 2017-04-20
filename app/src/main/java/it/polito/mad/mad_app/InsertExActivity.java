@@ -64,6 +64,7 @@ public class InsertExActivity extends AppCompatActivity {
             users.put(i,u);
             i++;
         }
+        users.put(i, MainData.getInstance().returnMyData());
 
         Spinner spinner = (Spinner) findViewById(R.id.Currency);
         // Create an ArrayAdapter using the string array and a default spinner layout
