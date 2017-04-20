@@ -8,12 +8,14 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.provider.Settings;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -181,13 +183,18 @@ public class GroupInfoActivity extends AppCompatActivity {
                     final EditText name = (EditText) findViewById(R.id.name_g_ed);
                     String newname = name.getText().toString();
 
-                    if (newname != null && !newname.equals("null") && !newname.equals("")) {
+                    if (newname != null && !newname.equals("") && !newname.equals(GroupName)) {
                         GD.setName(newname);
+                        MainData.getInstance().changeGroupName(GroupName, newname);
                         in.putExtra("name", newname);
                     } else {
                         in.putExtra("name", GroupName);
                     }
 
+                    Log.e("DEBUG", newname + " " + GroupName);
+                    System.out.println();
+                } else {
+                    in.putExtra("name", GroupName);
                 }
 
                 if (flag_desc_edited) {

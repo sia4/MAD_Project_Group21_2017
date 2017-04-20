@@ -118,9 +118,9 @@ public class GroupData {
     }
     public float getNegExpenses(){
         float sum = 0;
-        for (String key: lBudget.keySet())
-            if(lBudget.get(key).getValue()<0)
-             sum += lBudget.get(key).getValue();
+        for (BalanceData b: lBudget.values())
+            if(b.getValue()<0)
+             sum += b.getValue();
         return sum;
     }
 

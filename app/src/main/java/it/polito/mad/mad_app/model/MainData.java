@@ -30,9 +30,9 @@ public class MainData {
 
         me = new UserData(myEmail, myName, mySurname, 33333332);
 
-        GroupData group1 = new GroupData("Coinquilini", "Gruppo dei coinquilini di via Tolmino 7", "Euro EUR €");
-        GroupData group2 = new GroupData("Quartiere", "Gruppo dei vicini di quartiere Crocetta", "Euro EUR €");
-        GroupData group3 = new GroupData("Viaggio", "Gruppo dei compagni di viaggio", "Euro EUR €");
+        GroupData group1 = new GroupData("Coinquilini", "Gruppo dei coinquilini di via Tolmino 7", "EUR €");
+        GroupData group2 = new GroupData("Quartiere", "Gruppo dei vicini di quartiere Crocetta", "EUR €");
+        GroupData group3 = new GroupData("Viaggio", "Gruppo dei compagni di viaggio", "EUR €");
 
         UserData user1 = new UserData("edoardo.operti@gmail.com", "Edoardo", "Operti", 33333333);
         UserData user2 = new UserData("lucia.larocca@gmail.com", "Lucia", "Larocca", 444444444);
@@ -139,6 +139,15 @@ public class MainData {
             return null;
         else
             return lUser.get(email);
+    }
+
+    public void changeGroupName(String oldName, String newName) {
+
+        if(lGroups.containsKey(oldName)) {
+            lGroups.put(newName, lGroups.get(oldName));
+            lGroups.remove(oldName);
+        }
+
     }
 
 }
