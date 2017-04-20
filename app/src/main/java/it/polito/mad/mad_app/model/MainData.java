@@ -26,7 +26,7 @@ public class MainData {
         myEmail = "marco.rossi@gmail.it";
         myPassword = "0000";
         myName = "Marco";
-        mySurname = "Rossi (Io)";
+        mySurname = "Rossi (Me)";
 
         me = new UserData(myEmail, myName, mySurname, 33333332);
 
@@ -43,6 +43,10 @@ public class MainData {
         UserData user8 = new UserData("silvia.chiusano@gmail.com", "Silvia", "Chiusano", 22224444);
         UserData user9 = new UserData("gianpaolo.cabodi@gmail.com", "Gianpaolo", "Cabodi", 31113333);
         UserData user10 = new UserData("stefano.quer@gmail.com", "Stefano", "Quer", 444234554);
+
+        group1.addUser(this.returnMyData());
+        group2.addUser(this.returnMyData());
+        group3.addUser(this.returnMyData());
 
         group1.addUser(user1);
         group1.addUser(user4);

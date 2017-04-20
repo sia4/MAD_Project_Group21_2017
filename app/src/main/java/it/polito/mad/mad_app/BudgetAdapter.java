@@ -67,10 +67,12 @@ public class BudgetAdapter extends RecyclerView.Adapter<BudgetAdapter.MyViewHold
                     public void onClick(View v) {
                         Intent intent = new Intent().setClass(v.getContext(), BalanceActivity.class);
                         String uname = MainData.getInstance().findUserByMail(budget.getEmail()).getName();
+                        String umail = budget.getEmail();
                         String gname = budget.getGName();
                         String bValue = Float.toString(budget.getValue());
                         String currency = budget.getCurrency();
                         intent.putExtra("gname", gname);
+                        intent.putExtra("umail", umail);
                         intent.putExtra("uname", uname);
                         intent.putExtra("value", bValue);
                         intent.putExtra("currency", currency);

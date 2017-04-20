@@ -34,6 +34,7 @@ public class BalanceActivity extends AppCompatActivity {
 
         Intent i = getIntent();
         String userName = i.getStringExtra("uname");
+        String userEmail = i.getStringExtra("umail");
         String bValue = i.getStringExtra("value");
         String currency = i.getStringExtra("currency");
 
@@ -54,7 +55,7 @@ public class BalanceActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         Intent i = getIntent();
         String groupName = i.getStringExtra("gname");
-        String userName = i.getStringExtra("uname");
+        String userEmail = i.getStringExtra("umail");
 
         switch (item.getItemId()) {
 
@@ -75,7 +76,7 @@ public class BalanceActivity extends AppCompatActivity {
                     //if (insertValue > -(MainData.getInstance().getGroup(groupName).getExpense(userName))) {
                        // Toast.makeText(BalanceActivity.this, "The value is too high!", Toast.LENGTH_LONG).show();
                     //} else {
-                        MainData.getInstance().getGroup(groupName).updateExpense(userName, insertValue);
+                        MainData.getInstance().getGroup(groupName).updateExpense(userEmail, insertValue);
                         //    Toast.makeText(BalanceActivity.this, String.valueOf(MainData.getInstance().getGroup(groupName).getExpense(userName)+insertValue), Toast.LENGTH_LONG).show();
                         setResult(RESULT_OK, null);
                         finish();

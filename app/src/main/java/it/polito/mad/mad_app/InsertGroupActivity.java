@@ -133,6 +133,7 @@ public class InsertGroupActivity extends AppCompatActivity {
                     for (UserData u : users) {
                         newGroup.addUser(u);
                     }
+                    newGroup.addUser(MainData.getInstance().returnMyData());
 
                     Intent gotomain = new Intent(InsertGroupActivity.this, MainActivity.class);
                     //gotomain.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);

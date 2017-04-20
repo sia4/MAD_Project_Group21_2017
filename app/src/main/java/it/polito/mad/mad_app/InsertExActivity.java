@@ -93,7 +93,6 @@ public class InsertExActivity extends AppCompatActivity {
                         Toast.makeText(InsertExActivity.this, "Please insert the expense value.", Toast.LENGTH_LONG).show();
                         Talgorithm.setSelection(0);
                     } else {
-                        users.put(users.lastKey()+1,MainData.getInstance().returnMyData());
                         uAdapter = new AlgorithmParametersAdapter(new ArrayList<>(users.values()), position, 10, algInfo, algInfoSmall);
                         userRecyclerView.setAdapter(uAdapter);
                     }
@@ -110,7 +109,6 @@ public class InsertExActivity extends AppCompatActivity {
                     } else if( Tcurrency.getSelectedItem().toString().equals("Select currency")) {
                         Toast.makeText(InsertExActivity.this, "Please insert currency.", Toast.LENGTH_LONG).show();
                     } else {
-                        users.put(users.lastKey()+1,MainData.getInstance().returnMyData());
                         uAdapter = new AlgorithmParametersAdapter(new ArrayList<UserData>(users.values()), position, Float.parseFloat(Tvalue.getText().toString()), Tcurrency.getSelectedItem().toString(), algInfo, algInfoSmall);
                         userRecyclerView.setAdapter(uAdapter);
                     }
