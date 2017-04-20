@@ -1,21 +1,17 @@
 package it.polito.mad.mad_app;
 
-import android.content.Intent;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.ListView;
 import android.widget.TextView;
 
-import java.text.DecimalFormat;
 import java.util.List;
 
-import it.polito.mad.mad_app.model.*;
-
-import static android.R.attr.data;
+import it.polito.mad.mad_app.model.GroupData;
 
 
 public class GroupsAdapter extends RecyclerView.Adapter<GroupsAdapter.MyViewHolder> {
@@ -54,7 +50,15 @@ public class GroupsAdapter extends RecyclerView.Adapter<GroupsAdapter.MyViewHold
     public void onBindViewHolder(GroupsAdapter.MyViewHolder holder, int position) {
         final GroupData g = GData.get(position);
         holder.name.setText(g.getName());
-        holder.im.setImageResource(R.drawable.group_default);
+
+        String p = g.getImagePath();
+
+        if (p == null) {
+            holder.im.setImageResource(R.drawable.group_default);
+        } else {
+            holder.im.setImageBitmap(BitmapFactory.decodeFile(p));
+        }
+
         //holder.im.setImageResource(R.drawable.casa);
         /*holder.name.setOnClickListener(new View.OnClickListener() {
             @Override

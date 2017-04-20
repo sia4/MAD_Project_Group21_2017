@@ -19,7 +19,11 @@ import it.polito.mad.mad_app.model.MainData;
 public class BudgetAdapter extends RecyclerView.Adapter<BudgetAdapter.MyViewHolder> {
 
     private List<BalanceData> budgetData;
+    private List<BalanceData> budgetDataC; //contiene i record in valute diverse
+
+
     Context mContext;
+
     public class MyViewHolder extends RecyclerView.ViewHolder {
         public TextView name_cred_deb, value_cred_deb, b;
         public LinearLayout buttonContainer;
@@ -37,8 +41,9 @@ public class BudgetAdapter extends RecyclerView.Adapter<BudgetAdapter.MyViewHold
     }
 
 
-    public BudgetAdapter(List<BalanceData> budgetData) {
+    public BudgetAdapter(List<BalanceData> budgetData, List<BalanceData> budgetCData) {
         this.budgetData = budgetData;
+        this.budgetDataC = budgetCData;
     }
 
     @Override
@@ -54,9 +59,12 @@ public class BudgetAdapter extends RecyclerView.Adapter<BudgetAdapter.MyViewHold
     public void onBindViewHolder(MyViewHolder holder, int position) {
         final BalanceData budget = budgetData.get(position);
         float n=budget.getValue();
-        holder.value_cred_deb.setText(String.format("%.2f",budget.getValue()));
+        holder.value_cred_deb.setText(String.format("%.2f", budget.getValue()) + " " + budget.getCurrency());
         if(n>0){
-            holder.name_cred_deb.setText(MainData.getInstance().findUserByMail(budget.getEmail()).getName()+" own you:");
+
+            System.out.println(budget.getEmail() + "-->" + MainData.getInstance().findUserByMail(budget.getEmail()));
+
+            holder.name_cred_deb.setText(MainData.getInstance().findUserByMail(budget.getEmail()).getName() + " owns you:");
             holder.value_cred_deb.setTextColor(Color.parseColor("#27B011"));
             if(holder.button==null) {
                 holder.button = new Button(mContext);

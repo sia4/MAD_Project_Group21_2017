@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.DefaultItemAnimator;
-import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -16,7 +15,9 @@ import android.view.ViewGroup;
 import java.util.ArrayList;
 import java.util.List;
 
-import it.polito.mad.mad_app.model.*;
+import it.polito.mad.mad_app.model.ExpenseData;
+import it.polito.mad.mad_app.model.MainData;
+import it.polito.mad.mad_app.model.RecyclerTouchListener;
 
 public class HistoryFragment extends Fragment {
 
@@ -39,6 +40,7 @@ public class HistoryFragment extends Fragment {
         recyclerView.addOnItemTouchListener(new RecyclerTouchListener(context, recyclerView, new RecyclerTouchListener.ClickListener() {
             @Override
             public void onClick(View view, int position) {
+
                 final ExpenseData expense = data.get(position);
                 Intent intent = new Intent().setClass(view.getContext(), ExpenseInfoActivity.class);
                 intent.putExtra("name", expense.getName());
@@ -62,7 +64,10 @@ public class HistoryFragment extends Fragment {
 
             }
         }));
-        String GroupName = getArguments().getString("GroupName");
+
+        String GroupName = this.getArguments().getString("GroupName");
+        System.out.println("H: " + GroupName);
+
         data = MainData.getInstance().getGroup(GroupName).getExpensies();
         HistoryAdapter hAdapter = new HistoryAdapter(data);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(context);

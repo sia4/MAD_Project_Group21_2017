@@ -10,29 +10,64 @@ public class GroupData {
 
     private String name;
     private String description;
+    private String ImagePath;
+
     private List<ExpenseData> lexpensive = new ArrayList<>();
     private List<UserData> lUsers = new ArrayList<>();
-    private Map<String, BalanceData> lBudget = new TreeMap<>(); //mail, oggetto
+    private Map<String, BalanceData> lBudget = new TreeMap<>(); // mappa che continee solo in default currency
+    private Map<String, BalanceData> cBudget = new TreeMap<>(); // mappa contenente gli elementi in altre currencies, la Key è formata da email+currency
     private Map<String, Integer> uPercentuage = new TreeMap<>();
     private Map<String, Integer> uImport = new TreeMap<>();
     private Map<String, Float> currencies = new TreeMap<>();
+    private String default_currency;
 
 
     public GroupData(String n, String d, String c) {
         this.name = n;
         this.description = d;
         Float f = new Float(1);
+        this.default_currency = c;
         currencies.put(c, f);
     }
 
     public String getName(){
         return this.name;
     }
-    public String getDescription() { return this.description;}
+
+    public void setName(String s) {
+        this.name = s;
+    }
+
+    public String getDescription() {
+        return this.description;
+    }
+
+    public void setDescription(String s) {
+        this.description = s;
+    }
 
     public  void addExpenseToUser(String email, float value, String currency){
 
         float tmp;
+        float change;
+
+        if (!default_currency.equals(currency)) {
+
+            if (cBudget.containsKey(email + currency)) {
+                tmp = cBudget.get(email).getValue() + value;
+            } else {
+                tmp = value;
+            }
+
+            cBudget.put(email + currency, new BalanceData(email, this.name, tmp, currency));
+
+            change = getChange(currency);
+            value = value * change; // lo riporto alla currency di default
+
+        }
+
+        currency = default_currency;
+
         if(lBudget.containsKey(email)){
             tmp = lBudget.get(email).getValue() + value;
         }
@@ -40,7 +75,9 @@ public class GroupData {
         {
             tmp = value;
         }
+
         lBudget.put(email, new BalanceData(email, this.name, tmp, currency));
+        System.out.println("+++ HELLO +++ Inserito :" + email + " " + value + " " + currency);
 
     }
     public void allaRomana(float value, String currency){
@@ -56,15 +93,22 @@ public class GroupData {
         for (UserData key: lUsers)
             addExpenseToUser(key.getEmail(), uImport.get(key.getEmail()), currency);
     }
+
     public float getExpense(String name){
         return this.lBudget.get(name).getValue();
     }
+
     public float getTotExpenses(){
         float sum = 0;
         for (String key: lBudget.keySet())
             sum += lBudget.get(key).getValue();
         return sum;
     }
+
+    public float getExpenseC(String name, String currency) {
+        return this.cBudget.get(name + currency).getValue();
+    }
+
     public float getPosExpenses(){
         float sum = 0;
         for (String key: lBudget.keySet())
@@ -79,7 +123,12 @@ public class GroupData {
              sum += lBudget.get(key).getValue();
         return sum;
     }
+
     public List<BalanceData> getExpensesList(){return new ArrayList<BalanceData>(lBudget.values());}
+
+    public List<BalanceData> getExpensesListC() {
+        return new ArrayList<BalanceData>(cBudget.values());
+    }
 
     public void updateExpense(String mail, float value) {
         if(lBudget.containsKey(mail)) {
@@ -133,7 +182,7 @@ public class GroupData {
 
         for (String key : lBudget.keySet()) {
 
-            b = lBudget.get(key);
+            b = cBudget.get(key);
 
             if (b.getValue() > 0) {
 
@@ -161,7 +210,7 @@ public class GroupData {
 
         for (String key : lBudget.keySet()) {
 
-            b = lBudget.get(key);
+            b = cBudget.get(key);
 
             if (b.getValue() < 0) {
 
@@ -177,6 +226,14 @@ public class GroupData {
 
         return sum;
 
+    }
+
+    public String getImagePath() {
+        return ImagePath;
+    }
+
+    public void setImagePath(String p) {
+        this.ImagePath = p;
     }
 
 }

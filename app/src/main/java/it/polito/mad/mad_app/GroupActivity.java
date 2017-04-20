@@ -45,8 +45,7 @@ public class GroupActivity extends AppCompatActivity {
         final String gname = intent.getStringExtra("name");
         name=gname;
 
-        final Bundle b = new Bundle();
-        b.putString("GroupName", gname);
+        System.out.println("Hello: " + gname);
 
         List<GroupData> d = MainData.getInstance().getGroupList();
 
@@ -59,10 +58,16 @@ public class GroupActivity extends AppCompatActivity {
             datigruppo = d.get(i);
 
             if (datigruppo.getName().equals(gname)) {
+                System.out.println("Hello? ");
                 break;
             }
 
         }
+
+        final Bundle b = new Bundle();
+        b.putString("GroupName", gname);
+
+        System.out.println(datigruppo.getName());
 
         Float pos = datigruppo.getPosExpenses();
         Float neg = datigruppo.getNegExpenses();
@@ -88,6 +93,7 @@ public class GroupActivity extends AppCompatActivity {
         }catch (NoSuchFieldException e) {
         } catch (IllegalAccessException e) {
         }
+
         Fragment hfrag = new HistoryFragment();
         hfrag.setArguments(b);
         FragmentManager fm = getSupportFragmentManager();
@@ -116,6 +122,7 @@ public class GroupActivity extends AppCompatActivity {
                         fab.setVisibility(View.VISIBLE);
                         break;
                 }
+
                 frag.setArguments(b);
                 FragmentManager fm = getSupportFragmentManager();
                 FragmentTransaction transaction = fm.beginTransaction();
@@ -155,6 +162,7 @@ public class GroupActivity extends AppCompatActivity {
 
         if (resultCode == RESULT_OK) {
             final String gname = data.getStringExtra("name");
+            System.out.println("Name = " + gname);
             Intent refresh = new Intent(this, GroupActivity.class);
             refresh.putExtra("name", gname);
             startActivity(refresh);
@@ -176,7 +184,7 @@ public class GroupActivity extends AppCompatActivity {
             case R.id.options:
                 Intent intent = new Intent(getApplicationContext(), GroupInfoActivity.class);
                 intent.putExtra("name", name);
-                startActivity(intent);
+                startActivityForResult(intent, 1);
                 return true;
 
             case R.id.addcurrency:
