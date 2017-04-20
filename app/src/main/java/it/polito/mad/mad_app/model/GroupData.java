@@ -12,7 +12,7 @@ public class GroupData {
     private String description;
     private List<ExpenseData> lexpensive = new ArrayList<>();
     private List<UserData> lUsers = new ArrayList<>();
-    private Map<String, BalanceData> lBudget = new TreeMap<>();
+    private Map<String, BalanceData> lBudget = new TreeMap<>(); //mail, oggetto
     private Map<String, Integer> uPercentuage = new TreeMap<>();
     private Map<String, Integer> uImport = new TreeMap<>();
     private Map<String, Float> currencies = new TreeMap<>();
@@ -81,9 +81,9 @@ public class GroupData {
     }
     public List<BalanceData> getExpensesList(){return new ArrayList<BalanceData>(lBudget.values());}
 
-    public void updateExpense(String name, float value) {
-        if(lBudget.containsKey(name)) {
-            lBudget.get(name).changeValue(value);
+    public void updateExpense(String mail, float value) {
+        if(lBudget.containsKey(mail)) {
+            lBudget.get(mail).changeValue(value);
         }
     }
     public void addTouPercentuageMap(String email, int algValue) {

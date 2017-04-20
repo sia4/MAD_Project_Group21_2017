@@ -33,6 +33,7 @@ public class MainData {
         GroupData group1 = new GroupData("Coinquilini", "Gruppo dei coinquilini di via Tolmino 7", "Euro EUR €");
         GroupData group2 = new GroupData("Quartiere", "Gruppo dei vicini di quartiere Crocetta", "Euro EUR €");
         GroupData group3 = new GroupData("Viaggio", "Gruppo dei compagni di viaggio", "Euro EUR €");
+
         UserData user1 = new UserData("edoardo.operti@gmail.com", "Edoardo", "Operti", 33333333);
         UserData user2 = new UserData("lucia.larocca@gmail.com", "Lucia", "Larocca", 444444444);
         UserData user3 = new UserData("luca.mazzucco@gmail.com", "Luca", "Mazzucco", 337773333);
@@ -47,6 +48,8 @@ public class MainData {
         group1.addUser(this.returnMyData());
         group2.addUser(this.returnMyData());
         group3.addUser(this.returnMyData());
+
+        lUser.put(myEmail, this.returnMyData());
 
         group1.addUser(user1);
         group1.addUser(user4);
