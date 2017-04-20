@@ -92,7 +92,7 @@ public class GroupActivity extends AppCompatActivity {
         hfrag.setArguments(b);
         FragmentManager fm = getSupportFragmentManager();
         FragmentTransaction transaction = fm.beginTransaction();
-
+        final FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
 
         transaction.replace(R.id.group_framelayout, hfrag);
         transaction.commit();
@@ -105,12 +105,15 @@ public class GroupActivity extends AppCompatActivity {
                 switch (tab.getPosition()) {
                     case 0:
                         frag = new HistoryFragment();
+                        fab.setVisibility(View.VISIBLE);
                         break;
                     case 1:
                         frag = new BudgetFragment();
+                        fab.setVisibility(View.INVISIBLE);
                         break;
                     default:
                         frag = new HistoryFragment();
+                        fab.setVisibility(View.VISIBLE);
                         break;
                 }
                 frag.setArguments(b);
@@ -132,7 +135,7 @@ public class GroupActivity extends AppCompatActivity {
             }
         });
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

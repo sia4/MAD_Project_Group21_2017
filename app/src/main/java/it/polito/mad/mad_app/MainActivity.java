@@ -37,6 +37,7 @@ public class MainActivity extends AppCompatActivity {
         FragmentTransaction transaction = f.beginTransaction();
         transaction.replace(R.id.main_framelayout, new GroupsFragment());
         transaction.commit();
+        final FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.addGroup);
         TabLayout tabL = (TabLayout) findViewById(R.id.tabs);
         tabL.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
@@ -45,12 +46,16 @@ public class MainActivity extends AppCompatActivity {
                 switch (tab.getPosition()) {
                     case 0:
                         frag = new GroupsFragment();
+                        fab.setVisibility(View.VISIBLE);
                         break;
                     case 1:
                         frag = new ActivitiesFragment();
+
+                        fab.setVisibility(View.INVISIBLE);
                         break;
                     default:
                         frag = new GroupsFragment();
+                        fab.setVisibility(View.VISIBLE);
                         break;
                 }
                 FragmentManager f = getSupportFragmentManager();
@@ -71,7 +76,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.addGroup);
+        //FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.addGroup);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
