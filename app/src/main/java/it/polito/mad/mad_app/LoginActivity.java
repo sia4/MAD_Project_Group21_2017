@@ -52,6 +52,7 @@ import java.util.List;
 import it.polito.mad.mad_app.model.MainData;
 import it.polito.mad.mad_app.model.SignInActivity;
 
+
 public class LoginActivity extends AppCompatActivity {
 
     private FirebaseAuth mAuth;

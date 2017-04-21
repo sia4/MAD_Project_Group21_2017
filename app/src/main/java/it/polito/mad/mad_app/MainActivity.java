@@ -2,6 +2,7 @@ package it.polito.mad.mad_app;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
@@ -11,12 +12,25 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
+import java.util.HashMap;
+import java.util.Map;
+
 import it.polito.mad.mad_app.model.MainData;
+import it.polito.mad.mad_app.model.SignInActivity;
 
 //import android.support.v7.util.ThreadUtil;
 
 public class MainActivity extends AppCompatActivity {
-
+    private FirebaseAuth auth;
+    private FirebaseAuth.AuthStateListener mAuthListener;
     MainData ad = MainData.getInstance();
 /*
     public static MainData getMyData() {
@@ -29,9 +43,44 @@ public class MainActivity extends AppCompatActivity {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        auth = FirebaseAuth.getInstance();
+        mAuthListener = new FirebaseAuth.AuthStateListener() {
+            @Override
+            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+                FirebaseUser user = firebaseAuth.getCurrentUser();
+                if (user != null) {
+                    startActivity(new Intent(MainActivity.this, LoginActivity.class));
+                    finish();
+                } else {
+                    // User is signed out
+                    //Log.d(TAG, "onAuthStateChanged:signed_out");
+                }
+            }
+        };
         Toolbar mainToolbar = (Toolbar) findViewById(R.id.main_toolbar);
         setSupportActionBar(mainToolbar);
+        //to write
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference myRef = database.getReference("/Groups/G1/Members/u3");
+        myRef.setValue(true);
+        myRef = database.getReference("/Groups/G1/Members");
+        //to read
+        myRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                // This method is called once with the initial value and again
+                // whenever data at this location is updated.
+                Map<String, Object> map = (Map<String, Object>) dataSnapshot.getValue();
+                System.out.println("Value is: " + map.get("u1"));
+                //Log.d(TAG, "Value is: " + value);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError error) {
+                // Failed to read value
+                //log.w(TAG, "Failed to read value.", error.toException());
+            }
+        });
 
         FragmentManager f = getSupportFragmentManager();
         FragmentTransaction transaction = f.beginTransaction();
