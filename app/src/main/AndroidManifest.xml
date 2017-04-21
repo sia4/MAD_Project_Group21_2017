@@ -15,12 +15,16 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/Theme.AppCompat.Light.NoActionBar">
-        <activity android:name=".MainActivity">
+        <activity android:name=".LoginActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".MainActivity"
+            android:label="MainActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".GroupActivity"
             android:parentActivityName=".MainActivity">
@@ -65,9 +69,7 @@
             android:name=".BalanceActivity"
             android:label="@string/title_activity_balance"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
-        <activity
-            android:name=".LoginActivity"
-            android:label="@string/title_activity_login"></activity>
+        <activity android:name=".model.SignInActivity"></activity>
     </application>
 
 </manifest>
