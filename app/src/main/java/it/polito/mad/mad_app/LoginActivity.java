@@ -50,7 +50,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import it.polito.mad.mad_app.model.MainData;
-import it.polito.mad.mad_app.model.SignInActivity;
+import it.polito.mad.mad_app.SignInActivity;
 
 
 public class LoginActivity extends AppCompatActivity {
@@ -131,9 +131,9 @@ public class LoginActivity extends AppCompatActivity {
                                 if (!task.isSuccessful()) {
                                     // there was an error
                                     if (password.length() < 6) {
-                                        Toast.makeText(getApplicationContext(), getString(R.string.minimum_password), Toast.LENGTH_LONG).show();
+                                        Toast.makeText(getApplicationContext(), "Password too short, enter minimum 6 characters!", Toast.LENGTH_LONG).show();
                                     } else {
-                                        Toast.makeText(getApplicationContext(), getString(R.string.auth_failed), Toast.LENGTH_LONG).show();
+                                        Toast.makeText(getApplicationContext(), "Authentication failed, check your email and password or sign up", Toast.LENGTH_LONG).show();
                                     }
                                 } else {
                                     Intent intent = new Intent(LoginActivity.this, MainActivity.class);

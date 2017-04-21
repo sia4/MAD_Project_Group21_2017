@@ -1,7 +1,13 @@
 package it.polito.mad.mad_app;
 
 import android.content.Intent;
+import android.database.Cursor;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
+import android.provider.MediaStore;
+import android.support.v4.content.FileProvider;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -14,11 +20,17 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.File;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeMap;
@@ -38,7 +50,10 @@ public class InsertExActivity extends AppCompatActivity {
     private TreeMap<Integer, UserData> users = new TreeMap<>();
     static private RecyclerView userRecyclerView;
     static private AlgorithmParametersAdapter uAdapter;
-
+    static final int REQUEST_TAKE_PHOTO = 1;
+    private boolean flag_name_edited = false, flag_desc_edited = false, flag_img_edited = false;
+    private String tmp;
+    String mCurrentPhotoPath;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -51,6 +66,19 @@ public class InsertExActivity extends AppCompatActivity {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         getSupportActionBar().setTitle("New Expense");
+        ImageButton bill = (ImageButton)findViewById(R.id.AddPhotoBill);
+
+
+
+
+
+        bill.setOnClickListener(new View.OnClickListener()  {
+            public void onClick(View v) {
+                dispatchTakePictureIntent();
+                //galleryAddPic();
+                }
+
+        } );
 
         userRecyclerView = (RecyclerView) findViewById(R.id.algorithmParameters);
         userRecyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -152,6 +180,75 @@ public class InsertExActivity extends AppCompatActivity {
 
         String s = "";
     }
+    private File createImageFile() throws IOException {
+        // Create an image file name
+
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        String imageFileName = "JPEG_" + timeStamp + "_";
+        File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+        File image = File.createTempFile(
+                imageFileName,  /* prefix */
+                ".jpg",         /* suffix */
+                storageDir      /* directory */
+        );
+
+        // Save a file: path for use with ACTION_VIEW intents
+        mCurrentPhotoPath = image.getAbsolutePath();
+        return image;
+    }
+    private void galleryAddPic() {
+        Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
+        File f = new File(mCurrentPhotoPath);
+        Uri contentUri = Uri.fromFile(f);
+        mediaScanIntent.setData(contentUri);
+        this.sendBroadcast(mediaScanIntent);
+    }
+
+
+    private void dispatchTakePictureIntent() {
+        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        // Ensure that there's a camera activity to handle the intent
+        if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
+            // Create the File where the photo should go
+            File photoFile = null;
+            try {
+                photoFile = createImageFile();
+            } catch (IOException ex) {
+                Toast.makeText(InsertExActivity.this, "Error creating photo file!", Toast.LENGTH_LONG).show();
+            }
+            // Continue only if the File was successfully created
+            if (photoFile != null) {
+
+                //Uri photoURI = FileProvider.getUriForFile(this,"com.example.android.fileprovider",    photoFile);
+                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(photoFile));
+                startActivityForResult(takePictureIntent, REQUEST_TAKE_PHOTO);
+            }
+        }
+    }
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == 1 && resultCode == RESULT_OK && data != null) {
+
+            Uri selectedImage = data.getData();
+            String[] filePathColumn = {MediaStore.Images.Media.DATA};
+            Cursor c = getContentResolver().query(selectedImage, filePathColumn, null, null, null);
+            c.moveToFirst();
+            int cIndex = c.getColumnIndex(filePathColumn[0]);
+            String picturePath = c.getString(cIndex);
+            c.close();
+            ImageButton bill = (ImageButton) findViewById(R.id.AddPhotoBill);
+            bill.setImageBitmap(BitmapFactory.decodeFile(picturePath));
+            flag_img_edited = true;
+            tmp = picturePath;
+            //Toast.makeText(this, "path:"+ tmp, Toast.LENGTH_LONG).show();
+
+        }
+
+    }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

@@ -73,7 +73,7 @@ public class GroupActivity extends AppCompatActivity {
         Float neg = datigruppo.getNegExpenses();
 
         String subtitle = "";
-        subtitle += "They Owe You: " + pos.toString() + " - You Owe: " + neg.toString();
+        subtitle += "They Owe You: " + pos.toString()+ " - You Owe: " + neg.toString();
 
 
         getSupportActionBar().setTitle(gname);

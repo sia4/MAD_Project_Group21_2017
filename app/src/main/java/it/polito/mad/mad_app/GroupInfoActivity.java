@@ -22,6 +22,7 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import it.polito.mad.mad_app.model.GroupData;
 import it.polito.mad.mad_app.model.MainData;
@@ -151,6 +152,7 @@ public class GroupInfoActivity extends AppCompatActivity {
             imageView.setImageBitmap(BitmapFactory.decodeFile(picturePath));
             flag_img_edited = true;
             tmp = picturePath;
+            //Toast.makeText(this, "path:"+ tmp, Toast.LENGTH_LONG).show();
 
         }
 
