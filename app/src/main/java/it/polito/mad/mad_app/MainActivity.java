@@ -43,6 +43,7 @@ public class MainActivity extends AppCompatActivity {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        //controllo che l'utente sia loggato
         auth = FirebaseAuth.getInstance();
         mAuthListener = new FirebaseAuth.AuthStateListener() {
             @Override
@@ -59,13 +60,13 @@ public class MainActivity extends AppCompatActivity {
         };
         Toolbar mainToolbar = (Toolbar) findViewById(R.id.main_toolbar);
         setSupportActionBar(mainToolbar);
-        //to write
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        // TODO semplice esempio per scrivere
+        /*FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference myRef = database.getReference("/Groups/G1/Members/u3");
         myRef.setValue(true);
-        myRef = database.getReference("/Groups/G1/Members");
-        //to read
-        myRef.addValueEventListener(new ValueEventListener() {
+        myRef = database.getReference("/Groups/G1/Members");*/
+        // TODO semplice esempio per leggere
+        /*myRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 // This method is called once with the initial value and again
@@ -80,7 +81,7 @@ public class MainActivity extends AppCompatActivity {
                 // Failed to read value
                 //log.w(TAG, "Failed to read value.", error.toException());
             }
-        });
+        });*/
 
         FragmentManager f = getSupportFragmentManager();
         FragmentTransaction transaction = f.beginTransaction();

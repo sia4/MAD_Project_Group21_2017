@@ -14,6 +14,8 @@ public class GroupData {
 
     private List<ExpenseData> lexpensive = new ArrayList<>();
     private List<UserData> lUsers = new ArrayList<>();
+    //private Map<String,Boolean> Users = new TreeMap<>();
+    //private Map<String,Boolean> Expense = new TreeMap<>();
     private Map<String, BalanceData> lBudget = new TreeMap<>(); // mappa che continee solo in default currency
     private Map<String, BalanceData> cBudget = new TreeMap<>(); // mappa contenente gli elementi in altre currencies, la Key è formata da email+currency
     private Map<String, Integer> uPercentuage = new TreeMap<>();
