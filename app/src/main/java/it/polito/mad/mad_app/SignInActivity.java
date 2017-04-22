@@ -1,4 +1,4 @@
-package it.polito.mad.mad_app.model;
+package it.polito.mad.mad_app;
 
 import android.content.Intent;
 import android.support.annotation.NonNull;
@@ -16,10 +16,6 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-
-import it.polito.mad.mad_app.LoginActivity;
-import it.polito.mad.mad_app.MainActivity;
-import it.polito.mad.mad_app.R;
 
 public class SignInActivity extends AppCompatActivity {
     private EditText inputEmail, inputPassword;

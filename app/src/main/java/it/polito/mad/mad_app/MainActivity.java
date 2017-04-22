@@ -24,7 +24,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import it.polito.mad.mad_app.model.MainData;
-import it.polito.mad.mad_app.model.SignInActivity;
+import it.polito.mad.mad_app.SignInActivity;
 
 //import android.support.v7.util.ThreadUtil;
 

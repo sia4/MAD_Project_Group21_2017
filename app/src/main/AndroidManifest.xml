@@ -16,6 +16,22 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.AppCompat.Light.NoActionBar">
 
+        <!--
+        <provider
+            android:name="android.support.v4.content.FileProvider"
+            android:authorities="com.example.android.fileprovider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths"></meta-data>
+        </provider>
+        -->
+        <uses-feature android:name="android.hardware.camera"
+            android:required="true" />
+        <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+
+
         <activity android:name=".LoginActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -71,7 +87,7 @@
             android:name=".BalanceActivity"
             android:label="@string/title_activity_balance"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
-        <activity android:name=".model.SignInActivity"></activity>
+        <activity android:name=".SignInActivity"></activity>
     </application>
 
 </manifest>
