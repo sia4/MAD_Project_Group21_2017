@@ -11,19 +11,30 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
+
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.GenericTypeIndicator;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
+
 
 import it.polito.mad.mad_app.model.ExpenseData;
 import it.polito.mad.mad_app.model.MainData;
 import it.polito.mad.mad_app.model.RecyclerTouchListener;
 
-public class HistoryFragment extends Fragment {
+public class    HistoryFragment extends Fragment {
 
     private static final int VERTICAL_ITEM_SPACE = 48;
 
-    private List<ExpenseData> data = new ArrayList<>();
+    static private List<ExpenseData> lex = new ArrayList<>();
     private Context context;
 
     @Override
@@ -32,7 +43,7 @@ public class HistoryFragment extends Fragment {
         final View view = inflater.inflate(R.layout.fragment_history, container, false);
 
         context = view.getContext();
-        RecyclerView recyclerView = (RecyclerView) view;
+        final RecyclerView recyclerView = (RecyclerView) view;
         recyclerView.setLayoutManager(new LinearLayoutManager(context));
         //recyclerView.addItemDecoration(new DividerItemDecoration(getActivity(),
          //       DividerItemDecoration.VERTICAL));
@@ -41,7 +52,7 @@ public class HistoryFragment extends Fragment {
             @Override
             public void onClick(View view, int position) {
 
-                final ExpenseData expense = data.get(position);
+                final ExpenseData expense = lex.get(position);
                 Intent intent = new Intent().setClass(view.getContext(), ExpenseInfoActivity.class);
                 intent.putExtra("name", expense.getName());
                 intent.putExtra("category", expense.getCategory());
@@ -67,13 +78,40 @@ public class HistoryFragment extends Fragment {
 
         String GroupName = this.getArguments().getString("GroupName");
         System.out.println("H: " + GroupName);
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference myRef = database.getReference("/Expenses/"+GroupName +"/");
 
-        data = MainData.getInstance().getGroup(GroupName).getExpensies();
-        HistoryAdapter hAdapter = new HistoryAdapter(data);
+        lex = MainData.getInstance().getGroup(GroupName).getExpensies();
+        final HistoryAdapter hAdapter = new HistoryAdapter(lex);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(context);
         recyclerView.setLayoutManager(mLayoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setAdapter(hAdapter);
+
+        ///////////////////
+
+
+        myRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                int i =0;
+                for(DataSnapshot Exsnapshot : dataSnapshot.getChildren()){
+                   // ExpenseData ex = Exsnapshot.getValue(ExpenseData.class);
+                    //lex.add(ex);
+                    i++;
+                }
+                System.out.print(i);
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError error) {
+                // Failed to read value
+                //log.w(TAG, "Failed to read value.", error.toException());
+            }
+        });
+
+        ////////////////
 
         return view;
     }

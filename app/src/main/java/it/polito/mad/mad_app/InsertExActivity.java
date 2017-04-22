@@ -26,6 +26,9 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -275,6 +278,8 @@ public class InsertExActivity extends AppCompatActivity {
                 final Spinner Talgorithm = (Spinner) findViewById(R.id.ChooseAlgorithm);
                 final EditText Tvalue = (EditText) findViewById(R.id.value);
 
+                FirebaseDatabase database = FirebaseDatabase.getInstance();
+
 
                 int flagok = 1;
                 name = Tname.getText().toString();
@@ -294,16 +299,13 @@ public class InsertExActivity extends AppCompatActivity {
                     value = Float.parseFloat(Tvalue.getText().toString());
 
                    if (algorithm.equals("equally")) {
-                        MainData.getInstance().addExpensiveToGroup(Gname, name, description, category, currency, value, value - (value / (MainData.getInstance().getGroup(Gname).getlUsers().size() + 1)), algorithm);
                         MainData.getInstance().getGroup(Gname).allaRomana(value, currency);
+                        DatabaseReference myRef = database.getReference("/Expenses/" + Gname).push();
+                        myRef.setValue(MainData.getInstance().getGroup(Gname).addExpensive(name, description, category, currency, value, value - (value / (MainData.getInstance().getGroup(Gname).getlUsers().size() + 1)), algorithm ));
+
                         flagok = 1;
                     }
-                /*    else{
-                        flagok=0;
-                        Toast.makeText(InsertExActivity.this, "Just Alla Romana algorithm is already implemented.", Toast.LENGTH_LONG).show();
-                    }
-                */
-                //TODO IL CODICE SOTTOSTANTE SONO GLI ALGORITMI BY PERCENTUAGE E BY IMPORT, COMMENTATO PERCHE' CRASHA; DA RISOLVERE
+
 
                 else{
                     float algValue, algSum=0, meValue=0;
@@ -327,14 +329,18 @@ public class InsertExActivity extends AppCompatActivity {
                     }
 
                     if((algorithm.equals("by percentuage") && algSum==100)) {
-                        MainData.getInstance().addExpensiveToGroup(Gname, name, description, category, currency, value, value - (value*meValue/100), algorithm);
+                        //MainData.getInstance().addExpensiveToGroup(Gname, name, description, category, currency, value, value - (value*meValue/100), algorithm);
                         MainData.getInstance().getGroup(Gname).byPercentuage(value, currency);
+                        DatabaseReference myRef = database.getReference("/Expenses/" + Gname).push();
+                        myRef.setValue(MainData.getInstance().getGroup(Gname).addExpensive(name, description, category, currency, value, value - (value*meValue/100), algorithm));
                         flagok = 1;
                     }
 
                     if((algorithm.equals("by import") && algSum==value)) {
-                        MainData.getInstance().addExpensiveToGroup(Gname, name, description, category, currency, value, (value- meValue) , algorithm);
+                        //MainData.getInstance().addExpensiveToGroup(Gname, name, description, category, currency, value, (value- meValue) , algorithm);
                         MainData.getInstance().getGroup(Gname).byImport(value, currency);
+                        DatabaseReference myRef = database.getReference("/Expenses/" + Gname).push();
+                        myRef.setValue(MainData.getInstance().getGroup(Gname).addExpensive(name, description, category, currency, value, (value- meValue) , algorithm));
                         flagok = 1;
                     }
 

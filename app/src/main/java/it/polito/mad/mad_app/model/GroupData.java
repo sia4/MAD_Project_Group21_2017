@@ -141,8 +141,11 @@ public class GroupData {
     public void addTouImportMap(String email, int algValue) {
         uImport.put(email, algValue);
     }
-    public  void addExpensive(String name, String descr, String category, String currency, float value, float myvalue, String algorithm){
-        this.lexpensive.add(new ExpenseData(name, descr, category, currency, value,myvalue, algorithm));
+    public  ExpenseData addExpensive(String name, String descr, String category, String currency, float value, float myvalue, String algorithm){
+        ExpenseData e = new ExpenseData(name, descr, category, currency, value,myvalue, algorithm);
+        this.lexpensive.add(e);
+        return e;
+
     }
     public void addUser(UserData user){
         lUsers.add(user);

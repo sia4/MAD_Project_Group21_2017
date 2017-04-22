@@ -57,25 +57,6 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.MyViewHo
         holder.impact_ex.setTextColor(Color.parseColor("#27B011"));
         holder.impact_ex.setText("They owe you:");
         holder.money_ex.setTextColor(Color.parseColor("#27B011"));
-        /*holder.name_ex.setOnClickListener(new View.OnClickListener() {
-        @Override
-                public void onClick(View v) {
-                Intent intent = new Intent().setClass(v.getContext(), ExpenseInfoActivity.class);
-                intent.putExtra("name", expense.getName());
-                intent.putExtra("category", expense.getCategory());
-                intent.putExtra("currency", expense.getCurrency());
-                intent.putExtra("algorithm", expense.getAlgorithm());
-                intent.putExtra("description", expense.getDescription());
-                intent.putExtra("myvalue", String.format("%.2f", expense.getMyvalue()));
-                intent.putExtra("value", String.format("%.2f", expense.getValue()));
-                intent.putExtra("creator", MainData.getInstance().getMyName());
-                intent.putExtra("date", expense.getDate());
-                v.getContext().startActivity(intent);
-            }
-        });*/
-
-
-
 
     }
 
