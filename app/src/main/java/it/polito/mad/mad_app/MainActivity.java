@@ -14,59 +14,26 @@ import android.view.View;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
-
-import java.util.HashMap;
-import java.util.Map;
 
 import it.polito.mad.mad_app.model.MainData;
-import it.polito.mad.mad_app.SignInActivity;
 
 //import android.support.v7.util.ThreadUtil;
 
-public class MainActivity extends AppCompatActivity {
-    private FirebaseAuth auth;
-    private FirebaseAuth.AuthStateListener mAuthListener;
-    MainData ad = MainData.getInstance();
+
 /*
-    public static MainData getMyData() {
-        return ad;
-    }
-*/
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
 
+        TODO semplice esempio per scrivere
 
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-        //controllo che l'utente sia loggato
-        auth = FirebaseAuth.getInstance();
-        mAuthListener = new FirebaseAuth.AuthStateListener() {
-            @Override
-            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-                FirebaseUser user = firebaseAuth.getCurrentUser();
-                if (user != null) {
-                    startActivity(new Intent(MainActivity.this, LoginActivity.class));
-                    finish();
-                } else {
-                    // User is signed out
-                    //Log.d(TAG, "onAuthStateChanged:signed_out");
-                }
-            }
-        };
-        Toolbar mainToolbar = (Toolbar) findViewById(R.id.main_toolbar);
-        setSupportActionBar(mainToolbar);
-        // TODO semplice esempio per scrivere
-        /*FirebaseDatabase database = FirebaseDatabase.getInstance();
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference myRef = database.getReference("/Groups/G1/Members/u3");
         myRef.setValue(true);
-        myRef = database.getReference("/Groups/G1/Members");*/
-        // TODO semplice esempio per leggere
-        /*myRef.addValueEventListener(new ValueEventListener() {
+        myRef = database.getReference("/Groups/G1/Members");
+
+
+
+        TODO semplice esempio per leggere
+
+        myRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 // This method is called once with the initial value and again
@@ -81,12 +48,67 @@ public class MainActivity extends AppCompatActivity {
                 // Failed to read value
                 //log.w(TAG, "Failed to read value.", error.toException());
             }
-        });*/
+        });
+
+*/
+
+public class MainActivity extends AppCompatActivity {
+    private FirebaseAuth auth;
+    private FirebaseAuth.AuthStateListener mAuthListener;
+    MainData ad = MainData.getInstance();
+/*
+    public static MainData getMyData() {
+        return ad;
+    }
+*/
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+
+        /*
+        * TODO : Implementare il retrieve dei dati dell'utente.
+        *
+        * > Dati User
+        * > Dati Gruppi a cui è iscritto per popolare fragment
+        *
+        * Notare che Firebase Auth ha delle informazioni relative agli utenti
+        * loggati
+        *
+        * >> https://firebase.google.com/docs/auth/web/manage-users
+        *
+        * */
+
+
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+        auth = FirebaseAuth.getInstance();
+
+        mAuthListener = new FirebaseAuth.AuthStateListener() {
+            @Override
+            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) { //controllo che l'utente sia loggato
+
+                FirebaseUser user = firebaseAuth.getCurrentUser();
+
+                if (user != null) {
+
+                    startActivity(new Intent(MainActivity.this, LoginActivity.class));
+                    finish();
+
+                } else {
+                    // User is signed out
+                    //Log.d(TAG, "onAuthStateChanged:signed_out");
+                }
+            }
+        };
+
+        Toolbar mainToolbar = (Toolbar) findViewById(R.id.main_toolbar);
+        setSupportActionBar(mainToolbar);
+
 
         FragmentManager f = getSupportFragmentManager();
         FragmentTransaction transaction = f.beginTransaction();
         transaction.replace(R.id.main_framelayout, new GroupsFragment());
         transaction.commit();
+
         final FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.addGroup);
         TabLayout tabL = (TabLayout) findViewById(R.id.tabs);
         tabL.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {

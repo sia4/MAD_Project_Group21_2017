@@ -67,7 +67,7 @@ public class GroupActivity extends AppCompatActivity {
         final Bundle b = new Bundle();
         b.putString("GroupName", gname);
 
-        System.out.println(datigruppo.getName());
+        System.out.println("CICCIOBOMBA" + datigruppo.getName());
 
         Float pos = datigruppo.getPosExpenses();
         Float neg = datigruppo.getNegExpenses();

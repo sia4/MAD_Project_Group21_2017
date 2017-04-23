@@ -7,7 +7,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
-import android.support.v4.content.FileProvider;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -21,7 +20,6 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -357,6 +355,7 @@ public class InsertExActivity extends AppCompatActivity {
                 }
 
                     if (flagok == 1) {
+
                         Intent i2 = new Intent(InsertExActivity.this, GroupActivity.class);
                         i2.putExtra("name", Gname);
                         setResult(RESULT_OK, i2);
