@@ -29,6 +29,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import it.polito.mad.mad_app.model.Group;
 import it.polito.mad.mad_app.model.GroupData;
 import it.polito.mad.mad_app.model.MainData;
 import it.polito.mad.mad_app.model.UserData;
@@ -85,18 +86,21 @@ public class InsertGroupActivity extends AppCompatActivity {
                 //UserData ud = MainData.getInstance().findUserByMail(UserEmail);
                 //if(ud == null) {
                 DatabaseReference mTest = FirebaseDatabase.getInstance().getReference();
-                //TODO cerco gli utenti la cui email sia uguale a quella inserita,ordinando tutti gli utenti per email e non più per chiave
-                mTest.child("Users").orderByChild("Email").equalTo(UserEmail).addListenerForSingleValueEvent(new ValueEventListener() {
+                //TODO adattare alla classe di Edo, se utente presente inserisco in "users" l'identificatico, altrimenti inserisco la mail in
+                //TODO un'altra struttura
+
+                mTest.child("Users").orderByChild("email").equalTo(UserEmail).addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         //TODO in questo modo mi ritorna una hash map u2={oggetto utente}
                         //Map<String, Object> map = (Map<String, Object>) dataSnapshot.getValue();
                         //System.out.println(map);
                         //TODO in questo modo invece prendo direttamente l'oggetto utente
-                        for (DataSnapshot userSnapshot: dataSnapshot.getChildren()) {
+                        for (DataSnapshot userSnapshot: dataSnapshot.getChildren()) { //a me non entra in questo for (Sia)
                             ud = userSnapshot.getValue(UserData.class);
                             String key=userSnapshot.getKey(); //ritorna la chive dell'utente che quindi
                             // poi va inserito nell'oggetto gruppo come chiave:true
+                            Toast.makeText(InsertGroupActivity.this, key, Toast.LENGTH_LONG).show();
                         }
 
                     }
@@ -143,29 +147,45 @@ public class InsertGroupActivity extends AppCompatActivity {
 
                     Toast.makeText(InsertGroupActivity.this, "Please insert group description.", Toast.LENGTH_LONG).show();
 
-                } else if (users.isEmpty()) {
+                }/* else if (users.isEmpty()) {
 
                     Toast.makeText(InsertGroupActivity.this, "Please insert at least one other member.", Toast.LENGTH_LONG).show();
 
-                } else if (Tcurrency.getSelectedItem().toString().equals("Select currency")) {
+                }*/ else if (Tcurrency.getSelectedItem().toString().equals("Select currency")) {
 
                     Toast.makeText(InsertGroupActivity.this, "Please insert currency.", Toast.LENGTH_LONG).show();
 
                 } else {
 
                     FirebaseDatabase database = FirebaseDatabase.getInstance();
-                    DatabaseReference myRef = database.getReference("/Groups");
+                    DatabaseReference myRef = database.getReference("Groups");
                     String groupId = myRef.push().getKey();
-                    GroupData G=new GroupData(GroupName, GroupDescription, Tcurrency.getSelectedItem().toString());
+                    Group G = new Group(GroupName, GroupDescription, Tcurrency.getSelectedItem().toString());
+                    G.setImagePath("https://firebasestorage.googleapis.com/v0/b/allaromana-3f98e.appspot.com/o/group_default.png?alt=media&token=40bc93f4-6b97-466e-b130-e140f57c5895");
+                    myRef.child(groupId).setValue(G);
 
                     //Intent gotomain = new Intent(InsertGroupActivity.this, MainActivity.class);
                     //GroupData newGroup = MainData.getInstance().addGroup(GroupName, GroupDescription, Tcurrency.getSelectedItem().toString());
 
+                    UserData us = new UserData("mail", "nome", "cognome", 555);
+                    users.add(us);
+
+                    //TODO: in users ci devono essere gli identificativi degli utenti che fanno parte del gruppo
                     for (UserData u : users) {
-                        G.addUser(u);
+                    //    G.addUser(u); prima
+                    //    G.addMember(u); nuovo
                     }
-                    //newGroup.addUser(MainData.getInstance().returnMyData());
+                    //TODO se un utente non è presente inviare una mail con l'identificativo del gruppo e l'invito a iscriversi all'app
+                    //TODO aggiungere una view in cui l'utente possa inserire il codice del gruppo
+                    //TODO aggiungere in classe group l'utente in una mappa diversa per avere il controllo di chi può avere accesso ad un gruppo
+                    //elementi di test
+                    G.addMember("uid1");
+                    G.addMember("uid2");
+
                     myRef.child(groupId).setValue(G);
+
+                    //newGroup.addUser(MainData.getInstance().returnMyData());
+
                     //Intent gotomain = new Intent(InsertGroupActivity.this, MainActivity.class);
                     //gotomain.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
                     //startActivity(gotomain);
