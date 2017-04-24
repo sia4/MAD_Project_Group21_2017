@@ -3,16 +3,15 @@ package it.polito.mad.mad_app;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -27,8 +26,6 @@ import java.util.List;
 import java.util.Map;
 
 import it.polito.mad.mad_app.model.Group;
-import it.polito.mad.mad_app.model.GroupData;
-import it.polito.mad.mad_app.model.MainData;
 import it.polito.mad.mad_app.model.RecyclerTouchListener;
 
 
@@ -77,33 +74,43 @@ public class GroupsFragment extends Fragment {
                 // whenever data at this location is updated.
                 Map<String, Object> map = (Map<String, Object>) dataSnapshot.getValue();
                 //d = new ArrayList<>();
-                for(String k : map.keySet()) {
-                    System.out.println("Value is: " + k);
-                    FirebaseDatabase database2 = FirebaseDatabase.getInstance();
-                    DatabaseReference myRef2 = database2.getReference("Groups").child(k);
+                if (map != null) {
 
-                    myRef2.addValueEventListener(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(DataSnapshot dataSnapshot) {
-                            Map<String, Object> map = (Map<String, Object>) dataSnapshot.getValue();
+                    for (String k : map.keySet()) {
+                        System.out.println("Value is: " + k);
+                        FirebaseDatabase database2 = FirebaseDatabase.getInstance();
+                        DatabaseReference myRef2 = database2.getReference("Groups").child(k);
 
-                            System.out.println("Value is: " + map.toString());
-                            Group g = new Group((String)map.get("name"),(String) map.get("surname"), (String)map.get("defaultCurrency"));
-                            d.add(g);
-                            //if(progressBar.isActivated())
+                        myRef2.addValueEventListener(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(DataSnapshot dataSnapshot) {
+                                Map<String, Object> map = (Map<String, Object>) dataSnapshot.getValue();
+
+                                System.out.println("Value is: " + map.toString());
+                                Group g = new Group((String) map.get("name"), (String) map.get("surname"), (String) map.get("defaultCurrency"));
+                                d.add(g);
+                                //if(progressBar.isActivated())
                                 progressBar.setVisibility(View.INVISIBLE);
-                            gAdapter.notifyDataSetChanged();
+                                gAdapter.notifyDataSetChanged();
 
-                        }
+                            }
 
-                        @Override
-                        public void onCancelled(DatabaseError error) {
-                            // Failed to read value
-                            //log.w(TAG, "Failed to read value.", error.toException());
-                        }
-                    });
+                            @Override
+                            public void onCancelled(DatabaseError error) {
+                                // Failed to read value
+                                //log.w(TAG, "Failed to read value.", error.toException());
+                            }
+                        });
+
+                    }
+
+                } else {
+
+                    progressBar.setVisibility(view.INVISIBLE);
+                    Toast.makeText(getActivity(), "There are no groups!", Toast.LENGTH_LONG).show();
 
                 }
+
                 //Log.d(TAG, "Value is: " + value);
             }
 

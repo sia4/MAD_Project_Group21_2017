@@ -32,22 +32,112 @@ public class LoginActivity extends AppCompatActivity {
     private FirebaseAuth.AuthStateListener mAuthListener;
     private DatabaseReference Firebase_DB;
     private boolean user_exists = false;
-    private String request = "AUTH_LOGIN";
 
-    /*
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
 
-        TODO: PROBLEMA di Gestione di Sessione
+        mAuth = FirebaseAuth.getInstance();
+        Firebase_DB = FirebaseDatabase.getInstance().getReference();
 
-        Se vedi, entra erroneamente dentro a user != null
-        anche se l'utente è stato cancellato dall'auth di
-        FireBase.
+        CheckLoggedUser();
 
-        (Provato su Emulatore)
+        /*mAuthListener = new FirebaseAuth.AuthStateListener() {
 
-        Stesso problema si riscontra su SignIn e Main Activity
+            @Override
+            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+
+                FirebaseUser user = firebaseAuth.getCurrentUser();
+
+                if (user != null) {
+
+                    System.out.println("++++++Login ONAUTH -- QUI che cazzo succede+++++");
+                    System.out.println(user.getEmail());
+
+                    CheckUser(user);
 
 
-        */
+                } else { // User is signed out
+
+                    //Log.d(TAG, "onAuthStateChanged:signed_out");
+
+                }
+            }
+        };*/
+
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_login);
+
+        inputEmail = (EditText) findViewById(R.id.email);
+        inputPassword = (EditText) findViewById(R.id.password);
+        progressBar = (ProgressBar) findViewById(R.id.progressBar);
+        btnSignup = (Button) findViewById(R.id.btn_signup);
+        btnLogin = (Button) findViewById(R.id.btn_login);
+
+        btnSignup.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+               startActivity(new Intent(LoginActivity.this, SignInActivity.class));
+            }
+        });
+
+
+        btnLogin.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                String email = inputEmail.getText().toString();
+                final String password = inputPassword.getText().toString();
+
+                if (TextUtils.isEmpty(email)) {
+                    Toast.makeText(getApplicationContext(), "Enter email address!", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                if (TextUtils.isEmpty(password)) {
+                    Toast.makeText(getApplicationContext(), "Enter password!", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                if (password.length() < 6) {
+                    Toast.makeText(getApplicationContext(), "Password too short, enter minimum 6 characters!", Toast.LENGTH_LONG).show();
+                    return;
+                }
+
+                progressBar.setVisibility(View.VISIBLE);
+
+                //Authenticate user
+                mAuth.signInWithEmailAndPassword(email, password)
+                        .addOnCompleteListener(LoginActivity.this, new OnCompleteListener<AuthResult>() {
+
+                            @Override
+                            public void onComplete(@NonNull Task<AuthResult> task) {
+
+                                progressBar.setVisibility(View.GONE);
+
+                                if (!task.isSuccessful()) {
+                                    // there was an error
+                                    if (password.length() < 6) {
+
+                                        Toast.makeText(getApplicationContext(), "Password too short, enter minimum 6 characters!", Toast.LENGTH_LONG).show();
+
+                                    } else {
+
+                                        Toast.makeText(getApplicationContext(), "Authentication failed, check your email and password or sign up", Toast.LENGTH_LONG).show();
+
+                                    }
+
+                                } else {
+
+                                    Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                                    startActivity(intent);
+                                    finish();
+
+                                }
+                            }
+                        });
+            }
+        });
+    }
 
     protected void CheckUser(FirebaseUser U) {
 
@@ -116,117 +206,11 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-
-        mAuth = FirebaseAuth.getInstance();
-        Firebase_DB = FirebaseDatabase.getInstance().getReference();
-
-        CheckLoggedUser();
-
-        mAuthListener = new FirebaseAuth.AuthStateListener() {
-
-            @Override
-            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-
-                FirebaseUser user = firebaseAuth.getCurrentUser();
-
-                if (user != null) {
-
-                    System.out.println("++++++Login ONAUTH -- QUI che cazzo succede+++++");
-                    System.out.println(user.getEmail());
-
-                    CheckUser(user);
-
-
-                } else { // User is signed out
-
-                    //Log.d(TAG, "onAuthStateChanged:signed_out");
-
-                }
-            }
-        };
-
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_login);
-
-        inputEmail = (EditText) findViewById(R.id.email);
-        inputPassword = (EditText) findViewById(R.id.password);
-        progressBar = (ProgressBar) findViewById(R.id.progressBar);
-        btnSignup = (Button) findViewById(R.id.btn_signup);
-        btnLogin = (Button) findViewById(R.id.btn_login);
-
-        btnSignup.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-               startActivity(new Intent(LoginActivity.this, SignInActivity.class));
-            }
-        });
-
-        System.out.println("++++++Login CICCIOBANANA+++++");
-
-        btnLogin.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                String email = inputEmail.getText().toString();
-                final String password = inputPassword.getText().toString();
-
-                if (TextUtils.isEmpty(email)) {
-                    Toast.makeText(getApplicationContext(), "Enter email address!", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-
-                if (TextUtils.isEmpty(password)) {
-                    Toast.makeText(getApplicationContext(), "Enter password!", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-
-                if (password.length() < 6) {
-                    Toast.makeText(getApplicationContext(), "Password too short, enter minimum 6 characters!", Toast.LENGTH_LONG).show();
-                    return;
-                }
-
-                progressBar.setVisibility(View.VISIBLE);
-
-                //Authenticate user
-                mAuth.signInWithEmailAndPassword(email, password)
-                        .addOnCompleteListener(LoginActivity.this, new OnCompleteListener<AuthResult>() {
-
-                            @Override
-                            public void onComplete(@NonNull Task<AuthResult> task) {
-
-                                progressBar.setVisibility(View.GONE);
-
-                                if (!task.isSuccessful()) {
-                                    // there was an error
-                                    if (password.length() < 6) {
-
-                                        Toast.makeText(getApplicationContext(), "Password too short, enter minimum 6 characters!", Toast.LENGTH_LONG).show();
-
-                                    } else {
-
-                                        Toast.makeText(getApplicationContext(), "Authentication failed, check your email and password or sign up", Toast.LENGTH_LONG).show();
-
-                                    }
-
-                                } else {
-
-                                    //Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                                    //startActivity(intent);
-                                    //finish();
-
-                                }
-                            }
-                        });
-            }
-        });
-    }
-
-    @Override
     protected void onStart(){
         super.onStart();
-        mAuth.addAuthStateListener(mAuthListener);
-
+        if (mAuthListener != null) {
+            mAuth.addAuthStateListener(mAuthListener);
+        }
     }
     @Override
     public void onStop() {
@@ -235,6 +219,5 @@ public class LoginActivity extends AppCompatActivity {
             mAuth.removeAuthStateListener(mAuthListener);
         }
     }
-
 
 }
