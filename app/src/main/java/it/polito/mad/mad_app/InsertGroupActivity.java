@@ -22,16 +22,22 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.TreeMap;
 
 import it.polito.mad.mad_app.model.Group;
 import it.polito.mad.mad_app.model.GroupData;
 import it.polito.mad.mad_app.model.MainData;
+import it.polito.mad.mad_app.model.User;
 import it.polito.mad.mad_app.model.UserData;
 
 public class InsertGroupActivity extends AppCompatActivity {
@@ -41,8 +47,11 @@ public class InsertGroupActivity extends AppCompatActivity {
     private String GroupName;
     private String GroupDescription;
     private String UserEmail;
-    private UserData ud;
-    private List<UserData> users = new ArrayList<>();
+    private User ud;
+    private String key;
+    private List<String> u= new ArrayList<>();
+    private Map<String,Boolean>m= new TreeMap<>();
+    private UsersToAddAdapter uAdapter = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,25 +80,24 @@ public class InsertGroupActivity extends AppCompatActivity {
         getSupportActionBar().setTitle("New Group");
         final EditText Uemail = (EditText) findViewById(R.id.User1);
         Button userbutton = (Button) findViewById(R.id.Adduser1);
-
-        RecyclerView userRecyclerView = (RecyclerView) findViewById(R.id.usersToAdd);
+        final RecyclerView userRecyclerView = (RecyclerView) findViewById(R.id.usersToAdd);
         userRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         userRecyclerView.addItemDecoration(new android.support.v7.widget.DividerItemDecoration(InsertGroupActivity.this,
                 android.support.v7.widget.DividerItemDecoration.VERTICAL));
-
-        final UsersToAddAdapter uAdapter = new UsersToAddAdapter(users);
+        uAdapter = new UsersToAddAdapter(u);
         userRecyclerView.setAdapter(uAdapter);
-        UserData ud1;
+        final DatabaseReference mTest = FirebaseDatabase.getInstance().getReference();
+        final Query quer=mTest.child("Users").orderByChild("email");
         userbutton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 UserEmail = Uemail.getText().toString().toLowerCase();
                 //UserData ud = MainData.getInstance().findUserByMail(UserEmail);
                 //if(ud == null) {
-                DatabaseReference mTest = FirebaseDatabase.getInstance().getReference();
                 //TODO adattare alla classe di Edo, se utente presente inserisco in "users" l'identificatico, altrimenti inserisco la mail in
                 //TODO un'altra struttura
+                //mTest.child("Users").orderByChild("email").equalTo(UserEmail).addListenerForSingleValueEvent(new ValueEventListener() {
+                quer.equalTo(UserEmail).addListenerForSingleValueEvent(new ValueEventListener() {
 
-                mTest.child("Users").orderByChild("email").equalTo(UserEmail).addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         //TODO in questo modo mi ritorna una hash map u2={oggetto utente}
@@ -97,12 +105,20 @@ public class InsertGroupActivity extends AppCompatActivity {
                         //System.out.println(map);
                         //TODO in questo modo invece prendo direttamente l'oggetto utente
                         for (DataSnapshot userSnapshot: dataSnapshot.getChildren()) { //a me non entra in questo for (Sia)
-                            ud = userSnapshot.getValue(UserData.class);
-                            String key=userSnapshot.getKey(); //ritorna la chive dell'utente che quindi
+                            ud = userSnapshot.getValue(User.class);
+                            key=userSnapshot.getKey(); //ritorna la chive dell'utente che quindi
                             // poi va inserito nell'oggetto gruppo come chiave:true
                             Toast.makeText(InsertGroupActivity.this, key, Toast.LENGTH_LONG).show();
                         }
-
+                        if(key == null) {
+                            Toast.makeText(InsertGroupActivity.this, "The user doesn't exist!", Toast.LENGTH_LONG).show();
+                        } else {
+                            Uemail.setText("");
+                            m.put(key,true);
+                            u.add(ud.getName() + " " + ud.getSurname());
+                            uAdapter.notifyDataSetChanged();
+                            key=null;
+                        }
                     }
 
                     @Override
@@ -111,15 +127,10 @@ public class InsertGroupActivity extends AppCompatActivity {
                     }
                 });
 
-                if(ud == null) {
-                    Toast.makeText(InsertGroupActivity.this, "The user doesn't exist!", Toast.LENGTH_LONG).show();
-                } else {
-                    Uemail.setText("");
-                    users.add(ud);
-                    uAdapter.notifyDataSetChanged();
-                }
             }
+
     });
+
     }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -147,11 +158,11 @@ public class InsertGroupActivity extends AppCompatActivity {
 
                     Toast.makeText(InsertGroupActivity.this, "Please insert group description.", Toast.LENGTH_LONG).show();
 
-                }/* else if (users.isEmpty()) {
+                }else if (m.isEmpty()) {
 
                     Toast.makeText(InsertGroupActivity.this, "Please insert at least one other member.", Toast.LENGTH_LONG).show();
 
-                }*/ else if (Tcurrency.getSelectedItem().toString().equals("Select currency")) {
+                } else if (Tcurrency.getSelectedItem().toString().equals("Select currency")) {
 
                     Toast.makeText(InsertGroupActivity.this, "Please insert currency.", Toast.LENGTH_LONG).show();
 
@@ -162,34 +173,15 @@ public class InsertGroupActivity extends AppCompatActivity {
                     String groupId = myRef.push().getKey();
                     Group G = new Group(GroupName, GroupDescription, Tcurrency.getSelectedItem().toString());
                     G.setImagePath("https://firebasestorage.googleapis.com/v0/b/allaromana-3f98e.appspot.com/o/group_default.png?alt=media&token=40bc93f4-6b97-466e-b130-e140f57c5895");
+                    G.addMembers(m);
                     myRef.child(groupId).setValue(G);
-
-                    //Intent gotomain = new Intent(InsertGroupActivity.this, MainActivity.class);
-                    //GroupData newGroup = MainData.getInstance().addGroup(GroupName, GroupDescription, Tcurrency.getSelectedItem().toString());
-
-                    UserData us = new UserData("mail", "nome", "cognome", 555);
-                    users.add(us);
-
-                    //TODO: in users ci devono essere gli identificativi degli utenti che fanno parte del gruppo
-                    for (UserData u : users) {
-                    //    G.addUser(u); prima
-                    //    G.addMember(u); nuovo
+                    Set keys = m.keySet();
+                    database = FirebaseDatabase.getInstance();
+                    for (Iterator i = keys.iterator(); i.hasNext(); ) {
+                        String key = (String) i.next();
+                        myRef = database.getReference("/Users/"+key+"/Groups/"+groupId);
+                        myRef.setValue(true);
                     }
-                    //TODO se un utente non è presente inviare una mail con l'identificativo del gruppo e l'invito a iscriversi all'app
-                    //TODO aggiungere una view in cui l'utente possa inserire il codice del gruppo
-                    //TODO aggiungere in classe group l'utente in una mappa diversa per avere il controllo di chi può avere accesso ad un gruppo
-                    //elementi di test
-                    G.addMember("uid1");
-                    G.addMember("uid2");
-
-                    myRef.child(groupId).setValue(G);
-
-                    //newGroup.addUser(MainData.getInstance().returnMyData());
-
-                    //Intent gotomain = new Intent(InsertGroupActivity.this, MainActivity.class);
-                    //gotomain.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
-                    //startActivity(gotomain);
-
                     setResult(RESULT_OK, null);
                     finish();
                 }

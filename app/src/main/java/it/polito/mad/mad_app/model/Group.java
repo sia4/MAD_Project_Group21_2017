@@ -11,7 +11,6 @@ public class Group {
     private String imagePath;
 
     private Map<String, Boolean> members = new TreeMap<>();
-    private List<UserData> lUsers = new ArrayList<>();
     private Map<String, Boolean> expenses = new TreeMap<>();
     private Map<String, Float> currencies = new TreeMap<>();
 
@@ -48,12 +47,7 @@ public class Group {
         this.imagePath = p;
     }
 
-    public void addMember(String member) {
-        members.put(member, true);
-    }
-    public void addUser(UserData user){
-        lUsers.add(user);
-    }
+    public void addMembers(Map<String,Boolean> m) {this.members=m;    }
 
     public Map<String, Boolean> getMembers() {return members; }
 
