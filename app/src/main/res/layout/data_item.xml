@@ -26,7 +26,6 @@
             android:gravity="left"
             android:textAlignment="gravity"
             android:textSize="@dimen/group_high_text"
-            android:layout_weight="0.5"
             android:textColor="@color/primaryTextColor"
             android:textStyle="bold"/>
         <LinearLayout

@@ -21,6 +21,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
@@ -242,10 +243,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     nav_surname.setText(myu.getSurname()+" "+myu.getName());
                     nav_name.setText(myu.getEmail());
                     String p = myu.getImagePath();
+                    System.out.println("+++++++++++++++"+p);
                     if (p == null) {
                         nav_photo.setImageResource(R.drawable.group_default);
                     } else {
-                        nav_photo.setImageBitmap(BitmapFactory.decodeFile(p));
+                        Glide
+                                .with(getApplicationContext())
+                                .load(p)
+                                .into(nav_photo);
+                        //nav_photo.setImageBitmap(BitmapFactory.decodeFile(p));
                     }
                 }
                 @Override
