@@ -7,13 +7,14 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import java.util.List;
+import java.util.Map;
 
 import it.polito.mad.mad_app.model.UserData;
 
 
 public class UsersToAddAdapter extends RecyclerView.Adapter<UsersToAddAdapter.MyViewHolder> {
 
-    private List<UserData> usersData;
+    private List<String> usersData;
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
         public TextView name;
@@ -25,7 +26,7 @@ public class UsersToAddAdapter extends RecyclerView.Adapter<UsersToAddAdapter.My
     }
 
 
-    public UsersToAddAdapter(List<UserData> usersData) {
+    public UsersToAddAdapter(List<String> usersData) {
         this.usersData = usersData;
     }
 
@@ -39,8 +40,8 @@ public class UsersToAddAdapter extends RecyclerView.Adapter<UsersToAddAdapter.My
 
     @Override
     public void onBindViewHolder(MyViewHolder holder, int position) {
-        UserData user = usersData.get(position);
-        holder.name.setText(user.getName()+" "+user.getSurname());
+        String user = usersData.get(position);
+        holder.name.setText(user);
     }
 
     @Override

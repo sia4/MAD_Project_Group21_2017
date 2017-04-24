@@ -12,11 +12,11 @@ import java.util.TreeMap;
 @IgnoreExtraProperties
 public class User {
 
-    public String name;
-    public String surname;
-    public String email;
-    public String username; // da vedere se utilizzarlo...
-    public Map<String, Boolean> Groups = new TreeMap<>();
+    private String name;
+    private String surname;
+    private String email;
+    private String username; // da vedere se utilizzarlo...
+    private Map<String, Boolean> Groups = new TreeMap<>();
 
     public User() {
         // Default constructor required for calls to DataSnapshot.getValue(User.class)
@@ -30,5 +30,20 @@ public class User {
         //this.Groups.put("", true);
     }
 
+    public String getSurname(){
+        return this.surname;
+    }
+    public String getName(){
+        return this.name;
+    }
+    public String getUsername(){
+        return this.username;
+    }
+    public String getEmail(){
+        return this.email;
+    }
+    public Map<String, Boolean> getGroups(){
+        return this.Groups;
+    }
 
 }

@@ -11,12 +11,13 @@ import android.widget.TextView;
 
 import java.util.List;
 
+import it.polito.mad.mad_app.model.Group;
 import it.polito.mad.mad_app.model.GroupData;
 
 
 public class GroupsAdapter extends RecyclerView.Adapter<GroupsAdapter.MyViewHolder> {
 
-    private List<GroupData> GData;
+    private List<Group> GData;
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
         public TextView name;
@@ -34,7 +35,7 @@ public class GroupsAdapter extends RecyclerView.Adapter<GroupsAdapter.MyViewHold
     }
 
 
-    public GroupsAdapter(List<GroupData> expensiveData) {
+    public GroupsAdapter(List<Group> expensiveData) {
         this.GData = expensiveData;
     }
 
@@ -48,7 +49,7 @@ public class GroupsAdapter extends RecyclerView.Adapter<GroupsAdapter.MyViewHold
 
     @Override
     public void onBindViewHolder(GroupsAdapter.MyViewHolder holder, int position) {
-        final GroupData g = GData.get(position);
+        final Group g = GData.get(position);
         holder.name.setText(g.getName());
 
         String p = g.getImagePath();
@@ -69,8 +70,8 @@ public class GroupsAdapter extends RecyclerView.Adapter<GroupsAdapter.MyViewHold
                 v.getContext().startActivity(intent);
             }
         });*/
-        holder.impact_pos.setText("You owe:"+String.format("%.2f", g.getNegExpenses()));//TODO insert the correct value
-        holder.impact_neg.setText("They owe you:"+String.format("%.2f",g.getPosExpenses()));//TODO insert the correct value
+        holder.impact_pos.setText("You owe:"+String.format("%.2f", 100.383838));//TODO insert the correct value g.getNegExpenses()
+        holder.impact_neg.setText("They owe you:"+String.format("%.2f",33.3333));//TODO insert the correct value g.getPosExpenses()
         holder.impact_neg.setTextColor(Color.parseColor("#27B011"));
         holder.impact_pos.setTextColor(Color.parseColor("#D51111"));
     }

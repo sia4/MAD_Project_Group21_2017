@@ -33,4 +33,8 @@
     <string name="btn_sign_out">Sign Out</string>
     <string name="lbl_forgot_password">Forgot password?</string>
 
+    <!-- Invitation related strings -->
+    <string name="invitation_title">AllaRomana: You are invited to join to a group!</string>
+    <string name="invitation_cta">Download AllaRomana</string>
+
 </resources>
