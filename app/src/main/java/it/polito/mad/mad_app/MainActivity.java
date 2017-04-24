@@ -94,92 +94,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private FirebaseAuth.AuthStateListener mAuthListener;
     MainData ad = MainData.getInstance();
 
-    protected void CheckUser(FirebaseUser U) {
-
-        // verifica che l'utente sia presente in DB
-
-        final String uID = U.getUid();
-
-        U.getToken(true).addOnCompleteListener(new OnCompleteListener<GetTokenResult>() {
-            @Override
-
-            public void onComplete(@NonNull Task<GetTokenResult> task) {
-
-                if (task.isSuccessful()) {
-
-                    ValueEventListener SingleEvent = new ValueEventListener() {
-                        @Override
-                        public void onDataChange(DataSnapshot dataSnapshot) {
-
-                            if (dataSnapshot.getValue() != null) {
-
-                                System.out.println("++++++ UTENTE ESISTENTE IN DB: " + dataSnapshot.getValue().toString());
-                                user_exists = true;
-
-                            } else {
-                                user_exists = false;
-                            }
-
-                            if (!user_exists) {
-
-                                System.out.println("++++++ NOPE --> UTENTE NON ESISTENTE +++++");
-                                mAuth.signOut();
-                                startActivity(new Intent(MainActivity.this, LoginActivity.class));
-                                finish();
-
-                            }
-
-                        }
-
-                        @Override
-                        public void onCancelled(DatabaseError databaseError) {
-
-                        }
-                    };
-
-                    Firebase_DB.child("Users").child(uID).addListenerForSingleValueEvent(SingleEvent);
-
-                    //OK
-                } else {
-                    System.out.println("++++++ NOPE --> TOKEN ERROR +++++");
-                    mAuth.signOut();
-                    startActivity(new Intent(MainActivity.this, LoginActivity.class));
-                    finish();
-
-                }
-
-            }
-        });
-
-    }
-
-    protected void CheckLoggedUser() {
-
-        FirebaseUser user = mAuth.getCurrentUser();
-
-        if (user != null) {
-
-            System.out.println("++++++QUI che cazzo succede+++++");
-            System.out.println(user.toString());
-
-            CheckUser(user);
-
-
-        } else {
-
-            startActivity(new Intent(MainActivity.this, LoginActivity.class));
-            finish();
-
-        }
-
-    }
-
-
-    /*
-        public static MainData getMyData() {
-            return ad;
-        }
-    */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         String uKey = null;
@@ -187,6 +101,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         Firebase_DB = FirebaseDatabase.getInstance().getReference();
         mAuth = FirebaseAuth.getInstance();
         CheckLoggedUser();
+
         mAuthListener = new FirebaseAuth.AuthStateListener() { // listener lo istanzio comunque, se ho modifiche che lo triggerano
 
             @Override
@@ -364,15 +279,108 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         int id = item.getItemId();
 
         if (id == R.id.nav_logout) {
-            //TODO devi fare il logout
-            // Handle the camera action
-        }else if (id == R.id.nav_setting) {
+            // TODO devi fare il logout
+            System.out.println("LOGOUT");
+            mAuth.signOut();
+
+            FirebaseUser user = mAuth.getCurrentUser();
+
+            if (user != null) {
+
+                CheckUser(user);
+
+            } else {
+
+                startActivity(new Intent(MainActivity.this, LoginActivity.class));
+                finish();
+
+            }
+
+        } else if (id == R.id.nav_setting) {
 
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    protected void CheckUser(FirebaseUser U) {
+
+        final String uID = U.getUid();
+
+        U.getToken(true).addOnCompleteListener(new OnCompleteListener<GetTokenResult>() {
+            @Override
+
+            public void onComplete(@NonNull Task<GetTokenResult> task) {
+
+                if (task.isSuccessful()) {
+
+                    ValueEventListener SingleEvent = new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+
+                            if (dataSnapshot.getValue() != null) {
+
+                                System.out.println("++++++ UTENTE ESISTENTE IN DB: " + dataSnapshot.getValue().toString());
+                                user_exists = true;
+
+                            } else {
+                                user_exists = false;
+                            }
+
+                            if (!user_exists) {
+
+                                System.out.println("++++++ NOPE --> UTENTE NON ESISTENTE +++++");
+                                mAuth.signOut();
+                                startActivity(new Intent(MainActivity.this, LoginActivity.class));
+                                finish();
+
+                            }
+
+                        }
+
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+
+                        }
+                    };
+
+                    Firebase_DB.child("Users").child(uID).addListenerForSingleValueEvent(SingleEvent);
+
+                    //OK
+                } else {
+                    System.out.println("++++++ NOPE --> TOKEN ERROR +++++");
+                    mAuth.signOut();
+                    startActivity(new Intent(MainActivity.this, LoginActivity.class));
+                    finish();
+
+                }
+
+            }
+        });
+
+    }
+
+    protected void CheckLoggedUser() {
+
+        FirebaseUser user = mAuth.getCurrentUser();
+
+        if (user != null) {
+
+            System.out.println("++++++QUI che cazzo succede+++++");
+            System.out.println(user.toString());
+
+            CheckUser(user);
+
+
+        } else {
+
+            startActivity(new Intent(MainActivity.this, LoginActivity.class));
+            finish();
+
+        }
+
     }
 /*
     protected void onResume(Bundle savedInstanceState) {
