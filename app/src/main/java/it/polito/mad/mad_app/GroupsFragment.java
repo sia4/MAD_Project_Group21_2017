@@ -76,7 +76,7 @@ public class GroupsFragment extends Fragment {
                 // This method is called once with the initial value and again
                 // whenever data at this location is updated.
                 Map<String, Object> map = (Map<String, Object>) dataSnapshot.getValue();
-                d = new ArrayList<>();
+                //d = new ArrayList<>();
                 for(String k : map.keySet()) {
                     System.out.println("Value is: " + k);
                     FirebaseDatabase database2 = FirebaseDatabase.getInstance();

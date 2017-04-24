@@ -15,6 +15,7 @@ public class User {
     private String name;
     private String surname;
     private String email;
+    private String imagePath;
     private String username; // da vedere se utilizzarlo...
     private Map<String, Boolean> Groups = new TreeMap<>();
 
@@ -27,6 +28,7 @@ public class User {
         this.email = email;
         this.name = name;
         this.surname = surname;
+        //this.imagePath=imagePath;
         //this.Groups.put("", true);
     }
 
@@ -41,6 +43,9 @@ public class User {
     }
     public String getEmail(){
         return this.email;
+    }
+    public String getImagePath(){
+        return this.imagePath;
     }
     public Map<String, Boolean> getGroups(){
         return this.Groups;

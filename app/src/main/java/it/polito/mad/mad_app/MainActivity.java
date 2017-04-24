@@ -1,16 +1,25 @@
 package it.polito.mad.mad_app;
 
 import android.content.Intent;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -24,6 +33,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import it.polito.mad.mad_app.model.MainData;
+import it.polito.mad.mad_app.model.User;
 
 //import android.support.v7.util.ThreadUtil;
 
@@ -60,7 +70,9 @@ import it.polito.mad.mad_app.model.MainData;
 
 */
 
-/*
+public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener{
+
+        /*
         * TODO : Implementare il retrieve dei dati dell'utente.
         *
         * > Dati User
@@ -73,8 +85,8 @@ import it.polito.mad.mad_app.model.MainData;
         *
         * */
 
-public class MainActivity extends AppCompatActivity {
-
+    private TextView t1;
+    private TextView t2;
     private DatabaseReference Firebase_DB;
     private boolean user_exists = false;
     private FirebaseAuth mAuth;
@@ -169,12 +181,11 @@ public class MainActivity extends AppCompatActivity {
     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        String uKey = null;
 
-        mAuth = FirebaseAuth.getInstance();
         Firebase_DB = FirebaseDatabase.getInstance().getReference();
-
+        mAuth = FirebaseAuth.getInstance();
         CheckLoggedUser();
-
         mAuthListener = new FirebaseAuth.AuthStateListener() { // listener lo istanzio comunque, se ho modifiche che lo triggerano
 
             @Override
@@ -197,12 +208,54 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         };
-
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_user_info);
 
-        Toolbar mainToolbar = (Toolbar) findViewById(R.id.main_toolbar);
-        setSupportActionBar(mainToolbar);
+        /*Toolbar mainToolbar = (Toolbar) findViewById(R.id.main_toolbar);
+        setSupportActionBar(mainToolbar);*/
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        drawer.setDrawerListener(toggle);
+        toggle.syncState();
+
+        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(this);
+        View hView =  navigationView.getHeaderView(0);
+        final TextView nav_name = (TextView)hView.findViewById(R.id.nameU);
+        final TextView nav_surname = (TextView)hView.findViewById(R.id.surnameU);
+        final ImageView nav_photo = (ImageView)hView.findViewById(R.id.imageU);
+
+        FirebaseUser currentFUser = FirebaseAuth.getInstance().getCurrentUser() ;
+        if(currentFUser != null) {
+            uKey = currentFUser.getUid();
+        }
+        if(uKey!=null){
+            FirebaseDatabase database = FirebaseDatabase.getInstance();
+            DatabaseReference myRef = database.getReference("Users").child(uKey);
+            myRef.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    User myu =  dataSnapshot.getValue(User.class);
+                    nav_surname.setText(myu.getSurname()+" "+myu.getName());
+                    nav_name.setText(myu.getEmail());
+                    String p = myu.getImagePath();
+                    if (p == null) {
+                        nav_photo.setImageResource(R.drawable.group_default);
+                    } else {
+                        nav_photo.setImageBitmap(BitmapFactory.decodeFile(p));
+                    }
+                }
+                @Override
+                public void onCancelled(DatabaseError error) {
+                    // Failed to read value
+                    //log.w(TAG, "Failed to read value.", error.toException());
+                }
+            });
+            //t.setImageAlpha();
+        }
 
 
         FragmentManager f = getSupportFragmentManager();
@@ -274,6 +327,46 @@ public class MainActivity extends AppCompatActivity {
             this.finish();
         }
 
+    }
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.user_info, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+
+
+        //noinspection SimplifiableIfStatement
+        if (id == R.id.action_settings) {
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    @SuppressWarnings("StatementWithEmptyBody")
+    @Override
+    public boolean onNavigationItemSelected(MenuItem item) {
+        // Handle navigation view item clicks here.
+        int id = item.getItemId();
+
+        if (id == R.id.nav_logout) {
+            //TODO devi fare il logout
+            // Handle the camera action
+        }else if (id == R.id.nav_setting) {
+
+        }
+
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        drawer.closeDrawer(GravityCompat.START);
+        return true;
     }
 /*
     protected void onResume(Bundle savedInstanceState) {

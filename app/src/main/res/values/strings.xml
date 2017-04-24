@@ -32,6 +32,12 @@
     <string name="btn_remove">Remove</string>
     <string name="btn_sign_out">Sign Out</string>
     <string name="lbl_forgot_password">Forgot password?</string>
+    <string name="title_activity_user_info">UserInfoActivity</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="action_settings">Settings</string>
 
     <!-- Invitation related strings -->
     <string name="invitation_title">AllaRomana: You are invited to join to a group!</string>
