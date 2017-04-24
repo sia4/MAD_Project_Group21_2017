@@ -16,8 +16,11 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import it.polito.mad.mad_app.model.User;
 
@@ -28,17 +31,11 @@ public class SignInActivity extends AppCompatActivity {
     private EditText inputEmail, inputPassword, inputName, inputSurname;
     private Button btnSignIn, btnLogIn, btnResetPassword;
     private ProgressBar progressBar;
-    private FirebaseAuth auth;
+    private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
     private DatabaseReference Firebase_DB;
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_sign_in);
-        auth = FirebaseAuth.getInstance();
-
-         /*
+    /*
 
         TODO: PROBLEMA di Gestione di Sessione
 
@@ -53,22 +50,40 @@ public class SignInActivity extends AppCompatActivity {
 
         */
 
+
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+
+        mAuth = FirebaseAuth.getInstance();
         Firebase_DB = FirebaseDatabase.getInstance().getReference();
-        mAuthListener = new FirebaseAuth.AuthStateListener() {
+
+        CheckLoggedUser();
+
+
+        /*mAuthListener = new FirebaseAuth.AuthStateListener() {
 
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+
                 FirebaseUser user = firebaseAuth.getCurrentUser();
+
                 if (user != null) {
-                    //startActivity(new Intent(SignInActivity.this, MainActivity.class));
-                    //finish();
-                } else {
-                    // User is signed out
-                    //Log.d(TAG, "onAuthStateChanged:signed_out");
+
+                    System.out.println("++++++ OnAUTHSTATECHANGED +++++");
+
+                    System.out.println("++++++SignIn QUI che cazzo succede+++++");
+                    System.out.println(user.getEmail());
+
+                    CheckUser(user);
                 }
+
             }
 
-        };
+        };*/
+
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_sign_in);
 
         btnLogIn = (Button) findViewById(R.id.log_in_button);
         btnSignIn = (Button) findViewById(R.id.sign_in_button);
@@ -140,18 +155,14 @@ public class SignInActivity extends AppCompatActivity {
                 progressBar.setVisibility(View.VISIBLE);
 
                 //create user
-                auth.createUserWithEmailAndPassword(email, password)
+                mAuth.createUserWithEmailAndPassword(email, password)
                         .addOnCompleteListener(SignInActivity.this, new OnCompleteListener<AuthResult>() {
 
                             @Override
                             public void onComplete(@NonNull Task<AuthResult> task) {
                                 Toast.makeText(SignInActivity.this, "createUserWithEmail:onComplete:" + task.isSuccessful(), Toast.LENGTH_SHORT).show();
                                 progressBar.setVisibility(View.GONE);
-                                FirebaseUser user = auth.getCurrentUser();
-
-                                // If sign in fails, display a message to the user. If sign in succeeds
-                                // the auth state listener will be notified and logic to handle the
-                                // signed in user can be handled in the listener.
+                                FirebaseUser user = mAuth.getCurrentUser();
 
                                 if (!task.isSuccessful() || user == null) {
                                     Toast.makeText(SignInActivity.this, "Authentication failed." + task.getException(),
@@ -159,6 +170,7 @@ public class SignInActivity extends AppCompatActivity {
                                 } else {
 
                                     writeNewUser(user.getUid(), name, surname, email);
+
                                     startActivity(new Intent(SignInActivity.this, MainActivity.class));
                                     finish();
 
@@ -180,9 +192,79 @@ public class SignInActivity extends AppCompatActivity {
 
         String username = email + "_" + name + surname;
         User user = new User(username, email, name, surname);
+
         Firebase_DB.child("Users").child(userId).setValue(user);
 
     }
+
+    protected void CheckUser(FirebaseUser U) {
+
+        // verifica che l'utente sia presente in DB
+
+        final String uID = U.getUid();
+
+        ValueEventListener SingleEvent = new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                boolean user_exists = false;
+
+                if (dataSnapshot.getValue() != null) {
+
+                    System.out.println("++++++SignIn UTENTE ESISTENTE: " + dataSnapshot.getValue().toString());
+                    user_exists = true;
+
+                } else {
+
+                    user_exists = false;
+
+                }
+
+                if (user_exists) {
+
+                    System.out.println("++++++SignIn UTENTE ESISTENTE E LOGGATO +++++");
+                    startActivity(new Intent(SignInActivity.this, MainActivity.class)); //ok
+                    finish();
+
+                } else {
+
+
+                    System.out.println("++++++ NOPE --> UTENTE NON ESISTENTE +++++");
+
+                    mAuth.signOut();
+
+                    startActivity(new Intent(SignInActivity.this, SignInActivity.class)); //refresh
+                    finish();
+
+                }
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        };
+
+        Firebase_DB.child("Users").child(uID).addListenerForSingleValueEvent(SingleEvent);
+
+    }
+
+    protected void CheckLoggedUser() {
+
+        FirebaseUser user = mAuth.getCurrentUser();
+
+        if (user != null) {
+
+            System.out.println("++++++SignIn CHECKLOGGED -- QUI che cazzo succede+++++");
+            System.out.println(user.getEmail());
+
+            CheckUser(user);
+
+        }
+
+    }
+
 
     @Override
     protected void onResume() {
@@ -192,14 +274,17 @@ public class SignInActivity extends AppCompatActivity {
     @Override
     protected void onStart(){
         super.onStart();
-        auth.addAuthStateListener(mAuthListener);
-
+        //status="OTHER";
+        if (mAuthListener != null) {
+            mAuth.addAuthStateListener(mAuthListener);
+        }
     }
     @Override
     public void onStop() {
         super.onStop();
+        //status="OTHER";
         if (mAuthListener != null) {
-            auth.removeAuthStateListener(mAuthListener);
+            mAuth.removeAuthStateListener(mAuthListener);
         }
     }
 }

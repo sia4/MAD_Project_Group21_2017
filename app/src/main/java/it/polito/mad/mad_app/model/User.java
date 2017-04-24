@@ -27,7 +27,7 @@ public class User {
         this.email = email;
         this.name = name;
         this.surname = surname;
-        this.Groups.put("", true);
+        //this.Groups.put("", true);
     }
 
 

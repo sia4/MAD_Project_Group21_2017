@@ -12,8 +12,16 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.GetTokenResult;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import it.polito.mad.mad_app.model.MainData;
 
@@ -52,19 +60,7 @@ import it.polito.mad.mad_app.model.MainData;
 
 */
 
-public class MainActivity extends AppCompatActivity {
-    private FirebaseAuth auth;
-    private FirebaseAuth.AuthStateListener mAuthListener;
-    MainData ad = MainData.getInstance();
 /*
-    public static MainData getMyData() {
-        return ad;
-    }
-*/
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-
-        /*
         * TODO : Implementare il retrieve dei dati dell'utente.
         *
         * > Dati User
@@ -77,28 +73,133 @@ public class MainActivity extends AppCompatActivity {
         *
         * */
 
+public class MainActivity extends AppCompatActivity {
 
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-        auth = FirebaseAuth.getInstance();
+    private DatabaseReference Firebase_DB;
+    private boolean user_exists = false;
+    private FirebaseAuth mAuth;
+    private FirebaseAuth.AuthStateListener mAuthListener;
+    MainData ad = MainData.getInstance();
 
-        mAuthListener = new FirebaseAuth.AuthStateListener() {
+    protected void CheckUser(FirebaseUser U) {
+
+        // verifica che l'utente sia presente in DB
+
+        final String uID = U.getUid();
+
+        U.getToken(true).addOnCompleteListener(new OnCompleteListener<GetTokenResult>() {
             @Override
-            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) { //controllo che l'utente sia loggato
 
+            public void onComplete(@NonNull Task<GetTokenResult> task) {
+
+                if (task.isSuccessful()) {
+
+                    ValueEventListener SingleEvent = new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+
+                            if (dataSnapshot.getValue() != null) {
+
+                                System.out.println("++++++ UTENTE ESISTENTE IN DB: " + dataSnapshot.getValue().toString());
+                                user_exists = true;
+
+                            } else {
+                                user_exists = false;
+                            }
+
+                            if (!user_exists) {
+
+                                System.out.println("++++++ NOPE --> UTENTE NON ESISTENTE +++++");
+                                mAuth.signOut();
+                                startActivity(new Intent(MainActivity.this, LoginActivity.class));
+                                finish();
+
+                            }
+
+                        }
+
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+
+                        }
+                    };
+
+                    Firebase_DB.child("Users").child(uID).addListenerForSingleValueEvent(SingleEvent);
+
+                    //OK
+                } else {
+                    System.out.println("++++++ NOPE --> TOKEN ERROR +++++");
+                    mAuth.signOut();
+                    startActivity(new Intent(MainActivity.this, LoginActivity.class));
+                    finish();
+
+                }
+
+            }
+        });
+
+    }
+
+    protected void CheckLoggedUser() {
+
+        FirebaseUser user = mAuth.getCurrentUser();
+
+        if (user != null) {
+
+            System.out.println("++++++QUI che cazzo succede+++++");
+            System.out.println(user.toString());
+
+            CheckUser(user);
+
+
+        } else {
+
+            startActivity(new Intent(MainActivity.this, LoginActivity.class));
+            finish();
+
+        }
+
+    }
+
+
+    /*
+        public static MainData getMyData() {
+            return ad;
+        }
+    */
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+
+        mAuth = FirebaseAuth.getInstance();
+        Firebase_DB = FirebaseDatabase.getInstance().getReference();
+
+        CheckLoggedUser();
+
+        mAuthListener = new FirebaseAuth.AuthStateListener() { // listener lo istanzio comunque, se ho modifiche che lo triggerano
+
+            @Override
+            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+                System.out.println("++++++onAuthStateChanged IN+++++");
                 FirebaseUser user = firebaseAuth.getCurrentUser();
 
                 if (user != null) {
 
+                    System.out.println("++++++QUI che cazzo succede+++++");
+                    System.out.println(user.toString());
+
+                    CheckUser(user);
+
+                } else {
+
                     startActivity(new Intent(MainActivity.this, LoginActivity.class));
                     finish();
 
-                } else {
-                    // User is signed out
-                    //Log.d(TAG, "onAuthStateChanged:signed_out");
                 }
             }
         };
+
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
 
         Toolbar mainToolbar = (Toolbar) findViewById(R.id.main_toolbar);
         setSupportActionBar(mainToolbar);
