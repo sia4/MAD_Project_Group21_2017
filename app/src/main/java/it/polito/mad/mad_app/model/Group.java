@@ -9,6 +9,7 @@ public class Group {
     private String name;
     private String description;
     private String imagePath;
+    private String defaultCurrency;
 
     private Map<String, Boolean> members = new TreeMap<>();
     private Map<String, Boolean> expenses = new TreeMap<>();
@@ -20,7 +21,7 @@ public class Group {
     public Group(String n, String d, String c) {
         this.name = n;
         this.description = d;
-        currencies.put("EUR", new Float(0)); //la currency di default ha valore 0
+        defaultCurrency = "EUR";
     }
 
     public String getName(){
@@ -55,4 +56,9 @@ public class Group {
 
     public Map<String, Boolean> getExpenses(){return expenses; }
 
+    public void addMember(String s) {
+        members.put(s, true);
+    }
+
+    public void addCurrencies(Map<String, Float> currencies) {this.currencies = currencies; }
 }

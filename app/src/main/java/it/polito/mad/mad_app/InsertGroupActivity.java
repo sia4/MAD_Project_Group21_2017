@@ -1,12 +1,15 @@
 package it.polito.mad.mad_app;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -15,6 +18,7 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.google.android.gms.appinvite.AppInviteInvitation;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.ChildEventListener;
@@ -40,8 +44,10 @@ import it.polito.mad.mad_app.model.MainData;
 import it.polito.mad.mad_app.model.User;
 import it.polito.mad.mad_app.model.UserData;
 
+
 public class InsertGroupActivity extends AppCompatActivity {
 
+    private static final int REQUEST_INVITE = 0;
     private FirebaseAuth auth;
     private FirebaseAuth.AuthStateListener mAuthListener;
     private String GroupName;
@@ -52,6 +58,7 @@ public class InsertGroupActivity extends AppCompatActivity {
     private List<String> u= new ArrayList<>();
     private Map<String,Boolean>m= new TreeMap<>();
     private UsersToAddAdapter uAdapter = null;
+    String uKey = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,6 +78,8 @@ public class InsertGroupActivity extends AppCompatActivity {
                 }
             }
         };
+        FirebaseUser currentFUser = FirebaseAuth.getInstance().getCurrentUser() ;
+        uKey = currentFUser.getUid();
         final Toolbar toolbar = (Toolbar) findViewById(R.id.insert_group_toolbar);
         setSupportActionBar(toolbar);
 
@@ -111,7 +120,16 @@ public class InsertGroupActivity extends AppCompatActivity {
                             Toast.makeText(InsertGroupActivity.this, key, Toast.LENGTH_LONG).show();
                         }
                         if(key == null) {
-                            Toast.makeText(InsertGroupActivity.this, "The user doesn't exist!", Toast.LENGTH_LONG).show();
+                            //Toast.makeText(InsertGroupActivity.this, "", Toast.LENGTH_LONG).show();
+                            new AlertDialog.Builder(InsertGroupActivity.this)
+                                    .setTitle("The user has not download the app, yet!")
+                                    .setMessage("Do you want to invite him to use the app?")
+                                    .setIcon(android.R.drawable.ic_dialog_alert)
+                                    .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                                        public void onClick(DialogInterface dialog, int whichButton) {
+                                            onInviteClicked("nome", "cognome", "groupname", "identificativo");
+                                        }})
+                                    .setNegativeButton(android.R.string.no, null).show();
                         } else {
                             Uemail.setText("");
                             m.put(key,true);
@@ -174,6 +192,7 @@ public class InsertGroupActivity extends AppCompatActivity {
                     Group G = new Group(GroupName, GroupDescription, Tcurrency.getSelectedItem().toString());
                     G.setImagePath("https://firebasestorage.googleapis.com/v0/b/allaromana-3f98e.appspot.com/o/group_default.png?alt=media&token=40bc93f4-6b97-466e-b130-e140f57c5895");
                     G.addMembers(m);
+                    G.addMember(uKey);
                     myRef.child(groupId).setValue(G);
                     Set keys = m.keySet();
                     database = FirebaseDatabase.getInstance();
@@ -192,4 +211,38 @@ public class InsertGroupActivity extends AppCompatActivity {
         }
 
     }
+
+    private void onInviteClicked(String name, String surname, String groupName, String groupId) {
+
+
+        Log.d("INFO", "sono qui");
+        String msg = "Hi! "+ name + " " + surname + " has invited you to join to the group "+ groupName
+                + " on AllaRomana app. Download the app to join the group and insert this code in the settings: " +
+                groupId + ".";
+        Intent intent = new AppInviteInvitation.IntentBuilder(getString(R.string.invitation_title))
+                .setMessage("test")
+                .setCallToActionText(getString(R.string.invitation_cta))
+                .build();
+        startActivityForResult(intent, REQUEST_INVITE);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        Log.d("INFO", "onActivityResult: requestCode=" + requestCode + ", resultCode=" + resultCode);
+
+        if (requestCode == REQUEST_INVITE) {
+            if (resultCode == RESULT_OK) {
+                // Get the invitation IDs of all sent messages
+                String[] ids = AppInviteInvitation.getInvitationIds(resultCode, data);
+                for (String id : ids) {
+                    Log.d("INFO", "onActivityResult: sent invitation " + id);
+                }
+            } else {
+                // Sending failed or it was canceled, show failure message to the user
+                // ...
+            }
+        }
+    }
+
 }

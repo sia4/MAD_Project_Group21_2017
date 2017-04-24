@@ -55,12 +55,7 @@ import it.polito.mad.mad_app.model.MainData;
 public class MainActivity extends AppCompatActivity {
     private FirebaseAuth auth;
     private FirebaseAuth.AuthStateListener mAuthListener;
-    MainData ad = MainData.getInstance();
-/*
-    public static MainData getMyData() {
-        return ad;
-    }
-*/
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
