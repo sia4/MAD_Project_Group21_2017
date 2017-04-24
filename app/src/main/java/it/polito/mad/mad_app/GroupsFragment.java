@@ -31,10 +31,6 @@ import it.polito.mad.mad_app.model.GroupData;
 import it.polito.mad.mad_app.model.MainData;
 import it.polito.mad.mad_app.model.RecyclerTouchListener;
 
-import static android.content.ContentValues.TAG;
-
-//import it.polito.mad.mad_app.model.RecyclerItemClickListener;
-
 
 public class GroupsFragment extends Fragment {
 
@@ -57,14 +53,13 @@ public class GroupsFragment extends Fragment {
 
         auth = FirebaseAuth.getInstance();
         FirebaseUser currentFUser = FirebaseAuth.getInstance().getCurrentUser() ;
-        uKey = currentFUser.getUid();
+        if(currentFUser != null)
+            uKey = currentFUser.getUid();
 
         context = view.getContext();
         RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.Groups);
         recyclerView.setLayoutManager(new LinearLayoutManager(context));
         recyclerView.addItemDecoration(new DividerItemDecoration(context, LinearLayoutManager.VERTICAL));
-
-        //d = MainData.getInstance().getGroupList();
 
         final GroupsAdapter gAdapter = new GroupsAdapter(d);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(context);
@@ -72,7 +67,6 @@ public class GroupsFragment extends Fragment {
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setAdapter(gAdapter);
 
-        // Write a message to the database
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference myRef = database.getReference("Users").child(uKey).child("Groups");
 
@@ -82,18 +76,18 @@ public class GroupsFragment extends Fragment {
                 // This method is called once with the initial value and again
                 // whenever data at this location is updated.
                 Map<String, Object> map = (Map<String, Object>) dataSnapshot.getValue();
+                d = new ArrayList<>();
                 for(String k : map.keySet()) {
                     System.out.println("Value is: " + k);
                     FirebaseDatabase database2 = FirebaseDatabase.getInstance();
                     DatabaseReference myRef2 = database2.getReference("Groups").child(k);
+
                     myRef2.addValueEventListener(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
                             Map<String, Object> map = (Map<String, Object>) dataSnapshot.getValue();
 
                             System.out.println("Value is: " + map.toString());
-                            d = new ArrayList<>();
-                            //Log.d(TAG, "Value is: " + value);
                             Group g = new Group((String)map.get("name"),(String) map.get("surname"), (String)map.get("defaultCurrency"));
                             d.add(g);
                             //if(progressBar.isActivated())
