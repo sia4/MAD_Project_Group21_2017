@@ -122,7 +122,7 @@ public class InsertGroupActivity extends AppCompatActivity {
                         if(key == null) {
                             //Toast.makeText(InsertGroupActivity.this, "", Toast.LENGTH_LONG).show();
                             new AlertDialog.Builder(InsertGroupActivity.this)
-                                    .setTitle("The user has not download the app, yet!")
+                                    .setTitle("The user has not downloaded the app, yet!")
                                     .setMessage("Do you want to invite him to use the app?")
                                     .setIcon(android.R.drawable.ic_dialog_alert)
                                     .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {

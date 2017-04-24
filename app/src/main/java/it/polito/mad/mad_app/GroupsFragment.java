@@ -92,6 +92,7 @@ public class GroupsFragment extends Fragment {
                             Map<String, Object> map = (Map<String, Object>) dataSnapshot.getValue();
 
                             System.out.println("Value is: " + map.toString());
+                            d = new ArrayList<>();
                             //Log.d(TAG, "Value is: " + value);
                             Group g = new Group((String)map.get("name"),(String) map.get("surname"), (String)map.get("defaultCurrency"));
                             d.add(g);
