@@ -16,7 +16,7 @@ public class User {
     private String surname;
     private String email;
     private String username; // da vedere se utilizzarlo...
-    private Map<String, Boolean> Groups = new TreeMap<>();
+    private Map<String, String> Groups = new TreeMap<>();
 
     public User() {
         // Default constructor required for calls to DataSnapshot.getValue(User.class)
@@ -27,7 +27,6 @@ public class User {
         this.email = email;
         this.name = name;
         this.surname = surname;
-        //this.Groups.put("", true);
     }
 
     public String getSurname(){
@@ -42,7 +41,7 @@ public class User {
     public String getEmail(){
         return this.email;
     }
-    public Map<String, Boolean> getGroups(){
+    public Map<String, String> getGroups(){
         return this.Groups;
     }
 

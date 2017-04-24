@@ -16,6 +16,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -42,7 +43,10 @@ public class GroupActivity extends AppCompatActivity {
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
-        final String gname = intent.getStringExtra("name");
+        final String gname = "Coinquilini";
+        final String gKey = intent.getStringExtra("groupId");
+
+        Toast.makeText(GroupActivity.this, gKey, Toast.LENGTH_LONG).show();
         name=gname;
 
         System.out.println("Hello: " + gname);

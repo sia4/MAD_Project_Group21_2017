@@ -17,7 +17,7 @@ import it.polito.mad.mad_app.model.GroupData;
 
 public class GroupsAdapter extends RecyclerView.Adapter<GroupsAdapter.MyViewHolder> {
 
-    private List<Group> GData;
+    private List<GroupsFragment.GroupModel> GData;
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
         public TextView name;
@@ -35,7 +35,7 @@ public class GroupsAdapter extends RecyclerView.Adapter<GroupsAdapter.MyViewHold
     }
 
 
-    public GroupsAdapter(List<Group> expensiveData) {
+    public GroupsAdapter(List<GroupsFragment.GroupModel> expensiveData) {
         this.GData = expensiveData;
     }
 
@@ -49,10 +49,10 @@ public class GroupsAdapter extends RecyclerView.Adapter<GroupsAdapter.MyViewHold
 
     @Override
     public void onBindViewHolder(GroupsAdapter.MyViewHolder holder, int position) {
-        final Group g = GData.get(position);
-        holder.name.setText(g.getName());
+        final GroupsFragment.GroupModel g = GData.get(position);
+        holder.name.setText(g.getGroupName());
 
-        String p = g.getImagePath();
+        String p = null;
 
         if (p == null) {
             holder.im.setImageResource(R.drawable.group_default);

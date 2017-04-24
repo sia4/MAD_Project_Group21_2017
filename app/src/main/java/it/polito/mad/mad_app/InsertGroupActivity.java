@@ -122,12 +122,13 @@ public class InsertGroupActivity extends AppCompatActivity {
                         if(key == null) {
                             //Toast.makeText(InsertGroupActivity.this, "", Toast.LENGTH_LONG).show();
                             new AlertDialog.Builder(InsertGroupActivity.this)
-                                    .setTitle("The user has not downloaded the app, yet!")
+                                    .setTitle("You friend has not downloaded the app, yet!")
                                     .setMessage("Do you want to invite him to use the app?")
                                     .setIcon(android.R.drawable.ic_dialog_alert)
                                     .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                                         public void onClick(DialogInterface dialog, int whichButton) {
-                                            onInviteClicked("nome", "cognome", "groupname", "identificativo");
+                                            //sendEmail();
+                                            //onInviteClicked("nome", "cognome", "groupname", "identificativo");
                                         }})
                                     .setNegativeButton(android.R.string.no, null).show();
                         } else {
@@ -199,7 +200,7 @@ public class InsertGroupActivity extends AppCompatActivity {
                     for (Iterator i = keys.iterator(); i.hasNext(); ) {
                         String key = (String) i.next();
                         myRef = database.getReference("/Users/"+key+"/Groups/"+groupId);
-                        myRef.setValue(true);
+                        myRef.setValue(G.getName());
                     }
                     setResult(RESULT_OK, null);
                     finish();
