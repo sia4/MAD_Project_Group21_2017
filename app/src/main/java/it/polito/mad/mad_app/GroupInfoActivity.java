@@ -30,12 +30,14 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 import it.polito.mad.mad_app.model.Group;
 import it.polito.mad.mad_app.model.GroupData;
 import it.polito.mad.mad_app.model.MainData;
+import it.polito.mad.mad_app.model.UserData;
 
 import static it.polito.mad.mad_app.R.id.progressBar;
 
@@ -46,8 +48,8 @@ public class GroupInfoActivity extends AppCompatActivity {
     private static String tmp, nametmp, desctmp, name;
     private EditText nameted, desced;
     private ImageView im;
-    private List<String> users;
-    private List<String> currencies;
+    private List<String> users = new ArrayList();
+    private List<String> currencies = new ArrayList();
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -66,7 +68,7 @@ public class GroupInfoActivity extends AppCompatActivity {
             getSupportActionBar().setDisplayShowHomeEnabled(true);
         }
         Intent i = getIntent();
-        name=i.getStringExtra("name");
+        name=i.getStringExtra("groupId");
         System.out.println(name);
         //GD=MainData.getInstance().getGroup(name);
 
@@ -127,39 +129,9 @@ public class GroupInfoActivity extends AppCompatActivity {
                 //log.w(TAG, "Failed to read value.", error.toException());
             }
         });
-        /*
-
-
-        //namet.setText(name);
-
-        namet.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                namet.setVisibility(View.GONE);
-                nameted.setVisibility(View.VISIBLE);
-                nameted.setText(nametmp);
-                flag_name_edited = true;
-
-            }
-        });
 
 
 
-
-        //desc.setText(GD.getDescription());
-
-        desc.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                desc.setVisibility(View.GONE);
-                desced.setVisibility(View.VISIBLE);
-                desced.setText(desctmp);
-                flag_desc_edited = true;
-
-            }
-        });
 
         RecyclerView userRecyclerView = (RecyclerView) findViewById(R.id.users);
         userRecyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -174,10 +146,38 @@ public class GroupInfoActivity extends AppCompatActivity {
 
                 Map<String, Object> map2 = (Map<String, Object>) dataSnapshot.getValue();
                 if(map2!=null) {
-                    for (String k : map2.keySet())
-                        users.add((String) map2.get(k));
+                    for (final String k : map2.keySet()){
+                        FirebaseDatabase database3 = FirebaseDatabase.getInstance();
+                        DatabaseReference myRef3 = database3.getReference("Users").child(k);
+                        myRef3.addValueEventListener(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(DataSnapshot dataSnapshot) {
+                                Map<String, Object> map3 = (Map<String, Object>) dataSnapshot.getValue();
+                                if(map3!=null) {
+                                    String s = map3.get("name")+" "+map3.get("surname");
+                                    users.add(s);
+                                    uAdapter.notifyDataSetChanged();
+                                }
+                                else{
+                                    Toast.makeText(GroupInfoActivity.this, "no user key found!", Toast.LENGTH_LONG).show();
+                                }
+                            }
+
+                            @Override
+                            public void onCancelled(DatabaseError databaseError) {
+
+                            }
+                        });
+
+
+                    }
+
 
                     uAdapter.notifyDataSetChanged();
+                }
+                else{
+                    Toast.makeText(GroupInfoActivity.this, "no users found!", Toast.LENGTH_LONG).show();
+
                 }
             }
 
@@ -193,9 +193,37 @@ public class GroupInfoActivity extends AppCompatActivity {
         /*
         RecyclerView CurrenciesRecyclerView = (RecyclerView) findViewById(R.id.currencies);
         CurrenciesRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-        final CurrenciesAdapter cAdapter = new CurrenciesAdapter(GD.getCurrencies());
+        final CurrenciesAdapter cAdapter = new CurrenciesAdapter(currencies);
         CurrenciesRecyclerView.setAdapter(cAdapter);
         */
+        namet.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                namet.setVisibility(View.GONE);
+                nameted.setVisibility(View.VISIBLE);
+                nameted.setText(nametmp);
+                flag_name_edited = true;
+
+            }
+        });
+
+
+        desc.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                desc.setVisibility(View.GONE);
+                desced.setVisibility(View.VISIBLE);
+                desced.setText(desctmp);
+                flag_desc_edited = true;
+
+            }
+        });
+
+
+
+
     }
 
     private void checkPermission() {

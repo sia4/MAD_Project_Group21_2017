@@ -76,7 +76,7 @@ public class    HistoryFragment extends Fragment {
             }
         }));
 
-        String GroupName = this.getArguments().getString("GroupName");
+        String GroupName = this.getArguments().getString("GroupId");
         System.out.println("H: " + GroupName);
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference myRef = database.getReference("Expenses").child(GroupName);
