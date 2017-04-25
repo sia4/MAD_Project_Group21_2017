@@ -79,29 +79,25 @@ public class    HistoryFragment extends Fragment {
         String GroupName = this.getArguments().getString("GroupName");
         System.out.println("H: " + GroupName);
         FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference myRef = database.getReference("/Expenses/"+GroupName +"/");
+        DatabaseReference myRef = database.getReference("Expenses").child(GroupName);
 
-        lex = MainData.getInstance().getGroup(GroupName).getExpensies();
+
         final HistoryAdapter hAdapter = new HistoryAdapter(lex);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(context);
         recyclerView.setLayoutManager(mLayoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setAdapter(hAdapter);
 
-        ///////////////////
-
-
         myRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                int i =0;
-                for(DataSnapshot Exsnapshot : dataSnapshot.getChildren()){
-                   // ExpenseData ex = Exsnapshot.getValue(ExpenseData.class);
-                    //lex.add(ex);
-                    i++;
-                }
-                System.out.print(i);
+                Map<String, Object> map = (Map<String, Object>) dataSnapshot.getValue();
+                if(map!=null) {
+                    for (String k : map.keySet())
+                        lex.add((ExpenseData) map.get(k));
 
+                    hAdapter.notifyDataSetChanged();
+                }
             }
 
             @Override
@@ -110,8 +106,6 @@ public class    HistoryFragment extends Fragment {
                 //log.w(TAG, "Failed to read value.", error.toException());
             }
         });
-
-        ////////////////
 
         return view;
     }

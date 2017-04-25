@@ -27,18 +27,19 @@
                 android:resource="@xml/file_paths"></meta-data>
         </provider>
         -->
-        <uses-feature android:name="android.hardware.camera"
+        <uses-feature
+            android:name="android.hardware.camera"
             android:required="true" />
+
         <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
-
         <activity
             android:name=".GroupActivity"
             android:parentActivityName=".MainActivity">
@@ -83,10 +84,12 @@
             android:name=".BalanceActivity"
             android:label="@string/title_activity_balance"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
-
         <activity android:name=".SignInActivity" />
         <activity android:name=".LoginActivity" />
-
+        <activity
+            android:name=".UserInformationActivity"
+            android:label="@string/title_activity_user_information"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"></activity>
     </application>
 
 </manifest>

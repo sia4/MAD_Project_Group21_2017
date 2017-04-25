@@ -3,12 +3,10 @@ package it.polito.mad.mad_app;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,8 +27,6 @@ import java.util.Map;
 import java.util.TreeMap;
 
 import it.polito.mad.mad_app.model.Group;
-import it.polito.mad.mad_app.model.GroupData;
-import it.polito.mad.mad_app.model.MainData;
 import it.polito.mad.mad_app.model.RecyclerTouchListener;
 
 
@@ -54,7 +50,7 @@ public class GroupsFragment extends Fragment {
         }
     }
     private Context context;
-    private List<GroupModel> groups = new ArrayList<>();
+    private List<Group> d = new ArrayList<>();
 
     private FirebaseAuth auth;
     private FirebaseAuth.AuthStateListener mAuthListener;
@@ -80,7 +76,7 @@ public class GroupsFragment extends Fragment {
         recyclerView.setLayoutManager(new LinearLayoutManager(context));
         recyclerView.addItemDecoration(new DividerItemDecoration(context, LinearLayoutManager.VERTICAL));
 
-        final GroupsAdapter gAdapter = new GroupsAdapter(groups);
+        final GroupsAdapter gAdapter = new GroupsAdapter(d);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(context);
         recyclerView.setLayoutManager(mLayoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
