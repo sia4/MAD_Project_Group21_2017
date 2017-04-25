@@ -196,6 +196,8 @@ public class GroupInfoActivity extends AppCompatActivity {
         final CurrenciesAdapter cAdapter = new CurrenciesAdapter(currencies);
         CurrenciesRecyclerView.setAdapter(cAdapter);
         */
+
+        //TODO CLICKLISTENER DEL RECYCLERVIEW PER APRIRE LA USERINFORMATIONACTIVITY
         namet.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
