@@ -50,7 +50,7 @@ public class GroupsFragment extends Fragment {
         }
     }
     private Context context;
-    private List<Group> d = new ArrayList<>();
+    private List<GroupModel> groups = new ArrayList<>();
 
     private FirebaseAuth auth;
     private FirebaseAuth.AuthStateListener mAuthListener;
@@ -76,7 +76,7 @@ public class GroupsFragment extends Fragment {
         recyclerView.setLayoutManager(new LinearLayoutManager(context));
         recyclerView.addItemDecoration(new DividerItemDecoration(context, LinearLayoutManager.VERTICAL));
 
-        final GroupsAdapter gAdapter = new GroupsAdapter(d);
+        final GroupsAdapter gAdapter = new GroupsAdapter(groups);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(context);
         recyclerView.setLayoutManager(mLayoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
