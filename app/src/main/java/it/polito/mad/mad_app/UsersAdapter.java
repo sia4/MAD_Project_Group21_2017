@@ -13,7 +13,7 @@ import it.polito.mad.mad_app.model.UserData;
 
 public class UsersAdapter extends RecyclerView.Adapter<UsersAdapter.MyViewHolder> {
 
-    private List<UserData> usersData;
+    private List<String> usersData;
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
         public TextView name;
@@ -25,7 +25,7 @@ public class UsersAdapter extends RecyclerView.Adapter<UsersAdapter.MyViewHolder
     }
 
 
-    public UsersAdapter(List<UserData> usersData) {
+    public UsersAdapter(List<String> usersData) {
         this.usersData = usersData;
     }
 
@@ -39,8 +39,8 @@ public class UsersAdapter extends RecyclerView.Adapter<UsersAdapter.MyViewHolder
 
     @Override
     public void onBindViewHolder(MyViewHolder holder, int position) {
-        UserData user = usersData.get(position);
-        holder.name.setText(user.getName()+" "+user.getSurname());
+        String user = usersData.get(position);
+        holder.name.setText(user);
     }
 
     @Override

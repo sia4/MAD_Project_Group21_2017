@@ -42,5 +42,6 @@
     <!-- Invitation related strings -->
     <string name="invitation_title">AllaRomana: You are invited to join to a group!</string>
     <string name="invitation_cta">Download AllaRomana</string>
+    <string name="title_activity_user_information">UserInformationActivity</string>
 
 </resources>
