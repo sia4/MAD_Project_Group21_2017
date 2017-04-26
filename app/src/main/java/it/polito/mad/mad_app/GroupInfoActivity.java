@@ -272,7 +272,7 @@ public class GroupInfoActivity extends AppCompatActivity {
             case android.R.id.home:
 
                 Intent intent = new Intent(this, GroupActivity.class);
-                intent.putExtra("name", name);
+                intent.putExtra("groupId", name);
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 //startActivity(intent);
                 finish();
@@ -294,15 +294,15 @@ public class GroupInfoActivity extends AppCompatActivity {
                         myRef3.setValue(newname);
                         //GD.setName(newname);
                         //MainData.getInstance().changeGroupName(GroupName, newname);
-                        in.putExtra("name", name);
+                        in.putExtra("groupId", name);
                     } else {
-                        in.putExtra("name", name);
+                        in.putExtra("groupId", name);
                     }
 
                     Log.e("DEBUG", newname + " " + name);
                     System.out.println();
                 } else {
-                    in.putExtra("name", name);
+                    in.putExtra("groupId", name);
                 }
 
                 if (flag_desc_edited) {
