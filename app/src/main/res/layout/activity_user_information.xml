@@ -7,13 +7,13 @@
     tools:context="it.polito.mad.mad_app.GroupInfoActivity">
 
     <android.support.design.widget.AppBarLayout
-        android:id="@+id/insert_group_bar"
+        android:id="@+id/user_bar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:theme="@style/AppTheme">
 
         <android.support.v7.widget.Toolbar
-            android:id="@+id/info_group_toolbar"
+            android:id="@+id/info_user_toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             app:theme="@style/ToolbarTheme"
@@ -92,25 +92,26 @@
             android:layout_marginRight="16sp"
             android:layout_marginTop="5dp"
             android:textSize="20sp" />
-        <View style="@style/Divider" />
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="20sp"
-            android:layout_marginLeft="16sp"
-            android:layout_marginRight="16sp"
-            android:layout_marginTop="5dp"
-            android:text="Email:"
-            android:textSize="13sp" />
-        <TextView
-            android:id="@+id/username_u"
-            android:layout_width="match_parent"
-            android:layout_height="30sp"
-            android:layout_marginBottom="5dp"
-            android:layout_marginLeft="16sp"
-            android:layout_marginRight="16sp"
-            android:layout_marginTop="5dp"
-            android:textSize="20sp" />
-        <View style="@style/Divider" />
+        <!-- <View style="@style/Divider" />
+
+       <TextView
+           android:layout_width="match_parent"
+           android:layout_height="20sp"
+           android:layout_marginLeft="16sp"
+           android:layout_marginRight="16sp"
+           android:layout_marginTop="5dp"
+           android:text="Username"
+           android:textSize="13sp" />
+       <TextView
+           android:id="@+id/username_u"
+           android:layout_width="match_parent"
+           android:layout_height="30sp"
+           android:layout_marginBottom="5dp"
+           android:layout_marginLeft="16sp"
+           android:layout_marginRight="16sp"
+           android:layout_marginTop="5dp"
+           android:textSize="20sp" />
+       <View style="@style/Divider" /> LO TOGLIAMO PER IL MOMENTO-->
 
     </LinearLayout>
 
