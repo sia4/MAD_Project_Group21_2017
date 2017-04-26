@@ -24,8 +24,12 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.io.File;
 import java.io.IOException;
@@ -33,14 +37,25 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 
+import it.polito.mad.mad_app.model.ExpenseData;
 import it.polito.mad.mad_app.model.MainData;
 import it.polito.mad.mad_app.model.UserData;
 
 
 public class InsertExActivity extends AppCompatActivity {
+
+    private class balance{
+        private String name;
+        private float value;
+        public balance(String name, float value){
+            this.name = name;
+            this.value = value;
+        }
+    }
 
     private String name;
     private String description;
@@ -48,7 +63,13 @@ public class InsertExActivity extends AppCompatActivity {
     private String currency;
     private float value;
     private String algorithm;
-    private TreeMap<Integer, UserData> users = new TreeMap<>();
+    private String Gname = new String();
+    private int i=0;
+    private float v = 0;
+    private List<Float> values = new ArrayList<>();
+    private String defaultcurrency;
+    private FirebaseAuth mAuth = FirebaseAuth.getInstance();
+    private List<UserData> users = new ArrayList<>();
     static private RecyclerView userRecyclerView;
     static private AlgorithmParametersAdapter uAdapter;
     static final int REQUEST_TAKE_PHOTO = 1;
@@ -87,20 +108,98 @@ public class InsertExActivity extends AppCompatActivity {
                 android.support.v7.widget.DividerItemDecoration.VERTICAL));
 
         Intent intent = getIntent();
-        final String Gname = intent.getStringExtra("GroupName");
-        int i = 0;
-        for(UserData u :MainData.getInstance().getGroup(Gname).getlUsers()) {
-            users.put(i,u);
-            i++;
-        }
-        users.put(i, MainData.getInstance().returnMyData());
+        Gname = intent.getStringExtra("groupId");
+        Toast.makeText(InsertExActivity.this, Gname, Toast.LENGTH_LONG).show();
+        System.out.println("1");
+        final String uid = mAuth.getCurrentUser().getUid().toString();
+        FirebaseDatabase database2 = FirebaseDatabase.getInstance();
+        DatabaseReference myRef2 = database2.getReference("Groups").child(Gname).child("members");
+
+        myRef2.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                Map<String, Object> map2 = (Map<String, Object>) dataSnapshot.getValue();
+                map2.put(uid, uid); //aggiungo user corrente
+                if(map2!=null) {
+                    for (final String k : map2.keySet()){
+                        FirebaseDatabase database3 = FirebaseDatabase.getInstance();
+                        DatabaseReference myRef3 = database3.getReference("Users").child(k);
+                        myRef3.addValueEventListener(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(DataSnapshot dataSnapshot) {
+                                Map<String, Object> map3 = (Map<String, Object>) dataSnapshot.getValue();
+                                if(map3!=null) {
+                                    String s = String.format("user %s added\n", (String)map3.get("name"));
+                                    System.out.println(s);
+                                    UserData u = new UserData("aaaa", (String)map3.get("name"), (String)map3.get("surname"), 5555);
+                                    u.setuId(k);
+                                    users.add(u);
+                                    //uAdapter.notifyDataSetChanged();
+                                }
+                                else{
+                                    Toast.makeText(InsertExActivity.this, "no user key found!", Toast.LENGTH_LONG).show();
+                                }
+                            }
+
+                            @Override
+                            public void onCancelled(DatabaseError databaseError) {
+
+                            }
+                        });
+                        i++;
+
+                    }
+                    String sss = String.format("%d user founds", i);
+                    Toast.makeText(InsertExActivity.this, sss, Toast.LENGTH_LONG).show();
+                    //uAdapter.notifyDataSetChanged();
+                }
+                else{
+                    Toast.makeText(InsertExActivity.this, "no users found!", Toast.LENGTH_LONG).show();
+
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError error) {
+                // Failed to read value
+                //log.w(TAG, "Failed to read value.", error.toException());
+            }
+        });
+
+        System.out.println("2");
 
         Spinner spinner = (Spinner) findViewById(R.id.Currency);
         // Create an ArrayAdapter using the string array and a default spinner layout
-        Set<String> CS = MainData.getInstance().getGroup(Gname).getCurrencies().keySet();
-        List<String> Currencies = new ArrayList<>();
+        FirebaseDatabase database4 = FirebaseDatabase.getInstance();
+        DatabaseReference myRef4 = database4.getReference("Groups").child(Gname);
+        myRef4.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                Map<String, Object> map = (Map<String, Object>) dataSnapshot.getValue();
+                if(map!=null) {
+                    defaultcurrency = (String)map.get("defaultcurrency");
 
-        Currencies.addAll(CS);
+                }
+                else{
+                    Toast.makeText(InsertExActivity.this, "no user key found!", Toast.LENGTH_LONG).show();
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+
+        System.out.println("3");
+
+        List<String> Currencies = new ArrayList<>();
+        Currencies.add("Select currency");
+        Currencies.add("EUR €");
+        //Currencies.add(defaultcurrency);
+        //TODO AGGIUNGERE TUTTE LE CURRENCIES ALLO SPINNER
 
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, R.layout.currency_item, Currencies);
         // Specify the layout to use when the list of choices appears
@@ -123,7 +222,9 @@ public class InsertExActivity extends AppCompatActivity {
                         Toast.makeText(InsertExActivity.this, "Please insert the expense value.", Toast.LENGTH_LONG).show();
                         Talgorithm.setSelection(0);
                     } else {
-                        uAdapter = new AlgorithmParametersAdapter(new ArrayList<>(users.values()), position, 10, algInfo, algInfoSmall);
+                        String aaa = String.format("users before adapter: %d", users.size());
+                        System.out.println(aaa);
+                        uAdapter = new AlgorithmParametersAdapter(users, position, 10, algInfo, algInfoSmall);
                         userRecyclerView.setAdapter(uAdapter);
                     }
 
@@ -132,14 +233,11 @@ public class InsertExActivity extends AppCompatActivity {
                     if (Tvalue.getText().toString().equals("")) {
                         Toast.makeText(InsertExActivity.this, "Please insert the expense value.", Toast.LENGTH_LONG).show();
                         Talgorithm.setSelection(0);
-                        /*
-                        uAdapter = new AlgorithmParametersAdapter(users, position, 0);
-                        userRecyclerView.setAdapter(uAdapter);
-                        */
+
                     } else if( Tcurrency.getSelectedItem().toString().equals("Select currency")) {
                         Toast.makeText(InsertExActivity.this, "Please insert currency.", Toast.LENGTH_LONG).show();
                     } else {
-                        uAdapter = new AlgorithmParametersAdapter(new ArrayList<UserData>(users.values()), position, Float.parseFloat(Tvalue.getText().toString()), Tcurrency.getSelectedItem().toString(), algInfo, algInfoSmall);
+                        uAdapter = new AlgorithmParametersAdapter(users, position, Float.parseFloat(Tvalue.getText().toString()), algInfo, algInfoSmall);
                         userRecyclerView.setAdapter(uAdapter);
                     }
                 } else {
@@ -152,6 +250,9 @@ public class InsertExActivity extends AppCompatActivity {
             public void onNothingSelected(AdapterView<?> parent) {
             }
         } );
+
+        System.out.println("4");
+
        Tvalue.addTextChangedListener(new TextWatcher() {
            int p;
            @Override
@@ -168,11 +269,11 @@ public class InsertExActivity extends AppCompatActivity {
            public void afterTextChanged(Editable s) {
                if(Talgorithm.getSelectedItem().toString().equals("by import") && !Tcurrency.getSelectedItem().toString().equals("Select currency")) {
                    if(!Tvalue.getText().toString().isEmpty()) {
-                       uAdapter = new AlgorithmParametersAdapter(new ArrayList<UserData>(users.values()), 2, Float.parseFloat(Tvalue.getText().toString()), Tcurrency.getSelectedItem().toString(), algInfo, algInfoSmall);
+                       uAdapter = new AlgorithmParametersAdapter(users, 2, Float.parseFloat(Tvalue.getText().toString()), Tcurrency.getSelectedItem().toString(), algInfo, algInfoSmall);
                        userRecyclerView.setAdapter(uAdapter);
                    }
                    else{
-                       uAdapter = new AlgorithmParametersAdapter(new ArrayList<UserData>(users.values()), 2, 0, Tcurrency.getSelectedItem().toString(), algInfo, algInfoSmall);
+                       uAdapter = new AlgorithmParametersAdapter(users, 2, 0, Tcurrency.getSelectedItem().toString(), algInfo, algInfoSmall);
                        userRecyclerView.setAdapter(uAdapter);
                    }
                }
@@ -180,6 +281,7 @@ public class InsertExActivity extends AppCompatActivity {
        });
 
         String s = "";
+
     }
     private File createImageFile() throws IOException {
         // Create an image file name
@@ -266,8 +368,6 @@ public class InsertExActivity extends AppCompatActivity {
                 return true;
 
             case R.id.action_menu_done:
-                Intent i1 = getIntent();
-                final String Gname = i1.getStringExtra("GroupName");
 
                 final EditText Tname = (EditText) findViewById(R.id.Name);
                 final EditText Tdescription = (EditText) findViewById(R.id.Description);
@@ -277,7 +377,7 @@ public class InsertExActivity extends AppCompatActivity {
                 final EditText Tvalue = (EditText) findViewById(R.id.value);
 
                 FirebaseDatabase database = FirebaseDatabase.getInstance();
-
+                DatabaseReference myRef = database.getReference("Expenses").child(Gname).push();
 
                 int flagok = 1;
                 name = Tname.getText().toString();
@@ -297,10 +397,9 @@ public class InsertExActivity extends AppCompatActivity {
                     value = Float.parseFloat(Tvalue.getText().toString());
 
                    if (algorithm.equals("equally")) {
-                        MainData.getInstance().getGroup(Gname).allaRomana(value, currency);
-                        DatabaseReference myRef = database.getReference("/Expenses/" + Gname).push();
-                        myRef.setValue(MainData.getInstance().getGroup(Gname).addExpensive(name, description, category, currency, value, value - (value / (MainData.getInstance().getGroup(Gname).getlUsers().size() + 1)), algorithm ));
-
+                        v = value/users.size();
+                       for(UserData k : users)
+                            values.add(v);
                         flagok = 1;
                     }
 
@@ -319,26 +418,23 @@ public class InsertExActivity extends AppCompatActivity {
                             meValue = algValue;
                         else {
                             if (algorithm.equals("by percentuage"))
-                                MainData.getInstance().getGroup(Gname).addTouPercentuageMap(users.get(i).getEmail(), (int)algValue);
+
+
+                                values.add(value*algValue/100);
+
                             else
-                                MainData.getInstance().getGroup(Gname).addTouImportMap(users.get(i).getEmail(), (int)algValue);
+                                values.add(algValue);
                         }
                         algSum += algValue;
                     }
 
                     if((algorithm.equals("by percentuage") && algSum==100)) {
-                        //MainData.getInstance().addExpensiveToGroup(Gname, name, description, category, currency, value, value - (value*meValue/100), algorithm);
-                        MainData.getInstance().getGroup(Gname).byPercentuage(value, currency);
-                        DatabaseReference myRef = database.getReference("/Expenses/" + Gname).push();
-                        myRef.setValue(MainData.getInstance().getGroup(Gname).addExpensive(name, description, category, currency, value, value - (value*meValue/100), algorithm));
+
                         flagok = 1;
                     }
 
                     if((algorithm.equals("by import") && algSum==value)) {
-                        //MainData.getInstance().addExpensiveToGroup(Gname, name, description, category, currency, value, (value- meValue) , algorithm);
-                        MainData.getInstance().getGroup(Gname).byImport(value, currency);
-                        DatabaseReference myRef = database.getReference("/Expenses/" + Gname).push();
-                        myRef.setValue(MainData.getInstance().getGroup(Gname).addExpensive(name, description, category, currency, value, (value- meValue) , algorithm));
+
                         flagok = 1;
                     }
 
@@ -354,15 +450,48 @@ public class InsertExActivity extends AppCompatActivity {
 
                 }
 
-                    if (flagok == 1) {
+                    if (flagok == 1 && values.size() == users.size()) {
+                        myRef.setValue(new ExpenseData(name, description, category, currency, value, 0, algorithm));
+                        DatabaseReference myRef2 = database.getReference("Balance").child(Gname).child(mAuth.getCurrentUser().getUid().toString());
+                        DatabaseReference myRef3;
+                       int ii = 0;
+                        for(final UserData key : users){
+                            if(key.getuId()!=mAuth.getCurrentUser().getUid().toString()) {
+                                myRef3 = myRef2.child(key.getuId());
+                                v = 0;
+                                myRef3.addValueEventListener(new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(DataSnapshot dataSnapshot) {
+                                        Map<String, Object> mapp = (Map<String, Object>) dataSnapshot.getValue();
+                                        if (mapp != null) {
+                                            v = (Float) mapp.get(key);
+
+                                        } else {
+                                            Toast.makeText(InsertExActivity.this, "no user key found!", Toast.LENGTH_LONG).show();
+                                        }
+                                    }
+
+                                    @Override
+                                    public void onCancelled(DatabaseError databaseError) {
+
+                                    }
+                                });
+
+                                myRef3.child(String.format("%s %s", key.getName(), key.getSurname())).setValue(v + values.get(ii));
+                                ii++;
+                            }
+                        }
+
+
 
                         Intent i2 = new Intent(InsertExActivity.this, GroupActivity.class);
-                        i2.putExtra("name", Gname);
+                        i2.putExtra("groupId", Gname);
                         setResult(RESULT_OK, i2);
                         finish();
 
                         return true;
                     } else {
+                        Toast.makeText(InsertExActivity.this, "problems...", Toast.LENGTH_LONG).show();
                         return super.onOptionsItemSelected(item);
                     }
                 }

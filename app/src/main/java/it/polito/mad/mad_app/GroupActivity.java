@@ -154,7 +154,7 @@ public class GroupActivity extends AppCompatActivity {
                 Intent intent = new Intent(
                         getApplicationContext(), InsertExActivity.class
                 );
-                intent.putExtra("GroupId", gKey);
+                intent.putExtra("groupId", gKey);
                 startActivityForResult(intent, 1);
             }
         });
