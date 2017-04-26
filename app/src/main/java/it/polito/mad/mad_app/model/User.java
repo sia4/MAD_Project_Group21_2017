@@ -17,7 +17,7 @@ public class User {
     private String email;
     private String imagePath;
     private String username; // da vedere se utilizzarlo...
-    private Map<String, String> Groups = new TreeMap<>();
+    private Map<String, Map<String, String>> Groups = new TreeMap<>();
 
     public User() {
         // Default constructor required for calls to DataSnapshot.getValue(User.class)
@@ -48,7 +48,7 @@ public class User {
         return this.imagePath;
     }
 
-    public Map<String, String> getGroups(){
+    public Map<String, Map<String, String>> getGroups(){
         return this.Groups;
     }
 

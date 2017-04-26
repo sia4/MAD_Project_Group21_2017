@@ -127,7 +127,7 @@ public class InsertGroupActivity extends AppCompatActivity {
                                     .setIcon(android.R.drawable.ic_dialog_alert)
                                     .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                                         public void onClick(DialogInterface dialog, int whichButton) {
-                                            //sendEmail();
+                                            //onInviteClicked("codetest");
                                             //onInviteClicked("nome", "cognome", "groupname", "identificativo");
                                         }})
                                     .setNegativeButton(android.R.string.no, null).show();
@@ -199,8 +199,10 @@ public class InsertGroupActivity extends AppCompatActivity {
                     database = FirebaseDatabase.getInstance();
                     for (Iterator i = keys.iterator(); i.hasNext(); ) {
                         String key = (String) i.next();
-                        myRef = database.getReference("/Users/"+key+"/Groups/"+groupId);
+                        myRef = database.getReference("/Users/"+key+"/Groups/"+groupId+"/name/");
                         myRef.setValue(G.getName());
+                        myRef = database.getReference("/Users/"+key+"/Groups/"+groupId+"/imagePath/");
+                        myRef.setValue(G.getImagePath());
                     }
                     setResult(RESULT_OK, null);
                     finish();
@@ -213,15 +215,31 @@ public class InsertGroupActivity extends AppCompatActivity {
 
     }
 
-    private void onInviteClicked(String name, String surname, String groupName, String groupId) {
+
+    //Using an app as client
+    /*
+    private void sendEmail(String email) {
+        Intent i = new Intent(Intent.ACTION_SEND);
+        i.setType("message/rfc822");
+        i.putExtra(Intent.EXTRA_EMAIL  , email);
+        i.putExtra(Intent.EXTRA_SUBJECT, "Someone added you to a group on AllaRomana");
+        i.putExtra(Intent.EXTRA_TEXT   , "Hi! You have been invited to join to a group on AllaRomana. Download the app to start manage you expenses.");
+        try {
+            startActivity(Intent.createChooser(i, "Send mail..."));
+        } catch (android.content.ActivityNotFoundException ex) {
+            Toast.makeText(InsertGroupActivity.this, "There are no email clients installed.", Toast.LENGTH_SHORT).show();
+        }
+    }
+*/
+
+    private void onInviteClicked(String code) {
 
 
         Log.d("INFO", "sono qui");
-        String msg = "Hi! "+ name + " " + surname + " has invited you to join to the group "+ groupName
-                + " on AllaRomana app. Download the app to join the group and insert this code in the settings: " +
-                groupId + ".";
+        String msg = "Hi! I invite you to join a group on AllaRomana. Download the app and insert this code in the settings: " +
+                code + ".";
         Intent intent = new AppInviteInvitation.IntentBuilder(getString(R.string.invitation_title))
-                .setMessage("test")
+                .setMessage(code)
                 .setCallToActionText(getString(R.string.invitation_cta))
                 .build();
         startActivityForResult(intent, REQUEST_INVITE);

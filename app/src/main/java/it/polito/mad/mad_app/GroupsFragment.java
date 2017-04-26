@@ -35,10 +35,12 @@ public class GroupsFragment extends Fragment {
     public class GroupModel {
         String groupId;
         String groupName;
+        String groupUrl;
 
-        public GroupModel(String groupId, String groupName) {
+        public GroupModel(String groupId, String groupName, String groupUrl) {
             this.groupId = groupId;
             this.groupName = groupName;
+            this.groupUrl = groupUrl;
         }
 
         public String getGroupId() {
@@ -48,6 +50,8 @@ public class GroupsFragment extends Fragment {
         public String getGroupName() {
             return groupName;
         }
+
+        public String getGroupUrl() { return groupUrl; }
     }
     private Context context;
     private List<GroupModel> groups = new ArrayList<>();
@@ -76,7 +80,7 @@ public class GroupsFragment extends Fragment {
         recyclerView.setLayoutManager(new LinearLayoutManager(context));
         recyclerView.addItemDecoration(new DividerItemDecoration(context, LinearLayoutManager.VERTICAL));
 
-        final GroupsAdapter gAdapter = new GroupsAdapter(groups);
+        final GroupsAdapter gAdapter = new GroupsAdapter(getActivity(), groups);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(context);
         recyclerView.setLayoutManager(mLayoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
@@ -96,11 +100,11 @@ public class GroupsFragment extends Fragment {
                 //System.out.println("lista "+dList.toString());
                 //dKey = new ArrayList<>();
                 if(map != null) {
+                    groups.clear();
                     for (Map.Entry<String, Object> k : map.entrySet()) {
-
-                        System.out.println("Value is: " + k);
-
-                        groups.add(new GroupModel(k.getKey(), (k.getValue().toString())));
+                        String name = (String)((Map<String, Object>) k.getValue()).get("name");
+                        String imagePath = (String)((Map<String, Object>) k.getValue()).get("imagePath");
+                        groups.add(new GroupModel(k.getKey(), name, imagePath));
                         gAdapter.notifyDataSetChanged();
                         progressBar.setVisibility(view.INVISIBLE);
                     }
@@ -122,9 +126,11 @@ public class GroupsFragment extends Fragment {
             @Override
             public void onClick(View view, int position) {
                 final String k = groups.get(position).getGroupId();
+                final String n = groups.get(position).getGroupName();
                 Intent intent = new Intent().setClass(view.getContext(), GroupActivity.class);
 
                 intent.putExtra("groupId",k);
+                intent.putExtra("groupName", n);
                 view.getContext().startActivity(intent);
             }
 

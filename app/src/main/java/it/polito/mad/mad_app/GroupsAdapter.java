@@ -1,5 +1,6 @@
 package it.polito.mad.mad_app;
 
+import android.content.Context;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
@@ -8,6 +9,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.bumptech.glide.Glide;
 
 import java.util.List;
 
@@ -18,6 +21,7 @@ import it.polito.mad.mad_app.model.GroupData;
 public class GroupsAdapter extends RecyclerView.Adapter<GroupsAdapter.MyViewHolder> {
 
     private List<GroupsFragment.GroupModel> GData;
+    private Context context;
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
         public TextView name;
@@ -35,7 +39,8 @@ public class GroupsAdapter extends RecyclerView.Adapter<GroupsAdapter.MyViewHold
     }
 
 
-    public GroupsAdapter(List<GroupsFragment.GroupModel> expensiveData) {
+    public GroupsAdapter(Context c, List<GroupsFragment.GroupModel> expensiveData) {
+        context = c;
         this.GData = expensiveData;
     }
 
@@ -52,13 +57,16 @@ public class GroupsAdapter extends RecyclerView.Adapter<GroupsAdapter.MyViewHold
         final GroupsFragment.GroupModel g = GData.get(position);
         holder.name.setText(g.getGroupName());
 
-        String p = null;
+        String p = g.getGroupUrl();
+        System.out.println("Sono qui, p = "+p);
 
-        if (p == null) {
+        Glide.with(context).load(p).into(holder.im);
+
+        /*if (p == null) {
             holder.im.setImageResource(R.drawable.group_default);
         } else {
             holder.im.setImageBitmap(BitmapFactory.decodeFile(p));
-        }
+        }*/
 
         //holder.im.setImageResource(R.drawable.casa);
         /*holder.name.setOnClickListener(new View.OnClickListener() {

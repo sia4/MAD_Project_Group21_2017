@@ -27,7 +27,7 @@ import it.polito.mad.mad_app.model.GroupData;
 import it.polito.mad.mad_app.model.MainData;
 
 public class GroupActivity extends AppCompatActivity {
-    private String name, gKey;
+    private String gName, gKey;
     private ListView lv;
     private List<ExpenseData> data = new ArrayList<>();
     private List<GroupData> GData;
@@ -43,16 +43,16 @@ public class GroupActivity extends AppCompatActivity {
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
-        final String gname = "Coinquilini";
         gKey = intent.getStringExtra("groupId");
+//        gName = intent.getStringExtra("groupName");
 
         Toast.makeText(GroupActivity.this, gKey, Toast.LENGTH_LONG).show();
-        name=gname;
 
-        System.out.println("Hello: " + gname);
+        System.out.println("Hello: " + gName);
 
         List<GroupData> d = MainData.getInstance().getGroupList();
 
+        /*
         GroupData datigruppo = null;
         int i, n;
         n = d.size();
@@ -67,20 +67,21 @@ public class GroupActivity extends AppCompatActivity {
             }
 
         }
+        */
 
         final Bundle b = new Bundle();
         b.putString("GroupId", gKey);
 
         //System.out.println("CICCIOBOMBA" + datigruppo.getName());
 
-        Float pos = datigruppo.getPosExpenses();
-        Float neg = datigruppo.getNegExpenses();
+        Float pos = (float)10.2;//datigruppo.getPosExpenses();
+        Float neg = (float)10.2;//datigruppo.getNegExpenses();
 
         String subtitle = "";
         subtitle += "They Owe You: " + pos.toString()+ " - You Owe: " + neg.toString();
 
 
-        getSupportActionBar().setTitle(gname);
+        getSupportActionBar().setTitle(gName);
         getSupportActionBar().setSubtitle(subtitle);
         try{
             Field field = Toolbar.class.getDeclaredField( "mSubtitleTextView" );
@@ -165,10 +166,10 @@ public class GroupActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
 
         if (resultCode == RESULT_OK) {
-            final String gname = data.getStringExtra("groupId");
-            System.out.println("Name = " + gname);
+            final String gId = data.getStringExtra("groupId");
+            System.out.println("Id = " + gId);
             Intent refresh = new Intent(this, GroupActivity.class);
-            refresh.putExtra("groupId", gname);
+            refresh.putExtra("groupId", gId);
             startActivity(refresh);
             this.finish();
         }
