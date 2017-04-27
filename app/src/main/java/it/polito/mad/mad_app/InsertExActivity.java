@@ -55,9 +55,10 @@ public class InsertExActivity extends AppCompatActivity {
     private String currency;
     private float value;
     private String algorithm;
+    private String myname, mysurname;
     private String Gname = new String();
     private int i=0;
-    private float v = 0;
+    private float v = 0, v1 = 0;
     private List<Float> values = new ArrayList<>();
     private String defaultcurrency;
     private FirebaseAuth mAuth = FirebaseAuth.getInstance();
@@ -127,6 +128,10 @@ public class InsertExActivity extends AppCompatActivity {
                                     UserData u = new UserData("aaaa", (String)map3.get("name"), (String)map3.get("surname"), 5555);
                                     u.setuId(k);
                                     users.add(u);
+                                    if(k.equals(mAuth.getCurrentUser().getUid())){
+                                        myname = (String)map3.get("name");
+                                        mysurname = (String)map3.get("surname");
+                                    }
                                     //uAdapter.notifyDataSetChanged();
                                 }
                                 else{
@@ -444,19 +449,39 @@ public class InsertExActivity extends AppCompatActivity {
 
                     if (flagok == 1 && values.size() == users.size()) {
                         myRef.setValue(new ExpenseData(name, description, category, currency, value, 0, algorithm));
-                        DatabaseReference myRef2 = database.getReference("Balance").child(Gname).child(mAuth.getCurrentUser().getUid().toString());
-                        DatabaseReference myRef3;
-                       int ii = 0;
+                        DatabaseReference myRef2 = database.getReference("Balance").child(Gname).child(mAuth.getCurrentUser().getUid());
+                        DatabaseReference myRef4 = database.getReference("Balance").child(Gname);
+                        DatabaseReference myRef3, myRef5;
+                        int ii = 0;
                         for(final UserData key : users){
-                            if(key.getuId()!=mAuth.getCurrentUser().getUid().toString()) {
+                            v = 0;
+                            v1 = 0;
+                            if(!key.getuId().equals(mAuth.getCurrentUser().getUid())) {
                                 myRef3 = myRef2.child(key.getuId());
-                                v = 0;
+                                myRef5 = myRef4.child(key.getuId()).child(mAuth.getCurrentUser().getUid());
                                 myRef3.addValueEventListener(new ValueEventListener() {
                                     @Override
                                     public void onDataChange(DataSnapshot dataSnapshot) {
                                         Map<String, Object> mapp = (Map<String, Object>) dataSnapshot.getValue();
                                         if (mapp != null) {
-                                            v = (Float) mapp.get(key);
+                                            v = (Float) mapp.get(String.format("%s %s", key.getName(),key.getSurname()));
+
+                                        } else {
+                                            Toast.makeText(InsertExActivity.this, "no user key found!", Toast.LENGTH_LONG).show();
+                                        }
+                                    }
+
+                                    @Override
+                                    public void onCancelled(DatabaseError databaseError) {
+
+                                    }
+                                });
+                                myRef5.addValueEventListener(new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(DataSnapshot dataSnapshot) {
+                                        Map<String, Object> mapp1 = (Map<String, Object>) dataSnapshot.getValue();
+                                        if (mapp1 != null) {
+                                            v1 = (Float) mapp1.get(String.format("%s %s", myname,mysurname));
 
                                         } else {
                                             Toast.makeText(InsertExActivity.this, "no user key found!", Toast.LENGTH_LONG).show();
@@ -470,8 +495,10 @@ public class InsertExActivity extends AppCompatActivity {
                                 });
 
                                 myRef3.child(String.format("%s %s", key.getName(), key.getSurname())).setValue(v + values.get(ii));
-                                ii++;
+                                myRef5.child(String.format("%s %s", myname, mysurname)).setValue(v1 - values.get(ii));
                             }
+                            ii++;
+
                             System.out.println(String.format("balance update cycles: %d\n", ii));
                         }
 
