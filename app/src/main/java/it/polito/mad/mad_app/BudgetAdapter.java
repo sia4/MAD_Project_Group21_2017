@@ -11,15 +11,18 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import it.polito.mad.mad_app.model.Balance;
 import it.polito.mad.mad_app.model.BalanceData;
 import it.polito.mad.mad_app.model.MainData;
 
 public class BudgetAdapter extends RecyclerView.Adapter<BudgetAdapter.MyViewHolder> {
 
-    private List<BalanceData> budgetData;
-    private List<BalanceData> budgetDataC; //contiene i record in valute diverse
+    //private List<BalanceData> budgetData;
+    private List<Balance> budgetData=new ArrayList<>();
+    //private List<BalanceData> budgetDataC; //contiene i record in valute diverse
 
 
     Context mContext;
@@ -41,9 +44,9 @@ public class BudgetAdapter extends RecyclerView.Adapter<BudgetAdapter.MyViewHold
     }
 
 
-    public BudgetAdapter(List<BalanceData> budgetData, List<BalanceData> budgetCData) {
+    public BudgetAdapter(List<Balance> budgetData/*, List<BalanceData> budgetCData*/) {
         this.budgetData = budgetData;
-        this.budgetDataC = budgetCData;
+        //this.budgetDataC = budgetCData;
     }
 
     @Override
@@ -57,14 +60,13 @@ public class BudgetAdapter extends RecyclerView.Adapter<BudgetAdapter.MyViewHold
 
     @Override
     public void onBindViewHolder(MyViewHolder holder, int position) {
-        final BalanceData budget = budgetData.get(position);
+        final Balance budget = budgetData.get(position);
         float n=budget.getValue();
-        holder.value_cred_deb.setText(String.format("%.2f", budget.getValue()) + " " + budget.getCurrency());
+        holder.value_cred_deb.setText(String.format("%.2f", budget.getValue()) + " " /* budget.getCurrency()*/);
         if(n>0){
-
-            System.out.println(budget.getEmail() + "-->" + MainData.getInstance().findUserByMail(budget.getEmail()));
-
-            holder.name_cred_deb.setText(MainData.getInstance().findUserByMail(budget.getEmail()).getName() + " owns you:");
+            //System.out.println(budget.getEmail() + "-->" + MainData.getInstance().findUserByMail(budget.getEmail()));
+            //holder.name_cred_deb.setText(MainData.getInstance().findUserByMail(budget.getEmail()).getName() + " owns you:");
+            holder.name_cred_deb.setText(budget.getName()+ " owns you:");
             holder.value_cred_deb.setTextColor(Color.parseColor("#27B011"));
             if(holder.button==null) {
                 holder.button = new Button(mContext);
@@ -74,16 +76,16 @@ public class BudgetAdapter extends RecyclerView.Adapter<BudgetAdapter.MyViewHold
                     @Override
                     public void onClick(View v) {
                         Intent intent = new Intent().setClass(v.getContext(), BalanceActivity.class);
-                        String uname = MainData.getInstance().findUserByMail(budget.getEmail()).getName();
-                        String umail = budget.getEmail();
-                        String gname = budget.getGName();
+                        String uname = budget.getName()+ " owns you:";
+                        //String umail = budget.getEmail();
+                        String gname = budget.getName();
                         String bValue = Float.toString(budget.getValue());
-                        String currency = budget.getCurrency();
-                        intent.putExtra("gname", gname);
-                        intent.putExtra("umail", umail);
-                        intent.putExtra("uname", uname);
+                        //String currency = budget.getCurrency();
+                        intent.putExtra("gname", budget.getgID());
+                        intent.putExtra("uKey", budget.getKey());
+                        intent.putExtra("uname", budget.getName());
                         intent.putExtra("value", bValue);
-                        intent.putExtra("currency", currency);
+                        //intent.putExtra("currency", currency);
                         v.getContext().startActivity(intent);
                     }
                 });
@@ -111,7 +113,7 @@ public class BudgetAdapter extends RecyclerView.Adapter<BudgetAdapter.MyViewHold
                 holder.buttonContainer.removeView(holder.button);
             }
             holder.value_cred_deb.setTextColor(Color.parseColor("#D51111"));
-            holder.name_cred_deb.setText("You own to "+MainData.getInstance().findUserByMail(budget.getEmail()).getName()+":");
+            holder.name_cred_deb.setText("You own to "+budget.getName()+":");
         }
 
     }
@@ -119,5 +121,6 @@ public class BudgetAdapter extends RecyclerView.Adapter<BudgetAdapter.MyViewHold
     @Override
     public int getItemCount() {
         return budgetData.size();
+        //return 0;
     }
 }

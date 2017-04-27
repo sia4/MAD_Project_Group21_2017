@@ -44,11 +44,11 @@ public class GroupActivity extends AppCompatActivity {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
         gKey = intent.getStringExtra("groupId");
-//        gName = intent.getStringExtra("groupName");
+        gName = intent.getStringExtra("groupName");
 
         Toast.makeText(GroupActivity.this, gKey, Toast.LENGTH_LONG).show();
 
-        System.out.println("Hello: " + gName);
+        System.out.println("+++++++++++++Hello: " + gName);
 
         List<GroupData> d = MainData.getInstance().getGroupList();
 
@@ -70,6 +70,7 @@ public class GroupActivity extends AppCompatActivity {
         */
 
         final Bundle b = new Bundle();
+        b.putString("GroupId", gKey);
         b.putString("GroupId", gKey);
 
         //System.out.println("CICCIOBOMBA" + datigruppo.getName());

@@ -92,13 +92,16 @@ public class    HistoryFragment extends Fragment {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 Map<String, Object> map = (Map<String, Object>) dataSnapshot.getValue();
+                /*
                 if(map!=null) {
                     for (String k : map.keySet())
                         lex.add((ExpenseData) map.get(k));
 
                     hAdapter.notifyDataSetChanged();
                 }
+                */
             }
+
 
             @Override
             public void onCancelled(DatabaseError error) {
