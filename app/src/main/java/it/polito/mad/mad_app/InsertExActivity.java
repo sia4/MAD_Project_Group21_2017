@@ -48,14 +48,6 @@ import it.polito.mad.mad_app.model.UserData;
 
 public class InsertExActivity extends AppCompatActivity {
 
-    private class balance{
-        private String name;
-        private float value;
-        public balance(String name, float value){
-            this.name = name;
-            this.value = value;
-        }
-    }
 
     private String name;
     private String description;
@@ -480,6 +472,7 @@ public class InsertExActivity extends AppCompatActivity {
                                 myRef3.child(String.format("%s %s", key.getName(), key.getSurname())).setValue(v + values.get(ii));
                                 ii++;
                             }
+                            System.out.println(String.format("balance update cycles: %d\n", ii));
                         }
 
 
