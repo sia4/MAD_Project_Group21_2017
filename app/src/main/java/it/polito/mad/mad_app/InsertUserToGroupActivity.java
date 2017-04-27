@@ -25,6 +25,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
+import it.polito.mad.mad_app.model.Invite;
 import it.polito.mad.mad_app.model.User;
 
 /**
@@ -39,6 +40,7 @@ public class InsertUserToGroupActivity extends AppCompatActivity {
     public String key;
     public String gName;
     public String gPath;
+    public String email;
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -82,6 +84,7 @@ public class InsertUserToGroupActivity extends AppCompatActivity {
                 if(uEmail.getText().toString().equals("")) {
                     Toast.makeText(InsertUserToGroupActivity.this, "Please insert an email!", Toast.LENGTH_LONG).show();
                 } else {
+                    email = uEmail.getText().toString();
                     final DatabaseReference mTest = FirebaseDatabase.getInstance().getReference();
                     final Query quer=mTest.child("Users").orderByChild("email");
                     quer.equalTo(uEmail.getText().toString()).addListenerForSingleValueEvent(new ValueEventListener() {
@@ -102,7 +105,7 @@ public class InsertUserToGroupActivity extends AppCompatActivity {
                                     .setIcon(android.R.drawable.ic_dialog_alert)
                                     .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                                         public void onClick(DialogInterface dialog, int whichButton) {
-                                            onInviteClicked("codetest");
+                                            onInviteClicked(email);
                                             //onInviteClicked("nome", "cognome", "groupname", "identificativo");
                                         }})
                                     .setNegativeButton(android.R.string.no, null).show();
@@ -145,6 +148,14 @@ public class InsertUserToGroupActivity extends AppCompatActivity {
                 for (String id : ids) {
                     Log.d("INFO", "onActivityResult: sent invitation " + id);
                 }
+
+                FirebaseDatabase database = FirebaseDatabase.getInstance();
+                DatabaseReference myRef = database.getReference("/Invites");
+                String inviteId = myRef.push().getKey();
+                myRef.setValue(gPath);
+                Invite invite = new Invite(email, gId, gName, gPath);
+                myRef.child(inviteId).setValue(invite);
+
                 finish();
             } else {
                 // Sending failed or it was canceled, show failure message to the user
@@ -171,17 +182,11 @@ public class InsertUserToGroupActivity extends AppCompatActivity {
     }
 */
 
-    private void onInviteClicked(String code) {
-
-
-        Log.d("INFO", "sono qui");
-        String msg = "I invite you to join a group on AllaRomana. Insert this code in the settings: " +
-                code + ".";
+    private void onInviteClicked(String email) {
 
         Intent intent = new AppInviteInvitation.IntentBuilder("Invite your friends!")
                 .setMessage("AllaRomana")
-                .setEmailHtmlContent("Hi! I invited you to join a group on AllaRomana. Download the app and insert the invitation code: "+ code
-                        + ". See you on AllaRomana!")
+                .setEmailHtmlContent("Hi! I invited you to join a group on AllaRomana. Download the app and SignIn with the email "+ email +" to join the group. See you on AllaRomana!")
                 .setDeepLink(Uri.EMPTY)
                 .setEmailSubject("Invite you on AllaRomana")
                 .build();

@@ -22,4 +22,11 @@
         app:headerLayout="@layout/nav_header_user_info"
         app:menu="@menu/activity_user_info_drawer" />
 
+    <Button
+        android:id="@+id/sendVerificationEmail"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
+        android:text="Reload"/>
+
 </android.support.v4.widget.DrawerLayout>

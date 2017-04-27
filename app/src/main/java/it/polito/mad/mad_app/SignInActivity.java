@@ -20,8 +20,10 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
+import it.polito.mad.mad_app.model.Invite;
 import it.polito.mad.mad_app.model.User;
 
 
@@ -170,6 +172,55 @@ public class SignInActivity extends AppCompatActivity {
                                 } else {
 
                                     writeNewUser(user.getUid(), name, surname, email);
+                                    final FirebaseUser u = FirebaseAuth.getInstance().getCurrentUser();
+
+                                    u.sendEmailVerification()
+                                            .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                @Override
+                                                public void onComplete(@NonNull Task<Void> task) {
+                                                    if (task.isSuccessful()) {
+                                                        Toast.makeText(getApplicationContext(), "Email verification sent.", Toast.LENGTH_LONG).show();
+                                                    } else {
+                                                        Toast.makeText(getApplicationContext(), "Error sending email verification.", Toast.LENGTH_LONG).show();
+                                                    }
+                                                }
+                                            });
+
+                                    final DatabaseReference database = FirebaseDatabase.getInstance().getReference();
+                                    final Query quer=database.child("Invites").orderByChild("email");
+
+                                    quer.equalTo(u.getEmail()).addListenerForSingleValueEvent(new ValueEventListener() {
+
+                                      @Override
+                                      public void onDataChange(DataSnapshot dataSnapshot) {
+                                          for (DataSnapshot invitesSnapshot: dataSnapshot.getChildren()) {
+                                              Invite is = invitesSnapshot.getValue(Invite.class);
+                                              String keyInvite = invitesSnapshot.getKey();
+                                              String gId = is.getGroupId();
+                                              String gName = is.getGroupName();
+                                              String gPath = is.getGroupPath();
+                                              String key = u.getUid();
+                                              System.out.print("gruppo: "+ is.getGroupId());
+                                              FirebaseDatabase database = FirebaseDatabase.getInstance();
+                                              DatabaseReference myRef = database.getReference("/Users/"+key+"/Groups/"+gId+"/name/");
+                                              myRef.setValue(gName);
+                                              myRef = database.getReference("/Users/"+key+"/Groups/"+gId+"/imagePath/");
+                                              myRef.setValue(gPath);
+                                              myRef = database.getReference("/Groups/"+gId+"/members/"+key);
+                                              myRef.setValue(true);
+
+                                              DatabaseReference myRef2 = database.getReference("/Invites/");
+                                              myRef2.child(keyInvite).removeValue();
+
+                                          }
+
+                                      }
+
+                                        @Override
+                                        public void onCancelled(DatabaseError eError) {
+
+                                        }
+                                     });
 
                                     startActivity(new Intent(SignInActivity.this, MainActivity.class));
                                     finish();
