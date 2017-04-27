@@ -56,6 +56,7 @@ public class InsertGroupActivity extends AppCompatActivity {
     private User ud;
     private String key;
     private List<String> u= new ArrayList<>();
+    private Map<String,String>my= new TreeMap<>();//TODO da cambiare
     private Map<String,Boolean>m= new TreeMap<>();
     private UsersToAddAdapter uAdapter = null;
     String uKey = null;
@@ -134,6 +135,7 @@ public class InsertGroupActivity extends AppCompatActivity {
                         } else {
                             Uemail.setText("");
                             m.put(key,true);
+                            my.put(key,ud.getName() + " " + ud.getSurname());
                             u.add(ud.getName() + " " + ud.getSurname());
                             uAdapter.notifyDataSetChanged();
                             key=null;
@@ -203,6 +205,16 @@ public class InsertGroupActivity extends AppCompatActivity {
                         myRef.setValue(G.getName());
                         myRef = database.getReference("/Users/"+key+"/Groups/"+groupId+"/imagePath/");
                         myRef.setValue(G.getImagePath());
+                        //TODO lucia
+                        /*for(Iterator n=keys.iterator();n.hasNext();){
+                            String k = (String) n.next();
+                            if(k!=key) {
+                                myRef = database.getReference("/Balance/" + groupId+"/" + key +"/" + k+"/"+"name");
+                                myRef.setValue(my.get(k));
+                                myRef = database.getReference("/Balance/" + groupId+"/" + key +"/" + k+"/"+"value");
+                                myRef.setValue(0.00);
+                            }
+                        }*/
                     }
                     setResult(RESULT_OK, null);
                     finish();
