@@ -464,7 +464,8 @@ public class InsertExActivity extends AppCompatActivity {
                                     public void onDataChange(DataSnapshot dataSnapshot) {
                                         Map<String, Object> mapp = (Map<String, Object>) dataSnapshot.getValue();
                                         if (mapp != null) {
-                                            v = (Float) mapp.get(String.format("%s %s", key.getName(),key.getSurname()));
+                                            v = Float.parseFloat((String)mapp.get(String.format("%s %s", key.getName(),key.getSurname())));
+                                            Toast.makeText(InsertExActivity.this, "v updated", Toast.LENGTH_LONG).show();
 
                                         } else {
                                             Toast.makeText(InsertExActivity.this, "no user key found!", Toast.LENGTH_LONG).show();
@@ -481,8 +482,8 @@ public class InsertExActivity extends AppCompatActivity {
                                     public void onDataChange(DataSnapshot dataSnapshot) {
                                         Map<String, Object> mapp1 = (Map<String, Object>) dataSnapshot.getValue();
                                         if (mapp1 != null) {
-                                            v1 = (Float) mapp1.get(String.format("%s %s", myname,mysurname));
-
+                                            v1 = Float.parseFloat((String)mapp1.get(String.format("%s %s", myname,mysurname)));
+                                            Toast.makeText(InsertExActivity.this, "v updated", Toast.LENGTH_LONG).show();
                                         } else {
                                             Toast.makeText(InsertExActivity.this, "no user key found!", Toast.LENGTH_LONG).show();
                                         }
