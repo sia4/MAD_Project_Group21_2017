@@ -2,6 +2,7 @@ package it.polito.mad.mad_app;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
@@ -47,7 +48,6 @@ import it.polito.mad.mad_app.model.UserData;
 
 public class InsertGroupActivity extends AppCompatActivity {
 
-    private static final int REQUEST_INVITE = 0;
     private FirebaseAuth auth;
     private FirebaseAuth.AuthStateListener mAuthListener;
     private String GroupName;
@@ -121,17 +121,8 @@ public class InsertGroupActivity extends AppCompatActivity {
                             Toast.makeText(InsertGroupActivity.this, key, Toast.LENGTH_LONG).show();
                         }
                         if(key == null) {
-                            //Toast.makeText(InsertGroupActivity.this, "", Toast.LENGTH_LONG).show();
-                            new AlertDialog.Builder(InsertGroupActivity.this)
-                                    .setTitle("You friend has not downloaded the app, yet!")
-                                    .setMessage("Do you want to invite him to use the app?")
-                                    .setIcon(android.R.drawable.ic_dialog_alert)
-                                    .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-                                        public void onClick(DialogInterface dialog, int whichButton) {
-                                            //onInviteClicked("codetest");
-                                            //onInviteClicked("nome", "cognome", "groupname", "identificativo");
-                                        }})
-                                    .setNegativeButton(android.R.string.no, null).show();
+                            Toast.makeText(InsertGroupActivity.this, "This user is not registred to the service!", Toast.LENGTH_LONG).show();
+
                         } else {
                             Uemail.setText("");
                             m.put(key,true);
@@ -227,53 +218,5 @@ public class InsertGroupActivity extends AppCompatActivity {
 
     }
 
-
-    //Using an app as client
-    /*
-    private void sendEmail(String email) {
-        Intent i = new Intent(Intent.ACTION_SEND);
-        i.setType("message/rfc822");
-        i.putExtra(Intent.EXTRA_EMAIL  , email);
-        i.putExtra(Intent.EXTRA_SUBJECT, "Someone added you to a group on AllaRomana");
-        i.putExtra(Intent.EXTRA_TEXT   , "Hi! You have been invited to join to a group on AllaRomana. Download the app to start manage you expenses.");
-        try {
-            startActivity(Intent.createChooser(i, "Send mail..."));
-        } catch (android.content.ActivityNotFoundException ex) {
-            Toast.makeText(InsertGroupActivity.this, "There are no email clients installed.", Toast.LENGTH_SHORT).show();
-        }
-    }
-*/
-
-    private void onInviteClicked(String code) {
-
-
-        Log.d("INFO", "sono qui");
-        String msg = "Hi! I invite you to join a group on AllaRomana. Download the app and insert this code in the settings: " +
-                code + ".";
-        Intent intent = new AppInviteInvitation.IntentBuilder(getString(R.string.invitation_title))
-                .setMessage(code)
-                .setCallToActionText(getString(R.string.invitation_cta))
-                .build();
-        startActivityForResult(intent, REQUEST_INVITE);
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        Log.d("INFO", "onActivityResult: requestCode=" + requestCode + ", resultCode=" + resultCode);
-
-        if (requestCode == REQUEST_INVITE) {
-            if (resultCode == RESULT_OK) {
-                // Get the invitation IDs of all sent messages
-                String[] ids = AppInviteInvitation.getInvitationIds(resultCode, data);
-                for (String id : ids) {
-                    Log.d("INFO", "onActivityResult: sent invitation " + id);
-                }
-            } else {
-                // Sending failed or it was canceled, show failure message to the user
-                // ...
-            }
-        }
-    }
 
 }

@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="it.polito.mad.mad_app.InsertUserToGroupActivity">
+
+    <android.support.design.widget.AppBarLayout
+        android:id="@+id/insert_user_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:theme="@style/AppTheme">
+
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/insert_user_to_group_toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            app:theme="@style/ToolbarTheme"
+            app:popupTheme="@style/PopupTheme"/>
+
+    </android.support.design.widget.AppBarLayout>
+
+    <include layout="@layout/content_expense_info" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="49dp"
+        android:orientation="vertical">
+        <EditText
+            android:id="@+id/uEmail"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="@dimen/activity_margin"
+            android:layout_weight="0.5"
+            android:hint="Insert user email..."
+            android:ems="10"
+            android:textSize="20sp" />
+    </LinearLayout>
+
+</android.support.design.widget.CoordinatorLayout>
