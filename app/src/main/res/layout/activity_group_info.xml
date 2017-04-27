@@ -115,6 +115,12 @@
             android:orientation="vertical"
             android:scrollbars="vertical" />
 
+        <Button
+            android:id="@+id/addUserInExistingGroup"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:text="Add new user"/>
         <TextView
             android:layout_width="match_parent"
             android:layout_height="20sp"

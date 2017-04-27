@@ -87,6 +87,9 @@
         <activity android:name=".SignInActivity" />
         <activity android:name=".LoginActivity" />
         <activity
+            android:name=".InsertUserToGroupActivity"
+            android:parentActivityName=".GroupInfoActivity" />
+        <activity
             android:name=".UserInformationActivity"
             android:label="@string/title_activity_user_information"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar"></activity>

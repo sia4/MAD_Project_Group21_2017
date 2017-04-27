@@ -19,11 +19,13 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.appinvite.AppInviteInvitation;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -45,7 +47,7 @@ public class GroupInfoActivity extends AppCompatActivity {
     //private GroupData GD;
     private TextView namet, desc;
     private boolean flag_name_edited = false, flag_desc_edited = false, flag_img_edited = false;
-    private static String tmp, nametmp, desctmp, name;
+    private static String tmp, nametmp, desctmp, name, image;
     private EditText nameted, desced;
     private ImageView im;
     private List<String> users = new ArrayList();
@@ -80,6 +82,17 @@ public class GroupInfoActivity extends AppCompatActivity {
 
         //String p = GD.getImagePath();
 
+        Button button = (Button) findViewById(R.id.addUserInExistingGroup);
+        button.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                Intent i = new Intent( getApplicationContext(), InsertUserToGroupActivity.class);
+                i.putExtra("groupId", name);
+                i.putExtra("groupName", nametmp);
+                i.putExtra("groupPath", image);
+                startActivity(i);
+                finish();
+            }
+        });
 
         im.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -108,6 +121,7 @@ public class GroupInfoActivity extends AppCompatActivity {
                     desc.setText(desctmp);
 
                     String p = (String) map.get("imagePath");
+                    image = p;
 
                     if (p == null) {
                         im.setImageResource(R.drawable.group_default);
@@ -259,7 +273,6 @@ public class GroupInfoActivity extends AppCompatActivity {
             //Toast.makeText(this, "path:"+ tmp, Toast.LENGTH_LONG).show();
 
         }
-
     }
 
     @Override
