@@ -196,6 +196,9 @@ public class InsertGroupActivity extends AppCompatActivity {
                         myRef.setValue(G.getName());
                         myRef = database.getReference("/Users/"+key+"/Groups/"+groupId+"/imagePath/");
                         myRef.setValue(G.getImagePath());
+
+
+
                         //TODO lucia
                         /*for(Iterator n=keys.iterator();n.hasNext();){
                             String k = (String) n.next();
