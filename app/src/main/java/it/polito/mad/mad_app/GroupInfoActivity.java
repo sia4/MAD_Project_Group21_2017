@@ -71,7 +71,6 @@ public class GroupInfoActivity extends AppCompatActivity {
         }
         Intent i = getIntent();
         name=i.getStringExtra("groupId");
-        System.out.println(name);
         //GD=MainData.getInstance().getGroup(name);
 
         if (getSupportActionBar() != null)
@@ -279,7 +278,6 @@ public class GroupInfoActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item){
 
         Intent i = getIntent();
-        System.out.println("GNAME: " + nametmp);
 
         switch(item.getItemId()){
             case android.R.id.home:
@@ -313,7 +311,6 @@ public class GroupInfoActivity extends AppCompatActivity {
                     }
 
                     Log.e("DEBUG", newname + " " + name);
-                    System.out.println();
                 } else {
                     in.putExtra("groupId", name);
                 }
@@ -340,7 +337,6 @@ public class GroupInfoActivity extends AppCompatActivity {
                 }
 
                 setResult(RESULT_OK, in);
-                System.out.println("WAT");
                 finish();
                 return true;
 

@@ -72,7 +72,6 @@ public class BudgetFragment extends Fragment {
         //other_currencies = MainData.getInstance().getGroup(GroupName).getExpensesListC();
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference myRef = database.getReference("/Balance/"+groupId+"/"+uKey);
-        System.out.println("/Balance/"+groupId+"/"+uKey);
         myRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -82,7 +81,6 @@ public class BudgetFragment extends Fragment {
                 if(map != null) {
                     users.clear();
                     for (Map.Entry<String, Object> k : map.entrySet()) {
-                        System.out.println("++++++++"+map);
                         String name = (String) ((Map<String, Object>) k.getValue()).get("name");
                         float value;
                         if (((Map<String, Object>) k.getValue()).get("value") instanceof Double) {

@@ -81,7 +81,6 @@ public class GroupsFragment extends Fragment {
         final FirebaseUser currentFUser = FirebaseAuth.getInstance().getCurrentUser();
         if (currentFUser != null)
             uKey = currentFUser.getUid();
-        System.out.println("utente " + uKey.toString());
 
         context = view.getContext();
         final RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.Groups);
@@ -178,10 +177,10 @@ public class GroupsFragment extends Fragment {
                                 })
                                 .setIcon(android.R.drawable.ic_dialog_alert)
                                 .show();
-                    }
-                }*/
+                    }*/
+//                }
 
-        //    }
+            //}
         //};
 
         return view;

@@ -65,18 +65,13 @@ public class UserInformationActivity extends AppCompatActivity {
                     surname.setText((String)map.get("surname"));
                     email.setText((String)map.get("email"));
                     //username.setText((String)map.get("username"));
-
-                    System.out.println("MAP: " + map.toString());
-
                     String p = (String) map.get("imagePath");
-
+                    //TODO controllare che l'immagine sia presa!!
                     if (p == null) {
                         im.setImageResource(R.drawable.group_default);
                     } else {
-                        System.out.println("NOT NULL!");
                         im.setImageBitmap(BitmapFactory.decodeFile(p));
                     }
-
                     //if(progressBar.isActivated())
                     //progressBar.setVisibility(View.INVISIBLE);
                     //gAdapter.notifyDataSetChanged();
@@ -86,8 +81,6 @@ public class UserInformationActivity extends AppCompatActivity {
 
             @Override
             public void onCancelled(DatabaseError error) {
-                // Failed to read value
-                //log.w(TAG, "Failed to read value.", error.toException());
             }
         });
 

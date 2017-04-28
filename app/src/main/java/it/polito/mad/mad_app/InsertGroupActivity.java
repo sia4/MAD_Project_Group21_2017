@@ -189,6 +189,7 @@ public class InsertGroupActivity extends AppCompatActivity {
                     G.addMember(uKey);
                     myRef.child(groupId).setValue(G);
                     Set keys = m.keySet();
+                    Set others = m.keySet();
                     database = FirebaseDatabase.getInstance();
                     for (Iterator i = keys.iterator(); i.hasNext(); ) {
                         String key = (String) i.next();
@@ -196,11 +197,7 @@ public class InsertGroupActivity extends AppCompatActivity {
                         myRef.setValue(G.getName());
                         myRef = database.getReference("/Users/"+key+"/Groups/"+groupId+"/imagePath/");
                         myRef.setValue(G.getImagePath());
-
-
-
-                        //TODO lucia
-                        /*for(Iterator n=keys.iterator();n.hasNext();){
+                        for(Iterator n = others.iterator();n.hasNext();){
                             String k = (String) n.next();
                             if(k!=key) {
                                 myRef = database.getReference("/Balance/" + groupId+"/" + key +"/" + k+"/"+"name");
@@ -208,7 +205,7 @@ public class InsertGroupActivity extends AppCompatActivity {
                                 myRef = database.getReference("/Balance/" + groupId+"/" + key +"/" + k+"/"+"value");
                                 myRef.setValue(0.00);
                             }
-                        }*/
+                        }
                     }
                     setResult(RESULT_OK, null);
                     finish();

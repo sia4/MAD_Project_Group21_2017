@@ -22,6 +22,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import static android.view.View.VISIBLE;
+
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -38,8 +40,39 @@ public class LoginActivity extends AppCompatActivity {
 
         mAuth = FirebaseAuth.getInstance();
         Firebase_DB = FirebaseDatabase.getInstance().getReference();
-
         CheckLoggedUser();
+
+        mAuthListener = new FirebaseAuth.AuthStateListener() { // listener lo istanzio comunque, se ho modifiche che lo triggerano
+
+            @Override
+            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+                FirebaseUser user = firebaseAuth.getCurrentUser();
+                if (user != null) {
+                    if(!user.isEmailVerified()) {
+                        Button button = (Button) findViewById(R.id.sendVerificationEmail);
+                        button.setVisibility(VISIBLE);
+                        button.setOnClickListener(new View.OnClickListener() {
+                            public void onClick(View v) {
+                                FirebaseUser u = FirebaseAuth.getInstance().getCurrentUser();
+
+                                u.sendEmailVerification()
+                                        .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                            @Override
+                                            public void onComplete(@NonNull Task<Void> task) {
+                                                if (task.isSuccessful()) {
+                                                    Toast.makeText(getApplicationContext(), "Email verification sent.", Toast.LENGTH_LONG).show();
+                                                } else {
+                                                    Toast.makeText(getApplicationContext(), "Error sending email verification.", Toast.LENGTH_LONG).show();
+                                                }
+                                            }
+                                        });
+                            }
+                        });
+
+                    }
+                }
+            }
+        };
 
         /*mAuthListener = new FirebaseAuth.AuthStateListener() {
 
@@ -103,7 +136,8 @@ public class LoginActivity extends AppCompatActivity {
                     return;
                 }
 
-                progressBar.setVisibility(View.VISIBLE);
+
+                progressBar.setVisibility(VISIBLE);
 
                 //Authenticate user
                 mAuth.signInWithEmailAndPassword(email, password)
@@ -127,10 +161,22 @@ public class LoginActivity extends AppCompatActivity {
                                     }
 
                                 } else {
+                                            FirebaseUser user = mAuth.getInstance().getCurrentUser();
+                                            if (user != null) {
+                                                if (!user.isEmailVerified()) {
 
-                                    Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                                    startActivity(intent);
-                                    finish();
+                                                    Toast.makeText(getApplicationContext(), "Authentication failed, please verify your email!", Toast.LENGTH_LONG).show();
+
+
+                                                } else {
+
+                                                    Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                                                    startActivity(intent);
+                                                    finish();
+
+                                                }
+                                            }
+
 
                                 }
                             }
@@ -150,8 +196,6 @@ public class LoginActivity extends AppCompatActivity {
             public void onDataChange(DataSnapshot dataSnapshot) {
 
                 if (dataSnapshot.getValue() != null) {
-
-                    System.out.println("++++++Login UTENTE ESISTENTE: " + dataSnapshot.getValue().toString());
                     user_exists = true;
 
                 } else {
@@ -161,18 +205,11 @@ public class LoginActivity extends AppCompatActivity {
                 }
 
                 if (user_exists) {
-
-                    System.out.println("++++++Login UTENTE ESISTENTE E LOGGATO +++++");
                     startActivity(new Intent(LoginActivity.this, MainActivity.class)); //ok
                     finish();
 
                 } else {
-
-
-                    System.out.println("++++++Login NOPE --> UTENTE NON ESISTENTE +++++");
-
                     mAuth.signOut();
-
                     startActivity(new Intent(LoginActivity.this, LoginActivity.class)); //refresh
                     finish();
 
@@ -195,10 +232,6 @@ public class LoginActivity extends AppCompatActivity {
         FirebaseUser user = mAuth.getCurrentUser();
 
         if (user != null) {
-
-            System.out.println("++++++Login CHECKLOGGED -- QUI che cazzo succede+++++");
-            System.out.println(user.getEmail());
-
             CheckUser(user);
 
         }

@@ -82,6 +82,17 @@
             android:text="Not a member? Get register in AllaRomana now!"
             android:textAllCaps="false"
             android:textSize="15dp" />
+
+        <Button
+            android:id="@+id/sendVerificationEmail"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="Send Again Verification Email"
+            android:layout_marginTop="20dip"
+            android:textSize="15dp"
+            android:visibility="gone"
+            />
     </LinearLayout>
 
     <ProgressBar

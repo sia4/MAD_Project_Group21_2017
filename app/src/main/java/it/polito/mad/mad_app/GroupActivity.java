@@ -48,7 +48,6 @@ public class GroupActivity extends AppCompatActivity {
 
         Toast.makeText(GroupActivity.this, gKey, Toast.LENGTH_LONG).show();
 
-        System.out.println("+++++++++++++Hello: " + gName);
 
         List<GroupData> d = MainData.getInstance().getGroupList();
 
@@ -168,7 +167,6 @@ public class GroupActivity extends AppCompatActivity {
 
         if (resultCode == RESULT_OK) {
             final String gId = data.getStringExtra("groupId");
-            System.out.println("Id = " + gId);
             Intent refresh = new Intent(this, GroupActivity.class);
             refresh.putExtra("groupId", gId);
             startActivity(refresh);
