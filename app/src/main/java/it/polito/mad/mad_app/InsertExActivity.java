@@ -62,7 +62,7 @@ public class InsertExActivity extends AppCompatActivity {
     private String Gname = new String(), groupName = new String();
     private int i=0, ii=0;
     private float v = 0, v1 = 0;
-    private List<Float> values = new ArrayList<>();
+    private Map<String, Float> values = new TreeMap<>();
     private String defaultcurrency;
     private FirebaseAuth mAuth = FirebaseAuth.getInstance();
     private List<UserData> users = new ArrayList<>();
@@ -400,7 +400,7 @@ public class InsertExActivity extends AppCompatActivity {
                    if (algorithm.equals("equally")) {
                         v = value/users.size();
                        for(UserData k : users)
-                            values.add(v);
+                            values.put(k.getuId(), v);
                         flagok = 1;
                     }
 
@@ -421,10 +421,10 @@ public class InsertExActivity extends AppCompatActivity {
                             if (algorithm.equals("by percentuage"))
 
 
-                                values.add(value*algValue/100);
+                                values.put(users.get(i).getuId(), value*algValue/100);
 
                             else
-                                values.add(algValue);
+                                values.put(users.get(i).getuId(), algValue);
                         }
                         algSum += algValue;
                     }
@@ -466,13 +466,13 @@ public class InsertExActivity extends AppCompatActivity {
                                     @Override
                                     public Transaction.Result doTransaction(MutableData mutableData) {
                                         Float value = mutableData.child("value").getValue(Float.class);
-                                        System.out.println("valueeeeeeeeeeeeeeeeeeeeee "+ values.get(ii));
+                                        System.out.println("valueeeeeeeeeeeeeeeeeeeeee "+ value);
                                         if (value == null) {
                                             mutableData.child("name").setValue(key.getName()+" "+key.getSurname());
-                                            mutableData.child("value").setValue(6);
+                                            mutableData.child("value").setValue(values.get(key.getuId()));
                                         }
                                         else {
-                                            mutableData.child("value").setValue(value + values.get(ii));
+                                            mutableData.child("value").setValue(value + values.get(key.getuId()));
                                         }
 
                                         return Transaction.success(mutableData);
@@ -492,13 +492,13 @@ public class InsertExActivity extends AppCompatActivity {
                                     @Override
                                     public Transaction.Result doTransaction(MutableData mutableData) {
                                         Float value = mutableData.child("value").getValue(Float.class);
-                                        System.out.println("valueeeeeeeeeeeeeeeeeeeeee "+ values.get(ii));
+                                        System.out.println("valueeeeeeeeeeeeeeeeeeeeee "+ value);
                                         if (value == null) {
-                                            mutableData.child("value").setValue(6);
+                                            mutableData.child("value").setValue(-values.get(key.getuId()));
                                             mutableData.child("name").setValue(key.getName()+" "+key.getSurname());
                                         }
                                         else {
-                                            mutableData.child("value").setValue(value - values.get(ii));
+                                            mutableData.child("value").setValue(value - values.get(key.getuId()));
                                         }
 
                                         return Transaction.success(mutableData);
