@@ -34,71 +34,57 @@ public class LoginActivity extends AppCompatActivity {
     private FirebaseAuth.AuthStateListener mAuthListener;
     private DatabaseReference Firebase_DB;
     private boolean user_exists = false;
+    private boolean email_verified = true;
+    private boolean showing_button = false;
+
+    protected void showSendAgainButton() {
+
+        if (!showing_button) {
+
+            Button button = (Button) findViewById(R.id.sendVerificationEmail);
+            button.setVisibility(VISIBLE);
+            button.setOnClickListener(new View.OnClickListener() {
+                public void onClick(View v) {
+
+                    FirebaseUser u = FirebaseAuth.getInstance().getCurrentUser();
+
+                    u.sendEmailVerification()
+                            .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                @Override
+                                public void onComplete(@NonNull Task<Void> task) {
+                                    if (task.isSuccessful()) {
+                                        Toast.makeText(getApplicationContext(), "Email verification sent.", Toast.LENGTH_LONG).show();
+                                    } else {
+                                        Toast.makeText(getApplicationContext(), "Error sending email verification.", Toast.LENGTH_LONG).show();
+                                    }
+                                }
+                            });
+                }
+            });
+
+            return;
+
+        }
+
+
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
-        mAuth = FirebaseAuth.getInstance();
-        Firebase_DB = FirebaseDatabase.getInstance().getReference();
-        CheckLoggedUser();
-
-        mAuthListener = new FirebaseAuth.AuthStateListener() { // listener lo istanzio comunque, se ho modifiche che lo triggerano
-
-            @Override
-            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-                FirebaseUser user = firebaseAuth.getCurrentUser();
-                if (user != null) {
-                    if(!user.isEmailVerified()) {
-                        Button button = (Button) findViewById(R.id.sendVerificationEmail);
-                        button.setVisibility(VISIBLE);
-                        button.setOnClickListener(new View.OnClickListener() {
-                            public void onClick(View v) {
-                                FirebaseUser u = FirebaseAuth.getInstance().getCurrentUser();
-
-                                u.sendEmailVerification()
-                                        .addOnCompleteListener(new OnCompleteListener<Void>() {
-                                            @Override
-                                            public void onComplete(@NonNull Task<Void> task) {
-                                                if (task.isSuccessful()) {
-                                                    Toast.makeText(getApplicationContext(), "Email verification sent.", Toast.LENGTH_LONG).show();
-                                                } else {
-                                                    Toast.makeText(getApplicationContext(), "Error sending email verification.", Toast.LENGTH_LONG).show();
-                                                }
-                                            }
-                                        });
-                            }
-                        });
-
-                    }
-                }
-            }
-        };
-
-        /*mAuthListener = new FirebaseAuth.AuthStateListener() {
-
-            @Override
-            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-
-                FirebaseUser user = firebaseAuth.getCurrentUser();
-
-                if (user != null) {
-
-                    System.out.println("++++++Login ONAUTH -- QUI che cazzo succede+++++");
-                    System.out.println(user.getEmail());
-
-                    CheckUser(user);
-
-
-                } else { // User is signed out
-
-                    //Log.d(TAG, "onAuthStateChanged:signed_out");
-
-                }
-            }
-        };*/
-
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+
+        mAuth = FirebaseAuth.getInstance();
+        Firebase_DB = FirebaseDatabase.getInstance().getReference();
+
+        email_verified = true;
+
+        CheckLoggedUser();
+
+        if (!email_verified) {
+            showSendAgainButton();
+        }
 
         inputEmail = (EditText) findViewById(R.id.email);
         inputPassword = (EditText) findViewById(R.id.password);
@@ -112,7 +98,6 @@ public class LoginActivity extends AppCompatActivity {
                startActivity(new Intent(LoginActivity.this, SignInActivity.class));
             }
         });
-
 
         btnLogin.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -162,11 +147,15 @@ public class LoginActivity extends AppCompatActivity {
 
                                 } else {
                                             FirebaseUser user = mAuth.getInstance().getCurrentUser();
+
                                             if (user != null) {
+
                                                 if (!user.isEmailVerified()) {
 
-                                                    Toast.makeText(getApplicationContext(), "Authentication failed, please verify your email!", Toast.LENGTH_LONG).show();
-
+                                                    Toast.makeText(getApplicationContext(), "Error: You must verify your email!", Toast.LENGTH_LONG).show();
+                                                    email_verified = false;
+                                                    showSendAgainButton();
+                                                    //mAuth.signOut();
 
                                                 } else {
 
@@ -175,6 +164,7 @@ public class LoginActivity extends AppCompatActivity {
                                                     finish();
 
                                                 }
+
                                             }
 
 
@@ -190,6 +180,12 @@ public class LoginActivity extends AppCompatActivity {
         // verifica che l'utente sia presente in DB
 
         final String uID = U.getUid();
+        final FirebaseUser User = U;
+
+        if (!U.isEmailVerified()) {
+            email_verified = false;
+            System.out.println("Email for User:" + U.toString() + " is not verified");
+        }
 
         ValueEventListener SingleEvent = new ValueEventListener() {
             @Override
@@ -205,10 +201,16 @@ public class LoginActivity extends AppCompatActivity {
                 }
 
                 if (user_exists) {
-                    startActivity(new Intent(LoginActivity.this, MainActivity.class)); //ok
-                    finish();
+
+                    if (email_verified) {
+
+                        startActivity(new Intent(LoginActivity.this, MainActivity.class)); //ok
+                        finish();
+
+                    }
 
                 } else {
+
                     mAuth.signOut();
                     startActivity(new Intent(LoginActivity.this, LoginActivity.class)); //refresh
                     finish();
@@ -232,9 +234,11 @@ public class LoginActivity extends AppCompatActivity {
         FirebaseUser user = mAuth.getCurrentUser();
 
         if (user != null) {
-            CheckUser(user);
+
+            CheckUser(user); // in this case, it performs also the check on email
 
         }
+
 
     }
 

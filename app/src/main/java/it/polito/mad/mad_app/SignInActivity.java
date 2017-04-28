@@ -37,30 +37,13 @@ public class SignInActivity extends AppCompatActivity {
     private FirebaseAuth.AuthStateListener mAuthListener;
     private DatabaseReference Firebase_DB;
 
-    /*
-
-        TODO: PROBLEMA di Gestione di Sessione
-
-        Se vedi, entra erroneamente dentro a user != null
-        anche se l'utente è stato cancellato dall'auth di
-        FireBase.
-
-        (Provato su Emulatore)
-
-        Stesso problema si riscontra su Login e Main Activity
-
-
-        */
-
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
         mAuth = FirebaseAuth.getInstance();
         Firebase_DB = FirebaseDatabase.getInstance().getReference();
 
-        CheckLoggedUser();
+        //CheckLoggedUser();
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_in);
@@ -138,7 +121,7 @@ public class SignInActivity extends AppCompatActivity {
 
                             @Override
                             public void onComplete(@NonNull Task<AuthResult> task) {
-                                Toast.makeText(SignInActivity.this, "createUserWithEmail:onComplete:" + task.isSuccessful(), Toast.LENGTH_SHORT).show();
+                                Toast.makeText(SignInActivity.this, "User Correctly Registered.", Toast.LENGTH_SHORT).show();
                                 progressBar.setVisibility(View.GONE);
                                 FirebaseUser user = mAuth.getCurrentUser();
 
@@ -170,6 +153,7 @@ public class SignInActivity extends AppCompatActivity {
                                       @Override
                                       public void onDataChange(DataSnapshot dataSnapshot) {
                                           for (DataSnapshot invitesSnapshot: dataSnapshot.getChildren()) {
+
                                               Invite is = invitesSnapshot.getValue(Invite.class);
                                               String keyInvite = invitesSnapshot.getKey();
                                               String gId = is.getGroupId();
@@ -197,6 +181,7 @@ public class SignInActivity extends AppCompatActivity {
                                         }
                                      });
 
+                                    System.out.println("Andiamo al Login");
                                     startActivity(new Intent(SignInActivity.this, LoginActivity.class));
                                     finish();
 

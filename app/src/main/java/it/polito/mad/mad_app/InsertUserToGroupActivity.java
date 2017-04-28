@@ -2,11 +2,8 @@ package it.polito.mad.mad_app;
 
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.database.Cursor;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -14,7 +11,6 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.google.android.gms.appinvite.AppInviteInvitation;
@@ -158,6 +154,8 @@ public class InsertUserToGroupActivity extends AppCompatActivity {
 
                 finish();
             } else {
+
+                System.out.println("Errore..." + resultCode);
                 // Sending failed or it was canceled, show failure message to the user
                 // ...
             }
