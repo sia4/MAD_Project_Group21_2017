@@ -14,6 +14,7 @@ public class ExpenseData {
     private float myvalue;
     private String algorithm;
     private String date;
+    private String creator;
 
     public ExpenseData(String n, String d, String ca, String cu, float value,float myvalue, String algorithm){
         this.name = n;
@@ -30,6 +31,8 @@ public class ExpenseData {
     public String getName(){
         return this.name;
     }
+    public void setCreator(String creator){this.creator = creator;}
+    public String getCreator(){return this.creator;}
 
     public String getDescription(){
         return this.descr;

@@ -15,8 +15,9 @@ import it.polito.mad.mad_app.model.MainData;
 
 public class InsertCurrencyActivity extends AppCompatActivity {
 
-    private GroupData GD;
-
+    //private GroupData GD;
+    private String gId;
+    private String gName;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -31,8 +32,9 @@ public class InsertCurrencyActivity extends AppCompatActivity {
         }
 
         Intent i = getIntent();
-        String name = i.getStringExtra("name");
-        GD = MainData.getInstance().getGroup(name);
+        gId = i.getStringExtra("groupId");
+        gName = i.getStringExtra("groupName");
+        //GD = MainData.getInstance().getGroup(gId);
 
         if (getSupportActionBar() != null)
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -51,6 +53,11 @@ public class InsertCurrencyActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
+
+            case android.R.id.home:
+                finish();
+                return true;
+
             case R.id.action_menu_done:
                 final Spinner Currency = (Spinner) findViewById(R.id.Currency);
                 final EditText change = (EditText) findViewById(R.id.change);
@@ -72,12 +79,13 @@ public class InsertCurrencyActivity extends AppCompatActivity {
                         Toast.makeText(InsertCurrencyActivity.this, "Please insert currency.", Toast.LENGTH_LONG).show();
 
                     } else {
+                        //TODO ADD CURRENCY TO GROUPID
+                      //  GD.addCurrency(Currency.getSelectedItem().toString(), c);
 
-                        GD.addCurrency(Currency.getSelectedItem().toString(), c);
-
-                        //Intent back = new Intent(InsertCurrencyActivity.this, GroupActivity.class);
-
-                        setResult(RESULT_OK, null);
+                        Intent back = new Intent(InsertCurrencyActivity.this, GroupActivity.class);
+                        back.putExtra("groupId", gId);
+                        back.putExtra("groupName", gName);
+                        setResult(RESULT_OK, back);
                         finish();
 
                     }

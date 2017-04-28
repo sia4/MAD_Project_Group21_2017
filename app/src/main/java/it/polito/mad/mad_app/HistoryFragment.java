@@ -36,13 +36,14 @@ public class    HistoryFragment extends Fragment {
 
     static private List<ExpenseData> lex = new ArrayList<>();
     private Context context;
-
+    private String GroupName;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         final View view = inflater.inflate(R.layout.fragment_history, container, false);
 
         context = view.getContext();
+        lex = new ArrayList<ExpenseData>();
         final RecyclerView recyclerView = (RecyclerView) view;
         recyclerView.setLayoutManager(new LinearLayoutManager(context));
         //recyclerView.addItemDecoration(new DividerItemDecoration(getActivity(),
@@ -62,10 +63,12 @@ public class    HistoryFragment extends Fragment {
                 //String.format("%.2f", expense.getMyvalue())
                 intent.putExtra("myvalue",String.format("%.2f", expense.getMyvalue()) );
                 intent.putExtra("value", String.format("%.2f", expense.getValue()));
-                intent.putExtra("creator", MainData.getInstance().getMyName());//TODO change with getCreator
+                intent.putExtra("creator", expense.getCreator());
                 intent.putExtra("date", expense.getDate());
+                String GroupId = getArguments().getString("GroupId");
                 String GroupName = getArguments().getString("GroupName");
-                intent.putExtra("GroupName", GroupName);
+                intent.putExtra("groupName", GroupName);
+                intent.putExtra("groupId", GroupId);
                 view.getContext().startActivity(intent);
 
             }
@@ -76,7 +79,7 @@ public class    HistoryFragment extends Fragment {
             }
         }));
 
-        String GroupName = this.getArguments().getString("GroupId");
+        GroupName = this.getArguments().getString("GroupId");
 
         System.out.println("H: " + GroupName);
         FirebaseDatabase database = FirebaseDatabase.getInstance();
@@ -92,17 +95,39 @@ public class    HistoryFragment extends Fragment {
         myRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                Map<String, Object> map = (Map<String, Object>) dataSnapshot.getValue();
-                /*
-                if(map!=null) {
-                    for (String k : map.keySet())
-                        lex.add((ExpenseData) map.get(k));
 
-                    hAdapter.notifyDataSetChanged();
+                Map<String, Object> map2 = (Map<String, Object>) dataSnapshot.getValue();
+                if(map2!=null) {
+                    //lex = new ArrayList<ExpenseData>();
+                    for (final String k : map2.keySet()){
+                        FirebaseDatabase database3 = FirebaseDatabase.getInstance();
+                        DatabaseReference myRef3 = database3.getReference("Expenses").child(GroupName).child(k);
+                        myRef3.addValueEventListener(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(DataSnapshot dataSnapshot) {
+                                Map<String, Object> map3 = (Map<String, Object>) dataSnapshot.getValue();
+                                if(map3!=null) {
+                                    Float tmp = new Float(map3.get("value").toString());
+                                    Float tmp1 = new Float(map3.get("myvalue").toString());
+                                    ExpenseData e = new ExpenseData((String)map3.get("name"), (String)map3.get("description"), (String)map3.get("category"), (String)map3.get("currency"), tmp ,tmp1,(String)map3.get("algorithm"));
+                                    e.setCreator((String)map3.get("creator"));
+                                    lex.add(e);
+                                    System.out.println("valueeeeeeeeeeeeeeeeeeeeeeasdf" + map3.get("value"));
+                                    hAdapter.notifyDataSetChanged();
+                                }
+                            }
+
+                            @Override
+                            public void onCancelled(DatabaseError databaseError) {
+
+                            }
+                        });
+
+                    }
+
                 }
-                */
-            }
 
+            }
 
             @Override
             public void onCancelled(DatabaseError error) {

@@ -12,10 +12,13 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
+import com.google.firebase.auth.FirebaseAuth;
+
 public class ExpenseInfoActivity extends AppCompatActivity {
 
     int n;
     public TextView name_ex,date_ex, s_ex, value_ex, description_ex,creator_ex, category_ex, currency_ex, myvalue_ex, algorithm_ex;
+    private FirebaseAuth mAuth = FirebaseAuth.getInstance();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -74,11 +77,13 @@ public class ExpenseInfoActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item){
         Intent i = getIntent();
-        String GroupName = i.getStringExtra("GroupName");
+        String GroupName = i.getStringExtra("groupName");
+        String GroupId = i.getStringExtra("groupId");
         switch(item.getItemId()){
             case android.R.id.home:
                 Intent intent = new Intent(this, GroupActivity.class);
-                intent.putExtra("name", GroupName);
+                intent.putExtra("groupName", GroupName);
+                intent.putExtra("groupId", GroupId);
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 startActivity(intent);
                 return true;

@@ -49,6 +49,7 @@ public class GroupActivity extends AppCompatActivity {
 
         final Bundle b = new Bundle();
         b.putString("GroupId", gKey);
+        b.putString("GroupName", gName);
 
         //System.out.println("CICCIOBOMBA" + datigruppo.getName());
 
@@ -167,6 +168,9 @@ public class GroupActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
 
         switch (item.getItemId()) {
+            case android.R.id.home:
+                finish();
+                return true;
             case R.id.options:
                 Intent intent = new Intent(getApplicationContext(), GroupInfoActivity.class);
                 intent.putExtra("groupId", gKey);
