@@ -8,7 +8,6 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.provider.Settings;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -25,7 +24,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.appinvite.AppInviteInvitation;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -36,18 +34,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import it.polito.mad.mad_app.model.Group;
-import it.polito.mad.mad_app.model.GroupData;
-import it.polito.mad.mad_app.model.MainData;
-import it.polito.mad.mad_app.model.UserData;
-
-import static it.polito.mad.mad_app.R.id.progressBar;
-
 public class GroupInfoActivity extends AppCompatActivity {
     //private GroupData GD;
     private TextView namet, desc;
     private boolean flag_name_edited = false, flag_desc_edited = false, flag_img_edited = false;
-    private static String tmp, nametmp, desctmp, name, image;
+    private static String tmp, nametmp, desctmp, gId, gName,  image;
     private EditText nameted, desced;
     private ImageView im;
     private List<String> users = new ArrayList();
@@ -70,9 +61,10 @@ public class GroupInfoActivity extends AppCompatActivity {
             getSupportActionBar().setDisplayShowHomeEnabled(true);
         }
         Intent i = getIntent();
-        name=i.getStringExtra("groupId");
-        System.out.println(name);
-        //GD=MainData.getInstance().getGroup(name);
+        gId =i.getStringExtra("groupId");
+        gName = i.getStringExtra("groupName");
+        System.out.println(gId);
+        //GD=MainData.getInstance().getGroup(gId);
 
         if (getSupportActionBar() != null)
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -86,7 +78,7 @@ public class GroupInfoActivity extends AppCompatActivity {
         button.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 Intent i = new Intent( getApplicationContext(), InsertUserToGroupActivity.class);
-                i.putExtra("groupId", name);
+                i.putExtra("groupId", gId);
                 i.putExtra("groupName", nametmp);
                 i.putExtra("groupPath", image);
                 startActivity(i);
@@ -109,7 +101,7 @@ public class GroupInfoActivity extends AppCompatActivity {
         desc = (TextView) findViewById(R.id.de_g);
         desced = (EditText) findViewById(R.id.de_g_ed);
         FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference myRef = database.getReference("Groups").child(name);
+        DatabaseReference myRef = database.getReference("Groups").child(gId);
         myRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -129,7 +121,7 @@ public class GroupInfoActivity extends AppCompatActivity {
                         im.setImageBitmap(BitmapFactory.decodeFile(p));
                     }
 
-                    //Group g = new Group((String)map.get("name"),(String) map.get("surname"), (String)map.get("defaultCurrency"));
+                    //Group g = new Group((String)map.get("gId"),(String) map.get("surname"), (String)map.get("defaultCurrency"));
 
                     //if(progressBar.isActivated())
                     //progressBar.setVisibility(View.INVISIBLE);
@@ -153,7 +145,7 @@ public class GroupInfoActivity extends AppCompatActivity {
         userRecyclerView.setAdapter(uAdapter);
 
         FirebaseDatabase database2 = FirebaseDatabase.getInstance();
-        DatabaseReference myRef2 = database2.getReference("Groups").child(name).child("members");
+        DatabaseReference myRef2 = database2.getReference("Groups").child(gId).child("members");
         myRef2.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -285,7 +277,8 @@ public class GroupInfoActivity extends AppCompatActivity {
             case android.R.id.home:
 
                 Intent intent = new Intent(this, GroupActivity.class);
-                intent.putExtra("groupId", name);
+                intent.putExtra("groupId", gId);
+                intent.putExtra("groupName", gName);
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 //startActivity(intent);
                 finish();
@@ -301,21 +294,24 @@ public class GroupInfoActivity extends AppCompatActivity {
                     final EditText Ename = (EditText) findViewById(R.id.name_g_ed);
                     String newname = Ename.getText().toString();
 
-                    if (newname != null && !newname.equals("") && !newname.equals(name)) {
+                    if (newname != null && !newname.equals("") && !newname.equals(gId)) {
                         FirebaseDatabase database3 = FirebaseDatabase.getInstance();
-                        DatabaseReference myRef3 = database3.getReference("Groups").child(name).child("name");
+                        DatabaseReference myRef3 = database3.getReference("Groups").child(gId).child("gId");
                         myRef3.setValue(newname);
                         //GD.setName(newname);
                         //MainData.getInstance().changeGroupName(GroupName, newname);
-                        in.putExtra("groupId", name);
+                        in.putExtra("groupId", gId);
+                        in.putExtra("groupName", gName);
                     } else {
-                        in.putExtra("groupId", name);
+                        in.putExtra("groupId", gId);
+                        in.putExtra("groupName", gName);
                     }
 
-                    Log.e("DEBUG", newname + " " + name);
+                    Log.e("DEBUG", newname + " " + gId);
                     System.out.println();
                 } else {
-                    in.putExtra("groupId", name);
+                    in.putExtra("groupId", gId);
+                    in.putExtra("groupName", gName);
                 }
 
                 if (flag_desc_edited) {
@@ -325,7 +321,7 @@ public class GroupInfoActivity extends AppCompatActivity {
 
                     if (!newdesc.equals("")) {
                         FirebaseDatabase database4 = FirebaseDatabase.getInstance();
-                        DatabaseReference myRef4 = database4.getReference("Groups").child(name).child("description");
+                        DatabaseReference myRef4 = database4.getReference("Groups").child(gId).child("description");
                         myRef4.setValue(newdesc);
                         //GD.setDescription(newdesc);
                     }
@@ -334,7 +330,7 @@ public class GroupInfoActivity extends AppCompatActivity {
 
                 if (flag_img_edited) {
                     FirebaseDatabase database5 = FirebaseDatabase.getInstance();
-                    DatabaseReference myRef5 = database5.getReference("Groups").child(name).child("imagePath");
+                    DatabaseReference myRef5 = database5.getReference("Groups").child(gId).child("imagePath");
                     myRef5.setValue(tmp);
                     //GD.setImagePath(tmp);
                 }

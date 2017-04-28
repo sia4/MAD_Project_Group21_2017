@@ -13,6 +13,7 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -29,6 +30,8 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.MutableData;
+import com.google.firebase.database.Transaction;
 import com.google.firebase.database.ValueEventListener;
 
 import java.io.File;
@@ -56,8 +59,8 @@ public class InsertExActivity extends AppCompatActivity {
     private float value;
     private String algorithm;
     private String myname, mysurname;
-    private String Gname = new String();
-    private int i=0;
+    private String Gname = new String(), groupName = new String();
+    private int i=0, ii=0;
     private float v = 0, v1 = 0;
     private List<Float> values = new ArrayList<>();
     private String defaultcurrency;
@@ -102,7 +105,8 @@ public class InsertExActivity extends AppCompatActivity {
 
         Intent intent = getIntent();
         Gname = intent.getStringExtra("groupId");
-        Toast.makeText(InsertExActivity.this, Gname, Toast.LENGTH_LONG).show();
+        groupName = intent.getStringExtra("groupName");
+        Toast.makeText(InsertExActivity.this, Gname+" "+groupName, Toast.LENGTH_LONG).show();
         System.out.println("1");
         final String uid = mAuth.getCurrentUser().getUid().toString();
         FirebaseDatabase database2 = FirebaseDatabase.getInstance();
@@ -449,55 +453,65 @@ public class InsertExActivity extends AppCompatActivity {
 
                     if (flagok == 1 && values.size() == users.size()) {
                         myRef.setValue(new ExpenseData(name, description, category, currency, value, 0, algorithm));
-                        DatabaseReference myRef2 = database.getReference("Balance").child(Gname).child(mAuth.getCurrentUser().getUid());
-                        DatabaseReference myRef4 = database.getReference("Balance").child(Gname);
-                        DatabaseReference myRef3, myRef5;
-                        int ii = 0;
+
+                        ii = 0;
+
                         for(final UserData key : users){
-                            v = 0;
-                            v1 = 0;
+
                             if(!key.getuId().equals(mAuth.getCurrentUser().getUid())) {
-                                myRef3 = myRef2.child(key.getuId());
-                                myRef5 = myRef4.child(key.getuId()).child(mAuth.getCurrentUser().getUid());
-                                myRef3.addValueEventListener(new ValueEventListener() {
-                                    @Override
-                                    public void onDataChange(DataSnapshot dataSnapshot) {
-                                        Map<String, Object> mapp = (Map<String, Object>) dataSnapshot.getValue();
-                                        if (mapp != null) {
-                                            v = Float.parseFloat((String)mapp.get(String.format("%s %s", key.getName(),key.getSurname())));
-                                            Toast.makeText(InsertExActivity.this, "v updated", Toast.LENGTH_LONG).show();
 
-                                        } else {
-                                            Toast.makeText(InsertExActivity.this, "no user key found!", Toast.LENGTH_LONG).show();
+                                final DatabaseReference myRef3 = database.getReference("Balance").child(Gname).child(mAuth.getCurrentUser().getUid()).child(key.getuId());
+
+                                myRef3.runTransaction(new Transaction.Handler() {
+                                    @Override
+                                    public Transaction.Result doTransaction(MutableData mutableData) {
+                                        Float value = mutableData.child("value").getValue(Float.class);
+                                        System.out.println("valueeeeeeeeeeeeeeeeeeeeee "+ values.get(ii));
+                                        if (value == null) {
+                                            mutableData.child("name").setValue(key.getName()+" "+key.getSurname());
+                                            mutableData.child("value").setValue(6);
                                         }
-                                    }
-
-                                    @Override
-                                    public void onCancelled(DatabaseError databaseError) {
-
-                                    }
-                                });
-                                myRef5.addValueEventListener(new ValueEventListener() {
-                                    @Override
-                                    public void onDataChange(DataSnapshot dataSnapshot) {
-                                        Map<String, Object> mapp1 = (Map<String, Object>) dataSnapshot.getValue();
-                                        if (mapp1 != null) {
-                                            v1 = Float.parseFloat((String)mapp1.get(String.format("%s %s", myname,mysurname)));
-                                            Toast.makeText(InsertExActivity.this, "v updated", Toast.LENGTH_LONG).show();
-                                        } else {
-                                            Toast.makeText(InsertExActivity.this, "no user key found!", Toast.LENGTH_LONG).show();
+                                        else {
+                                            mutableData.child("value").setValue(value + values.get(ii));
                                         }
+
+                                        return Transaction.success(mutableData);
                                     }
 
                                     @Override
-                                    public void onCancelled(DatabaseError databaseError) {
-
+                                    public void onComplete(DatabaseError databaseError, boolean b,
+                                                           DataSnapshot dataSnapshot) {
+                                       //Log.d(TAG, "transaction:onComplete:" + databaseError);
                                     }
                                 });
 
-                                myRef3.child(String.format("%s %s", key.getName(), key.getSurname())).setValue(v + values.get(ii));
-                                myRef5.child(String.format("%s %s", myname, mysurname)).setValue(v1 - values.get(ii));
+
+
+                                final DatabaseReference myRef5 = database.getReference("Balance").child(Gname).child(key.getuId()).child(mAuth.getCurrentUser().getUid());
+                                myRef5.runTransaction(new Transaction.Handler() {
+                                    @Override
+                                    public Transaction.Result doTransaction(MutableData mutableData) {
+                                        Float value = mutableData.child("value").getValue(Float.class);
+                                        System.out.println("valueeeeeeeeeeeeeeeeeeeeee "+ values.get(ii));
+                                        if (value == null) {
+                                            mutableData.child("value").setValue(6);
+                                            mutableData.child("name").setValue(key.getName()+" "+key.getSurname());
+                                        }
+                                        else {
+                                            mutableData.child("value").setValue(value - values.get(ii));
+                                        }
+
+                                        return Transaction.success(mutableData);
+                                    }
+
+                                    @Override
+                                    public void onComplete(DatabaseError databaseError, boolean b,
+                                                           DataSnapshot dataSnapshot) {
+                                        // Log.d(TAG, "transaction:onComplete:" + databaseError);
+                                    }
+                                });
                             }
+
                             ii++;
 
                             System.out.println(String.format("balance update cycles: %d\n", ii));
@@ -506,7 +520,10 @@ public class InsertExActivity extends AppCompatActivity {
 
 
                         Intent i2 = new Intent(InsertExActivity.this, GroupActivity.class);
+                        System.out.println("+++++++++++++++++"+Gname + groupName);
                         i2.putExtra("groupId", Gname);
+                        i2.putExtra("groupName", groupName);
+
                         setResult(RESULT_OK, i2);
                         finish();
 
