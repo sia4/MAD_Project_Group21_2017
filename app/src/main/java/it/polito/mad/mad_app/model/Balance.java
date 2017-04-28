@@ -1,5 +1,7 @@
 package it.polito.mad.mad_app.model;
 
+import android.provider.Settings;
+
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -38,6 +40,7 @@ public class Balance {
 
     public void setValue(float p) {
         this.value-=p;
+        System.out.println("..Balance"+value);
     }
 
     public float getValue(){return this.value;}

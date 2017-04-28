@@ -44,6 +44,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 
+import it.polito.mad.mad_app.model.Balance;
 import it.polito.mad.mad_app.model.ExpenseData;
 import it.polito.mad.mad_app.model.MainData;
 import it.polito.mad.mad_app.model.UserData;
@@ -60,6 +61,7 @@ public class InsertExActivity extends AppCompatActivity {
     private String algorithm;
     private String myname, mysurname;
     private String Gname = new String(), groupName = new String();
+    private Map<String,Balance>users_l=new TreeMap<>();
     private int i=0, ii=0;
     private float v = 0, v1 = 0;
     private Map<String, Float> values = new TreeMap<>();
@@ -132,6 +134,7 @@ public class InsertExActivity extends AppCompatActivity {
                                     UserData u = new UserData("aaaa", (String)map3.get("name"), (String)map3.get("surname"), 5555);
                                     u.setuId(k);
                                     users.add(u);
+                                    System.out.println("+++++++utente trovato"+k);
                                     if(k.equals(mAuth.getCurrentUser().getUid())){
                                         myname = (String)map3.get("name");
                                         mysurname = (String)map3.get("surname");

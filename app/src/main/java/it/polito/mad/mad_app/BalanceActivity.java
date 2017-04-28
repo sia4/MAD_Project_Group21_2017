@@ -34,12 +34,16 @@ public class BalanceActivity extends AppCompatActivity {
         String ukey = i.getStringExtra("uKey");
         String uname = i.getStringExtra("uname");
         float v=Float.parseFloat(i.getStringExtra("value"));
+
         FirebaseUser currentFUser = FirebaseAuth.getInstance().getCurrentUser() ;
         auKey=null;
         if(currentFUser != null) {
             auKey = currentFUser.getUid();
         }
+
+        System.out.println("value"+v);
         b=new Balance(ukey,uname,v,gname);
+        System.out.println("value"+b.getValue());
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_balance);
         Toolbar toolbar = (Toolbar) findViewById(R.id.balance_toolbar);
@@ -89,8 +93,11 @@ public class BalanceActivity extends AppCompatActivity {
                     //if (insertValue > -(MainData.getInstance().getGroup(groupName).getExpense(userName))) {
                        // Toast.makeText(BalanceActivity.this, "The value is too high!", Toast.LENGTH_LONG).show();
                     //} else {
+                        System.out.println("+++++++"+insertValue);
                         b.setValue(insertValue);
                         float o=0-b.getValue();
+                        System.out.println("+++++++++"+o);
+                        System.out.println("+++++++++"+b.getValue());
                         FirebaseDatabase database = FirebaseDatabase.getInstance();
                         DatabaseReference myRef = database.getReference("/Balance/"+b.getgID()+"/"+auKey+"/"+b.getKey()+"/"+"value");
                         myRef.setValue(b.getValue());

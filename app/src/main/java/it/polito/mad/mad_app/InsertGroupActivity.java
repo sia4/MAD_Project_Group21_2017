@@ -62,6 +62,7 @@ public class InsertGroupActivity extends AppCompatActivity {
     private Map<String,Boolean>m= new TreeMap<>();
     private UsersToAddAdapter uAdapter = null;
     String uKey = null;
+    String uName = null;
     private List<String> userNotPresentInDb = new ArrayList<String>();
     private String userNotPresentInDbMail;
     @Override
@@ -84,6 +85,29 @@ public class InsertGroupActivity extends AppCompatActivity {
         };
         FirebaseUser currentFUser = FirebaseAuth.getInstance().getCurrentUser() ;
         uKey = currentFUser.getUid();
+        if(currentFUser != null) {
+
+            uKey = currentFUser.getUid();
+
+            if (uKey != null) {
+
+                FirebaseDatabase database = FirebaseDatabase.getInstance();
+                DatabaseReference myRef = database.getReference("Users").child(uKey);
+                myRef.addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        User myu = dataSnapshot.getValue(User.class);
+                        uName=myu.getName()+" "+myu.getSurname();
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError error) {
+                        // Failed to read value
+                        //log.w(TAG, "Failed to read value.", error.toException());
+                    }
+                });
+            }
+        }
         final Toolbar toolbar = (Toolbar) findViewById(R.id.insert_group_toolbar);
         setSupportActionBar(toolbar);
 
@@ -116,17 +140,18 @@ public class InsertGroupActivity extends AppCompatActivity {
                             Toast.makeText(InsertGroupActivity.this, key, Toast.LENGTH_LONG).show();
                         }
                         if(key == null) {
+                            Uemail.setText("");
                             new AlertDialog.Builder(InsertGroupActivity.this)
                                     .setTitle("You friend has not downloaded the app, yet!")
-                                    .setMessage("Do you want to invite him to use the app?")
+                                    .setMessage("Create the group and invite him later from group options.")
                                     .setIcon(android.R.drawable.ic_dialog_alert)
                                     .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                                         public void onClick(DialogInterface dialog, int whichButton) {
-                                            userNotPresentInDbMail = UserEmail;
-                                            onInviteClicked(UserEmail);
+
+                                            //userNotPresentInDbMail = UserEmail;
+                                            //onInviteClicked(UserEmail);
                                             //onInviteClicked("nome", "cognome", "groupname", "identificativo");
-                                        }})
-                                    .setNegativeButton(android.R.string.no, null).show();
+                                        }}).show();
 
                         } else {
                             Uemail.setText("");
@@ -175,11 +200,11 @@ public class InsertGroupActivity extends AppCompatActivity {
 
                     Toast.makeText(InsertGroupActivity.this, "Please insert group description.", Toast.LENGTH_LONG).show();
 
-                }else if (m.isEmpty()) {
+                }/*else if (m.isEmpty()) {
 
                     Toast.makeText(InsertGroupActivity.this, "Please insert at least one other member.", Toast.LENGTH_LONG).show();
 
-                } else if (Tcurrency.getSelectedItem().toString().equals("Select currency")) {
+                }*/ else if (Tcurrency.getSelectedItem().toString().equals("Select currency")) {
 
                     Toast.makeText(InsertGroupActivity.this, "Please insert currency.", Toast.LENGTH_LONG).show();
 
@@ -192,6 +217,7 @@ public class InsertGroupActivity extends AppCompatActivity {
                     G.setImagePath("https://firebasestorage.googleapis.com/v0/b/allaromana-3f98e.appspot.com/o/group_default.png?alt=media&token=40bc93f4-6b97-466e-b130-e140f57c5895");
                     G.addMembers(m);
                     G.addMember(uKey);
+                    my.put(uKey, uName);
                     myRef.child(groupId).setValue(G);
                     Set keys = m.keySet();
                     Set others = m.keySet();
@@ -213,13 +239,13 @@ public class InsertGroupActivity extends AppCompatActivity {
                         }
                     }
 
-                    for(String s : userNotPresentInDb) {;
+                    /*for(String s : userNotPresentInDb) {;
                         DatabaseReference myRef2 = database.getReference("/Invites");
                         String inviteId = myRef2.push().getKey();
                         //myRef.setValue(gPath);
                         Invite invite = new Invite(s, groupId, G.getName(), G.getImagePath());
                         myRef.child(inviteId).setValue(invite);
-                    }
+                    }*/
                     setResult(RESULT_OK, null);
                     finish();
                 }
@@ -232,7 +258,7 @@ public class InsertGroupActivity extends AppCompatActivity {
     }
 
 
-    private void onInviteClicked(String email) {
+    /*private void onInviteClicked(String email) {
 
         Intent intent = new AppInviteInvitation.IntentBuilder("Invite your friends!")
                 .setMessage("You have been invited to AllaRomana (mail: "+ email)
@@ -260,13 +286,6 @@ public class InsertGroupActivity extends AppCompatActivity {
 
                 userNotPresentInDb.add(userNotPresentInDbMail);
 
-                /*FirebaseDatabase database = FirebaseDatabase.getInstance();
-                DatabaseReference myRef = database.getReference("/Invites");
-                String inviteId = myRef.push().getKey();
-                myRef.setValue(gPath);
-                Invite invite = new Invite(email, gId, gName, gPath);
-                myRef.child(inviteId).setValue(invite);
-                */
                 finish();
             } else {
 
@@ -276,5 +295,5 @@ public class InsertGroupActivity extends AppCompatActivity {
             }
         }
 
-    }
+    }*/
 }
