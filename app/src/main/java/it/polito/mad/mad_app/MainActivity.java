@@ -323,6 +323,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
                 } else {
 
+                    // lol
+
                     System.out.println("++++++ NOPE --> TOKEN ERROR +++++");
                     mAuth.signOut();
                     startActivity(new Intent(MainActivity.this, LoginActivity.class));
