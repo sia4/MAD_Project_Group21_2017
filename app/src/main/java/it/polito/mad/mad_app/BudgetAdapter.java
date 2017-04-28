@@ -49,6 +49,7 @@ public class BudgetAdapter extends RecyclerView.Adapter<BudgetAdapter.MyViewHold
         //this.budgetDataC = budgetCData;
     }
 
+
     @Override
     public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View itemView = LayoutInflater.from(parent.getContext())
@@ -59,8 +60,8 @@ public class BudgetAdapter extends RecyclerView.Adapter<BudgetAdapter.MyViewHold
     }
 
     @Override
-    public void onBindViewHolder(MyViewHolder holder, int position) {
-        final Balance budget = budgetData.get(position);
+    public void onBindViewHolder(MyViewHolder holder, final int position) {
+         final Balance budget = budgetData.get(position);
         float n=budget.getValue();
         holder.value_cred_deb.setText(String.format("%.2f", budget.getValue()) + " " /* budget.getCurrency()*/);
         if(n>0){
@@ -75,16 +76,17 @@ public class BudgetAdapter extends RecyclerView.Adapter<BudgetAdapter.MyViewHold
                 holder.button.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
+                        Balance budget = budgetData.get(position);
                         Intent intent = new Intent().setClass(v.getContext(), BalanceActivity.class);
                         String uname = budget.getName()+ " owns you:";
                         //String umail = budget.getEmail();
                         String gname = budget.getName();
-                        String bValue = Float.toString(budget.getValue());
+                        //String bValue = Float.toString(budget.getValue());
                         //String currency = budget.getCurrency();
                         intent.putExtra("gname", budget.getgID());
                         intent.putExtra("uKey", budget.getKey());
                         intent.putExtra("uname", budget.getName());
-                        intent.putExtra("value", bValue);
+                        intent.putExtra("value", Float.toString(budget.getValue()));
                         //intent.putExtra("currency", currency);
                         v.getContext().startActivity(intent);
                     }

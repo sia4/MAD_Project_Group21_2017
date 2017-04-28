@@ -41,6 +41,7 @@ import java.util.TreeMap;
 
 import it.polito.mad.mad_app.model.Group;
 import it.polito.mad.mad_app.model.GroupData;
+import it.polito.mad.mad_app.model.Invite;
 import it.polito.mad.mad_app.model.MainData;
 import it.polito.mad.mad_app.model.User;
 import it.polito.mad.mad_app.model.UserData;
@@ -48,6 +49,7 @@ import it.polito.mad.mad_app.model.UserData;
 
 public class InsertGroupActivity extends AppCompatActivity {
 
+    private static final int REQUEST_INVITE = 0;
     private FirebaseAuth auth;
     private FirebaseAuth.AuthStateListener mAuthListener;
     private String GroupName;
@@ -60,7 +62,9 @@ public class InsertGroupActivity extends AppCompatActivity {
     private Map<String,Boolean>m= new TreeMap<>();
     private UsersToAddAdapter uAdapter = null;
     String uKey = null;
-
+    String uName = null;
+    private List<String> userNotPresentInDb = new ArrayList<String>();
+    private String userNotPresentInDbMail;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -81,6 +85,29 @@ public class InsertGroupActivity extends AppCompatActivity {
         };
         FirebaseUser currentFUser = FirebaseAuth.getInstance().getCurrentUser() ;
         uKey = currentFUser.getUid();
+        if(currentFUser != null) {
+
+            uKey = currentFUser.getUid();
+
+            if (uKey != null) {
+
+                FirebaseDatabase database = FirebaseDatabase.getInstance();
+                DatabaseReference myRef = database.getReference("Users").child(uKey);
+                myRef.addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        User myu = dataSnapshot.getValue(User.class);
+                        uName=myu.getName()+" "+myu.getSurname();
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError error) {
+                        // Failed to read value
+                        //log.w(TAG, "Failed to read value.", error.toException());
+                    }
+                });
+            }
+        }
         final Toolbar toolbar = (Toolbar) findViewById(R.id.insert_group_toolbar);
         setSupportActionBar(toolbar);
 
@@ -101,27 +128,30 @@ public class InsertGroupActivity extends AppCompatActivity {
         userbutton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 UserEmail = Uemail.getText().toString().toLowerCase();
-                //UserData ud = MainData.getInstance().findUserByMail(UserEmail);
-                //if(ud == null) {
-                //TODO adattare alla classe di Edo, se utente presente inserisco in "users" l'identificatico, altrimenti inserisco la mail in
-                //TODO un'altra struttura
-                //mTest.child("Users").orderByChild("email").equalTo(UserEmail).addListenerForSingleValueEvent(new ValueEventListener() {
                 quer.equalTo(UserEmail).addListenerForSingleValueEvent(new ValueEventListener() {
 
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
-                        //TODO in questo modo mi ritorna una hash map u2={oggetto utente}
-                        //Map<String, Object> map = (Map<String, Object>) dataSnapshot.getValue();
-                        //System.out.println(map);
-                        //TODO in questo modo invece prendo direttamente l'oggetto utente
-                        for (DataSnapshot userSnapshot: dataSnapshot.getChildren()) { //a me non entra in questo for (Sia)
+
+                        for (DataSnapshot userSnapshot: dataSnapshot.getChildren()) {
                             ud = userSnapshot.getValue(User.class);
-                            key=userSnapshot.getKey(); //ritorna la chive dell'utente che quindi
-                            // poi va inserito nell'oggetto gruppo come chiave:true
+                            key=userSnapshot.getKey();
+
                             Toast.makeText(InsertGroupActivity.this, key, Toast.LENGTH_LONG).show();
                         }
                         if(key == null) {
-                            Toast.makeText(InsertGroupActivity.this, "This user is not registred to the service!", Toast.LENGTH_LONG).show();
+                            Uemail.setText("");
+                            new AlertDialog.Builder(InsertGroupActivity.this)
+                                    .setTitle("You friend has not downloaded the app, yet!")
+                                    .setMessage("Create the group and invite him later from group options.")
+                                    .setIcon(android.R.drawable.ic_dialog_alert)
+                                    .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                                        public void onClick(DialogInterface dialog, int whichButton) {
+
+                                            //userNotPresentInDbMail = UserEmail;
+                                            //onInviteClicked(UserEmail);
+                                            //onInviteClicked("nome", "cognome", "groupname", "identificativo");
+                                        }}).show();
 
                         } else {
                             Uemail.setText("");
@@ -170,11 +200,11 @@ public class InsertGroupActivity extends AppCompatActivity {
 
                     Toast.makeText(InsertGroupActivity.this, "Please insert group description.", Toast.LENGTH_LONG).show();
 
-                }else if (m.isEmpty()) {
+                }/*else if (m.isEmpty()) {
 
                     Toast.makeText(InsertGroupActivity.this, "Please insert at least one other member.", Toast.LENGTH_LONG).show();
 
-                } else if (Tcurrency.getSelectedItem().toString().equals("Select currency")) {
+                }*/ else if (Tcurrency.getSelectedItem().toString().equals("Select currency")) {
 
                     Toast.makeText(InsertGroupActivity.this, "Please insert currency.", Toast.LENGTH_LONG).show();
 
@@ -187,6 +217,7 @@ public class InsertGroupActivity extends AppCompatActivity {
                     G.setImagePath("https://firebasestorage.googleapis.com/v0/b/allaromana-3f98e.appspot.com/o/group_default.png?alt=media&token=40bc93f4-6b97-466e-b130-e140f57c5895");
                     G.addMembers(m);
                     G.addMember(uKey);
+                    my.put(uKey, uName);
                     myRef.child(groupId).setValue(G);
                     Set keys = m.keySet();
                     Set others = m.keySet();
@@ -207,6 +238,14 @@ public class InsertGroupActivity extends AppCompatActivity {
                             }
                         }
                     }
+
+                    /*for(String s : userNotPresentInDb) {;
+                        DatabaseReference myRef2 = database.getReference("/Invites");
+                        String inviteId = myRef2.push().getKey();
+                        //myRef.setValue(gPath);
+                        Invite invite = new Invite(s, groupId, G.getName(), G.getImagePath());
+                        myRef.child(inviteId).setValue(invite);
+                    }*/
                     setResult(RESULT_OK, null);
                     finish();
                 }
@@ -219,4 +258,42 @@ public class InsertGroupActivity extends AppCompatActivity {
     }
 
 
+    /*private void onInviteClicked(String email) {
+
+        Intent intent = new AppInviteInvitation.IntentBuilder("Invite your friends!")
+                .setMessage("You have been invited to AllaRomana (mail: "+ email)
+                .setEmailHtmlContent("Hi! I invited you to join a group on AllaRomana. Download the app and SignIn with the email "+ email +" to join the group. See you on AllaRomana!")
+                .setDeepLink(Uri.EMPTY)
+                .setEmailSubject("Invite you on AllaRomana")
+                .build();
+
+
+        startActivityForResult(intent, REQUEST_INVITE);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == REQUEST_INVITE) {
+            if (resultCode == RESULT_OK) {
+                // Get the invitation IDs of all sent messages
+                String[] ids = AppInviteInvitation.getInvitationIds(resultCode, data);
+                for (String id : ids) {
+                    Log.d("INFO", "onActivityResult: sent invitation " + id);
+                }
+
+                userNotPresentInDb.add(userNotPresentInDbMail);
+
+                finish();
+            } else {
+
+                System.out.println("Errore..." + resultCode);
+                // Sending failed or it was canceled, show failure message to the user
+                // ...
+            }
+        }
+
+    }*/
 }

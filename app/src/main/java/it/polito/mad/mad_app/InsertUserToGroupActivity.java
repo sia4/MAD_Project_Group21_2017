@@ -94,7 +94,7 @@ public class InsertUserToGroupActivity extends AppCompatActivity {
                                 Toast.makeText(InsertUserToGroupActivity.this, key, Toast.LENGTH_LONG).show();
                             }
                             if(key == null) {
-                                Toast.makeText(InsertUserToGroupActivity.this, "This user is not registred to the service!", Toast.LENGTH_LONG).show();
+
                             new AlertDialog.Builder(InsertUserToGroupActivity.this)
                                     .setTitle("You friend has not downloaded the app, yet!")
                                     .setMessage("Do you want to invite him to use the app?")
@@ -148,7 +148,7 @@ public class InsertUserToGroupActivity extends AppCompatActivity {
                 FirebaseDatabase database = FirebaseDatabase.getInstance();
                 DatabaseReference myRef = database.getReference("/Invites");
                 String inviteId = myRef.push().getKey();
-                myRef.setValue(gPath);
+                //myRef.setValue(gPath);
                 Invite invite = new Invite(email, gId, gName, gPath);
                 myRef.child(inviteId).setValue(invite);
 
@@ -163,27 +163,10 @@ public class InsertUserToGroupActivity extends AppCompatActivity {
 
     }
 
-
-    //Using an app as client
-    /*
-    private void sendEmail(String email) {
-        Intent i = new Intent(Intent.ACTION_SEND);
-        i.setType("message/rfc822");
-        i.putExtra(Intent.EXTRA_EMAIL  , email);
-        i.putExtra(Intent.EXTRA_SUBJECT, "Someone added you to a group on AllaRomana");
-        i.putExtra(Intent.EXTRA_TEXT   , "Hi! You have been invited to join to a group on AllaRomana. Download the app to start manage you expenses.");
-        try {
-            startActivity(Intent.createChooser(i, "Send mail..."));
-        } catch (android.content.ActivityNotFoundException ex) {
-            Toast.makeText(InsertGroupActivity.this, "There are no email clients installed.", Toast.LENGTH_SHORT).show();
-        }
-    }
-*/
-
     private void onInviteClicked(String email) {
 
         Intent intent = new AppInviteInvitation.IntentBuilder("Invite your friends!")
-                .setMessage("AllaRomana")
+                .setMessage("You have been invited to AllaRomana (mail: "+ email+")")
                 .setEmailHtmlContent("Hi! I invited you to join a group on AllaRomana. Download the app and SignIn with the email "+ email +" to join the group. See you on AllaRomana!")
                 .setDeepLink(Uri.EMPTY)
                 .setEmailSubject("Invite you on AllaRomana")
