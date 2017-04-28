@@ -43,8 +43,6 @@ public class SignInActivity extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
         Firebase_DB = FirebaseDatabase.getInstance().getReference();
 
-        //CheckLoggedUser();
-
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_in);
 
@@ -195,10 +193,6 @@ public class SignInActivity extends AppCompatActivity {
         });
     }
 
-    // TODO: questa è la funzione che scrive in DB l'utente appena registrato.
-    // Notare che utilizzo l'oggetto di tipo User, fondamentale in quanto
-    // ci permette di mappare il JSON con la nostra classe in modo automatico
-
     private void writeNewUser(String userId, String name, String surname, String email) {
 
         String username = email + "_" + name + surname;
@@ -206,55 +200,6 @@ public class SignInActivity extends AppCompatActivity {
 
         Firebase_DB.child("Users").child(userId).setValue(user);
 
-    }
-
-    protected void CheckUser(FirebaseUser U) {
-
-        // verifica che l'utente sia presente in DB
-
-        final String uID = U.getUid();
-
-        ValueEventListener SingleEvent = new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-
-                boolean user_exists = false;
-
-                if (dataSnapshot.getValue() != null) {
-                    user_exists = true;
-                } else {
-                    user_exists = false;
-                }
-                if (user_exists) {
-                    startActivity(new Intent(SignInActivity.this, LoginActivity.class)); //ok
-                    finish();
-
-                } else {
-                    mAuth.signOut();
-                    startActivity(new Intent(SignInActivity.this, SignInActivity.class)); //refresh
-                    finish();
-
-                }
-
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        };
-
-        Firebase_DB.child("Users").child(uID).addListenerForSingleValueEvent(SingleEvent);
-
-    }
-
-    protected void CheckLoggedUser() {
-
-        FirebaseUser user = mAuth.getCurrentUser();
-
-        if (user != null) {
-            CheckUser(user);
-        }
     }
 
     @Override

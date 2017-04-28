@@ -41,12 +41,6 @@ public class GroupActivity extends AppCompatActivity {
         gKey = intent.getStringExtra("groupId");
         gName = intent.getStringExtra("groupName");
 
-        Toast.makeText(GroupActivity.this, gKey + " " +gName, Toast.LENGTH_LONG).show();
-
-        System.out.println("+++++++++++++Hello: " + gKey+gName);
-
-
-
         final Bundle b = new Bundle();
         b.putString("GroupId", gKey);
         b.putString("GroupName", gName);
@@ -189,19 +183,4 @@ public class GroupActivity extends AppCompatActivity {
                 return super.onOptionsItemSelected(item);
         }
     }
-    /*startActivity(new Intent(
-            getApplicationContext(),GroupOptionActivity.class
-                ));*/
 }
-/*Intent intent = new Intent().setClass(view.getContext(), ExpenseInfoActivity.class);
-                intent.putExtra("name", expense.getName());
-                intent.putExtra("category", expense.getCategory());
-                intent.putExtra("currency", expense.getCurrency());
-                intent.putExtra("algorithm", expense.getAlgorithm());
-                intent.putExtra("description", expense.getDescription());
-                //String.format("%.2f", expense.getMyvalue())
-                intent.putExtra("myvalue",String.format("%.2f", expense.getMyvalue()) );
-                intent.putExtra("value", String.format("%.2f", expense.getValue()));
-                intent.putExtra("creator", MainData.getInstance().getMyName());//TODO change with getCreator
-                intent.putExtra("date", expense.getDate());
-                view.getContext().startActivity(intent);*/

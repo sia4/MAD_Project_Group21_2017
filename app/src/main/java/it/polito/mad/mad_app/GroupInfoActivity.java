@@ -24,6 +24,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -64,15 +65,12 @@ public class GroupInfoActivity extends AppCompatActivity {
         gId =i.getStringExtra("groupId");
         gName = i.getStringExtra("groupName");
         System.out.println(gId);
-        //GD=MainData.getInstance().getGroup(gId);
 
         if (getSupportActionBar() != null)
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle("Group Information");
 
         im=(ImageView) findViewById(R.id.im_g);
-
-        //String p = GD.getImagePath();
 
         Button button = (Button) findViewById(R.id.addUserInExistingGroup);
         button.setOnClickListener(new View.OnClickListener() {
@@ -118,7 +116,10 @@ public class GroupInfoActivity extends AppCompatActivity {
                     if (p == null) {
                         im.setImageResource(R.drawable.group_default);
                     } else {
-                        im.setImageBitmap(BitmapFactory.decodeFile(p));
+                        Glide
+                                .with(getApplicationContext())
+                                .load(p)
+                                .into(im);
                     }
 
                     //Group g = new Group((String)map.get("gId"),(String) map.get("surname"), (String)map.get("defaultCurrency"));

@@ -108,8 +108,6 @@ public class InsertExActivity extends AppCompatActivity {
         Intent intent = getIntent();
         Gname = intent.getStringExtra("groupId");
         groupName = intent.getStringExtra("groupName");
-        Toast.makeText(InsertExActivity.this, Gname+" "+groupName, Toast.LENGTH_LONG).show();
-        System.out.println("1");
         final String uid = mAuth.getCurrentUser().getUid().toString();
         FirebaseDatabase database2 = FirebaseDatabase.getInstance();
         DatabaseReference myRef2 = database2.getReference("Groups").child(Gname).child("members");

@@ -136,8 +136,6 @@ public class InsertGroupActivity extends AppCompatActivity {
                         for (DataSnapshot userSnapshot: dataSnapshot.getChildren()) {
                             ud = userSnapshot.getValue(User.class);
                             key=userSnapshot.getKey();
-
-                            Toast.makeText(InsertGroupActivity.this, key, Toast.LENGTH_LONG).show();
                         }
                         if(key == null) {
                             Uemail.setText("");
