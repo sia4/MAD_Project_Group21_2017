@@ -62,28 +62,6 @@ public class SignInActivity extends AppCompatActivity {
 
         CheckLoggedUser();
 
-
-        /*mAuthListener = new FirebaseAuth.AuthStateListener() {
-
-            @Override
-            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-
-                FirebaseUser user = firebaseAuth.getCurrentUser();
-
-                if (user != null) {
-
-                    System.out.println("++++++ OnAUTHSTATECHANGED +++++");
-
-                    System.out.println("++++++SignIn QUI che cazzo succede+++++");
-                    System.out.println(user.getEmail());
-
-                    CheckUser(user);
-                }
-
-            }
-
-        };*/
-
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_in);
 
@@ -95,9 +73,7 @@ public class SignInActivity extends AppCompatActivity {
         inputName = (EditText) findViewById(R.id.name);
         inputSurname = (EditText) findViewById(R.id.surname);
 
-
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
-
 
         //TODO dare la possiblità di riottenere la password
 
@@ -200,7 +176,6 @@ public class SignInActivity extends AppCompatActivity {
                                               String gName = is.getGroupName();
                                               String gPath = is.getGroupPath();
                                               String key = u.getUid();
-                                              System.out.print("gruppo: "+ is.getGroupId());
                                               FirebaseDatabase database = FirebaseDatabase.getInstance();
                                               DatabaseReference myRef = database.getReference("/Users/"+key+"/Groups/"+gId+"/name/");
                                               myRef.setValue(gName);
@@ -222,7 +197,7 @@ public class SignInActivity extends AppCompatActivity {
                                         }
                                      });
 
-                                    startActivity(new Intent(SignInActivity.this, MainActivity.class));
+                                    startActivity(new Intent(SignInActivity.this, LoginActivity.class));
                                     finish();
 
                                 }
@@ -261,29 +236,16 @@ public class SignInActivity extends AppCompatActivity {
                 boolean user_exists = false;
 
                 if (dataSnapshot.getValue() != null) {
-
-                    System.out.println("++++++SignIn UTENTE ESISTENTE: " + dataSnapshot.getValue().toString());
                     user_exists = true;
-
                 } else {
-
                     user_exists = false;
-
                 }
-
                 if (user_exists) {
-
-                    System.out.println("++++++SignIn UTENTE ESISTENTE E LOGGATO +++++");
-                    startActivity(new Intent(SignInActivity.this, MainActivity.class)); //ok
+                    startActivity(new Intent(SignInActivity.this, LoginActivity.class)); //ok
                     finish();
 
                 } else {
-
-
-                    System.out.println("++++++ NOPE --> UTENTE NON ESISTENTE +++++");
-
                     mAuth.signOut();
-
                     startActivity(new Intent(SignInActivity.this, SignInActivity.class)); //refresh
                     finish();
 
@@ -306,16 +268,9 @@ public class SignInActivity extends AppCompatActivity {
         FirebaseUser user = mAuth.getCurrentUser();
 
         if (user != null) {
-
-            System.out.println("++++++SignIn CHECKLOGGED -- QUI che cazzo succede+++++");
-            System.out.println(user.getEmail());
-
             CheckUser(user);
-
         }
-
     }
-
 
     @Override
     protected void onResume() {

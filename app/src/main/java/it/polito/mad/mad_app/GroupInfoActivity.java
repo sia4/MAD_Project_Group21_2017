@@ -271,7 +271,6 @@ public class GroupInfoActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item){
 
         Intent i = getIntent();
-        System.out.println("GNAME: " + nametmp);
 
         switch(item.getItemId()){
             case android.R.id.home:
@@ -336,7 +335,6 @@ public class GroupInfoActivity extends AppCompatActivity {
                 }
 
                 setResult(RESULT_OK, in);
-                System.out.println("WAT");
                 finish();
                 return true;
 

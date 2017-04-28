@@ -378,7 +378,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
             CheckUser(user);
 
+        if(!user.isEmailVerified()) {
+            startActivity(new Intent(MainActivity.this, LoginActivity.class));
 
+            finish();
+        }
         } else {
 
             startActivity(new Intent(MainActivity.this, LoginActivity.class));

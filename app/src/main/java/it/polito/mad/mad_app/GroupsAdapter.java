@@ -58,7 +58,6 @@ public class GroupsAdapter extends RecyclerView.Adapter<GroupsAdapter.MyViewHold
         holder.name.setText(g.getGroupName());
 
         String p = g.getGroupUrl();
-        System.out.println("Sono qui, p = "+p);
 
         Glide.with(context).load(p).into(holder.im);
 

@@ -79,7 +79,6 @@ public class GroupData {
         }
 
         lBudget.put(email, new BalanceData(email, this.name, tmp, currency));
-        System.out.println("+++ HELLO +++ Inserito :" + email + " " + value + " " + currency);
 
     }
     public void allaRomana(float value, String currency){
