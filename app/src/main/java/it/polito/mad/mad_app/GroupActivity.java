@@ -22,15 +22,10 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
-import it.polito.mad.mad_app.model.ExpenseData;
-import it.polito.mad.mad_app.model.GroupData;
-import it.polito.mad.mad_app.model.MainData;
 
 public class GroupActivity extends AppCompatActivity {
     private String gName, gKey;
     private ListView lv;
-    private List<ExpenseData> data = new ArrayList<>();
-    private List<GroupData> GData;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,30 +41,13 @@ public class GroupActivity extends AppCompatActivity {
         gKey = intent.getStringExtra("groupId");
         gName = intent.getStringExtra("groupName");
 
-        Toast.makeText(GroupActivity.this, gKey, Toast.LENGTH_LONG).show();
+        Toast.makeText(GroupActivity.this, gKey + " " +gName, Toast.LENGTH_LONG).show();
+
+        System.out.println("+++++++++++++Hello: " + gKey+gName);
 
 
-        List<GroupData> d = MainData.getInstance().getGroupList();
-
-        /*
-        GroupData datigruppo = null;
-        int i, n;
-        n = d.size();
-
-        for (i = 0; i < n; i++) {
-
-            datigruppo = d.get(i);
-
-            if (datigruppo.getName().equals(gname)) {
-                System.out.println("Hello? ");
-                break;
-            }
-
-        }
-        */
 
         final Bundle b = new Bundle();
-        b.putString("GroupId", gKey);
         b.putString("GroupId", gKey);
 
         //System.out.println("CICCIOBOMBA" + datigruppo.getName());
@@ -155,6 +133,7 @@ public class GroupActivity extends AppCompatActivity {
                         getApplicationContext(), InsertExActivity.class
                 );
                 intent.putExtra("groupId", gKey);
+                intent.putExtra("groupName", gName);
                 startActivityForResult(intent, 1);
             }
         });
@@ -166,9 +145,12 @@ public class GroupActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
 
         if (resultCode == RESULT_OK) {
-            final String gId = data.getStringExtra("groupId");
+            final String gkey1 = data.getStringExtra("groupId");
+            final String gName1 = data.getStringExtra("groupName");
             Intent refresh = new Intent(this, GroupActivity.class);
-            refresh.putExtra("groupId", gId);
+
+            refresh.putExtra("groupId", gkey1);
+            refresh.putExtra("groupName", gName1);
             startActivity(refresh);
             this.finish();
         }
@@ -188,12 +170,14 @@ public class GroupActivity extends AppCompatActivity {
             case R.id.options:
                 Intent intent = new Intent(getApplicationContext(), GroupInfoActivity.class);
                 intent.putExtra("groupId", gKey);
+                intent.putExtra("groupName", gName);
                 startActivityForResult(intent, 1);
                 return true;
 
             case R.id.addcurrency:
                 Intent i2 = new Intent(getApplicationContext(), InsertCurrencyActivity.class);
                 i2.putExtra("groupId", gKey);
+                i2.putExtra("groupName", gName);
                 startActivity(i2);
                 return true;
 
