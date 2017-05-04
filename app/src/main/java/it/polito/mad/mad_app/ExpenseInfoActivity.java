@@ -188,8 +188,8 @@ public class ExpenseInfoActivity extends AppCompatActivity {
                         //TODO QUI HO IL PROBLEMA, NON RIESCO A SOMMARE VALUE1 (VALORE DI BILANCIO PRECEDENTE) A USERMAP.GET(K) (VALORE DELLA SPESA CONTESTATA DA TOGLIERE)
                         //value1 = value1 + usermap.get(k);
                         //value2 = value2 - usermap.get(k);
-                        myRef5.child(mAuth.getCurrentUser().getUid()).child(k).child("value").setValue(value1);
-                        myRef5.child(k).child(mAuth.getCurrentUser().getUid()).child("value").setValue(value2);
+                        myRef5.child(mAuth.getCurrentUser().getUid()).child(k).child("value").setValue(value1 /*- usermap.get(k)*/);
+                        myRef5.child(k).child(mAuth.getCurrentUser().getUid()).child("value").setValue(value2 /*+ usermap.get(k)*/);
                     }
 
                 }
