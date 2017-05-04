@@ -5,8 +5,7 @@
     android:layout_height="match_parent"
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="it.polito.mad.mad_app.ExpenseInfoActivity">
-
-    <android.support.design.widget.AppBarLayout
+     <android.support.design.widget.AppBarLayout
         android:id="@+id/insert_group_bar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -26,8 +25,17 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="49dp"
+        android:layout_marginTop="52dp"
         android:orientation="vertical">
+        <TextView
+            android:id="@+id/exContested"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            android:gravity="center"
+            android:textColor="#d51111"
+            android:text="THIS EXPENSE HAS BEEN CONTESTED!"
+            android:textSize="30sp" />
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -36,7 +44,7 @@
             <TextView
                 android:id="@+id/exName"
                 android:layout_width="match_parent"
-                android:layout_height="40sp"
+                android:layout_height="35sp"
                 android:layout_weight="0.5"
                 android:gravity="left"
                 android:textSize="30sp" />
@@ -45,14 +53,14 @@
                 android:gravity="right"
                 android:layout_weight="0.5"
                 android:layout_width="match_parent"
-                android:layout_height="40sp"
+                android:layout_height="35sp"
                 android:textSize="30sp" />
         </LinearLayout>
         <View style="@style/Divider"/>
         <TextView
             android:id="@+id/iCreator"
             android:layout_width="match_parent"
-            android:layout_height="20sp"
+            android:layout_height="17sp"
             android:text="Payed form:"
             android:textSize="13sp"
             android:layout_marginRight="16sp"
@@ -62,7 +70,7 @@
         <TextView
             android:id="@+id/exCreator"
             android:layout_width="match_parent"
-            android:layout_height="30sp"
+            android:layout_height="27sp"
             android:textSize="20sp"
             android:layout_marginRight="16sp"
             android:layout_marginLeft="16sp"
@@ -71,7 +79,7 @@
         <TextView
             android:id="@+id/iDescription"
             android:layout_width="match_parent"
-            android:layout_height="20sp"
+            android:layout_height="17sp"
             android:text="Description:"
             android:textSize="13sp"
             android:layout_marginRight="16sp"
@@ -81,7 +89,7 @@
         <TextView
             android:id="@+id/exDescription"
             android:layout_width="match_parent"
-            android:layout_height="30sp"
+            android:layout_height="27sp"
             android:textSize="20sp"
             android:layout_marginRight="16sp"
             android:layout_marginLeft="16sp"
@@ -91,7 +99,7 @@
         <TextView
             android:id="@+id/iCategory"
             android:layout_width="match_parent"
-            android:layout_height="20sp"
+            android:layout_height="17sp"
             android:text="Category:"
             android:textSize="13sp"
             android:layout_marginRight="16sp"
@@ -101,7 +109,7 @@
         <TextView
             android:id="@+id/exCategory"
             android:layout_width="match_parent"
-            android:layout_height="30sp"
+            android:layout_height="27sp"
             android:textSize="20sp"
             android:layout_marginRight="16sp"
             android:layout_marginLeft="16sp"
@@ -110,7 +118,7 @@
         <TextView
             android:id="@+id/iCurrency"
             android:layout_width="match_parent"
-            android:layout_height="20sp"
+            android:layout_height="17sp"
             android:text="Currency:"
             android:textSize="13sp"
             android:layout_marginRight="16sp"
@@ -120,7 +128,7 @@
         <TextView
             android:id="@+id/exCurrency"
             android:layout_width="match_parent"
-            android:layout_height="30sp"
+            android:layout_height="27sp"
             android:textSize="20sp"
             android:layout_marginRight="16sp"
             android:layout_marginLeft="16sp"
@@ -129,7 +137,7 @@
         <TextView
             android:id="@+id/iMyvalue"
             android:layout_width="match_parent"
-            android:layout_height="20sp"
+            android:layout_height="17sp"
             android:textSize="13sp"
             android:layout_marginRight="16sp"
             android:layout_marginLeft="16sp"
@@ -138,7 +146,7 @@
         <TextView
             android:id="@+id/exMyvalue"
             android:layout_width="match_parent"
-            android:layout_height="30sp"
+            android:layout_height="27sp"
             android:textSize="20sp"
             android:layout_marginRight="16sp"
             android:layout_marginLeft="16sp"
@@ -147,7 +155,7 @@
         <TextView
             android:id="@+id/iAlgorithm"
             android:layout_width="match_parent"
-            android:layout_height="20sp"
+            android:layout_height="17sp"
             android:text="Import divided:"
             android:textSize="13sp"
             android:layout_marginRight="16sp"
@@ -157,7 +165,7 @@
         <TextView
             android:id="@+id/exAlgorithm"
             android:layout_width="match_parent"
-            android:layout_height="30sp"
+            android:layout_height="27sp"
             android:textSize="20sp"
             android:layout_marginRight="16sp"
             android:layout_marginLeft="16sp"
@@ -166,7 +174,7 @@
         <TextView
             android:id="@+id/iDate"
             android:layout_width="match_parent"
-            android:layout_height="20sp"
+            android:layout_height="17sp"
             android:text="Date"
             android:textSize="13sp"
             android:layout_marginRight="16sp"
@@ -176,8 +184,24 @@
         <TextView
             android:id="@+id/exDate"
             android:layout_width="match_parent"
-            android:layout_height="30sp"
+            android:layout_height="27sp"
             android:textSize="20sp"
+            android:layout_marginRight="16sp"
+            android:layout_marginLeft="16sp"
+            android:layout_marginBottom="5dp"/>
+
+        <Button
+            android:id="@+id/exDeny"
+            android:layout_width="match_parent"
+            android:layout_height="40sp"
+            android:layout_gravity="center"
+            android:text="Deny"/>
+        <TextView
+            android:id="@+id/denydescription"
+            android:layout_width="match_parent"
+            android:layout_height="27sp"
+            android:textSize="12sp"
+            android:text = "Pressing Deny, will retrive this expense from the budget for all the members of the group."
             android:layout_marginRight="16sp"
             android:layout_marginLeft="16sp"
             android:layout_marginBottom="5dp"/>

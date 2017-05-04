@@ -69,6 +69,7 @@ public class    HistoryFragment extends Fragment {
                 String GroupName = getArguments().getString("GroupName");
                 intent.putExtra("groupName", GroupName);
                 intent.putExtra("groupId", GroupId);
+                intent.putExtra("ExpenseId", expense.getIdEx());
                 view.getContext().startActivity(intent);
 
             }
@@ -111,6 +112,8 @@ public class    HistoryFragment extends Fragment {
                                     Float tmp1 = new Float(map3.get("myvalue").toString());
                                     ExpenseData e = new ExpenseData((String)map3.get("name"), (String)map3.get("description"), (String)map3.get("category"), (String)map3.get("currency"), tmp ,tmp1,(String)map3.get("algorithm"));
                                     e.setCreator((String)map3.get("creator"));
+                                    e.setIdEx(k);
+                                    e.setContested((String)map3.get("contested"));
                                     lex.add(e);
                                     System.out.println("valueeeeeeeeeeeeeeeeeeeeeeasdf" + map3.get("value"));
                                     hAdapter.notifyDataSetChanged();

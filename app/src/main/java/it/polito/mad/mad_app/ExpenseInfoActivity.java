@@ -10,14 +10,31 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.MutableData;
+import com.google.firebase.database.Transaction;
+import com.google.firebase.database.ValueEventListener;
+
+import java.util.Map;
+import java.util.TreeMap;
+
+import it.polito.mad.mad_app.model.UserData;
 
 public class ExpenseInfoActivity extends AppCompatActivity {
 
     int n;
     public TextView name_ex,date_ex, s_ex, value_ex, description_ex,creator_ex, category_ex, currency_ex, myvalue_ex, algorithm_ex;
+
+    private Map<String, Float> usermap = new TreeMap<>();
+    private Map<String, Map<String, Map<String, Object>>> balancemap = new TreeMap<>();
     private FirebaseAuth mAuth = FirebaseAuth.getInstance();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,7 +46,7 @@ public class ExpenseInfoActivity extends AppCompatActivity {
         if (getSupportActionBar() != null)
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle("Expense Information");
-        String name, value, creator, description, category, currency, myvalue, algorithm, date;
+        final String name, value, creator, description, category, currency, myvalue, algorithm, date, exid;
         name = i.getStringExtra("name");
         value = i.getStringExtra("value");
         creator = i.getStringExtra("creator");
@@ -37,9 +54,11 @@ public class ExpenseInfoActivity extends AppCompatActivity {
         category = i.getStringExtra("category");
         currency = i.getStringExtra("currency");
         myvalue = i.getStringExtra("myvalue");
+        exid = i.getStringExtra("ExpenseId");
         n=Integer.parseInt(myvalue.replaceAll("[\\D]",""));;
         algorithm = i.getStringExtra("algorithm");
         date = i.getStringExtra("date");
+        final String GroupId = i.getStringExtra("groupId");
         s_ex=(TextView) findViewById(R.id.iMyvalue);
         name_ex = (TextView) findViewById(R.id.exName);
         value_ex = (TextView) findViewById(R.id.exValue);
@@ -73,6 +92,111 @@ public class ExpenseInfoActivity extends AppCompatActivity {
             myvalue_ex.setTextColor(Color.parseColor("#D51111"));
             s_ex.setText("Import to pay:");
         }
+        final TextView Tdeny = (TextView) findViewById(R.id.exContested);
+        final Button button = (Button) findViewById(R.id.exDeny);
+
+        FirebaseDatabase database4 = FirebaseDatabase.getInstance();
+        DatabaseReference myRef4 = database4.getReference("Expenses").child(GroupId).child(exid);
+        int flagcontest = 0;
+        myRef4.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                Map<String, Object> map = (Map<String, Object>) dataSnapshot.getValue();
+                if(map!=null) {
+                    String cont = (String)map.get("contested");
+                    if(cont.equals("yes")){
+                        Tdeny.setVisibility(View.VISIBLE);
+                        button.setVisibility(View.GONE);
+                    }
+
+
+                }
+                else{
+                    Toast.makeText(ExpenseInfoActivity.this, "no expense found!", Toast.LENGTH_LONG).show();
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+        final FirebaseDatabase database2 = FirebaseDatabase.getInstance();
+        DatabaseReference myRef2 = database2.getReference("Expenses").child(GroupId).child(exid);
+        myRef2.child("users").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                usermap = (Map<String, Float>) dataSnapshot.getValue();
+                if(usermap==null) {
+                    Toast.makeText(ExpenseInfoActivity.this, "no users found!", Toast.LENGTH_LONG).show();
+                }
+                else{
+                    System.out.println("usermapppppppppppppppp " + usermap);
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+        final FirebaseDatabase database3 = FirebaseDatabase.getInstance();
+        DatabaseReference myRef3 = database3.getReference("Balance").child(GroupId);
+
+        myRef3.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                balancemap = (Map<String, Map<String, Map<String, Object>>>) dataSnapshot.getValue();
+                if(balancemap==null) {
+                    Toast.makeText(ExpenseInfoActivity.this, "no balance found!", Toast.LENGTH_LONG).show();
+                }
+                else{
+                    System.out.println("balancemapppppppppppppppp " + balancemap);
+                }
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+
+        button.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+
+                Tdeny.setVisibility(View.VISIBLE);
+                final FirebaseDatabase database = FirebaseDatabase.getInstance();
+                DatabaseReference myRef = database.getReference("Expenses").child(GroupId).child(exid);
+                myRef.child("contested").setValue("yes");
+
+                final FirebaseDatabase database5 = FirebaseDatabase.getInstance();
+                DatabaseReference myRef5 = database5.getReference("Balance").child(GroupId);
+                float value1, value2, value3, value4;
+                for( String k : usermap.keySet()) {
+                    if(!k.equals(mAuth.getCurrentUser().getUid())) {
+                        value1 = new Float (balancemap.get(mAuth.getCurrentUser().getUid()).get(k).get("value").toString());
+                        value2 = new Float (balancemap.get(k).get(mAuth.getCurrentUser().getUid()).get("value").toString());
+                        //value3 = new Float (Float.parseFloat(usermap.get(k).toString()));
+                        System.out.println("buttonnnnnnn1 "+value1);
+                        System.out.println("buttonnnnnnn2 "+value2);
+                        //System.out.println("buttonnnnnnn3 "+value3);
+                        System.out.println("USERMAPPPPPPP" + usermap.get(k));
+                        //TODO QUI HO IL PROBLEMA, NON RIESCO A SOMMARE VALUE1 (VALORE DI BILANCIO PRECEDENTE) A USERMAP.GET(K) (VALORE DELLA SPESA CONTESTATA DA TOGLIERE)
+                        //value1 = value1 + usermap.get(k);
+                        //value2 = value2 - usermap.get(k);
+                        myRef5.child(mAuth.getCurrentUser().getUid()).child(k).child("value").setValue(value1);
+                        myRef5.child(k).child(mAuth.getCurrentUser().getUid()).child("value").setValue(value2);
+                    }
+
+                }
+
+            }
+        });
+
     }
     @Override
     public boolean onOptionsItemSelected(MenuItem item){

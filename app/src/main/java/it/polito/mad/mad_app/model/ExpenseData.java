@@ -5,7 +5,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
 public class ExpenseData {
-
+    private String idEx;
     private String name;
     private String descr;
     private String category;
@@ -15,6 +15,7 @@ public class ExpenseData {
     private String algorithm;
     private String date;
     private String creator;
+    private String contested;
 
     public ExpenseData(String n, String d, String ca, String cu, float value,float myvalue, String algorithm){
         this.name = n;
@@ -27,6 +28,10 @@ public class ExpenseData {
         DateFormat df = new SimpleDateFormat("d MMM yyyy, HH:mm");
         this.date = df.format(Calendar.getInstance().getTime());
     }
+    public String getIdEx(){return this.idEx;}
+    public void setIdEx(String idEx){this.idEx = idEx;}
+    public void setContested(String i){this.contested=i;}
+    public String getContested(){return this.contested;}
     public String getDate(){ return this.date;}
     public String getName(){
         return this.name;

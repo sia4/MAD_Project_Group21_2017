@@ -455,28 +455,28 @@ public class InsertExActivity extends AppCompatActivity {
                     if (flagok == 1 && values.size() == users.size()) {
                         myRef.setValue(new ExpenseData(name, description, category, currency, value, 0, algorithm));
                         myRef.child("creator").setValue(myname + " " + mysurname);
-
+                        myRef.child("users").setValue(values);
+                        myRef.child("contested").setValue("no");
                         ii = 0;
-
                         for(final UserData key : users){
-
-                            if(!key.getuId().equals(mAuth.getCurrentUser().getUid())) {
 
                                 final DatabaseReference myRef3 = database.getReference("Balance").child(Gname).child(mAuth.getCurrentUser().getUid()).child(key.getuId());
 
                                 myRef3.runTransaction(new Transaction.Handler() {
                                     @Override
                                     public Transaction.Result doTransaction(MutableData mutableData) {
-                                        Float value = mutableData.child("value").getValue(Float.class);
-                                        System.out.println("valueeeeeeeeeeeeeeeeeeeeee "+ value);
-                                        if (value == null) {
-                                            mutableData.child("name").setValue(key.getName()+" "+key.getSurname());
-                                            mutableData.child("value").setValue(values.get(key.getuId()));
-                                        }
-                                        else {
-                                            mutableData.child("value").setValue(value + values.get(key.getuId()));
-                                        }
 
+                                        if(!key.getuId().equals(mAuth.getCurrentUser().getUid())) {
+                                            Float value = mutableData.child("value").getValue(Float.class);
+                                            System.out.println("valueeeeeeeeeeeeeeeeeeeeee " + value);
+                                            if (value == null) {
+                                                mutableData.child("name").setValue(key.getName() + " " + key.getSurname());
+                                                mutableData.child("value").setValue(values.get(key.getuId()));
+                                            } else {
+                                                mutableData.child("value").setValue(value + values.get(key.getuId()));
+                                                mutableData.child("name").setValue(key.getName() + " " + key.getSurname());
+                                            }
+                                        }
                                         return Transaction.success(mutableData);
                                     }
 
@@ -493,16 +493,17 @@ public class InsertExActivity extends AppCompatActivity {
                                 myRef5.runTransaction(new Transaction.Handler() {
                                     @Override
                                     public Transaction.Result doTransaction(MutableData mutableData) {
-                                        Float value = mutableData.child("value").getValue(Float.class);
-                                        System.out.println("valueeeeeeeeeeeeeeeeeeeeee "+ value);
-                                        if (value == null) {
-                                            mutableData.child("value").setValue(-values.get(key.getuId()));
-                                            mutableData.child("name").setValue(myname+" "+mysurname);
+                                        if(!key.getuId().equals(mAuth.getCurrentUser().getUid())) {
+                                            Float value = mutableData.child("value").getValue(Float.class);
+                                            System.out.println("valueeeeeeeeeeeeeeeeeeeeee " + value);
+                                            if (value == null) {
+                                                mutableData.child("value").setValue(-values.get(key.getuId()));
+                                                mutableData.child("name").setValue(myname + " " + mysurname);
+                                            } else {
+                                                mutableData.child("value").setValue(value - values.get(key.getuId()));
+                                                mutableData.child("name").setValue(myname + " " + mysurname);
+                                            }
                                         }
-                                        else {
-                                            mutableData.child("value").setValue(value - values.get(key.getuId()));
-                                        }
-
                                         return Transaction.success(mutableData);
                                     }
 
@@ -512,7 +513,6 @@ public class InsertExActivity extends AppCompatActivity {
                                         // Log.d(TAG, "transaction:onComplete:" + databaseError);
                                     }
                                 });
-                            }
 
                             ii++;
 

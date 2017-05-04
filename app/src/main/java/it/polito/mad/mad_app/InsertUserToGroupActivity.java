@@ -148,7 +148,7 @@ public class InsertUserToGroupActivity extends AppCompatActivity {
                 FirebaseDatabase database = FirebaseDatabase.getInstance();
                 DatabaseReference myRef = database.getReference("/Invites");
                 String inviteId = myRef.push().getKey();
-                //myRef.setValue(gPath);
+                myRef.setValue(gPath);
                 Invite invite = new Invite(email, gId, gName, gPath);
                 myRef.child(inviteId).setValue(invite);
 

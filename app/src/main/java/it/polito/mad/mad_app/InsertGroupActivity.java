@@ -136,8 +136,7 @@ public class InsertGroupActivity extends AppCompatActivity {
                         for (DataSnapshot userSnapshot: dataSnapshot.getChildren()) {
                             ud = userSnapshot.getValue(User.class);
                             key=userSnapshot.getKey();
-                        }
-                        if(key == null) {
+                        }                        if(key == null) {
                             Uemail.setText("");
                             new AlertDialog.Builder(InsertGroupActivity.this)
                                     .setTitle("You friend has not downloaded the app, yet!")

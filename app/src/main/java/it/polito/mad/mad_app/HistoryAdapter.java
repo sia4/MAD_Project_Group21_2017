@@ -21,7 +21,7 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.MyViewHo
     private List<ExpenseData> expenseData;
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
-        public TextView name_ex, data_ex,  money_ex, impact_ex,creator_ex;
+        public TextView name_ex, data_ex,  money_ex, impact_ex,creator_ex, contested_ex;
 
         public MyViewHolder(View view) {
             super(view);
@@ -30,6 +30,7 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.MyViewHo
             money_ex = (TextView) view.findViewById(R.id.money_ex);
             impact_ex = (TextView) view.findViewById(R.id.impact_ex);
             creator_ex = (TextView) view.findViewById(R.id.creator_ex);
+            contested_ex = (TextView) view.findViewById(R.id.contested_ex);
         }
     }
 
@@ -57,6 +58,8 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.MyViewHo
         holder.impact_ex.setTextColor(Color.parseColor("#27B011"));
         holder.impact_ex.setText("They owe you:");
         holder.money_ex.setTextColor(Color.parseColor("#27B011"));
+        if(expense.getContested().equals("yes"))
+            holder.contested_ex.setVisibility(View.VISIBLE);
 
     }
 
