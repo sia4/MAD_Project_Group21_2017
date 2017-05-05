@@ -1,6 +1,7 @@
 package it.polito.mad.mad_app.model;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -10,6 +11,8 @@ public class Group {
     private String description;
     private String imagePath;
     private String defaultCurrency;
+    private Long dataLastOperation;
+    private String lastOperation;
 
     private Map<String, Boolean> members = new TreeMap<>();
     private Map<String, Boolean> expenses = new TreeMap<>();
@@ -61,4 +64,8 @@ public class Group {
     }
 
     public void addCurrencies(Map<String, Float> currencies) {this.currencies = currencies; }
+
+    public void addLastOperation(String s) {this.lastOperation = s;}
+
+    public void addDataLastOperation(Long l) {this.dataLastOperation = l;}
 }

@@ -6,9 +6,12 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -28,7 +31,11 @@ import java.util.Map;
 public class UserInformationActivity extends AppCompatActivity {
 
     private TextView name, surname, email, username;
+    private EditText nameed, surnameed;
     private ImageView im;
+    private boolean flag_name_edited = false;
+    private boolean flag_surname_edited = false;
+    String uId = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,7 +45,7 @@ public class UserInformationActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         Intent i = getIntent();
-        String uId=i.getStringExtra("userId");
+        uId = i.getStringExtra("userId");
 
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -52,6 +59,10 @@ public class UserInformationActivity extends AppCompatActivity {
         surname = (TextView) findViewById(R.id.surname_u);
         email = (TextView) findViewById(R.id.email_u);
         //username = (TextView) findViewById(R.id.username_u);
+
+        nameed = (EditText) findViewById(R.id.name_u_ed);
+        surnameed = (EditText) findViewById(R.id.surname_u_ed);
+
         im = (ImageView) findViewById(R.id.im_u);
 
         FirebaseDatabase database = FirebaseDatabase.getInstance();
@@ -85,7 +96,7 @@ public class UserInformationActivity extends AppCompatActivity {
         });
 
 
-        Button button = (Button) findViewById(R.id.sendVerificationEmail);
+        /*Button button = (Button) findViewById(R.id.sendVerificationEmail);
         button.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 FirebaseUser u = FirebaseAuth.getInstance().getCurrentUser();
@@ -102,15 +113,72 @@ public class UserInformationActivity extends AppCompatActivity {
                             }
                         });
             }
+        });*/
+
+        name.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                String n = (String)name.getText();
+                name.setVisibility(View.GONE);
+                nameed.setVisibility(View.VISIBLE);
+                nameed.setText(n);
+                flag_name_edited = true;
+
+            }
         });
+
+        surname.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                String n = (String)surname.getText();
+                surname.setVisibility(View.GONE);
+                surnameed.setVisibility(View.VISIBLE);
+                surnameed.setText(n);
+                flag_surname_edited = true;
+
+            }
+        });
+
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_done, menu);
+        return true;
+    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+
         switch (item.getItemId()) {
             case android.R.id.home:
+                finish();
+                return true;
+
+            case R.id.action_menu_done:
+
+
+                if(flag_name_edited) {
+                    Log.d("USERINFO", "Nome cambiato");
+                    String newName = nameed.getText().toString();
+                    if(newName != null && !newName.equals("")) {
+                        Log.d("USERINFO", "Nome cambiato: "+uId+ " " +newName);
+                        DatabaseReference myRef = database.getReference("Users/"+uId + "/name");
+                        myRef.setValue(newName);
+                    }
+                }
+
+                if(flag_surname_edited) {
+                    String newSurname = surnameed.getText().toString();
+                    if(newSurname!= null && !newSurname.equals("")) {
+                        DatabaseReference myRef = database.getReference("Users/"+uId + "/surname");
+                        myRef.setValue(newSurname);
+                    }
+                }
                 finish();
                 return true;
 

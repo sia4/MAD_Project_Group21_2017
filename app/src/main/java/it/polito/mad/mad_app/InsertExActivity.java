@@ -465,7 +465,14 @@ public class InsertExActivity extends AppCompatActivity {
                         ii = 0;
                         for(final UserData key : users){
 
-                                final DatabaseReference myRef3 = database.getReference("Balance").child(Gname).child(mAuth.getCurrentUser().getUid()).child(key.getuId());
+                            myRef = database.getReference("/Users/"+key.getuId()+"/Groups/"+Gname+"/lastOperation/");
+                            myRef.setValue(myname + " added an expense.");
+                            myRef = database.getReference("/Users/"+key.getuId()+"/Groups/"+Gname+"/dateLastOperation/");
+                            myRef.setValue(Long.toString(System.currentTimeMillis()).toString());
+
+
+
+                            final DatabaseReference myRef3 = database.getReference("Balance").child(Gname).child(mAuth.getCurrentUser().getUid()).child(key.getuId());
 
                                 myRef3.runTransaction(new Transaction.Handler() {
                                     @Override
@@ -482,6 +489,7 @@ public class InsertExActivity extends AppCompatActivity {
                                                 mutableData.child("name").setValue(key.getName() + " " + key.getSurname());
                                             }
                                         }
+
                                         return Transaction.success(mutableData);
                                     }
 

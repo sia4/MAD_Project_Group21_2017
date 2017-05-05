@@ -11,6 +11,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,7 +29,13 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.sql.Date;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -39,15 +46,19 @@ import it.polito.mad.mad_app.model.RecyclerTouchListener;
 
 public class GroupsFragment extends Fragment {
 
-    public class GroupModel {
+    public class GroupModel implements Comparable<GroupModel> {
         String groupId;
         String groupName;
         String groupUrl;
+        String lastOperation;
+        String dateLastOperation;
 
-        public GroupModel(String groupId, String groupName, String groupUrl) {
+        public GroupModel(String groupId, String groupName, String groupUrl, String lastOperation, String dateLastOperation) {
             this.groupId = groupId;
             this.groupName = groupName;
             this.groupUrl = groupUrl;
+            this.lastOperation = lastOperation;
+            this.dateLastOperation = dateLastOperation;
         }
 
         public String getGroupId() {
@@ -59,6 +70,40 @@ public class GroupsFragment extends Fragment {
         }
 
         public String getGroupUrl() { return groupUrl; }
+
+        public String getLastOperation() {return lastOperation; }
+
+        public String getDateLastOperationWellFormed() {
+            if(dateLastOperation != "") {
+                SimpleDateFormat sdf = new SimpleDateFormat("MMM dd,yyyy HH:mm");
+                Date resultdate = new Date(new Long(dateLastOperation));
+                return sdf.format(resultdate);
+            } else {
+                return dateLastOperation;
+            }
+        }
+
+        public String getDateLastOperation() {
+            return dateLastOperation;
+        }
+
+        @Override
+        public int compareTo(@NonNull GroupModel o) {
+
+            String date = o.getDateLastOperation();
+            long o1, o2;
+            if(date.equals(""))
+                o1 = 0;
+            else
+                o1 = new Long(date);
+
+            if(dateLastOperation.equals(""))
+                o2 = 0;
+            else
+                o2 = new Long(dateLastOperation);
+
+            return (int)(o1 - o2);
+        }
     }
     private Context context;
     private List<GroupModel> groups = new ArrayList<>();
@@ -111,7 +156,15 @@ public class GroupsFragment extends Fragment {
                                     for (Map.Entry<String, Object> k : map.entrySet()) {
                                         String name = (String) ((Map<String, Object>) k.getValue()).get("name");
                                         String imagePath = (String) ((Map<String, Object>) k.getValue()).get("imagePath");
-                                        groups.add(new GroupModel(k.getKey(), name, imagePath));
+                                        String lastOperation = (String) ((Map<String, Object>) k.getValue()).get("lastOperation");
+                                        String dateLastOperation = (String) ((Map<String, Object>) k.getValue()).get("dateLastOperation");
+                                        if(lastOperation == null)
+                                            lastOperation = "";
+                                        if(dateLastOperation == null)
+                                            dateLastOperation = "";
+                                        Log.d("GROUPSFRAGMENT", "dati: "+name+ " "+lastOperation+" "+dateLastOperation);
+                                        groups.add(new GroupModel(k.getKey(), name, imagePath, lastOperation, dateLastOperation));
+                                        Collections.sort(groups);
                                         gAdapter.notifyDataSetChanged();
                                         progressBar.setVisibility(view.INVISIBLE);
                                     }
