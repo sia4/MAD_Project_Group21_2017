@@ -23,9 +23,12 @@ import com.google.firebase.database.MutableData;
 import com.google.firebase.database.Transaction;
 import com.google.firebase.database.ValueEventListener;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Map;
 import java.util.TreeMap;
 
+import it.polito.mad.mad_app.model.ActivityData;
 import it.polito.mad.mad_app.model.ExpenseData;
 import it.polito.mad.mad_app.model.UserData;
 
@@ -35,7 +38,7 @@ public class ExpenseInfoActivity extends AppCompatActivity {
 
     int n;
     public TextView name_ex,date_ex, s_ex, value_ex, description_ex,creator_ex, category_ex, currency_ex, myvalue_ex, algorithm_ex;
-
+    private String myname, mysurname;
     private Map<String, Float> usermap = new TreeMap<>();
     private Map<String, Map<String, Map<String, Object>>> balancemap = new TreeMap<>();
     private FirebaseAuth mAuth = FirebaseAuth.getInstance();
@@ -49,13 +52,15 @@ public class ExpenseInfoActivity extends AppCompatActivity {
         if (getSupportActionBar() != null)
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle("Expense Information");
-        final String name, value, creator, description, category, currency, myvalue, algorithm, date, exid;
+        final String name, value, creator, description, category, currency, myvalue, algorithm, date, exid, groupName;
+
         name = i.getStringExtra("name");
         value = i.getStringExtra("value");
         creator = i.getStringExtra("creator");
         description = i.getStringExtra("description");
         category = i.getStringExtra("category");
         currency = i.getStringExtra("currency");
+        groupName = i.getStringExtra("groupName");
         myvalue = i.getStringExtra("myvalue");
         exid = i.getStringExtra("ExpenseId");
         n=Integer.parseInt(myvalue.replaceAll("[\\D]",""));;
@@ -189,6 +194,35 @@ public class ExpenseInfoActivity extends AppCompatActivity {
                 //myRef2.child("value").setValue(value);
                 myRef2.child("contested").setValue("no");
                 myRef2.child("users").setValue(usermap);
+
+
+                DatabaseReference getMyName = database.getReference("Users").child(mAuth.getCurrentUser().getUid());
+                getMyName.addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        Map <String, Object> mapname = (Map<String, Object>) dataSnapshot.getValue();
+                        System.out.println("mapnameeeeeeeeeeeeeeeeeeee"+mapname);
+                        if(mapname!=null) {
+                            myname = (String)mapname.get("name");
+                            mysurname = (String)mapname.get("surname");
+                            DatabaseReference ActRef = database.getReference("Activities").child(GroupId).push();
+                            ActRef.setValue(new ActivityData(myname+" "+mysurname, myname+" "+mysurname +" contested expense "+ name+" in group "+ groupName, new SimpleDateFormat("d MMM yyyy, HH:mm").format(Calendar.getInstance().getTime()), "contest"));
+
+                        }
+                        else{
+                            System.out.println("balancemapppppppppppppppp " + balancemap);
+                        }
+
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
+
+
+
 
                 final FirebaseDatabase database5 = FirebaseDatabase.getInstance();
                 DatabaseReference myRef5 = database5.getReference("Balance").child(GroupId);

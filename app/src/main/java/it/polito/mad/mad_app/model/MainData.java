@@ -95,12 +95,12 @@ public class MainData {
         lUser.put(user8.getEmail(), user8);
         lUser.put(user9.getEmail(), user9);
         lUser.put(user10.getEmail(), user10);
-        */
+
         lActivities.add(new ActivityData("gianpaolo.cabodi@gmail.it", "Gianpaolo added an expense on group Coinquilini", "4 apr 2017, 11:45"));
         lActivities.add(new ActivityData("stefano.quer@gmail.it", "Stefano added an expense on group Viaggio", "4 apr 2017, 18:21"));
         lActivities.add(new ActivityData("giovanni.malnati@gmail.it", "Giovanni invited you on group MAD21", "8 mar 2017, 8:17"));
         lActivities.add(new ActivityData("silvia.chiusano@gmail.it", "Silvia added an user on group Quartiere", "4 apr 2017, 19:44"));
-
+        */
     }
 
     public GroupData addGroup(String n, String d, String c) {
@@ -111,7 +111,7 @@ public class MainData {
         return g;
     }
 
-    public void addActivity(String email, String text, String date){this.lActivities.add(new ActivityData(email, text, date));    }
+    //public void addActivity(String email, String text, String date){this.lActivities.add(new ActivityData(email, text, date));    }
     public List<ActivityData> getActivitiesList(){return lActivities;}
 
     public List<GroupData> getGroupList(){

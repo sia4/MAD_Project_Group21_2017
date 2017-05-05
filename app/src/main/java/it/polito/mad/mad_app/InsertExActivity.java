@@ -36,14 +36,17 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.io.File;
 import java.io.IOException;
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 
+import it.polito.mad.mad_app.model.ActivityData;
 import it.polito.mad.mad_app.model.Balance;
 import it.polito.mad.mad_app.model.ExpenseData;
 import it.polito.mad.mad_app.model.MainData;
@@ -453,6 +456,8 @@ public class InsertExActivity extends AppCompatActivity {
                 }
 
                     if (flagok == 1 && values.size() == users.size()) {
+                        DatabaseReference ActRef = database.getReference("Activities").child(Gname).push();
+                        ActRef.setValue(new ActivityData(myname+" "+mysurname, myname +" "+mysurname+" added a new expense in group "+ groupName, new SimpleDateFormat("d MMM yyyy, HH:mm").format(Calendar.getInstance().getTime()), "expense"));
                         myRef.setValue(new ExpenseData(name, description, category, currency, String.format("%.2f", value), "0.00", algorithm));
                         myRef.child("creator").setValue(myname + " " + mysurname);
                         myRef.child("users").setValue(values);

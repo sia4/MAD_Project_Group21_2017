@@ -41,8 +41,8 @@ public class ActivitiesAdapter extends RecyclerView.Adapter<ActivitiesAdapter.My
     @Override
     public void onBindViewHolder(MyViewHolder holder, int position) {
         ActivityData activity = activityData.get(position);
-        holder.date.setText(activity.getDate());
-        holder.text.setText(activity.getText());
+        holder.date.setText(activity.getDate().toString());
+        holder.text.setText(activity.getText().toString());
     }
 
     @Override
