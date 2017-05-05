@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,16 +26,20 @@ public class GroupsAdapter extends RecyclerView.Adapter<GroupsAdapter.MyViewHold
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
         public TextView name;
-        public TextView impact_pos;
-        public TextView impact_neg;
+        //public TextView impact_pos;
+        //public TextView impact_neg;
         public ImageView im;
+        public TextView date;
+        public TextView operation;
 
         public MyViewHolder(View view) {
             super(view);
             name= (TextView) view.findViewById(R.id.name_tv);
-            impact_pos= (TextView) view.findViewById(R.id.impact_pos_ex);
-            impact_neg= (TextView) view.findViewById(R.id.impact_neg_ex);
+            //impact_pos= (TextView) view.findViewById(R.id.impact_pos_ex);
+            //impact_neg= (TextView) view.findViewById(R.id.impact_neg_ex);
             im=(ImageView) view.findViewById(R.id.im);
+            date = (TextView) view.findViewById(R.id.date);
+            operation = (TextView) view.findViewById(R.id.operation);
         }
     }
 
@@ -56,6 +61,10 @@ public class GroupsAdapter extends RecyclerView.Adapter<GroupsAdapter.MyViewHold
     public void onBindViewHolder(GroupsAdapter.MyViewHolder holder, int position) {
         final GroupsFragment.GroupModel g = GData.get(position);
         holder.name.setText(g.getGroupName());
+        holder.date.setText(g.getDateLastOperationWellFormed());
+        holder.operation.setText(g.getLastOperation());
+
+        Log.d("GROUPSADAPTER", "dati: "+g.getGroupId()+" "+g.dateLastOperation+" "+g.lastOperation);
 
         String p = g.getGroupUrl();
 
@@ -76,11 +85,12 @@ public class GroupsAdapter extends RecyclerView.Adapter<GroupsAdapter.MyViewHold
                 intent.putExtra("name",groupName);
                 v.getContext().startActivity(intent);
             }
-        });*/
+        });
         holder.impact_pos.setText("You owe:"+String.format("%.2f", 100.383838));//TODO insert the correct value g.getNegExpenses()
         holder.impact_neg.setText("They owe you:"+String.format("%.2f",33.3333));//TODO insert the correct value g.getPosExpenses()
         holder.impact_neg.setTextColor(Color.parseColor("#27B011"));
         holder.impact_pos.setTextColor(Color.parseColor("#D51111"));
+        */
     }
 
     @Override

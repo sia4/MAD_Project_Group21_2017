@@ -454,13 +454,21 @@ public class InsertExActivity extends AppCompatActivity {
 
                     if (flagok == 1 && values.size() == users.size()) {
                         myRef.setValue(new ExpenseData(name, description, category, currency, value, 0, algorithm));
+
                         myRef.child("creator").setValue(myname + " " + mysurname);
                         myRef.child("users").setValue(values);
                         myRef.child("contested").setValue("no");
                         ii = 0;
                         for(final UserData key : users){
 
-                                final DatabaseReference myRef3 = database.getReference("Balance").child(Gname).child(mAuth.getCurrentUser().getUid()).child(key.getuId());
+                            myRef = database.getReference("/Users/"+key.getuId()+"/Groups/"+Gname+"/lastOperation/");
+                            myRef.setValue(myname + " added an expense.");
+                            myRef = database.getReference("/Users/"+key.getuId()+"/Groups/"+Gname+"/dateLastOperation/");
+                            myRef.setValue(Long.toString(System.currentTimeMillis()).toString());
+
+
+
+                            final DatabaseReference myRef3 = database.getReference("Balance").child(Gname).child(mAuth.getCurrentUser().getUid()).child(key.getuId());
 
                                 myRef3.runTransaction(new Transaction.Handler() {
                                     @Override
@@ -476,7 +484,9 @@ public class InsertExActivity extends AppCompatActivity {
                                                 mutableData.child("value").setValue(value + values.get(key.getuId()));
                                                 mutableData.child("name").setValue(key.getName() + " " + key.getSurname());
                                             }
+
                                         }
+
                                         return Transaction.success(mutableData);
                                     }
 

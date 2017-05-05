@@ -30,8 +30,10 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -225,6 +227,11 @@ public class InsertGroupActivity extends AppCompatActivity {
                         myRef.setValue(G.getName());
                         myRef = database.getReference("/Users/"+key+"/Groups/"+groupId+"/imagePath/");
                         myRef.setValue(G.getImagePath());
+                        myRef = database.getReference("/Users/"+key+"/Groups/"+groupId+"/lastOperation/");
+                        myRef.setValue(uName + " has created the group.");
+                        myRef = database.getReference("/Users/"+key+"/Groups/"+groupId+"/dateLastOperation/");
+                        myRef.setValue(Long.toString(System.currentTimeMillis()).toString());
+
                         for(Iterator n = others.iterator();n.hasNext();){
                             String k = (String) n.next();
                             if(k!=key) {
