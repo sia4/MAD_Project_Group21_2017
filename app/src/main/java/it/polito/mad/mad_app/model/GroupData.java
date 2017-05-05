@@ -142,7 +142,7 @@ public class GroupData {
     public void addTouImportMap(String email, int algValue) {
         uImport.put(email, algValue);
     }
-    public  ExpenseData addExpensive(String name, String descr, String category, String currency, float value, float myvalue, String algorithm){
+    public  ExpenseData addExpensive(String name, String descr, String category, String currency, String value, String myvalue, String algorithm){
         ExpenseData e = new ExpenseData(name, descr, category, currency, value,myvalue, algorithm);
         this.lexpensive.add(e);
         return e;

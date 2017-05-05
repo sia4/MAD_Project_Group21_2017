@@ -26,7 +26,10 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.Map;
 import java.util.TreeMap;
 
+import it.polito.mad.mad_app.model.ExpenseData;
 import it.polito.mad.mad_app.model.UserData;
+
+import static java.sql.Types.NULL;
 
 public class ExpenseInfoActivity extends AppCompatActivity {
 
@@ -94,11 +97,12 @@ public class ExpenseInfoActivity extends AppCompatActivity {
         }
         final TextView Tdeny = (TextView) findViewById(R.id.exContested);
         final Button button = (Button) findViewById(R.id.exDeny);
+        final TextView Tdenydescr = (TextView) findViewById(R.id.denydescription);
 
         FirebaseDatabase database4 = FirebaseDatabase.getInstance();
         DatabaseReference myRef4 = database4.getReference("Expenses").child(GroupId).child(exid);
         int flagcontest = 0;
-        myRef4.addValueEventListener(new ValueEventListener() {
+        myRef4.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 Map<String, Object> map = (Map<String, Object>) dataSnapshot.getValue();
@@ -107,6 +111,12 @@ public class ExpenseInfoActivity extends AppCompatActivity {
                     if(cont.equals("yes")){
                         Tdeny.setVisibility(View.VISIBLE);
                         button.setVisibility(View.GONE);
+                        Tdenydescr.setVisibility(View.GONE);
+                    }
+                    String descr = (String)map.get("description");
+                    if(descr.equals("expense retrieved")){
+                        button.setVisibility(View.GONE);
+                        Tdenydescr.setVisibility(View.GONE);
                     }
 
 
@@ -124,7 +134,7 @@ public class ExpenseInfoActivity extends AppCompatActivity {
 
         final FirebaseDatabase database2 = FirebaseDatabase.getInstance();
         DatabaseReference myRef2 = database2.getReference("Expenses").child(GroupId).child(exid);
-        myRef2.child("users").addValueEventListener(new ValueEventListener() {
+        myRef2.child("users").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 usermap = (Map<String, Float>) dataSnapshot.getValue();
@@ -145,7 +155,7 @@ public class ExpenseInfoActivity extends AppCompatActivity {
         final FirebaseDatabase database3 = FirebaseDatabase.getInstance();
         DatabaseReference myRef3 = database3.getReference("Balance").child(GroupId);
 
-        myRef3.addValueEventListener(new ValueEventListener() {
+        myRef3.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 balancemap = (Map<String, Map<String, Map<String, Object>>>) dataSnapshot.getValue();
@@ -170,26 +180,33 @@ public class ExpenseInfoActivity extends AppCompatActivity {
 
                 Tdeny.setVisibility(View.VISIBLE);
                 final FirebaseDatabase database = FirebaseDatabase.getInstance();
-                DatabaseReference myRef = database.getReference("Expenses").child(GroupId).child(exid);
-                myRef.child("contested").setValue("yes");
+                DatabaseReference myRef = database.getReference("Expenses").child(GroupId);
+                myRef.child(exid).child("contested").setValue("yes");
+                DatabaseReference myRef2 = myRef.push();
+
+                myRef2.setValue(new ExpenseData(name + "(retrieve)", "expense retrieved", category, currency, value, "0.00", algorithm));
+                myRef2.child("creator").setValue(creator);
+                //myRef2.child("value").setValue(value);
+                myRef2.child("contested").setValue("no");
+                myRef2.child("users").setValue(usermap);
 
                 final FirebaseDatabase database5 = FirebaseDatabase.getInstance();
                 DatabaseReference myRef5 = database5.getReference("Balance").child(GroupId);
                 float value1, value2, value3, value4;
                 for( String k : usermap.keySet()) {
                     if(!k.equals(mAuth.getCurrentUser().getUid())) {
-                        value1 = new Float (balancemap.get(mAuth.getCurrentUser().getUid()).get(k).get("value").toString());
-                        value2 = new Float (balancemap.get(k).get(mAuth.getCurrentUser().getUid()).get("value").toString());
+                        //value1 = new Float (balancemap.get(mAuth.getCurrentUser().getUid()).get(k).get("value").toString());
+                        //value2 = new Float (balancemap.get(k).get(mAuth.getCurrentUser().getUid()).get("value").toString());
                         //value3 = new Float (Float.parseFloat(usermap.get(k).toString()));
-                        System.out.println("buttonnnnnnn1 "+value1);
-                        System.out.println("buttonnnnnnn2 "+value2);
+                        //System.out.println("buttonnnnnnn1 "+value1);
+                        //System.out.println("buttonnnnnnn2 "+value2);
                         //System.out.println("buttonnnnnnn3 "+value3);
                         System.out.println("USERMAPPPPPPP" + usermap.get(k));
                         //TODO QUI HO IL PROBLEMA, NON RIESCO A SOMMARE VALUE1 (VALORE DI BILANCIO PRECEDENTE) A USERMAP.GET(K) (VALORE DELLA SPESA CONTESTATA DA TOGLIERE)
                         //value1 = value1 + usermap.get(k);
                         //value2 = value2 - usermap.get(k);
-                        myRef5.child(mAuth.getCurrentUser().getUid()).child(k).child("value").setValue(value1 /*- usermap.get(k)*/);
-                        myRef5.child(k).child(mAuth.getCurrentUser().getUid()).child("value").setValue(value2 /*+ usermap.get(k)*/);
+                        //myRef5.child(mAuth.getCurrentUser().getUid()).child(k).child("value").setValue(value1 /*- usermap.get(k)*/);
+                        //myRef5.child(k).child(mAuth.getCurrentUser().getUid()).child("value").setValue(value2 /*+ usermap.get(k)*/);
                     }
 
                 }
@@ -210,6 +227,7 @@ public class ExpenseInfoActivity extends AppCompatActivity {
                 intent.putExtra("groupId", GroupId);
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 startActivity(intent);
+                finish();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
