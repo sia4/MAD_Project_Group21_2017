@@ -31,6 +31,7 @@ public class ExpenseData {
     public String getIdEx(){return this.idEx;}
     public void setIdEx(String idEx){this.idEx = idEx;}
     public void setContested(String i){this.contested=i;}
+    public void setDate(String date){this.date = date;}
     public String getContested(){return this.contested;}
     public String getDate(){ return this.date;}
     public String getName(){
