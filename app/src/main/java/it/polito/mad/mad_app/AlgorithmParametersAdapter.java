@@ -121,7 +121,7 @@ public class AlgorithmParametersAdapter extends RecyclerView.Adapter<AlgorithmPa
         this.algInfo = algInfo;
         this.algInfoSmall = algInfoSmall;
         if(alg == 2) {
-            giv = new GruopInfoValue(val, cur);
+            giv = new GruopInfoValue(val, "€"); //TODO CURRENCIES
             algInfo.setText(giv.toStringTot());
             algInfoSmall.setText(giv.toStringRemaining());
         } else {
@@ -130,6 +130,7 @@ public class AlgorithmParametersAdapter extends RecyclerView.Adapter<AlgorithmPa
         }
 
     }
+
     @Override
     public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View itemView = LayoutInflater.from(parent.getContext())

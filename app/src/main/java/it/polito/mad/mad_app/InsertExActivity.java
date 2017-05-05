@@ -239,7 +239,7 @@ public class InsertExActivity extends AppCompatActivity {
                     } else if( Tcurrency.getSelectedItem().toString().equals("Select currency")) {
                         Toast.makeText(InsertExActivity.this, "Please insert currency.", Toast.LENGTH_LONG).show();
                     } else {
-                        uAdapter = new AlgorithmParametersAdapter(users, position, Float.parseFloat(Tvalue.getText().toString()), algInfo, algInfoSmall);
+                        uAdapter = new AlgorithmParametersAdapter(users, position, Float.parseFloat(Tvalue.getText().toString()),currency, algInfo, algInfoSmall);
                         userRecyclerView.setAdapter(uAdapter);
                     }
                 } else {
@@ -254,7 +254,7 @@ public class InsertExActivity extends AppCompatActivity {
         } );
 
         System.out.println("4");
-
+        /*
        Tvalue.addTextChangedListener(new TextWatcher() {
            int p;
            @Override
@@ -281,7 +281,7 @@ public class InsertExActivity extends AppCompatActivity {
                }
            }
        });
-
+        */
         String s = "";
 
     }
@@ -412,18 +412,18 @@ public class InsertExActivity extends AppCompatActivity {
                     for(i = 0; i< uAdapter.getItemCount(); i++){
                         View view = userRecyclerView.getChildAt(i);
                         EditText EditValue = (EditText)view.findViewById(R.id.alg_value);
-                        if(EditValue.getText().toString().equals(""))
+                        if(EditValue.getText().toString().equals("")) {
                             algValue = 0;
-                        else
-                            algValue = Float.parseFloat(EditValue.getText().toString());
-                        if(i==uAdapter.getItemCount()-1)
-                            meValue = algValue;
-                        else {
                             if (algorithm.equals("by percentuage"))
+                                values.put(users.get(i).getuId(), algValue);
+                            else
+                                values.put(users.get(i).getuId(), algValue);
+                        }
+                        else {
+                            algValue = Float.parseFloat(EditValue.getText().toString());
 
-
-                                values.put(users.get(i).getuId(), value*algValue/100);
-
+                            if (algorithm.equals("by percentuage"))
+                                values.put(users.get(i).getuId(), value * algValue / 100);
                             else
                                 values.put(users.get(i).getuId(), algValue);
                         }
@@ -453,8 +453,7 @@ public class InsertExActivity extends AppCompatActivity {
                 }
 
                     if (flagok == 1 && values.size() == users.size()) {
-                        myRef.setValue(new ExpenseData(name, description, category, currency, value, 0, algorithm));
-
+                        myRef.setValue(new ExpenseData(name, description, category, currency, String.format("%.2f", value), "0.00", algorithm));
                         myRef.child("creator").setValue(myname + " " + mysurname);
                         myRef.child("users").setValue(values);
                         myRef.child("contested").setValue("no");
@@ -484,7 +483,6 @@ public class InsertExActivity extends AppCompatActivity {
                                                 mutableData.child("value").setValue(value + values.get(key.getuId()));
                                                 mutableData.child("name").setValue(key.getName() + " " + key.getSurname());
                                             }
-
                                         }
 
                                         return Transaction.success(mutableData);
@@ -541,7 +539,8 @@ public class InsertExActivity extends AppCompatActivity {
 
                         return true;
                     } else {
-                        Toast.makeText(InsertExActivity.this, "problems...", Toast.LENGTH_LONG).show();
+                        String p = String.format("problems... flagok: %d, values.size: %d, users.size: %d, uAdapter: %d", flagok, values.size(), users.size(), uAdapter.getItemCount());
+                        Toast.makeText(InsertExActivity.this, p, Toast.LENGTH_LONG).show();
                         return super.onOptionsItemSelected(item);
                     }
                 }

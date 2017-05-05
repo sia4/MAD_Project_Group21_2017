@@ -35,6 +35,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import it.polito.mad.mad_app.model.ExpenseData;
+import it.polito.mad.mad_app.model.RecyclerTouchListener;
+
 public class GroupInfoActivity extends AppCompatActivity {
     //private GroupData GD;
     private TextView namet, desc;
@@ -43,6 +46,7 @@ public class GroupInfoActivity extends AppCompatActivity {
     private EditText nameted, desced;
     private ImageView im;
     private List<String> users = new ArrayList();
+    private List<String> usersId = new ArrayList<>();
     private List<String> currencies = new ArrayList();
 
     @Override
@@ -163,6 +167,7 @@ public class GroupInfoActivity extends AppCompatActivity {
                                 if(map3!=null) {
                                     String s = map3.get("name")+" "+map3.get("surname");
                                     users.add(s);
+                                    usersId.add(k);
                                     uAdapter.notifyDataSetChanged();
                                 }
                                 else{
@@ -230,8 +235,21 @@ public class GroupInfoActivity extends AppCompatActivity {
             }
         });
 
+        userRecyclerView.addOnItemTouchListener(new RecyclerTouchListener(this, userRecyclerView, new RecyclerTouchListener.ClickListener() {
+            @Override
+            public void onClick(View view, int position) {
 
 
+                Intent intent = new Intent().setClass(view.getContext(), UserInformationActivity.class);
+                intent.putExtra("userId", usersId.get(position));
+                view.getContext().startActivity(intent);
+            }
+
+            @Override
+            public void onLongClick(View view, int position) {
+
+            }
+        }));
 
     }
 

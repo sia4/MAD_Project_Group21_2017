@@ -43,7 +43,7 @@ public class    HistoryFragment extends Fragment {
         final View view = inflater.inflate(R.layout.fragment_history, container, false);
 
         context = view.getContext();
-        lex = new ArrayList<ExpenseData>();
+        lex.clear();
         final RecyclerView recyclerView = (RecyclerView) view;
         recyclerView.setLayoutManager(new LinearLayoutManager(context));
         //recyclerView.addItemDecoration(new DividerItemDecoration(getActivity(),
@@ -61,8 +61,8 @@ public class    HistoryFragment extends Fragment {
                 intent.putExtra("algorithm", expense.getAlgorithm());
                 intent.putExtra("description", expense.getDescription());
                 //String.format("%.2f", expense.getMyvalue())
-                intent.putExtra("myvalue",String.format("%.2f", expense.getMyvalue()) );
-                intent.putExtra("value", String.format("%.2f", expense.getValue()));
+                intent.putExtra("myvalue",expense.getMyvalue());
+                intent.putExtra("value",  expense.getValue());
                 intent.putExtra("creator", expense.getCreator());
                 intent.putExtra("date", expense.getDate());
                 String GroupId = getArguments().getString("GroupId");
@@ -71,6 +71,7 @@ public class    HistoryFragment extends Fragment {
                 intent.putExtra("groupId", GroupId);
                 intent.putExtra("ExpenseId", expense.getIdEx());
                 view.getContext().startActivity(intent);
+                getActivity().finish();
 
             }
 
@@ -96,7 +97,7 @@ public class    HistoryFragment extends Fragment {
         myRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-
+                lex.clear();
                 Map<String, Object> map2 = (Map<String, Object>) dataSnapshot.getValue();
                 if(map2!=null) {
                     //lex = new ArrayList<ExpenseData>();
@@ -108,9 +109,9 @@ public class    HistoryFragment extends Fragment {
                             public void onDataChange(DataSnapshot dataSnapshot) {
                                 Map<String, Object> map3 = (Map<String, Object>) dataSnapshot.getValue();
                                 if(map3!=null) {
-                                    Float tmp = new Float(map3.get("value").toString());
-                                    Float tmp1 = new Float(map3.get("myvalue").toString());
-                                    ExpenseData e = new ExpenseData((String)map3.get("name"), (String)map3.get("description"), (String)map3.get("category"), (String)map3.get("currency"), tmp ,tmp1,(String)map3.get("algorithm"));
+                                    //Float tmp = new Float(map3.get("value").toString());
+                                    //Float tmp1 = new Float(map3.get("myvalue").toString());
+                                    ExpenseData e = new ExpenseData((String)map3.get("name"), (String)map3.get("description"), (String)map3.get("category"), (String)map3.get("currency"), map3.get("value").toString() ,map3.get("myvalue").toString(),(String)map3.get("algorithm"));
                                     e.setCreator((String)map3.get("creator"));
                                     e.setIdEx(k);
                                     e.setContested((String)map3.get("contested"));

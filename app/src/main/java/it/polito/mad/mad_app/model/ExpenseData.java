@@ -10,14 +10,14 @@ public class ExpenseData {
     private String descr;
     private String category;
     private String currency;
-    private float value;
-    private float myvalue;
+    private String value;
+    private String myvalue;
     private String algorithm;
     private String date;
     private String creator;
     private String contested;
 
-    public ExpenseData(String n, String d, String ca, String cu, float value,float myvalue, String algorithm){
+    public ExpenseData(String n, String d, String ca, String cu, String value,String myvalue, String algorithm){
         this.name = n;
         this.descr = d;
         this.category = ca;
@@ -51,9 +51,9 @@ public class ExpenseData {
         return this.currency;
     }
 
-    public float getValue(){
+    public String getValue(){
         return this.value;
     }
-    public float getMyvalue(){return this.myvalue;}
+    public String getMyvalue(){return this.myvalue;}
     public String getAlgorithm(){ return this.algorithm;}
 }
