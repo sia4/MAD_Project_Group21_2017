@@ -24,7 +24,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.bumptech.glide.Glide;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -34,6 +33,7 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 public class GroupInfoActivity extends AppCompatActivity {
     //private GroupData GD;
@@ -94,17 +94,117 @@ public class GroupInfoActivity extends AppCompatActivity {
 
         });
 
+        RecyclerView userRecyclerView = (RecyclerView) findViewById(R.id.users);
+        userRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        final UsersAdapter uAdapter = new UsersAdapter(users);
+        userRecyclerView.setAdapter(uAdapter);
+
+        RecyclerView CurrenciesRecyclerView = (RecyclerView) findViewById(R.id.currencies);
+        CurrenciesRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        final CurrenciesAdapter cAdapter = new CurrenciesAdapter(currencies);
+        CurrenciesRecyclerView.setAdapter(cAdapter);
+
         namet=(TextView) findViewById(R.id.name_g);
         nameted = (EditText) findViewById(R.id.name_g_ed);
         desc = (TextView) findViewById(R.id.de_g);
         desced = (EditText) findViewById(R.id.de_g_ed);
+
+        //retrieve dei dati relativi al gruppo
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference myRef = database.getReference("Groups").child(gId);
         myRef.addValueEventListener(new ValueEventListener() {
+
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                Map<String, Object> map = (Map<String, Object>) dataSnapshot.getValue();
+
+                it.polito.mad.mad_app.model.Group g = dataSnapshot.getValue(it.polito.mad.mad_app.model.Group.class);
+                System.out.println("HELLO" + g.toString());
+
+                if (g != null) {
+
+                    nametmp = g.getName();
+                    desctmp = g.getDescription();
+
+                    String p = (String) g.getImagePath();
+                    image = p;
+
+                    if (p == null) {
+                        im.setImageResource(R.drawable.group_default);
+                    } else {
+                        im.setImageBitmap(BitmapFactory.decodeFile(p));
+                    }
+
+                    namet.setText(nametmp);
+                    desc.setText(desctmp);
+
+                    if (g.getMemberList().size() != 0) {
+
+                        for (final String k : g.getMemberList()) {
+
+                            FirebaseDatabase database3 = FirebaseDatabase.getInstance();
+                            DatabaseReference myRef3 = database3.getReference("Users").child(k);
+
+                            myRef3.addValueEventListener(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(DataSnapshot dataSnapshot) {
+
+                                    Map<String, Object> map3 = (Map<String, Object>) dataSnapshot.getValue();
+
+                                    if (map3 != null) {
+
+                                        String s = map3.get("name") + " " + map3.get("surname");
+                                        users.add(s);
+                                        uAdapter.notifyDataSetChanged();
+
+                                    } else {
+
+                                        Toast.makeText(GroupInfoActivity.this, "no user key found!", Toast.LENGTH_LONG).show();
+
+                                    }
+
+                                    uAdapter.notifyDataSetChanged();
+                                }
+
+                                @Override
+                                public void onCancelled(DatabaseError databaseError) {
+
+                                }
+                            });
+                        }
+
+                    } else {
+                        Toast.makeText(GroupInfoActivity.this, "No users found!", Toast.LENGTH_LONG).show();
+                    }
+
+                    if (g.getCurrencies().size() != 0) {
+
+                        System.out.println(g.getCurrencies().toString());
+
+                        for (Entry<String, Float> e : g.getCurrencies().entrySet()) {
+
+                            currencies.add(e.getKey() + " " + e.getValue());
+                            System.out.println(currencies.toString());
+                            // cAdapter.notifyDataSetChanged();
+
+                        }
+
+                        cAdapter.notifyDataSetChanged();
+
+                    } else {
+
+                        Toast.makeText(GroupInfoActivity.this, "No Currencies found!", Toast.LENGTH_LONG).show();
+
+                    }
+
+
+                }
+
+                /*Map<String, Object> map = (Map<String, Object>) dataSnapshot.getValue();
+
                 if(map!=null) {
+
+                    System.out.println(map.toString());
+
                     nametmp = (String) map.get("name");
                     desctmp = (String) map.get("description");
                     namet.setText(nametmp);
@@ -122,12 +222,13 @@ public class GroupInfoActivity extends AppCompatActivity {
                                 .into(im);
                     }
 
+
                     //Group g = new Group((String)map.get("gId"),(String) map.get("surname"), (String)map.get("defaultCurrency"));
 
                     //if(progressBar.isActivated())
                     //progressBar.setVisibility(View.INVISIBLE);
                     //gAdapter.notifyDataSetChanged();
-                }
+                }*/
             }
 
             @Override
@@ -139,13 +240,7 @@ public class GroupInfoActivity extends AppCompatActivity {
 
 
 
-
-        RecyclerView userRecyclerView = (RecyclerView) findViewById(R.id.users);
-        userRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-        final UsersAdapter uAdapter = new UsersAdapter(users);
-        userRecyclerView.setAdapter(uAdapter);
-
-        FirebaseDatabase database2 = FirebaseDatabase.getInstance();
+        /*FirebaseDatabase database2 = FirebaseDatabase.getInstance();
         DatabaseReference myRef2 = database2.getReference("Groups").child(gId).child("members");
         myRef2.addValueEventListener(new ValueEventListener() {
             @Override
@@ -153,9 +248,11 @@ public class GroupInfoActivity extends AppCompatActivity {
 
                 Map<String, Object> map2 = (Map<String, Object>) dataSnapshot.getValue();
                 if(map2!=null) {
+
                     for (final String k : map2.keySet()){
                         FirebaseDatabase database3 = FirebaseDatabase.getInstance();
                         DatabaseReference myRef3 = database3.getReference("Users").child(k);
+
                         myRef3.addValueEventListener(new ValueEventListener() {
                             @Override
                             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -194,7 +291,7 @@ public class GroupInfoActivity extends AppCompatActivity {
                 //log.w(TAG, "Failed to read value.", error.toException());
             }
         });
-
+        */
 
         //TODO ADAPTER CURRENCIES QUANDO SARANNO GESTITE
         /*
@@ -203,6 +300,7 @@ public class GroupInfoActivity extends AppCompatActivity {
         final CurrenciesAdapter cAdapter = new CurrenciesAdapter(currencies);
         CurrenciesRecyclerView.setAdapter(cAdapter);
         */
+
 
         //TODO CLICKLISTENER DEL RECYCLERVIEW PER APRIRE LA USERINFORMATIONACTIVITY
         namet.setOnClickListener(new View.OnClickListener() {

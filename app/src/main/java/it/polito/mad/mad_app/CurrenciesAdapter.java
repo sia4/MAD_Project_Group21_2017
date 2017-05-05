@@ -8,11 +8,9 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 public class CurrenciesAdapter extends RecyclerView.Adapter<CurrenciesAdapter.MyViewHolder> {
 
-    private Map<String, Float> currencies;
     private List<String> Names = new ArrayList<>();
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
@@ -25,9 +23,9 @@ public class CurrenciesAdapter extends RecyclerView.Adapter<CurrenciesAdapter.My
     }
 
 
-    public CurrenciesAdapter(Map<String, Float> currencies) {
-        this.currencies = currencies;
-        Names.addAll(currencies.keySet());
+    public CurrenciesAdapter(List<String> currencies) {
+        //this.currencies = currencies;
+        Names.addAll(currencies);
     }
 
     @Override
@@ -41,8 +39,8 @@ public class CurrenciesAdapter extends RecyclerView.Adapter<CurrenciesAdapter.My
     @Override
     public void onBindViewHolder(CurrenciesAdapter.MyViewHolder holder, int position) {
         String c = Names.get(position);
-        String change = currencies.get(c).toString();
-        holder.name.setText(c + " " + change);
+        //String change = currencies.get(c).toString();
+        holder.name.setText(c);
     }
 
     @Override

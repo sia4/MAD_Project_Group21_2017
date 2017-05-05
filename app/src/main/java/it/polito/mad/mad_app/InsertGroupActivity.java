@@ -2,7 +2,6 @@ package it.polito.mad.mad_app;
 
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
@@ -10,7 +9,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -19,10 +17,8 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
 
-import com.google.android.gms.appinvite.AppInviteInvitation;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -31,20 +27,15 @@ import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 
+import it.polito.mad.mad_app.model.Currencies;
 import it.polito.mad.mad_app.model.Group;
-import it.polito.mad.mad_app.model.GroupData;
-import it.polito.mad.mad_app.model.Invite;
-import it.polito.mad.mad_app.model.MainData;
 import it.polito.mad.mad_app.model.User;
-import it.polito.mad.mad_app.model.UserData;
 
 
 public class InsertGroupActivity extends AppCompatActivity {
@@ -206,11 +197,14 @@ public class InsertGroupActivity extends AppCompatActivity {
                     Toast.makeText(InsertGroupActivity.this, "Please insert currency.", Toast.LENGTH_LONG).show();
 
                 } else {
+                    Currencies c = new Currencies();
+                    String code = c.getCurrencyCode(Tcurrency.getSelectedItem().toString());
 
                     FirebaseDatabase database = FirebaseDatabase.getInstance();
                     DatabaseReference myRef = database.getReference("Groups");
                     String groupId = myRef.push().getKey();
-                    Group G = new Group(GroupName, GroupDescription, Tcurrency.getSelectedItem().toString());
+
+                    Group G = new Group(GroupName, GroupDescription, code);
                     G.setImagePath("https://firebasestorage.googleapis.com/v0/b/allaromana-3f98e.appspot.com/o/group_default.png?alt=media&token=40bc93f4-6b97-466e-b130-e140f57c5895");
                     G.addMembers(m);
                     G.addMember(uKey);

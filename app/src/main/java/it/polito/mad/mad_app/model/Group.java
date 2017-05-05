@@ -21,7 +21,8 @@ public class Group {
     public Group(String n, String d, String c) {
         this.name = n;
         this.description = d;
-        defaultCurrency = "EUR";
+        defaultCurrency = c;
+        currencies.put(c, new Float(0));
     }
 
     public String getName(){
@@ -52,6 +53,21 @@ public class Group {
 
     public Map<String, Boolean> getMembers() {return members; }
 
+    public List<String> getMemberList() {
+
+        List<String> m = new ArrayList<>();
+
+        for (String key : members.keySet()) {
+
+            if (members.get(key) == true) {
+                m.add(key);
+            }
+
+        }
+
+        return m;
+    }
+
     public Map<String, Float> getCurrencies() {return currencies; }
 
     public Map<String, Boolean> getExpenses(){return expenses; }
@@ -60,5 +76,7 @@ public class Group {
         members.put(s, true);
     }
 
-    public void addCurrencies(Map<String, Float> currencies) {this.currencies = currencies; }
+    public void addCurrencies(Map<String, Float> currencies) {
+        this.currencies = currencies;
+    }
 }

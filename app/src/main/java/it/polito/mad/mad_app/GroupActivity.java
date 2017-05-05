@@ -16,11 +16,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.List;
 
 
 public class GroupActivity extends AppCompatActivity {
@@ -46,6 +43,8 @@ public class GroupActivity extends AppCompatActivity {
         b.putString("GroupName", gName);
 
         //System.out.println("CICCIOBOMBA" + datigruppo.getName());
+
+        //TODO: getExpenses di un gruppo
 
         Float pos = (float)10.2;//datigruppo.getPosExpenses();
         Float neg = (float)10.2;//datigruppo.getNegExpenses();
@@ -183,4 +182,19 @@ public class GroupActivity extends AppCompatActivity {
                 return super.onOptionsItemSelected(item);
         }
     }
+    /*startActivity(new Intent(
+            getApplicationContext(),GroupOptionActivity.class
+                ));*/
 }
+/*Intent intent = new Intent().setClass(view.getContext(), ExpenseInfoActivity.class);
+                intent.putExtra("name", expense.getName());
+                intent.putExtra("category", expense.getCategory());
+                intent.putExtra("currency", expense.getCurrency());
+                intent.putExtra("algorithm", expense.getAlgorithm());
+                intent.putExtra("description", expense.getDescription());
+                //String.format("%.2f", expense.getMyvalue())
+                intent.putExtra("myvalue",String.format("%.2f", expense.getMyvalue()) );
+                intent.putExtra("value", String.format("%.2f", expense.getValue()));
+                intent.putExtra("creator", MainData.getInstance().getMyName());//TODO change with getCreator
+                intent.putExtra("date", expense.getDate());
+                view.getContext().startActivity(intent);*/

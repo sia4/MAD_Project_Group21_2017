@@ -3,19 +3,10 @@
 
     <string-array name="currencies">
         <item>Select currency</item>
-         <item>
-            US Dollars
-            USD
-            $</item>
-        <item>EUR €</item>
-        <item>
-            Pounds
-            GBP
-            £</item>
-        <item>
-            Yen
-            JPY
-            ¥</item>
+        <item>US Dollars USD $</item>
+        <item>Euro EUR €</item>
+        <item>Pounds GBP £</item>
+        <item>Yen JPY ¥</item>
 
 
         <!--<item> Argentina, Pesos
