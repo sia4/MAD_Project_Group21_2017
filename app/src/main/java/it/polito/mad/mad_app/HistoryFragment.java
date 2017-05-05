@@ -43,7 +43,7 @@ public class    HistoryFragment extends Fragment {
         final View view = inflater.inflate(R.layout.fragment_history, container, false);
 
         context = view.getContext();
-        lex = new ArrayList<ExpenseData>();
+        lex.clear();
         final RecyclerView recyclerView = (RecyclerView) view;
         recyclerView.setLayoutManager(new LinearLayoutManager(context));
         //recyclerView.addItemDecoration(new DividerItemDecoration(getActivity(),
@@ -97,7 +97,7 @@ public class    HistoryFragment extends Fragment {
         myRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-
+                lex.clear();
                 Map<String, Object> map2 = (Map<String, Object>) dataSnapshot.getValue();
                 if(map2!=null) {
                     //lex = new ArrayList<ExpenseData>();
