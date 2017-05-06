@@ -15,7 +15,6 @@
 
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
-
     <application
         android:allowBackup="true"
         android:icon="@mipmap/logo"
@@ -38,6 +37,7 @@
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -93,6 +93,10 @@
         <activity
             android:name=".UserInformationActivity"
             android:label="@string/title_activity_user_information"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+        <activity
+            android:name=".PolActivity"
+            android:label="@string/title_activity_pol"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar"></activity>
     </application>
 

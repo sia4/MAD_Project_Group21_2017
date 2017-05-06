@@ -138,6 +138,16 @@ public class ActivitiesFragment extends Fragment {
                     intent.putExtra("groupName", activities.get(position).getGroupName());
                     view.getContext().startActivity(intent);
                 }
+                if(type.equals("deletegroup")||type.equals("leavegroup")) {
+                    Intent intent = new Intent().setClass(view.getContext(), PolActivity.class);
+                    intent.putExtra("polId", activities.get(position).getItemId());
+                    intent.putExtra("groupId", activities.get(position).getGroupId());
+                    intent.putExtra("groupName", activities.get(position).getGroupName());
+                    intent.putExtra("text", activities.get(position).getText());
+
+                    view.getContext().startActivity(intent);
+                }
+
             }
 
             @Override
@@ -145,6 +155,7 @@ public class ActivitiesFragment extends Fragment {
 
             }
         }));
+
 
 
 

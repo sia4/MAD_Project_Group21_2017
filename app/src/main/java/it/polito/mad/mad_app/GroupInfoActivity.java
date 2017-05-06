@@ -40,6 +40,7 @@ import java.util.Map;
 
 import it.polito.mad.mad_app.model.ActivityData;
 import it.polito.mad.mad_app.model.ExpenseData;
+import it.polito.mad.mad_app.model.PolData;
 import it.polito.mad.mad_app.model.RecyclerTouchListener;
 
 public class GroupInfoActivity extends AppCompatActivity {
@@ -97,7 +98,12 @@ public class GroupInfoActivity extends AppCompatActivity {
                             myname = (String)mapname.get("name");
                             mysurname = (String)mapname.get("surname");
                             DatabaseReference ActRef = database.getReference("Activities").child(gId).push();
-                            ActRef.setValue(new ActivityData(myname+" "+mysurname, myname+" "+mysurname +" proposed to delete group " + gName, new SimpleDateFormat("d MMM yyyy, HH:mm").format(Calendar.getInstance().getTime()), "deletegroup", gId, gId));
+                            DatabaseReference PolRef = database.getReference("Pols").child(gId).push();
+                            String PolKey = PolRef.getKey();
+                            PolData p = new PolData(String.format("%d", users.size()), "1");
+                            PolRef.setValue(p);
+                            PolRef.child("acceptsUsers").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).setValue(myname+" "+mysurname);
+                            ActRef.setValue(new ActivityData(myname+" "+mysurname, myname+" "+mysurname +" proposed to delete group " + gName, new SimpleDateFormat("d MMM yyyy, HH:mm").format(Calendar.getInstance().getTime()), "deletegroup", PolKey, gId));
 
                         }
 
@@ -125,8 +131,14 @@ public class GroupInfoActivity extends AppCompatActivity {
                         if(mapname!=null) {
                             myname = (String)mapname.get("name");
                             mysurname = (String)mapname.get("surname");
+                            DatabaseReference PolRef = database.getReference("Pols").child(gId).push();
+                            String PolKey = PolRef.getKey();
+                            PolData p = new PolData(String.format("%d", users.size()), "1");
+                            PolRef.setValue(p);
+                            PolRef.child("acceptsUsers").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).setValue(myname+" "+mysurname);
+
                             DatabaseReference ActRef = database.getReference("Activities").child(gId).push();
-                            ActRef.setValue(new ActivityData(myname+" "+mysurname, myname+" "+mysurname +" proposed to leave group " + gName, new SimpleDateFormat("d MMM yyyy, HH:mm").format(Calendar.getInstance().getTime()), "leavegroup", gId, gId));
+                            ActRef.setValue(new ActivityData(myname+" "+mysurname, myname+" "+mysurname +" proposed to leave group " + gName, new SimpleDateFormat("d MMM yyyy, HH:mm").format(Calendar.getInstance().getTime()), "leavegroup", PolKey, gId));
 
                         }
 
