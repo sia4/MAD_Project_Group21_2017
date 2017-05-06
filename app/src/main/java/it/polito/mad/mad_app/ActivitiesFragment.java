@@ -155,7 +155,7 @@ public class ActivitiesFragment extends Fragment {
 
             }
         }));
-
+        //TODO AGGIUNGERE LISTENER SUL BOTTONE "ACCEPT" DENTRO IL RECYCLER VIEW ED ESEGUIRE LE STESSE COSE DEL BOTTONE "ACCEPT" DENTRO IL POL
 
 
 
