@@ -25,16 +25,20 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
 
+import it.polito.mad.mad_app.model.ActivityData;
 import it.polito.mad.mad_app.model.ExpenseData;
 import it.polito.mad.mad_app.model.RecyclerTouchListener;
 
@@ -42,7 +46,7 @@ public class GroupInfoActivity extends AppCompatActivity {
     //private GroupData GD;
     private TextView namet, desc;
     private boolean flag_name_edited = false, flag_desc_edited = false, flag_img_edited = false;
-    private static String tmp, nametmp, desctmp, gId, gName,  image;
+    private static String tmp, nametmp, desctmp, gId, gName,  image, myname, mysurname;
     private EditText nameted, desced;
     private ImageView im;
     private List<String> users = new ArrayList();
@@ -77,6 +81,68 @@ public class GroupInfoActivity extends AppCompatActivity {
         im=(ImageView) findViewById(R.id.im_g);
 
         Button button = (Button) findViewById(R.id.addUserInExistingGroup);
+        Button buttonDelete = (Button) findViewById(R.id.DeleteGroup);
+        Button buttonLeave = (Button) findViewById(R.id.LeaveGroup);
+        final FirebaseDatabase database = FirebaseDatabase.getInstance();
+        buttonDelete.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                Toast.makeText(GroupInfoActivity.this, "A notification has been sent to all the group's member", Toast.LENGTH_LONG).show();
+                DatabaseReference getMyName = database.getReference("Users").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
+                getMyName.addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        Map <String, Object> mapname = (Map<String, Object>) dataSnapshot.getValue();
+                        System.out.println("mapnameeeeeeeeeeeeeeeeeeee"+mapname);
+                        if(mapname!=null) {
+                            myname = (String)mapname.get("name");
+                            mysurname = (String)mapname.get("surname");
+                            DatabaseReference ActRef = database.getReference("Activities").child(gId).push();
+                            ActRef.setValue(new ActivityData(myname+" "+mysurname, myname+" "+mysurname +" proposed to delete group " + gName, new SimpleDateFormat("d MMM yyyy, HH:mm").format(Calendar.getInstance().getTime()), "deletegroup", gId, gId));
+
+                        }
+
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
+
+
+            }
+        });
+
+        buttonLeave.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                Toast.makeText(GroupInfoActivity.this, "A notification has been sent to all the group's member", Toast.LENGTH_LONG).show();
+                DatabaseReference getMyName = database.getReference("Users").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
+                getMyName.addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        Map <String, Object> mapname = (Map<String, Object>) dataSnapshot.getValue();
+                        System.out.println("mapnameeeeeeeeeeeeeeeeeeee"+mapname);
+                        if(mapname!=null) {
+                            myname = (String)mapname.get("name");
+                            mysurname = (String)mapname.get("surname");
+                            DatabaseReference ActRef = database.getReference("Activities").child(gId).push();
+                            ActRef.setValue(new ActivityData(myname+" "+mysurname, myname+" "+mysurname +" proposed to leave group " + gName, new SimpleDateFormat("d MMM yyyy, HH:mm").format(Calendar.getInstance().getTime()), "leavegroup", gId, gId));
+
+                        }
+
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
+
+            }
+        });
+
+
+
         button.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 Intent i = new Intent( getApplicationContext(), InsertUserToGroupActivity.class);
@@ -102,7 +168,7 @@ public class GroupInfoActivity extends AppCompatActivity {
         nameted = (EditText) findViewById(R.id.name_g_ed);
         desc = (TextView) findViewById(R.id.de_g);
         desced = (EditText) findViewById(R.id.de_g_ed);
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
+
         DatabaseReference myRef = database.getReference("Groups").child(gId);
         myRef.addValueEventListener(new ValueEventListener() {
             @Override

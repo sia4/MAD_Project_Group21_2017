@@ -55,16 +55,7 @@ public class    HistoryFragment extends Fragment {
 
                 final ExpenseData expense = lex.get(position);
                 Intent intent = new Intent().setClass(view.getContext(), ExpenseInfoActivity.class);
-                intent.putExtra("name", expense.getName());
-                intent.putExtra("category", expense.getCategory());
-                intent.putExtra("currency", expense.getCurrency());
-                intent.putExtra("algorithm", expense.getAlgorithm());
-                intent.putExtra("description", expense.getDescription());
-                //String.format("%.2f", expense.getMyvalue())
-                intent.putExtra("myvalue",expense.getMyvalue());
-                intent.putExtra("value",  expense.getValue());
-                intent.putExtra("creator", expense.getCreator());
-                intent.putExtra("date", expense.getDate());
+
                 String GroupId = getArguments().getString("GroupId");
                 String GroupName = getArguments().getString("GroupName");
                 intent.putExtra("groupName", GroupName);

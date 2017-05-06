@@ -383,7 +383,7 @@ public class InsertExActivity extends AppCompatActivity {
 
                 FirebaseDatabase database = FirebaseDatabase.getInstance();
                 DatabaseReference myRef = database.getReference("Expenses").child(Gname).push();
-
+                String refkey = myRef.getKey();
                 int flagok = 1;
                 name = Tname.getText().toString();
                 description = Tdescription.getText().toString();
@@ -457,7 +457,7 @@ public class InsertExActivity extends AppCompatActivity {
 
                     if (flagok == 1 && values.size() == users.size()) {
                         DatabaseReference ActRef = database.getReference("Activities").child(Gname).push();
-                        ActRef.setValue(new ActivityData(myname+" "+mysurname, myname +" "+mysurname+" added a new expense in group "+ groupName, new SimpleDateFormat("d MMM yyyy, HH:mm").format(Calendar.getInstance().getTime()), "expense"));
+                        ActRef.setValue(new ActivityData(myname+" "+mysurname, myname +" "+mysurname+" added a new expense in group "+ groupName, new SimpleDateFormat("d MMM yyyy, HH:mm").format(Calendar.getInstance().getTime()), "expense", refkey, Gname));
                         myRef.setValue(new ExpenseData(name, description, category, currency, String.format("%.2f", value), "0.00", algorithm));
                         myRef.child("creator").setValue(myname + " " + mysurname);
                         myRef.child("users").setValue(values);

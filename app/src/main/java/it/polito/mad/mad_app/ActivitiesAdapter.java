@@ -4,6 +4,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 
 import java.util.List;
@@ -17,11 +18,12 @@ public class ActivitiesAdapter extends RecyclerView.Adapter<ActivitiesAdapter.My
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
         public TextView date, text;
-
+        public Button accept;
         public MyViewHolder(View view) {
             super(view);
             date = (TextView) view.findViewById(R.id.date_act);
             text = (TextView) view.findViewById(R.id.text_act);
+            accept = (Button) view.findViewById(R.id.AcceptActivity);
         }
     }
 
@@ -43,6 +45,12 @@ public class ActivitiesAdapter extends RecyclerView.Adapter<ActivitiesAdapter.My
         ActivityData activity = activityData.get(position);
         holder.date.setText(activity.getDate().toString());
         holder.text.setText(activity.getText().toString());
+        if(activity.getType().equals("deletegroup")||activity.getType().equals("leavegroup")){
+            holder.accept.setVisibility(View.VISIBLE);
+        }
+        else{
+            holder.accept.setVisibility(View.GONE);
+        }
     }
 
     @Override

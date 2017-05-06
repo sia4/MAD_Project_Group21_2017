@@ -3,7 +3,9 @@ package it.polito.mad.mad_app;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.RequiresApi;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
@@ -38,7 +40,7 @@ public class ExpenseInfoActivity extends AppCompatActivity {
 
     int n;
     public TextView name_ex,date_ex, s_ex, value_ex, description_ex,creator_ex, category_ex, currency_ex, myvalue_ex, algorithm_ex;
-    private String myname, mysurname;
+    private String myname, mysurname, name, value, creator, description, category, currency, myvalue, algorithm, date, exid, groupName;
     private Map<String, Float> usermap = new TreeMap<>();
     private Map<String, Map<String, Map<String, Object>>> balancemap = new TreeMap<>();
     private FirebaseAuth mAuth = FirebaseAuth.getInstance();
@@ -52,21 +54,10 @@ public class ExpenseInfoActivity extends AppCompatActivity {
         if (getSupportActionBar() != null)
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle("Expense Information");
-        final String name, value, creator, description, category, currency, myvalue, algorithm, date, exid, groupName;
 
-        name = i.getStringExtra("name");
-        value = i.getStringExtra("value");
-        creator = i.getStringExtra("creator");
-        description = i.getStringExtra("description");
-        category = i.getStringExtra("category");
-        currency = i.getStringExtra("currency");
-        groupName = i.getStringExtra("groupName");
-        myvalue = i.getStringExtra("myvalue");
         exid = i.getStringExtra("ExpenseId");
-        n=Integer.parseInt(myvalue.replaceAll("[\\D]",""));;
-        algorithm = i.getStringExtra("algorithm");
-        date = i.getStringExtra("date");
         final String GroupId = i.getStringExtra("groupId");
+
         s_ex=(TextView) findViewById(R.id.iMyvalue);
         name_ex = (TextView) findViewById(R.id.exName);
         value_ex = (TextView) findViewById(R.id.exValue);
@@ -77,29 +68,6 @@ public class ExpenseInfoActivity extends AppCompatActivity {
         myvalue_ex = (TextView) findViewById(R.id.exMyvalue);
         algorithm_ex = (TextView) findViewById(R.id.exAlgorithm);
         date_ex = (TextView) findViewById(R.id.exDate);
-
-        name_ex.setText(name);
-        value_ex.setText(value);
-        creator_ex.setText(creator);
-        if(description.equals(""))
-            description_ex.setText("  -");
-        else
-            description_ex.setText(description);
-        category_ex.setText(category);
-        currency_ex.setText(currency);
-        myvalue_ex.setText(myvalue);
-        algorithm_ex.setText(algorithm);
-        date_ex.setText(date);
-        if(n>0){
-            s_ex.setTextColor(Color.parseColor("#27B011"));
-            myvalue_ex.setTextColor(Color.parseColor("#27B011"));
-            s_ex.setText("Import to receive:");
-        }
-        else{
-            s_ex.setTextColor(Color.parseColor("#D51111"));
-            myvalue_ex.setTextColor(Color.parseColor("#D51111"));
-            s_ex.setText("Import to pay:");
-        }
         final TextView Tdeny = (TextView) findViewById(R.id.exContested);
         final Button button = (Button) findViewById(R.id.exDeny);
         final TextView Tdenydescr = (TextView) findViewById(R.id.denydescription);
@@ -111,6 +79,7 @@ public class ExpenseInfoActivity extends AppCompatActivity {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 Map<String, Object> map = (Map<String, Object>) dataSnapshot.getValue();
+                System.out.println("mappaaaaaaaaaaaaaa"+ map);
                 if(map!=null) {
                     String cont = (String)map.get("contested");
                     if(cont.equals("yes")){
@@ -118,10 +87,43 @@ public class ExpenseInfoActivity extends AppCompatActivity {
                         button.setVisibility(View.GONE);
                         Tdenydescr.setVisibility(View.GONE);
                     }
-                    String descr = (String)map.get("description");
-                    if(descr.equals("expense retrieved")){
+                    name = (String)map.get("name");
+                    System.out.println("nameeeeeeeeeeeeeee"+name);
+                    description = (String)map.get("description");
+                    if(description.equals("expense retrieved")){
                         button.setVisibility(View.GONE);
                         Tdenydescr.setVisibility(View.GONE);
+                    }
+                    value = (String)map.get("value");
+                    creator = (String)map.get("creator");
+                    category = (String)map.get("category");
+                    currency = (String)map.get("currency");
+                    myvalue = (String)map.get("myvalue");
+                    n=Integer.parseInt(myvalue.replaceAll("[\\D]",""));
+                    algorithm = (String)map.get("algorithm");
+                    date = (String)map.get("date");
+                    groupName = (String)map.get("groupName");
+                    name_ex.setText(name);
+                    value_ex.setText(value);
+                    creator_ex.setText(creator);
+                    if(description.equals(""))
+                        description_ex.setText("  -");
+                    else
+                        description_ex.setText(description);
+                    category_ex.setText(category);
+                    currency_ex.setText(currency);
+                    myvalue_ex.setText(myvalue);
+                    algorithm_ex.setText(algorithm);
+                    date_ex.setText(date);
+                    if(n>0){
+                        s_ex.setTextColor(Color.parseColor("#27B011"));
+                        myvalue_ex.setTextColor(Color.parseColor("#27B011"));
+                        s_ex.setText("Import to receive:");
+                    }
+                    else{
+                        s_ex.setTextColor(Color.parseColor("#D51111"));
+                        myvalue_ex.setTextColor(Color.parseColor("#D51111"));
+                        s_ex.setText("Import to pay:");
                     }
 
 
@@ -136,6 +138,10 @@ public class ExpenseInfoActivity extends AppCompatActivity {
 
             }
         });
+
+
+
+
 
         final FirebaseDatabase database2 = FirebaseDatabase.getInstance();
         DatabaseReference myRef2 = database2.getReference("Expenses").child(GroupId).child(exid);
@@ -206,7 +212,7 @@ public class ExpenseInfoActivity extends AppCompatActivity {
                             myname = (String)mapname.get("name");
                             mysurname = (String)mapname.get("surname");
                             DatabaseReference ActRef = database.getReference("Activities").child(GroupId).push();
-                            ActRef.setValue(new ActivityData(myname+" "+mysurname, myname+" "+mysurname +" contested expense "+ name+" in group "+ groupName, new SimpleDateFormat("d MMM yyyy, HH:mm").format(Calendar.getInstance().getTime()), "contest"));
+                            ActRef.setValue(new ActivityData(myname+" "+mysurname, myname+" "+mysurname +" contested expense "+ name+" in group "+ groupName, new SimpleDateFormat("d MMM yyyy, HH:mm").format(Calendar.getInstance().getTime()), "contest", exid, GroupId));
 
                         }
                         else{
@@ -249,9 +255,11 @@ public class ExpenseInfoActivity extends AppCompatActivity {
         });
 
     }
+    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
     @Override
     public boolean onOptionsItemSelected(MenuItem item){
         Intent i = getIntent();
+
         String GroupName = i.getStringExtra("groupName");
         String GroupId = i.getStringExtra("groupId");
         switch(item.getItemId()){

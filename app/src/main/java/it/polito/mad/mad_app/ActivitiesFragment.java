@@ -1,6 +1,7 @@
 package it.polito.mad.mad_app;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.*;
@@ -19,18 +20,22 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import java.util.TreeMap;
 
 
 import it.polito.mad.mad_app.model.ActivityData;
 import it.polito.mad.mad_app.model.BalanceData;
 import it.polito.mad.mad_app.model.MainData;
+import it.polito.mad.mad_app.model.RecyclerTouchListener;
 import it.polito.mad.mad_app.model.UserData;
 
 public class ActivitiesFragment extends Fragment {
 
     private List<ActivityData> activities = new ArrayList<>();
     private Context context;
-
+    private String groupName;
+    private Map<String, Map<String, Object>> map2 = new TreeMap<>();
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -60,26 +65,33 @@ public class ActivitiesFragment extends Fragment {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 activities.clear();
-                Map<String, Object> map2 = (Map<String, Object>) dataSnapshot.getValue();
+                map2 = (Map<String, Map<String, Object>>) dataSnapshot.getValue();
                 System.out.println("group list: "+ map2);
                 if(map2!=null) {
                     for (final String k : map2.keySet()){
+
+                        System.out.println("MAPPAAAAAAAAAAAAAAA "+map2);
+                        System.out.println("groupNameeeeeeeeeeeeeeeeee "+groupName);
                         FirebaseDatabase database3 = FirebaseDatabase.getInstance();
                         DatabaseReference myRef3 = database3.getReference("Activities").child(k);
                         myRef3.addValueEventListener(new ValueEventListener() {
                             @Override
                             public void onDataChange(DataSnapshot dataSnapshot) {
                                 Map<String, Map<String, String>> map3 = (Map<String, Map<String, String>>) dataSnapshot.getValue();
+                                groupName = (String)map2.get(k).get("name");
                                 if(map3!=null) {
                                     System.out.println("activitiesssssssssslist " + map3);
-                                    String tmpc, tmpt, tmpd, tmpty;
+                                    String tmpc, tmpt, tmpd, tmpty, tmpid, tmpgid;
                                     for(String j : map3.keySet()){
                                         tmpc = map3.get(j).get("creator");
                                         tmpt = map3.get(j).get("text");
                                         tmpd = map3.get(j).get("date");
                                         tmpty = map3.get(j).get("type");
-
-                                        activities.add(new ActivityData(tmpc, tmpt, tmpd, tmpty));
+                                        tmpid = map3.get(j).get("itemId");
+                                        tmpgid = map3.get(j).get("groupId");
+                                        ActivityData a =new ActivityData(tmpc, tmpt, tmpd, tmpty, tmpid, tmpgid);
+                                        a.setGroupName(groupName);
+                                        activities.add(a);
                                     }
                                     aAdapter.notifyDataSetChanged();
                                 }
@@ -114,7 +126,25 @@ public class ActivitiesFragment extends Fragment {
             }
         });
 
+        recyclerView.addOnItemTouchListener(new RecyclerTouchListener(context, recyclerView, new RecyclerTouchListener.ClickListener() {
+            @Override
+            public void onClick(View view, int position) {
 
+                String type = activities.get(position).getType();
+                if(type.equals("expense")||type.equals("contest")) {
+                    Intent intent = new Intent().setClass(view.getContext(), ExpenseInfoActivity.class);
+                    intent.putExtra("ExpenseId", activities.get(position).getItemId());
+                    intent.putExtra("groupId", activities.get(position).getGroupId());
+                    intent.putExtra("groupName", activities.get(position).getGroupName());
+                    view.getContext().startActivity(intent);
+                }
+            }
+
+            @Override
+            public void onLongClick(View view, int position) {
+
+            }
+        }));
 
 
 
