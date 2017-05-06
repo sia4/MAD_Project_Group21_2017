@@ -49,6 +49,7 @@ public class PolActivity extends AppCompatActivity {
         final String GroupId = i.getStringExtra("groupId");
         final String PolId = i.getStringExtra("polId");
         String text = i.getStringExtra("text");
+        final String type = i.getStringExtra("type");
         System.out.println("INTENTTTTTTTTTTTTTT "+GroupName+" "+PolId+" "+GroupId);
         TextView poltext = (TextView) findViewById(R.id.polText);
         final TextView totusers = (TextView) findViewById(R.id.unvalue);
@@ -104,7 +105,7 @@ public class PolActivity extends AppCompatActivity {
                 System.out.println("POLLLLLLLLLLLLLLLLLLLL "+map2);
                 if(map2!=null) {
                       totusers.setText((String)map2.get("usersNumber"));
-                      acceptedusers.setText((String)map2.get("acceptsNumber"));
+                      acceptedusers.setText(String.format("%d", users.size()));
 
                 }
                 else{
@@ -129,7 +130,6 @@ public class PolActivity extends AppCompatActivity {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         Map <String, Object> mapname = (Map<String, Object>) dataSnapshot.getValue();
-                        System.out.println("mapnameeeeeeeeeeeeeeeeeeee"+mapname);
                         if(mapname!=null) {
                             myname = (String)mapname.get("name");
                             mysurname = (String)mapname.get("surname");
@@ -137,7 +137,15 @@ public class PolActivity extends AppCompatActivity {
                             PolRef.child("acceptsUsers").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).setValue(myname+" "+mysurname);
 
                             DatabaseReference ActRef = database.getReference("Activities").child(GroupId).push();
-                            ActRef.setValue(new ActivityData(myname+" "+mysurname, myname+" "+mysurname +" accepted the propose to leave group " + GroupName, new SimpleDateFormat("d MMM yyyy, HH:mm").format(Calendar.getInstance().getTime()), "leavegroup", PolId, GroupId));
+                            if(type.equals("leavegroup")) {
+                                ActRef.setValue(new ActivityData(myname + " " + mysurname, myname + " " + mysurname + " accepted the propose to leave group " + GroupName, new SimpleDateFormat("d MMM yyyy, HH:mm").format(Calendar.getInstance().getTime()), "acceptleavegroup", PolId, GroupId));
+                            }
+                            if(type.equals("deletegroup")){
+                                ActRef.setValue(new ActivityData(myname + " " + mysurname, myname + " " + mysurname + " accepted the propose to delete group " + GroupName, new SimpleDateFormat("d MMM yyyy, HH:mm").format(Calendar.getInstance().getTime()), "acceptdeletegroup", PolId, GroupId));
+                            }
+
+                            //TODO SE IL NUMERO DI USER CHE HANNO ACCETTATO E' UGUALE AL NUMERO TOTALE ESEGUI AZIONE A SECONDA DEL TIPO DI POL (CANCELLA/ABBANDONA GRUPPO)
+
 
                         }
 

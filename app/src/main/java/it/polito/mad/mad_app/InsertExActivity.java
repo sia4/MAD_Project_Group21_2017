@@ -111,6 +111,19 @@ public class InsertExActivity extends AppCompatActivity {
         Intent intent = getIntent();
         Gname = intent.getStringExtra("groupId");
         groupName = intent.getStringExtra("groupName");
+
+        String cname = intent.getStringExtra("name");
+        String cdescr = intent.getStringExtra("description");
+        String cvaluetmp = intent.getStringExtra("value");
+        final EditText Tname = (EditText) findViewById(R.id.Name);
+        final EditText Tdescription = (EditText) findViewById(R.id.Description);
+        final EditText Tvalue = (EditText) findViewById(R.id.value);
+
+        if(cname!=null)
+            Tname.setText(cname);
+        if(cdescr!=null)
+            Tdescription.setText(cdescr);
+
         final String uid = mAuth.getCurrentUser().getUid().toString();
         FirebaseDatabase database2 = FirebaseDatabase.getInstance();
         DatabaseReference myRef2 = database2.getReference("Groups").child(Gname).child("members");
@@ -214,10 +227,12 @@ public class InsertExActivity extends AppCompatActivity {
 
         //users.add(0, new UserData("null", "Me", "", 000));
         final Spinner Talgorithm = (Spinner)findViewById(R.id.ChooseAlgorithm);
-        final EditText Tvalue = (EditText) findViewById(R.id.value);
+        //final EditText Tvalue = (EditText) findViewById(R.id.value);
         final Spinner Tcurrency = (Spinner) findViewById(R.id.Currency);
         final TextView algInfo = (TextView) findViewById(R.id.alg_info);
         final TextView algInfoSmall = (TextView) findViewById(R.id.alg_info_small);
+
+
         Talgorithm.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {

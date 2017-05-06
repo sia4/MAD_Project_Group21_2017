@@ -144,7 +144,7 @@ public class ActivitiesFragment extends Fragment {
                     intent.putExtra("groupId", activities.get(position).getGroupId());
                     intent.putExtra("groupName", activities.get(position).getGroupName());
                     intent.putExtra("text", activities.get(position).getText());
-
+                    intent.putExtra("type", activities.get(position).getType());
                     view.getContext().startActivity(intent);
                 }
 

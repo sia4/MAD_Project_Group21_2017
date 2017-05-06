@@ -69,7 +69,9 @@ public class ExpenseInfoActivity extends AppCompatActivity {
         algorithm_ex = (TextView) findViewById(R.id.exAlgorithm);
         date_ex = (TextView) findViewById(R.id.exDate);
         final TextView Tdeny = (TextView) findViewById(R.id.exContested);
+
         final Button button = (Button) findViewById(R.id.exDeny);
+        final Button addbutton = (Button) findViewById(R.id.addNewExpense);
         final TextView Tdenydescr = (TextView) findViewById(R.id.denydescription);
 
         FirebaseDatabase database4 = FirebaseDatabase.getInstance();
@@ -86,6 +88,8 @@ public class ExpenseInfoActivity extends AppCompatActivity {
                         Tdeny.setVisibility(View.VISIBLE);
                         button.setVisibility(View.GONE);
                         Tdenydescr.setVisibility(View.GONE);
+
+
                     }
                     name = (String)map.get("name");
                     System.out.println("nameeeeeeeeeeeeeee"+name);
@@ -96,6 +100,9 @@ public class ExpenseInfoActivity extends AppCompatActivity {
                     }
                     value = (String)map.get("value");
                     creator = (String)map.get("creator");
+                    if(cont.equals("yes")){
+                        addbutton.setVisibility(View.VISIBLE);
+                    }
                     category = (String)map.get("category");
                     currency = (String)map.get("currency");
                     myvalue = (String)map.get("myvalue");
@@ -254,7 +261,23 @@ public class ExpenseInfoActivity extends AppCompatActivity {
             }
         });
 
-    }
+        addbutton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                Intent intent = new Intent(
+                        getApplicationContext(), InsertExActivity.class
+                );
+                intent.putExtra("groupId", GroupId);
+                intent.putExtra("groupName", groupName);
+                intent.putExtra("name", name);
+                intent.putExtra("value", value);
+                intent.putExtra("description", description);
+                startActivityForResult(intent, 1);
+                finish();
+            }
+        });
+
+
+        }
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
     @Override
     public boolean onOptionsItemSelected(MenuItem item){
