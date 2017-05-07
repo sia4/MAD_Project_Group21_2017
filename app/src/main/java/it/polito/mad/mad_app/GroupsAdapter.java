@@ -1,8 +1,11 @@
 package it.polito.mad.mad_app;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
+import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -12,6 +15,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.target.BitmapImageViewTarget;
 
 import java.util.List;
 
@@ -58,7 +62,7 @@ public class GroupsAdapter extends RecyclerView.Adapter<GroupsAdapter.MyViewHold
     }
 
     @Override
-    public void onBindViewHolder(GroupsAdapter.MyViewHolder holder, int position) {
+    public void onBindViewHolder(final GroupsAdapter.MyViewHolder holder, int position) {
         final GroupsFragment.GroupModel g = GData.get(position);
         holder.name.setText(g.getGroupName());
         holder.date.setText(g.getDateLastOperationWellFormed());
@@ -68,7 +72,16 @@ public class GroupsAdapter extends RecyclerView.Adapter<GroupsAdapter.MyViewHold
 
         String p = g.getGroupUrl();
 
-        Glide.with(context).load(p).into(holder.im);
+        //Glide.with(context).load(p).into(holder.im);
+        Glide.with(context).load(p).asBitmap().centerCrop().into(new BitmapImageViewTarget(holder.im) {
+            @Override
+            protected void setResource(Bitmap resource) {
+                RoundedBitmapDrawable circularBitmapDrawable =
+                        RoundedBitmapDrawableFactory.create(context.getResources(), resource);
+                circularBitmapDrawable.setCircular(true);
+                holder.im.setImageDrawable(circularBitmapDrawable);
+            }
+        });
 
         /*if (p == null) {
             holder.im.setImageResource(R.drawable.group_default);

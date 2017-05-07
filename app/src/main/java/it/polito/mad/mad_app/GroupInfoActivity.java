@@ -4,12 +4,15 @@ import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
+import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
+import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -25,6 +28,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -42,6 +46,7 @@ import it.polito.mad.mad_app.model.ActivityData;
 import it.polito.mad.mad_app.model.ExpenseData;
 import it.polito.mad.mad_app.model.PolData;
 import it.polito.mad.mad_app.model.RecyclerTouchListener;
+import it.polito.mad.mad_app.model.User;
 
 public class GroupInfoActivity extends AppCompatActivity {
     //private GroupData GD;
@@ -50,6 +55,7 @@ public class GroupInfoActivity extends AppCompatActivity {
     private static String tmp, nametmp, desctmp, gId, gName,  image, myname, mysurname;
     private EditText nameted, desced;
     private ImageView im;
+    private List<User> user_l=new ArrayList<>();
     private List<String> users = new ArrayList();
     private List<String> usersId = new ArrayList<>();
     private List<String> currencies = new ArrayList();
@@ -198,10 +204,19 @@ public class GroupInfoActivity extends AppCompatActivity {
                     if (p == null) {
                         im.setImageResource(R.drawable.group_default);
                     } else {
-                        Glide
+                        Glide.with(getApplicationContext()).load(p).asBitmap().centerCrop().into(new BitmapImageViewTarget(im) {
+                            @Override
+                            protected void setResource(Bitmap resource) {
+                                RoundedBitmapDrawable circularBitmapDrawable =
+                                        RoundedBitmapDrawableFactory.create(getApplicationContext().getResources(), resource);
+                                circularBitmapDrawable.setCircular(true);
+                                im.setImageDrawable(circularBitmapDrawable);
+                            }
+                        });
+                        /*Glide
                                 .with(getApplicationContext())
                                 .load(p)
-                                .into(im);
+                                .into(im);*/
                     }
 
                     //Group g = new Group((String)map.get("gId"),(String) map.get("surname"), (String)map.get("defaultCurrency"));
@@ -224,7 +239,7 @@ public class GroupInfoActivity extends AppCompatActivity {
 
         RecyclerView userRecyclerView = (RecyclerView) findViewById(R.id.users);
         userRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-        final UsersAdapter uAdapter = new UsersAdapter(users);
+        final UserAdapterIm uAdapter = new UserAdapterIm(user_l);
         userRecyclerView.setAdapter(uAdapter);
 
         FirebaseDatabase database2 = FirebaseDatabase.getInstance();
@@ -243,8 +258,10 @@ public class GroupInfoActivity extends AppCompatActivity {
                             public void onDataChange(DataSnapshot dataSnapshot) {
                                 Map<String, Object> map3 = (Map<String, Object>) dataSnapshot.getValue();
                                 if(map3!=null) {
+                                    String p= map3.get("imagePath").toString();
                                     String s = map3.get("name")+" "+map3.get("surname");
                                     users.add(s);
+                                    user_l.add(new User(null,null,map3.get("name").toString(),map3.get("surname").toString(),p));
                                     usersId.add(k);
                                     uAdapter.notifyDataSetChanged();
                                 }

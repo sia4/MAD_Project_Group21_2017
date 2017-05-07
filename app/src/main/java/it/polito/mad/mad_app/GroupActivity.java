@@ -1,12 +1,16 @@
 package it.polito.mad.mad_app;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
@@ -18,13 +22,18 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.animation.GlideAnimation;
+import com.bumptech.glide.request.target.SimpleTarget;
+
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 
 public class GroupActivity extends AppCompatActivity {
-    private String gName, gKey;
+    private String gName, gKey,gImage;
     private ListView lv;
 
     @Override
@@ -40,10 +49,13 @@ public class GroupActivity extends AppCompatActivity {
         }
         gKey = intent.getStringExtra("groupId");
         gName = intent.getStringExtra("groupName");
+        gImage= intent.getStringExtra("imagePath");
 
         final Bundle b = new Bundle();
         b.putString("GroupId", gKey);
         b.putString("GroupName", gName);
+        b.putString("imagePath", gImage);
+        //TODO take the Imagepath
 
         //System.out.println("CICCIOBOMBA" + datigruppo.getName());
 
@@ -51,11 +63,24 @@ public class GroupActivity extends AppCompatActivity {
         Float neg = (float)10.2;//datigruppo.getNegExpenses();
 
         String subtitle = "";
-        subtitle += "They Owe You: " + pos.toString()+ " - You Owe: " + neg.toString();
+        subtitle +=" "+ "They Owe You: " + pos.toString()+ " - You Owe: " + neg.toString();
 
 
-        getSupportActionBar().setTitle(gName);
+        getSupportActionBar().setTitle(" "+gName);
         getSupportActionBar().setSubtitle(subtitle);
+        //Drawable dr = getResources().getDrawable(R.drawable.group_default);
+        Glide
+                .with(getApplicationContext())
+                .load(gImage)
+                .asBitmap()
+                .into(new SimpleTarget<Bitmap>(60,60) {
+                    @Override
+                    public void onResourceReady(Bitmap resource, GlideAnimation glideAnimation) {
+                        //image.setImageBitmap(resource); // Possibly runOnUiThread()
+                        Drawable d = new BitmapDrawable(getResources(), resource);
+                        getSupportActionBar().setLogo(d);
+                    }
+                });
         try{
             Field field = Toolbar.class.getDeclaredField( "mSubtitleTextView" );
             field.setAccessible( true );
@@ -71,7 +96,11 @@ public class GroupActivity extends AppCompatActivity {
         }catch (NoSuchFieldException e) {
         } catch (IllegalAccessException e) {
         }
-
+        //toolbar.setLogo(ContextCompat.getDrawable(getApplicationContext(), R.drawable.group_default));
+        //toolbar.setNavigationIcon(d);
+        //getSupportActionBar().setIcon(R.drawable.group_default);
+        //getSupportActionBar().setLogo(R.);
+        //getSupportActionBar().setDisplayUseLogoEnabled(true);
         Fragment hfrag = new HistoryFragment();
         hfrag.setArguments(b);
         FragmentManager fm = getSupportFragmentManager();

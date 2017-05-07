@@ -1,12 +1,19 @@
 package it.polito.mad.mad_app;
 
+import android.content.ActivityNotFoundException;
+import android.content.ComponentName;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.database.Cursor;
+import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Parcelable;
 import android.provider.MediaStore;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -19,12 +26,17 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -33,14 +45,23 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.MutableData;
 import com.google.firebase.database.Transaction;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -49,6 +70,7 @@ import java.util.TreeMap;
 import it.polito.mad.mad_app.model.ActivityData;
 import it.polito.mad.mad_app.model.Balance;
 import it.polito.mad.mad_app.model.ExpenseData;
+import it.polito.mad.mad_app.model.Group;
 import it.polito.mad.mad_app.model.MainData;
 import it.polito.mad.mad_app.model.UserData;
 
@@ -61,9 +83,11 @@ public class InsertExActivity extends AppCompatActivity {
     private String category;
     private String currency;
     private float value;
+    private Boolean fish=false;
     private String algorithm;
     private String myname, mysurname;
     private String Gname = new String(), groupName = new String();
+    private StorageReference mStorageRef;
     private Map<String,Balance>users_l=new TreeMap<>();
     private int i=0, ii=0;
     private float v = 0, v1 = 0;
@@ -74,9 +98,13 @@ public class InsertExActivity extends AppCompatActivity {
     static private RecyclerView userRecyclerView;
     static private AlgorithmParametersAdapter uAdapter;
     static final int REQUEST_TAKE_PHOTO = 1;
+    private Uri outputFileUri;
     private boolean flag_name_edited = false, flag_desc_edited = false, flag_img_edited = false;
     private String tmp;
-    String mCurrentPhotoPath;
+    private Uri downloadUrl;
+    private Boolean ImageC=false;
+    private Uri imageUrl;
+    private Button load;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -89,19 +117,6 @@ public class InsertExActivity extends AppCompatActivity {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         getSupportActionBar().setTitle("New Expense");
-        ImageButton bill = (ImageButton)findViewById(R.id.AddPhotoBill);
-
-
-
-
-
-        bill.setOnClickListener(new View.OnClickListener()  {
-            public void onClick(View v) {
-                dispatchTakePictureIntent();
-                //galleryAddPic();
-                }
-
-        } );
 
         userRecyclerView = (RecyclerView) findViewById(R.id.algorithmParameters);
         userRecyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -301,8 +316,65 @@ public class InsertExActivity extends AppCompatActivity {
        });
         */
         String s = "";
+        load=(Button) findViewById(R.id.load_ex);
+        load.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View arg0) {
+                // Determine Uri of camera image to save.
+                final File root = new File(Environment.getExternalStorageDirectory() + File.separator + "MyDir" + File.separator);
+                root.mkdirs();
+                final String fname = "img_"+ System.currentTimeMillis() + ".jpg";
+                final File sdImageMainDirectory = new File(root, fname);
+                outputFileUri = Uri.fromFile(sdImageMainDirectory);
+                System.out.println("------>outputFileUri"+outputFileUri);
+                final List<Intent> cameraIntents = new ArrayList<Intent>();
+                Intent pickIntent = new Intent(Intent.ACTION_PICK,
+                        android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                final PackageManager pManager = getPackageManager();
+                final List<ResolveInfo> Im =pManager.queryIntentActivities(pickIntent, 0);
+                for(ResolveInfo res : Im) {
+                    final String packageName = res.activityInfo.packageName;
+                    final Intent intent = new Intent(pickIntent);
+                    intent.setComponent(new ComponentName(packageName, res.activityInfo.name));
+                    intent.setPackage(packageName);
+                    intent.putExtra(MediaStore.EXTRA_OUTPUT, outputFileUri);
+                    intent.putExtra("crop", "true");
+                    intent.putExtra("outputX", 200);
+                    intent.putExtra("outputY", 200);
+                    intent.putExtra("aspectX", 1);
+                    intent.putExtra("aspectY", 1);
+                    intent.putExtra("scale", true);
+                    System.out.println(".........image intent " + intent);
+                    cameraIntents.add(intent);
+                }
+                final Intent captureIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
+                final PackageManager packageManager = getPackageManager();
+                final List<ResolveInfo> Cam =packageManager.queryIntentActivities(captureIntent, 0);
+                for(ResolveInfo res : Cam) {
+                    final String packageName = res.activityInfo.packageName;
+                    final Intent intent = new Intent(captureIntent);
+                    intent.setComponent(new ComponentName(packageName, res.activityInfo.name));
+                    intent.setPackage(packageName);
+                    intent.putExtra(MediaStore.EXTRA_OUTPUT, outputFileUri);
+                    intent.putExtra("crop", "true");
+                    intent.putExtra("outputX", 200);
+                    intent.putExtra("outputY", 200);
+                    intent.putExtra("aspectX", 1);
+                    intent.putExtra("aspectY", 1);
+                    intent.putExtra("scale", true);
+                    System.out.println(".........camera intent " + intent);
+                    cameraIntents.add(intent);
+                }
+                final Intent chooserIntent = Intent.createChooser(cameraIntents.get(cameraIntents.size()-1), "Select Source");
+                cameraIntents.remove(cameraIntents.size()-1);
+                chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, cameraIntents.toArray(new Parcelable[cameraIntents.size()]));
+                startActivityForResult(chooserIntent, 1);
+            }
+        });
 
     }
+    /*
     private File createImageFile() throws IOException {
         // Create an image file name
 
@@ -311,11 +383,11 @@ public class InsertExActivity extends AppCompatActivity {
         File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
         File image = File.createTempFile(
                 imageFileName,  /* prefix */
-                ".jpg",         /* suffix */
-                storageDir      /* directory */
-        );
+         //       ".jpg",         /* suffix */
+           //     storageDir      /* directory */
+        /*);
 
-        // Save a file: path for use with ACTION_VIEW intents
+         Save a file: path for use with ACTION_VIEW intents
         mCurrentPhotoPath = image.getAbsolutePath();
         return image;
     }
@@ -325,9 +397,8 @@ public class InsertExActivity extends AppCompatActivity {
         Uri contentUri = Uri.fromFile(f);
         mediaScanIntent.setData(contentUri);
         this.sendBroadcast(mediaScanIntent);
-    }
-
-
+    }*/
+    /*
     private void dispatchTakePictureIntent() {
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         // Ensure that there's a camera activity to handle the intent
@@ -348,26 +419,98 @@ public class InsertExActivity extends AppCompatActivity {
             }
         }
     }
+    */
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-
         super.onActivityResult(requestCode, resultCode, data);
-
-        if (requestCode == 1 && resultCode == RESULT_OK && data != null) {
-
+        final int CAMERA_CAPTURE = 1;
+        final int CROP_PIC = 2;
+        /*if (requestCode == 1 && resultCode == RESULT_OK && null != data) {
             Uri selectedImage = data.getData();
             String[] filePathColumn = {MediaStore.Images.Media.DATA};
-            Cursor c = getContentResolver().query(selectedImage, filePathColumn, null, null, null);
-            c.moveToFirst();
-            int cIndex = c.getColumnIndex(filePathColumn[0]);
-            String picturePath = c.getString(cIndex);
-            c.close();
-            ImageButton bill = (ImageButton) findViewById(R.id.AddPhotoBill);
-            bill.setImageBitmap(BitmapFactory.decodeFile(picturePath));
-            flag_img_edited = true;
-            tmp = picturePath;
-            //Toast.makeText(this, "path:"+ tmp, Toast.LENGTH_LONG).show();
 
+            Cursor cursor = getContentResolver().query(selectedImage,
+                    filePathColumn, null, null, null);
+            cursor.moveToFirst();
+
+            int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
+            picturePath = cursor.getString(columnIndex);
+            cursor.close();
+
+            ImageView imageG=(ImageView) findViewById(R.id.ImageG);
+            imageG.setImageBitmap(BitmapFactory.decodeFile(picturePath));*/
+        if (resultCode == RESULT_OK) {
+            Uri selectedImageUri = null;
+            if (requestCode == 1) {
+                final boolean isCamera;
+                if (data == null) {
+                    isCamera = true;
+                } else {
+                    final String action = data.getAction();
+                    if (action == null) {
+                        isCamera = false;
+                    } else {
+                        isCamera = action.equals(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
+                    }
+                }
+
+                if (isCamera) {
+                    imageUrl = outputFileUri;
+                    //downloadUrl = selectedImageUri;
+                    ImageC = true;
+                    performCrop();
+                } else {
+                    if (data != null) {
+                        ImageC = true;
+                        selectedImageUri = data.getData();
+                        imageUrl = selectedImageUri;
+                        System.out.println("++++++++---->" + selectedImageUri.toString());
+                        Bitmap photo = null;
+                        try {
+                            photo = MediaStore.Images.Media.getBitmap(this.getContentResolver(), selectedImageUri);
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                        System.out.println("................." + photo);
+                        ImageView imageG = (ImageView) findViewById(R.id.ImageG);
+                        imageG.setImageBitmap(photo);
+
+                    }
+
+                }
+            }else if(requestCode==CROP_PIC){
+                Bundle extras = data.getExtras();
+                Bitmap thePic = extras.getParcelable("data");
+                ImageView picView = (ImageView) findViewById(R.id.ImageG);
+                picView.setImageBitmap(thePic);
+                File f = new File(imageUrl.getPath());
+                if (f.exists()) {
+                    f.delete();
+                }
+                f = new File(imageUrl.getPath());
+                try {
+                    f.createNewFile();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                //Convert bitmap to byte array
+                ByteArrayOutputStream bos = new ByteArrayOutputStream();
+                thePic.compress(Bitmap.CompressFormat.PNG, 0 /*ignored for PNG*/, bos);
+                byte[] bitmapdata = bos.toByteArray();
+                FileOutputStream fos = null;
+                try {
+                    fos = new FileOutputStream(f);
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                }
+                try {
+                    fos.write(bitmapdata);
+                    fos.flush();
+                    fos.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
         }
 
     }
@@ -474,6 +617,7 @@ public class InsertExActivity extends AppCompatActivity {
                         DatabaseReference ActRef = database.getReference("Activities").child(Gname).push();
                         ActRef.setValue(new ActivityData(myname+" "+mysurname, myname +" "+mysurname+" added a new expense in group "+ groupName, new SimpleDateFormat("d MMM yyyy, HH:mm").format(Calendar.getInstance().getTime()), "expense", refkey, Gname));
                         myRef.setValue(new ExpenseData(name, description, category, currency, String.format("%.2f", value), "0.00", algorithm));
+                        final DatabaseReference myRef2=myRef;
                         myRef.child("creator").setValue(myname + " " + mysurname);
                         myRef.child("users").setValue(values);
                         myRef.child("contested").setValue("no");
@@ -546,16 +690,37 @@ public class InsertExActivity extends AppCompatActivity {
 
                             System.out.println(String.format("balance update cycles: %d\n", ii));
                         }
+                        mStorageRef = FirebaseStorage.getInstance().getReference();
+                        try {
+                            ProgressBar p=(ProgressBar) findViewById(R.id.progress_bar_insertex);
+                            p.setVisibility(View.VISIBLE);
+                            System.out.println(".......carica in"+imageUrl.toString().substring(7));
+                            InputStream stream = new FileInputStream(new File(imageUrl.toString().substring(7)));
+                            StorageReference imageStorage = mStorageRef.child(refkey);
+                            UploadTask uploadTask = imageStorage.putStream(stream);
+                            uploadTask.addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
+                                    Log.d("myStorage", "failure :(");
+                                }
+                            }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                                @Override
+                                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                                    downloadUrl = taskSnapshot.getDownloadUrl();
+                                    myRef2.child("imagePath").setValue(downloadUrl.toString());
+                                    Intent i2 = new Intent(InsertExActivity.this, GroupActivity.class);
+                                    System.out.println("+++++++++++++++++"+Gname + groupName);
+                                    i2.putExtra("groupId", Gname);
+                                    i2.putExtra("groupName", groupName);
 
-
-
-                        Intent i2 = new Intent(InsertExActivity.this, GroupActivity.class);
-                        System.out.println("+++++++++++++++++"+Gname + groupName);
-                        i2.putExtra("groupId", Gname);
-                        i2.putExtra("groupName", groupName);
-
-                        setResult(RESULT_OK, i2);
-                        finish();
+                                    setResult(RESULT_OK, i2);
+                                    finish();
+                                    Log.d("myStorage", "success!");
+                                }
+                            });
+                        }catch (FileNotFoundException e) {
+                            e.printStackTrace();
+                        }
 
                         return true;
                     } else {
@@ -568,5 +733,33 @@ public class InsertExActivity extends AppCompatActivity {
                 return super.onOptionsItemSelected(item);
         }
 
+    }
+    private void performCrop() {
+        try {
+            // support it)
+            Intent cropIntent = new Intent("com.android.camera.action.CROP");
+            // indicate image type and Uri
+            cropIntent.setDataAndType(imageUrl, "image/*");
+            // set crop properties
+            cropIntent.putExtra("crop", "true");
+            // indicate aspect of desired crop
+            cropIntent.putExtra("aspectX", 1);
+            cropIntent.putExtra("aspectY", 1);
+            // indicate output X and Y
+            cropIntent.putExtra("outputX", 200);
+            cropIntent.putExtra("outputY", 200);
+            // retrieve data on return
+            cropIntent.putExtra("return-data", true);
+            final Intent cIntent = Intent.createChooser(cropIntent, "Tha image should be cropped,select a source");
+            // Add the camera options.
+            // start the activity - we handle returning in onActivityResult
+            startActivityForResult(cIntent , 2);
+        }
+        // respond to users whose devices do not support the crop action
+        catch (ActivityNotFoundException anfe) {
+            Toast toast = Toast
+                    .makeText(this, "This device doesn't support the crop action!", Toast.LENGTH_SHORT);
+            toast.show();
+        }
     }
 }

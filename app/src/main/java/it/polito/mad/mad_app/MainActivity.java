@@ -120,6 +120,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         if (p == null) {
                             nav_photo.setImageResource(R.drawable.group_default);
                         } else {
+                            p=myu.getImagePath();
                             Glide
                                     .with(getApplicationContext())
                                     .load(p)

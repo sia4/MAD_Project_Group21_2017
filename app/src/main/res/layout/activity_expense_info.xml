@@ -21,11 +21,13 @@
     </android.support.design.widget.AppBarLayout>
 
     <include layout="@layout/content_expense_info" />
-
+    <android.support.v4.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_behavior="android.support.design.widget.AppBarLayout$ScrollingViewBehavior">
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="52dp"
         android:orientation="vertical">
         <TextView
             android:id="@+id/exContested"
@@ -196,7 +198,12 @@
             android:layout_marginRight="16sp"
             android:layout_marginLeft="16sp"
             android:layout_marginBottom="5dp"/>
-
+        <ImageView
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:id="@+id/im_ex_info"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
         <Button
             android:id="@+id/exDeny"
             android:layout_width="match_parent"
@@ -214,5 +221,5 @@
             android:layout_marginBottom="5dp"/>
 
     </LinearLayout>
-
+</android.support.v4.widget.NestedScrollView>
 </android.support.design.widget.CoordinatorLayout>

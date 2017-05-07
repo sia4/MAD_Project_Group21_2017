@@ -13,9 +13,11 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -42,6 +44,7 @@ public class ExpenseInfoActivity extends AppCompatActivity {
     public TextView name_ex,date_ex, s_ex, value_ex, description_ex,creator_ex, category_ex, currency_ex, myvalue_ex, algorithm_ex;
     private String myname, mysurname, name, value, creator, description, category, currency, myvalue, algorithm, date, exid, groupName;
     private Map<String, Float> usermap = new TreeMap<>();
+    private ImageView image_info;
     private Map<String, Map<String, Map<String, Object>>> balancemap = new TreeMap<>();
     private FirebaseAuth mAuth = FirebaseAuth.getInstance();
     @Override
@@ -57,7 +60,7 @@ public class ExpenseInfoActivity extends AppCompatActivity {
 
         exid = i.getStringExtra("ExpenseId");
         final String GroupId = i.getStringExtra("groupId");
-
+        image_info=(ImageView) findViewById(R.id.im_ex_info);
         s_ex=(TextView) findViewById(R.id.iMyvalue);
         name_ex = (TextView) findViewById(R.id.exName);
         value_ex = (TextView) findViewById(R.id.exValue);
@@ -90,6 +93,10 @@ public class ExpenseInfoActivity extends AppCompatActivity {
                         Tdenydescr.setVisibility(View.GONE);
 
 
+                    }
+                    String p=map.get("imagePath").toString();
+                    if(p!=null) {
+                        Glide.with(getApplicationContext()).load(p).into(image_info);
                     }
                     name = (String)map.get("name");
                     System.out.println("nameeeeeeeeeeeeeee"+name);

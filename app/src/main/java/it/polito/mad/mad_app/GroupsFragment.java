@@ -186,10 +186,12 @@ public class GroupsFragment extends Fragment {
                             public void onClick(View view, int position) {
                                 final String k = groups.get(position).getGroupId();
                                 final String n = groups.get(position).getGroupName();
+                                final String imagePath=groups.get(position).getGroupUrl();
                                 Intent intent = new Intent().setClass(view.getContext(), GroupActivity.class);
 
                                 intent.putExtra("groupId", k);
                                 intent.putExtra("groupName", n);
+                                intent.putExtra("imagePath", imagePath);
                                 view.getContext().startActivity(intent);
                             }
 

@@ -22,11 +22,22 @@
     </android.support.design.widget.AppBarLayout>
 
     <include layout="@layout/content_expense_info" />
-
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="49dp">
+        <ProgressBar
+            android:id="@+id/progress_bar_user_info"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_margin="60dp"
+            android:layout_centerHorizontal="true"
+            android:indeterminate="false"
+            android:visibility="invisible"/>
     <LinearLayout
         android:layout_width="match_parent"
+        android:id="@+id/llayout_user_info"
         android:layout_height="wrap_content"
-        android:layout_marginTop="49dp"
         android:orientation="vertical">
 
         <LinearLayout
@@ -46,7 +57,8 @@
                     android:layout_height="70dp"
                     android:gravity="left" />
 
-                <TextView
+                <Button
+                    android:id="@+id/changePhoto"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="center"
@@ -155,5 +167,6 @@
        <View style="@style/Divider" /> LO TOGLIAMO PER IL MOMENTO-->
 
     </LinearLayout>
+    </RelativeLayout>
 
 </android.support.design.widget.CoordinatorLayout>
