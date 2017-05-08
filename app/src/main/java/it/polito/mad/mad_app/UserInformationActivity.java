@@ -8,11 +8,14 @@ import android.content.pm.ResolveInfo;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Parcelable;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
+import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
+import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -28,6 +31,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -61,6 +65,7 @@ import it.polito.mad.mad_app.model.Group;
 public class UserInformationActivity extends AppCompatActivity {
 
     private TextView name, surname, email, username;
+    private int MY_PERMISSIONS_REQUEST_READ_CONTACTS=1;
     private Button changePhoto;
     private EditText nameed, surnameed;
     private StorageReference mStorageRef;
@@ -114,15 +119,37 @@ public class UserInformationActivity extends AppCompatActivity {
                     surname.setText((String)map.get("surname"));
                     email.setText((String)map.get("email"));
                     //username.setText((String)map.get("username"));
-                    String p = (String) map.get("imagePath");
-                    //TODO controllare che l'immagine sia presa!!
-                    Glide.with(getApplicationContext()).load(p).into(im);
+                    if(map.get("imagePath")!=null) {
+                        String p = (String) map.get("imagePath");
+                        if (p != null) {
+                            Glide.with(getApplicationContext()).load(p).asBitmap().centerCrop().into(new BitmapImageViewTarget(im) {
+                                @Override
+                                protected void setResource(Bitmap resource) {
+                                    RoundedBitmapDrawable circularBitmapDrawable =
+                                            RoundedBitmapDrawableFactory.create(getApplicationContext().getResources(), resource);
+                                    circularBitmapDrawable.setCircular(true);
+                                    im.setImageDrawable(circularBitmapDrawable);
+                                }
+                            });
+                        }
+                    }else {
+                            //holder.im.setImageResource(R.drawable.group_default);
+                            Glide.with(getApplicationContext()).load(R.drawable.group_default).asBitmap().centerCrop().into(new BitmapImageViewTarget(im) {
+                                @Override
+                                protected void setResource(Bitmap resource) {
+                                    RoundedBitmapDrawable circularBitmapDrawable =
+                                            RoundedBitmapDrawableFactory.create(getApplicationContext().getResources(), resource);
+                                    circularBitmapDrawable.setCircular(true);
+                                    im.setImageDrawable(circularBitmapDrawable);
+                                }
+                            });
+                        }
+                    }
                     //if(progressBar.isActivated())
                     //progressBar.setVisibility(View.INVISIBLE);
                     //gAdapter.notifyDataSetChanged();
 
                 }
-            }
 
             @Override
             public void onCancelled(DatabaseError error) {
@@ -176,12 +203,6 @@ public class UserInformationActivity extends AppCompatActivity {
                     intent.setComponent(new ComponentName(packageName, res.activityInfo.name));
                     intent.setPackage(packageName);
                     intent.putExtra(MediaStore.EXTRA_OUTPUT, outputFileUri);
-                    intent.putExtra("crop", "true");
-                    intent.putExtra("outputX", 200);
-                    intent.putExtra("outputY", 200);
-                    intent.putExtra("aspectX", 1);
-                    intent.putExtra("aspectY", 1);
-                    intent.putExtra("scale", true);
                     System.out.println(".........image intent " + intent);
                     cameraIntents.add(intent);
                 }
@@ -194,12 +215,6 @@ public class UserInformationActivity extends AppCompatActivity {
                     intent.setComponent(new ComponentName(packageName, res.activityInfo.name));
                     intent.setPackage(packageName);
                     intent.putExtra(MediaStore.EXTRA_OUTPUT, outputFileUri);
-                    intent.putExtra("crop", "true");
-                    intent.putExtra("outputX", 200);
-                    intent.putExtra("outputY", 200);
-                    intent.putExtra("aspectX", 1);
-                    intent.putExtra("aspectY", 1);
-                    intent.putExtra("scale", true);
                     System.out.println(".........camera intent " + intent);
                     cameraIntents.add(intent);
                 }
@@ -285,7 +300,25 @@ public class UserInformationActivity extends AppCompatActivity {
                         ImageC = true;
                         selectedImageUri = data.getData();
                         imageUrl= selectedImageUri;
+                        performCrop();
                         System.out.println("++++++++---->" + selectedImageUri.toString());
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && checkSelfPermission(android.Manifest.permission.READ_EXTERNAL_STORAGE)
+                                != PackageManager.PERMISSION_GRANTED) {
+
+                            // Should we show an explanation?
+                            if (shouldShowRequestPermissionRationale(
+                                    android.Manifest.permission.READ_EXTERNAL_STORAGE)) {
+                                // Explain to the user why we need to read the contacts
+                            }
+
+                            requestPermissions(new String[]{android.Manifest.permission.READ_EXTERNAL_STORAGE},
+                                    MY_PERMISSIONS_REQUEST_READ_CONTACTS);
+
+                            // MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE is an
+                            // app-defined int constant that should be quite unique
+
+                            return;
+                        }
                         Bitmap photo = null;
                         try {
                             photo = MediaStore.Images.Media.getBitmap(this.getContentResolver(), selectedImageUri);
@@ -301,21 +334,27 @@ public class UserInformationActivity extends AppCompatActivity {
                 }
             }else if(requestCode==CROP_PIC){
                 Bundle extras = data.getExtras();
+                System.out.println("......bundle"+extras);
                 Bitmap thePic = extras.getParcelable("data");
+                System.out.println("...bitmap"+thePic);
                 ImageView picView = (ImageView) findViewById(R.id.im_u);
                 picView.setImageBitmap(thePic);
-                File f = new File(imageUrl.getPath());
+                System.out.println(".........Url image"+imageUrl);
+                System.out.println(".........Url image"+outputFileUri);
+                File f = new File(outputFileUri.getPath());
                 if (f.exists()) {
                     f.delete();
                 }
-                f = new File(imageUrl.getPath());
+
+                f = new File(outputFileUri.getPath());
                 try {
                     f.createNewFile();
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
+                //Convert bitmap to byte array
                 ByteArrayOutputStream bos = new ByteArrayOutputStream();
-                thePic.compress(Bitmap.CompressFormat.PNG, 0 /*ignored for PNG*/, bos);
+                thePic.compress(Bitmap.CompressFormat.PNG, 0 , bos);
                 byte[] bitmapdata = bos.toByteArray();
                 FileOutputStream fos = null;
                 try {
@@ -339,7 +378,30 @@ public class UserInformationActivity extends AppCompatActivity {
         getMenuInflater().inflate(R.menu.menu_done, menu);
         return true;
     }
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case 1: {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
 
+                    // permission was granted, yay! Do the
+                    // contacts-related task you need to do.
+
+                } else {
+
+                    // permission denied, boo! Disable the
+                    // functionality that depends on this permission.
+                }
+                return;
+            }
+
+            // other 'case' lines to check for other
+            // permissions this app might request
+        }
+    }
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
@@ -377,8 +439,8 @@ public class UserInformationActivity extends AppCompatActivity {
                     ll.setVisibility(View.INVISIBLE);
                     mStorageRef = FirebaseStorage.getInstance().getReference();
                     try {
-                        System.out.println(".......carica in"+imageUrl.toString().substring(7));
-                        InputStream stream = new FileInputStream(new File(imageUrl.toString().substring(7)));
+                        System.out.println(".......carica in"+outputFileUri.toString().substring(7));
+                        InputStream stream = new FileInputStream(new File(outputFileUri.toString().substring(7)));
                         StorageReference imageStorage = mStorageRef.child(uId);
                         UploadTask uploadTask = imageStorage.putStream(stream);
                         uploadTask.addOnFailureListener(new OnFailureListener() {
@@ -390,7 +452,7 @@ public class UserInformationActivity extends AppCompatActivity {
                             @Override
                             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                                 downloadUrl = taskSnapshot.getDownloadUrl();
-                                DatabaseReference myRef = database.getReference("Users/"+uId + "/ImageUPath");
+                                DatabaseReference myRef = database.getReference("Users/"+uId + "/imagePath");
                                 myRef.setValue(downloadUrl.toString());
                                 setResult(RESULT_OK, null);
                                 finish();

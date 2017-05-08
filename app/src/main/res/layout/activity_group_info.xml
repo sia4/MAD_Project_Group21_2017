@@ -43,9 +43,10 @@
                 <ImageView
                     android:id="@+id/im_g"
                     android:layout_width="100dp"
-                    android:layout_height="87dp" />
+                    android:layout_height="100dp" />
                 <Button
                     android:id="@+id/m_image_g"
+                    android:background="@null"
                     android:layout_width="wrap_content"
                     android:text="Modify"
                     android:layout_height="wrap_content" />

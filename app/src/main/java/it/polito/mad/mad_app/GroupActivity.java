@@ -11,6 +11,8 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
+import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
@@ -24,6 +26,7 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.animation.GlideAnimation;
+import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.bumptech.glide.request.target.SimpleTarget;
 
 import java.lang.reflect.Field;
@@ -77,8 +80,11 @@ public class GroupActivity extends AppCompatActivity {
                     @Override
                     public void onResourceReady(Bitmap resource, GlideAnimation glideAnimation) {
                         //image.setImageBitmap(resource); // Possibly runOnUiThread()
-                        Drawable d = new BitmapDrawable(getResources(), resource);
-                        getSupportActionBar().setLogo(d);
+                        RoundedBitmapDrawable circularBitmapDrawable =
+                                RoundedBitmapDrawableFactory.create(getResources(), resource);
+                        circularBitmapDrawable.setCircular(true);
+                        //Drawable d = new BitmapDrawable(getResources(), circularBitmapDrawable);
+                        getSupportActionBar().setLogo(circularBitmapDrawable);
                     }
                 });
         try{

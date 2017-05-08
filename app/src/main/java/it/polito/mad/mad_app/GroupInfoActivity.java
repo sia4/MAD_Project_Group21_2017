@@ -172,7 +172,7 @@ public class GroupInfoActivity extends AppCompatActivity {
             }
         });
 
-        im.setOnClickListener(new View.OnClickListener() {
+        /*im.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 checkPermission();
@@ -180,7 +180,7 @@ public class GroupInfoActivity extends AppCompatActivity {
                 startActivityForResult(i, 1);
             }
 
-        });
+        });*/
 
         namet=(TextView) findViewById(R.id.name_g);
         nameted = (EditText) findViewById(R.id.name_g_ed);
@@ -197,27 +197,32 @@ public class GroupInfoActivity extends AppCompatActivity {
                     desctmp = (String) map.get("description");
                     namet.setText(nametmp);
                     desc.setText(desctmp);
-
-                    String p = (String) map.get("imagePath");
-                    image = p;
-
-                    if (p == null) {
+                    if(map.get("imagePath")==null){
                         im.setImageResource(R.drawable.group_default);
-                    } else {
-                        Glide.with(getApplicationContext()).load(p).asBitmap().centerCrop().into(new BitmapImageViewTarget(im) {
-                            @Override
-                            protected void setResource(Bitmap resource) {
-                                RoundedBitmapDrawable circularBitmapDrawable =
-                                        RoundedBitmapDrawableFactory.create(getApplicationContext().getResources(), resource);
-                                circularBitmapDrawable.setCircular(true);
-                                im.setImageDrawable(circularBitmapDrawable);
-                            }
-                        });
+                    }
+                    else{
+                        String p = (String) map.get("imagePath");
+                        image = p;
+
+                        if (p == null) {
+
+                        } else {
+                            Glide.with(getApplicationContext()).load(p).asBitmap().centerCrop().into(new BitmapImageViewTarget(im) {
+                                @Override
+                                protected void setResource(Bitmap resource) {
+                                    RoundedBitmapDrawable circularBitmapDrawable =
+                                            RoundedBitmapDrawableFactory.create(getApplicationContext().getResources(), resource);
+                                    circularBitmapDrawable.setCircular(true);
+                                    im.setImageDrawable(circularBitmapDrawable);
+                                }
+                            });
                         /*Glide
                                 .with(getApplicationContext())
                                 .load(p)
                                 .into(im);*/
+                        }
                     }
+
 
                     //Group g = new Group((String)map.get("gId"),(String) map.get("surname"), (String)map.get("defaultCurrency"));
 
@@ -258,7 +263,12 @@ public class GroupInfoActivity extends AppCompatActivity {
                             public void onDataChange(DataSnapshot dataSnapshot) {
                                 Map<String, Object> map3 = (Map<String, Object>) dataSnapshot.getValue();
                                 if(map3!=null) {
-                                    String p= map3.get("imagePath").toString();
+                                    String p=null;
+                                    if(map3.get("imagePath")==null){
+                                        p="https://firebasestorage.googleapis.com/v0/b/allaromana-3f98e.appspot.com/o/group_default.png?alt=media&token=40bc93f4-6b97-466e-b130-e140f57c5895";
+                                    }else{
+                                        p= map3.get("imagePath").toString();
+                                    }
                                     String s = map3.get("name")+" "+map3.get("surname");
                                     users.add(s);
                                     user_l.add(new User(null,null,map3.get("name").toString(),map3.get("surname").toString(),p));

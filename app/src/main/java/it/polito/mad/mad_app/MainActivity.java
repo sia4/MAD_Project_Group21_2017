@@ -1,6 +1,7 @@
 package it.polito.mad.mad_app;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
@@ -9,6 +10,8 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
+import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -21,6 +24,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
@@ -118,14 +122,26 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         String p = myu.getImagePath();
                         System.out.println("+++++++++++++++" + p);
                         if (p == null) {
-                            nav_photo.setImageResource(R.drawable.group_default);
+                            Glide.with(getApplicationContext()).load(R.drawable.group_default).asBitmap().centerCrop().into(new BitmapImageViewTarget(nav_photo) {
+                                @Override
+                                protected void setResource(Bitmap resource) {
+                                    RoundedBitmapDrawable circularBitmapDrawable =
+                                            RoundedBitmapDrawableFactory.create(getApplicationContext().getResources(), resource);
+                                    circularBitmapDrawable.setCircular(true);
+                                    nav_photo.setImageDrawable(circularBitmapDrawable);
+                                }
+                            });
                         } else {
                             p=myu.getImagePath();
-                            Glide
-                                    .with(getApplicationContext())
-                                    .load(p)
-                                    .into(nav_photo);
-                            //nav_photo.setImageBitmap(BitmapFactory.decodeFile(p));
+                            Glide.with(getApplicationContext()).load(p).asBitmap().centerCrop().into(new BitmapImageViewTarget(nav_photo) {
+                                @Override
+                                protected void setResource(Bitmap resource) {
+                                    RoundedBitmapDrawable circularBitmapDrawable =
+                                            RoundedBitmapDrawableFactory.create(getApplicationContext().getResources(), resource);
+                                    circularBitmapDrawable.setCircular(true);
+                                    nav_photo.setImageDrawable(circularBitmapDrawable);
+                                }
+                            });
                         }
                     }
 

@@ -9,6 +9,7 @@ import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Parcelable;
@@ -78,6 +79,7 @@ import it.polito.mad.mad_app.model.UserData;
 public class InsertExActivity extends AppCompatActivity {
 
 
+    private int MY_PERMISSIONS_REQUEST_READ_CONTACTS=1;
     private String name;
     private String description;
     private String category;
@@ -339,12 +341,6 @@ public class InsertExActivity extends AppCompatActivity {
                     intent.setComponent(new ComponentName(packageName, res.activityInfo.name));
                     intent.setPackage(packageName);
                     intent.putExtra(MediaStore.EXTRA_OUTPUT, outputFileUri);
-                    intent.putExtra("crop", "true");
-                    intent.putExtra("outputX", 200);
-                    intent.putExtra("outputY", 200);
-                    intent.putExtra("aspectX", 1);
-                    intent.putExtra("aspectY", 1);
-                    intent.putExtra("scale", true);
                     System.out.println(".........image intent " + intent);
                     cameraIntents.add(intent);
                 }
@@ -357,12 +353,6 @@ public class InsertExActivity extends AppCompatActivity {
                     intent.setComponent(new ComponentName(packageName, res.activityInfo.name));
                     intent.setPackage(packageName);
                     intent.putExtra(MediaStore.EXTRA_OUTPUT, outputFileUri);
-                    intent.putExtra("crop", "true");
-                    intent.putExtra("outputX", 200);
-                    intent.putExtra("outputY", 200);
-                    intent.putExtra("aspectX", 1);
-                    intent.putExtra("aspectY", 1);
-                    intent.putExtra("scale", true);
                     System.out.println(".........camera intent " + intent);
                     cameraIntents.add(intent);
                 }
@@ -463,8 +453,26 @@ public class InsertExActivity extends AppCompatActivity {
                     if (data != null) {
                         ImageC = true;
                         selectedImageUri = data.getData();
-                        imageUrl = selectedImageUri;
+                        imageUrl= selectedImageUri;
+                        performCrop();
                         System.out.println("++++++++---->" + selectedImageUri.toString());
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && checkSelfPermission(android.Manifest.permission.READ_EXTERNAL_STORAGE)
+                                != PackageManager.PERMISSION_GRANTED) {
+
+                            // Should we show an explanation?
+                            if (shouldShowRequestPermissionRationale(
+                                    android.Manifest.permission.READ_EXTERNAL_STORAGE)) {
+                                // Explain to the user why we need to read the contacts
+                            }
+
+                            requestPermissions(new String[]{android.Manifest.permission.READ_EXTERNAL_STORAGE},
+                                    MY_PERMISSIONS_REQUEST_READ_CONTACTS);
+
+                            // MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE is an
+                            // app-defined int constant that should be quite unique
+
+                            return;
+                        }
                         Bitmap photo = null;
                         try {
                             photo = MediaStore.Images.Media.getBitmap(this.getContentResolver(), selectedImageUri);
@@ -480,14 +488,19 @@ public class InsertExActivity extends AppCompatActivity {
                 }
             }else if(requestCode==CROP_PIC){
                 Bundle extras = data.getExtras();
+                System.out.println("......bundle"+extras);
                 Bitmap thePic = extras.getParcelable("data");
+                System.out.println("...bitmap"+thePic);
                 ImageView picView = (ImageView) findViewById(R.id.ImageG);
                 picView.setImageBitmap(thePic);
-                File f = new File(imageUrl.getPath());
+                System.out.println(".........Url image"+imageUrl);
+                System.out.println(".........Url image"+outputFileUri);
+                File f = new File(outputFileUri.getPath());
                 if (f.exists()) {
                     f.delete();
                 }
-                f = new File(imageUrl.getPath());
+
+                f = new File(outputFileUri.getPath());
                 try {
                     f.createNewFile();
                 } catch (IOException e) {
@@ -495,7 +508,7 @@ public class InsertExActivity extends AppCompatActivity {
                 }
                 //Convert bitmap to byte array
                 ByteArrayOutputStream bos = new ByteArrayOutputStream();
-                thePic.compress(Bitmap.CompressFormat.PNG, 0 /*ignored for PNG*/, bos);
+                thePic.compress(Bitmap.CompressFormat.PNG, 0 , bos);
                 byte[] bitmapdata = bos.toByteArray();
                 FileOutputStream fos = null;
                 try {
@@ -515,6 +528,30 @@ public class InsertExActivity extends AppCompatActivity {
 
     }
 
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case 1: {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+
+                    // permission was granted, yay! Do the
+                    // contacts-related task you need to do.
+
+                } else {
+
+                    // permission denied, boo! Disable the
+                    // functionality that depends on this permission.
+                }
+                return;
+            }
+
+            // other 'case' lines to check for other
+            // permissions this app might request
+        }
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -690,39 +727,50 @@ public class InsertExActivity extends AppCompatActivity {
 
                             System.out.println(String.format("balance update cycles: %d\n", ii));
                         }
-                        mStorageRef = FirebaseStorage.getInstance().getReference();
-                        try {
-                            ProgressBar p=(ProgressBar) findViewById(R.id.progress_bar_insertex);
-                            p.setVisibility(View.VISIBLE);
-                            System.out.println(".......carica in"+imageUrl.toString().substring(7));
-                            InputStream stream = new FileInputStream(new File(imageUrl.toString().substring(7)));
-                            StorageReference imageStorage = mStorageRef.child(refkey);
-                            UploadTask uploadTask = imageStorage.putStream(stream);
-                            uploadTask.addOnFailureListener(new OnFailureListener() {
-                                @Override
-                                public void onFailure(@NonNull Exception e) {
-                                    Log.d("myStorage", "failure :(");
-                                }
-                            }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                                @Override
-                                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                                    downloadUrl = taskSnapshot.getDownloadUrl();
-                                    myRef2.child("imagePath").setValue(downloadUrl.toString());
-                                    Intent i2 = new Intent(InsertExActivity.this, GroupActivity.class);
-                                    System.out.println("+++++++++++++++++"+Gname + groupName);
-                                    i2.putExtra("groupId", Gname);
-                                    i2.putExtra("groupName", groupName);
+                        if(ImageC==true){
+                            mStorageRef = FirebaseStorage.getInstance().getReference();
+                            try {
+                                ProgressBar p=(ProgressBar) findViewById(R.id.progress_bar_insertex);
+                                p.setVisibility(View.VISIBLE);
+                                System.out.println(".......carica in"+outputFileUri.toString().substring(7));
+                                InputStream stream = new FileInputStream(new File(outputFileUri.toString().substring(7)));
+                                StorageReference imageStorage = mStorageRef.child(refkey);
+                                UploadTask uploadTask = imageStorage.putStream(stream);
+                                uploadTask.addOnFailureListener(new OnFailureListener() {
+                                    @Override
+                                    public void onFailure(@NonNull Exception e) {
+                                        Log.d("myStorage", "failure :(");
+                                    }
+                                }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                                    @Override
+                                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                                        downloadUrl = taskSnapshot.getDownloadUrl();
+                                        myRef2.child("imagePath").setValue(downloadUrl.toString());
+                                        Intent i2 = new Intent(InsertExActivity.this, GroupActivity.class);
+                                        System.out.println("+++++++++++++++++"+Gname + groupName);
+                                        i2.putExtra("groupId", Gname);
+                                        i2.putExtra("groupName", groupName);
 
-                                    setResult(RESULT_OK, i2);
-                                    finish();
-                                    Log.d("myStorage", "success!");
-                                }
-                            });
-                        }catch (FileNotFoundException e) {
-                            e.printStackTrace();
+                                        setResult(RESULT_OK, i2);
+                                        finish();
+                                        Log.d("myStorage", "success!");
+                                    }
+                                });
+                            }catch (FileNotFoundException e) {
+                                e.printStackTrace();
+                            }
                         }
+                        else{
+                            Intent i2 = new Intent(InsertExActivity.this, GroupActivity.class);
+                            System.out.println("+++++++++++++++++"+Gname + groupName);
+                            i2.putExtra("groupId", Gname);
+                            i2.putExtra("groupName", groupName);
 
-                        return true;
+                            setResult(RESULT_OK, i2);
+                            finish();
+                            Log.d("myStorage", "success!");
+                        }
+                        //return true;
                     } else {
                         String p = String.format("problems... flagok: %d, values.size: %d, users.size: %d, uAdapter: %d", flagok, values.size(), users.size(), uAdapter.getItemCount());
                         Toast.makeText(InsertExActivity.this, p, Toast.LENGTH_LONG).show();

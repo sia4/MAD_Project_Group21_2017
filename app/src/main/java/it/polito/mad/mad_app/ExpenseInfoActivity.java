@@ -94,8 +94,9 @@ public class ExpenseInfoActivity extends AppCompatActivity {
 
 
                     }
-                    String p=map.get("imagePath").toString();
-                    if(p!=null) {
+                    if(map.get("imagePath")!=null) {
+                        String p=map.get("imagePath").toString();
+                        image_info.setVisibility(View.VISIBLE);
                         Glide.with(getApplicationContext()).load(p).into(image_info);
                     }
                     name = (String)map.get("name");

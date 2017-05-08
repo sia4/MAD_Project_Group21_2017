@@ -199,6 +199,7 @@
             android:layout_marginLeft="16sp"
             android:layout_marginBottom="5dp"/>
         <ImageView
+            android:visibility="invisible"
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
             android:id="@+id/im_ex_info"

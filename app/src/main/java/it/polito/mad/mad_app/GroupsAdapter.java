@@ -71,17 +71,30 @@ public class GroupsAdapter extends RecyclerView.Adapter<GroupsAdapter.MyViewHold
         Log.d("GROUPSADAPTER", "dati: "+g.getGroupId()+" "+g.dateLastOperation+" "+g.lastOperation);
 
         String p = g.getGroupUrl();
-
-        //Glide.with(context).load(p).into(holder.im);
-        Glide.with(context).load(p).asBitmap().centerCrop().into(new BitmapImageViewTarget(holder.im) {
-            @Override
-            protected void setResource(Bitmap resource) {
-                RoundedBitmapDrawable circularBitmapDrawable =
-                        RoundedBitmapDrawableFactory.create(context.getResources(), resource);
-                circularBitmapDrawable.setCircular(true);
-                holder.im.setImageDrawable(circularBitmapDrawable);
-            }
-        });
+        if(p!=null) {
+            //Glide.with(context).load(p).into(holder.im);
+            Glide.with(context).load(p).asBitmap().centerCrop().into(new BitmapImageViewTarget(holder.im) {
+                @Override
+                protected void setResource(Bitmap resource) {
+                    RoundedBitmapDrawable circularBitmapDrawable =
+                            RoundedBitmapDrawableFactory.create(context.getResources(), resource);
+                    circularBitmapDrawable.setCircular(true);
+                    holder.im.setImageDrawable(circularBitmapDrawable);
+                }
+            });
+        }
+        else{
+            //holder.im.setImageResource(R.drawable.group_default);
+            Glide.with(context).load(R.drawable.group_default).asBitmap().centerCrop().into(new BitmapImageViewTarget(holder.im) {
+                @Override
+                protected void setResource(Bitmap resource) {
+                    RoundedBitmapDrawable circularBitmapDrawable =
+                            RoundedBitmapDrawableFactory.create(context.getResources(), resource);
+                    circularBitmapDrawable.setCircular(true);
+                    holder.im.setImageDrawable(circularBitmapDrawable);
+                }
+            });
+        }
 
         /*if (p == null) {
             holder.im.setImageResource(R.drawable.group_default);
