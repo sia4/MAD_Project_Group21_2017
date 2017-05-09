@@ -15,6 +15,14 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.github.mikephil.charting.charts.PieChart;
+import com.github.mikephil.charting.components.Legend;
+import com.github.mikephil.charting.data.Entry;
+import com.github.mikephil.charting.data.PieData;
+import com.github.mikephil.charting.data.PieDataSet;
+import com.github.mikephil.charting.data.PieEntry;
+import com.github.mikephil.charting.highlight.Highlight;
+import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -35,6 +43,9 @@ public class PolActivity extends AppCompatActivity {
     private List<String> users = new ArrayList(), usersid = new ArrayList<>();
     private String myname, mysurname;
     private String totu, creator;
+    PieChart PiePol;
+    float[] yData = {2,3};
+    String[] xData = {"Accepts", "Total"};
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -58,6 +69,8 @@ public class PolActivity extends AppCompatActivity {
         final TextView acceptedusers = (TextView) findViewById(R.id.totvalue);
         final Button button = (Button) findViewById(R.id.AcceptPropose);
         poltext.setText(text);
+
+
 
         RecyclerView userRecyclerView = (RecyclerView) findViewById(R.id.polUsersList);
         userRecyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -85,6 +98,35 @@ public class PolActivity extends AppCompatActivity {
 
 
                     uAdapter.notifyDataSetChanged();
+                    yData[1] = users.size();
+                    ArrayList<PieEntry> yEntrys = new ArrayList<>();
+                    ArrayList<String> xEntrys = new ArrayList<>();
+                    for(int r=0; r<yData.length; r++){
+                        yEntrys.add(new PieEntry(yData[r], r));
+                    }
+
+
+                    for(int r=0; r<xData.length; r++){
+                        xEntrys.add(xData[r]);
+                    }
+
+                    PieDataSet pieDataSet = new PieDataSet(yEntrys, "Accepts over total");
+                    pieDataSet.setSliceSpace(2);
+                    pieDataSet.setValueTextSize(12);
+
+                    ArrayList<Integer> color = new ArrayList<>();
+
+                    color.add(Color.parseColor("#D51111"));
+                    color.add(Color.parseColor("#27B011"));
+
+                    pieDataSet.setColors(color);
+                    Legend legend = PiePol.getLegend();
+                    legend.setForm(Legend.LegendForm.CIRCLE);
+                    legend.setPosition(Legend.LegendPosition.LEFT_OF_CHART);
+
+                    PieData pieData = new PieData(pieDataSet);
+                    PiePol.setData(pieData);
+                    PiePol.invalidate();
                 }
                 else{
                     Toast.makeText(PolActivity.this, "no users found!", Toast.LENGTH_LONG).show();
@@ -107,11 +149,41 @@ public class PolActivity extends AppCompatActivity {
                 System.out.println("POLLLLLLLLLLLLLLLLLLLL "+map2);
                 if(map2!=null) {
                       totu = (String)map2.get("usersNumber");
+                      yData[0] = Integer.parseInt(totu) - users.size();
                       creator = (String)map2.get("creator");
-                      totusers.setText(totu);
-                      acceptedusers.setText(String.format("%d", users.size()));
+                      totusers.setText(String.format("%d", users.size()));
+                      acceptedusers.setText(totu);
                     if(Integer.parseInt(totu)==users.size())
                         already.setText("Propose successful completed");
+
+                    ArrayList<PieEntry> yEntrys = new ArrayList<>();
+                    ArrayList<String> xEntrys = new ArrayList<>();
+                    for(int r=0; r<yData.length; r++){
+                        yEntrys.add(new PieEntry(yData[r], r));
+                    }
+
+
+                    for(int r=0; r<xData.length; r++){
+                        xEntrys.add(xData[r]);
+                    }
+
+                    PieDataSet pieDataSet = new PieDataSet(yEntrys, "Accepts over total");
+                    pieDataSet.setSliceSpace(2);
+                    pieDataSet.setValueTextSize(12);
+
+                    ArrayList<Integer> color = new ArrayList<>();
+
+                    color.add(Color.parseColor("#D51111"));
+                    color.add(Color.parseColor("#27B011"));
+
+                    pieDataSet.setColors(color);
+                    Legend legend = PiePol.getLegend();
+                    legend.setForm(Legend.LegendForm.CIRCLE);
+                    legend.setPosition(Legend.LegendPosition.LEFT_OF_CHART);
+
+                    PieData pieData = new PieData(pieDataSet);
+                    PiePol.setData(pieData);
+                    PiePol.invalidate();
 
                 }
                 else{
@@ -127,6 +199,41 @@ public class PolActivity extends AppCompatActivity {
             }
         });
 
+        PiePol = (PieChart) findViewById(R.id.piepol);
+        PiePol.setRotationEnabled(true);
+        PiePol.setHoleRadius(50f);
+        PiePol.setTransparentCircleAlpha(0);
+        PiePol.setCenterText("Accepts over total users");
+        PiePol.setCenterTextSize(10);
+        //PiePol.setDrawEntryLabels(true);
+
+
+        //yData[0] = users.size();
+        //yData[1] = Float.parseFloat(totu);
+
+
+
+
+        PiePol.setOnChartValueSelectedListener(new OnChartValueSelectedListener() {
+            @Override
+            public void onValueSelected(Entry e, Highlight h) {
+                /*
+                int pos1 = e.toString().indexOf("(sum): ");
+                String ss = e.toString().substring(pos1 + 7);
+                for(int r = 0; r<yData.length; r++){
+                    if(yData[r]==Float.parseFloat(ss)){
+                        pos1 = r;
+                    }
+                }
+                String sss = xData[pos1];
+            */
+            }
+
+            @Override
+            public void onNothingSelected() {
+
+            }
+        });
 
         button.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
