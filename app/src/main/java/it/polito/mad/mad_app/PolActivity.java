@@ -38,6 +38,7 @@ import java.util.Map;
 
 import it.polito.mad.mad_app.model.ActivityData;
 import it.polito.mad.mad_app.model.PolData;
+import it.polito.mad.mad_app.model.RecyclerTouchListener;
 
 public class PolActivity extends AppCompatActivity {
     private List<String> users = new ArrayList(), usersid = new ArrayList<>();
@@ -293,6 +294,24 @@ public class PolActivity extends AppCompatActivity {
 
             }
         });
+
+
+
+        userRecyclerView.addOnItemTouchListener(new RecyclerTouchListener(this, userRecyclerView, new RecyclerTouchListener.ClickListener() {
+            @Override
+            public void onClick(View view, int position) {
+
+
+                Intent intent = new Intent().setClass(view.getContext(), UserInformationActivity.class);
+                intent.putExtra("userId", usersid.get(position));
+                view.getContext().startActivity(intent);
+            }
+
+            @Override
+            public void onLongClick(View view, int position) {
+
+            }
+        }));
 
     }
 
