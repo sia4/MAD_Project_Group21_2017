@@ -32,8 +32,9 @@ import it.polito.mad.mad_app.model.ActivityData;
 import it.polito.mad.mad_app.model.PolData;
 
 public class PolActivity extends AppCompatActivity {
-    private List<String> users = new ArrayList();
+    private List<String> users = new ArrayList(), usersid = new ArrayList<>();
     private String myname, mysurname;
+    private String totu, creator;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -68,7 +69,7 @@ public class PolActivity extends AppCompatActivity {
         myRef2.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-
+                users.clear();
                 Map<String, Object> map2 = (Map<String, Object>) dataSnapshot.getValue();
                 System.out.println("POLLLLLLLLLLLLLLLLLLLL "+map2);
                 if(map2!=null) {
@@ -79,6 +80,7 @@ public class PolActivity extends AppCompatActivity {
                             already.setTextColor(Color.parseColor("#27B011"));
                         }
                        users.add((String)map2.get(k));
+                       usersid.add(k);
                     }
 
 
@@ -104,8 +106,12 @@ public class PolActivity extends AppCompatActivity {
                 Map<String, Object> map2 = (Map<String, Object>) dataSnapshot.getValue();
                 System.out.println("POLLLLLLLLLLLLLLLLLLLL "+map2);
                 if(map2!=null) {
-                      totusers.setText((String)map2.get("usersNumber"));
+                      totu = (String)map2.get("usersNumber");
+                      creator = (String)map2.get("creator");
+                      totusers.setText(totu);
                       acceptedusers.setText(String.format("%d", users.size()));
+                    if(Integer.parseInt(totu)==users.size())
+                        already.setText("Propose successful completed");
 
                 }
                 else{
@@ -139,9 +145,30 @@ public class PolActivity extends AppCompatActivity {
                             DatabaseReference ActRef = database.getReference("Activities").child(GroupId).push();
                             if(type.equals("leavegroup")) {
                                 ActRef.setValue(new ActivityData(myname + " " + mysurname, myname + " " + mysurname + " accepted the propose to leave group " + GroupName, new SimpleDateFormat("d MMM yyyy, HH:mm").format(Calendar.getInstance().getTime()), "acceptleavegroup", PolId, GroupId));
+                                if(users.size()==Integer.parseInt(totu)){
+                                    ActRef.push().setValue(new ActivityData(myname + " " + mysurname, myname + " " + mysurname + " has been successful deleted from group " + GroupName, new SimpleDateFormat("d MMM yyyy, HH:mm").format(Calendar.getInstance().getTime()), "acceptleavegroup", PolId, GroupId));
+                                    database.getReference("Groups").child(GroupId).child("members").child(creator).removeValue();
+                                    database.getReference("Users").child(creator).child("Groups").child(GroupId).removeValue();
+                                    database.getReference("Balance").child(GroupId).child(creator).removeValue();
+                                    for(String k:usersid){
+                                        database.getReference("Balance").child(GroupId).child(k).child(creator).removeValue();
+
+                                    }
+                                }
                             }
                             if(type.equals("deletegroup")){
                                 ActRef.setValue(new ActivityData(myname + " " + mysurname, myname + " " + mysurname + " accepted the propose to delete group " + GroupName, new SimpleDateFormat("d MMM yyyy, HH:mm").format(Calendar.getInstance().getTime()), "acceptdeletegroup", PolId, GroupId));
+                                if(users.size()==Integer.parseInt(totu)){
+                                    ActRef.push().setValue(new ActivityData(myname + " " + mysurname, "Group "+GroupName+ " has been successful deleted", new SimpleDateFormat("d MMM yyyy, HH:mm").format(Calendar.getInstance().getTime()), "acceptdeletegroup", PolId, GroupId));
+                                    database.getReference("Groups").child(GroupId).removeValue();
+                                    database.getReference("Expenses").child(GroupId).removeValue();
+                                    database.getReference("Balance").child(GroupId).removeValue();
+                                    for(String k:usersid){
+                                        database.getReference("Users").child(k).child("Groups").child(GroupId).removeValue();
+                                    }
+
+
+                                }
                             }
 
                             //TODO SE IL NUMERO DI USER CHE HANNO ACCETTATO E' UGUALE AL NUMERO TOTALE ESEGUI AZIONE A SECONDA DEL TIPO DI POL (CANCELLA/ABBANDONA GRUPPO)

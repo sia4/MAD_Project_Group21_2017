@@ -108,8 +108,17 @@ public class GroupInfoActivity extends AppCompatActivity {
                             String PolKey = PolRef.getKey();
                             PolData p = new PolData(String.format("%d", users.size()), "1");
                             PolRef.setValue(p);
+                            PolRef.child("creator").setValue(FirebaseAuth.getInstance().getCurrentUser().getUid());
                             PolRef.child("acceptsUsers").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).setValue(myname+" "+mysurname);
                             ActRef.setValue(new ActivityData(myname+" "+mysurname, myname+" "+mysurname +" proposed to delete group " + gName, new SimpleDateFormat("d MMM yyyy, HH:mm").format(Calendar.getInstance().getTime()), "deletegroup", PolKey, gId));
+                            if(users.size()==1){
+                                ActRef.push().setValue(new ActivityData(myname + " " + mysurname, "Group "+gName+ " has been successful deleted", new SimpleDateFormat("d MMM yyyy, HH:mm").format(Calendar.getInstance().getTime()), "acceptdeletegroup", PolKey, gId));
+                                database.getReference("Groups").child(gId).removeValue();
+                                database.getReference("Expenses").child(gId).removeValue();
+                                database.getReference("Balance").child(gId).removeValue();
+                                database.getReference("Users").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("Groups").child(gId).removeValue();
+                            }
+                            //database.getReference("Groups").child(gId).removeValue();
 
                         }
 
@@ -142,10 +151,20 @@ public class GroupInfoActivity extends AppCompatActivity {
                             PolData p = new PolData(String.format("%d", users.size()), "1");
                             PolRef.setValue(p);
                             PolRef.child("acceptsUsers").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).setValue(myname+" "+mysurname);
+                            PolRef.child("creator").setValue(FirebaseAuth.getInstance().getCurrentUser().getUid());
 
                             DatabaseReference ActRef = database.getReference("Activities").child(gId).push();
                             ActRef.setValue(new ActivityData(myname+" "+mysurname, myname+" "+mysurname +" proposed to leave group " + gName, new SimpleDateFormat("d MMM yyyy, HH:mm").format(Calendar.getInstance().getTime()), "leavegroup", PolKey, gId));
+                            if(users.size()==1){
+                                ActRef.push().setValue(new ActivityData(myname + " " + mysurname, myname + " " + mysurname + " has been successful deleted from group " + gName, new SimpleDateFormat("d MMM yyyy, HH:mm").format(Calendar.getInstance().getTime()), "acceptleavegroup", PolKey, gId));
+                                database.getReference("Groups").child(gId).child("members").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).removeValue();
+                                database.getReference("Users").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("Groups").child(gId).removeValue();
+                                database.getReference("Balance").child(gId).child(FirebaseAuth.getInstance().getCurrentUser().getUid()).removeValue();
+                                for(String k:usersId){
+                                    database.getReference("Balance").child(gId).child(k).child(FirebaseAuth.getInstance().getCurrentUser().getUid()).removeValue();
 
+                                }
+                            }
                         }
 
                     }
