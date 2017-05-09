@@ -203,12 +203,15 @@ public class ExpenseInfoActivity extends AppCompatActivity {
 
         button.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-
                 Tdeny.setVisibility(View.VISIBLE);
+                button.setVisibility(View.GONE);
+                Tdenydescr.setVisibility(View.GONE);
+
                 final FirebaseDatabase database = FirebaseDatabase.getInstance();
                 DatabaseReference myRef = database.getReference("Expenses").child(GroupId);
                 myRef.child(exid).child("contested").setValue("yes");
                 DatabaseReference myRef2 = myRef.push();
+
 
                 myRef2.setValue(new ExpenseData(name + "(retrieve)", "expense retrieved", category, currency, value, "0.00", algorithm));
                 myRef2.child("creator").setValue(creator);
