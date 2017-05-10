@@ -88,6 +88,13 @@ public class UserInformationActivity extends AppCompatActivity {
 
         Intent i = getIntent();
         uId = i.getStringExtra("userId");
+        String UserInfo=i.getStringExtra("UserInfo");
+        changePhoto=(Button) findViewById(R.id.changePhoto);
+        System.out.println("+++++++++"+i.getComponent());
+        if(UserInfo!=null)
+        {
+            changePhoto.setVisibility(View.VISIBLE);
+        }
 
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -100,7 +107,7 @@ public class UserInformationActivity extends AppCompatActivity {
         name=(TextView) findViewById(R.id.name_u);
         surname = (TextView) findViewById(R.id.surname_u);
         email = (TextView) findViewById(R.id.email_u);
-        changePhoto=(Button) findViewById(R.id.changePhoto);
+
         //username = (TextView) findViewById(R.id.username_u);
 
         nameed = (EditText) findViewById(R.id.name_u_ed);

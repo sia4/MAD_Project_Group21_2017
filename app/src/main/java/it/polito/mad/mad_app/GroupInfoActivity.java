@@ -1,14 +1,22 @@
 package it.polito.mad.mad_app;
 
 import android.Manifest;
+import android.content.ActivityNotFoundException;
+import android.content.ComponentName;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
+import android.os.Parcelable;
 import android.provider.MediaStore;
+import android.provider.Settings;
+import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
@@ -24,18 +32,32 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -51,14 +73,19 @@ import it.polito.mad.mad_app.model.User;
 public class GroupInfoActivity extends AppCompatActivity {
     //private GroupData GD;
     private TextView namet, desc;
-    private boolean flag_name_edited = false, flag_desc_edited = false, flag_img_edited = false;
-    private static String tmp, nametmp, desctmp, gId, gName,  image, myname, mysurname;
+    private boolean flag_name_edited = false, flag_desc_edited = false, ImageC= false;
+    private String nametmp, desctmp, gId, gName,  image, myname, mysurname;
     private EditText nameted, desced;
     private ImageView im;
+    private Uri outputFileUri;
+    private Uri imageUrl;
     private List<User> user_l=new ArrayList<>();
     private List<String> users = new ArrayList();
     private List<String> usersId = new ArrayList<>();
     private List<String> currencies = new ArrayList();
+    private int MY_PERMISSIONS_REQUEST_READ_CONTACTS=1;
+    private Uri downloadUrl;
+    private String gImage;
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -79,6 +106,8 @@ public class GroupInfoActivity extends AppCompatActivity {
         Intent i = getIntent();
         gId =i.getStringExtra("groupId");
         gName = i.getStringExtra("groupName");
+        gImage = i.getStringExtra("imagePath");
+        System.out.println("---->intent info"+i.getExtras());
         System.out.println(gId);
 
         if (getSupportActionBar() != null)
@@ -86,7 +115,49 @@ public class GroupInfoActivity extends AppCompatActivity {
         getSupportActionBar().setTitle("Group Information");
 
         im=(ImageView) findViewById(R.id.im_g);
+        Button changePhoto= (Button) findViewById(R.id.m_image_g);
+        changePhoto.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View arg0) {
+                final File root = new File(Environment.getExternalStorageDirectory() + File.separator + "MyDir" + File.separator);
+                root.mkdirs();
+                final String fname = "img_" + System.currentTimeMillis() + ".jpg";
+                final File sdImageMainDirectory = new File(root, fname);
+                outputFileUri = Uri.fromFile(sdImageMainDirectory);
+                System.out.println("------>outputFileUri" + outputFileUri);
+                final List<Intent> cameraIntents = new ArrayList<Intent>();
+                Intent pickIntent = new Intent(Intent.ACTION_PICK,
+                        android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                final PackageManager pManager = getPackageManager();
+                final List<ResolveInfo> Im = pManager.queryIntentActivities(pickIntent, 0);
+                for (ResolveInfo res : Im) {
+                    final String packageName = res.activityInfo.packageName;
+                    final Intent intent = new Intent(pickIntent);
+                    intent.setComponent(new ComponentName(packageName, res.activityInfo.name));
+                    intent.setPackage(packageName);
+                    intent.putExtra(MediaStore.EXTRA_OUTPUT, outputFileUri);
+                    System.out.println(".........image intent " + intent);
+                    cameraIntents.add(intent);
+                }
+                final Intent captureIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
+                final PackageManager packageManager = getPackageManager();
+                final List<ResolveInfo> Cam = packageManager.queryIntentActivities(captureIntent, 0);
+                for (ResolveInfo res : Cam) {
+                    final String packageName = res.activityInfo.packageName;
+                    final Intent intent = new Intent(captureIntent);
+                    intent.setComponent(new ComponentName(packageName, res.activityInfo.name));
+                    intent.setPackage(packageName);
+                    intent.putExtra(MediaStore.EXTRA_OUTPUT, outputFileUri);
+                    System.out.println(".........camera intent " + intent);
+                    cameraIntents.add(intent);
+                }
+                final Intent chooserIntent = Intent.createChooser(cameraIntents.get(cameraIntents.size() - 1), "Select Source");
+                cameraIntents.remove(cameraIntents.size() - 1);
+                chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, cameraIntents.toArray(new Parcelable[cameraIntents.size()]));
 
+                startActivityForResult(chooserIntent, 1);
+            }
+        });
         Button button = (Button) findViewById(R.id.addUserInExistingGroup);
         Button buttonDelete = (Button) findViewById(R.id.DeleteGroup);
         Button buttonLeave = (Button) findViewById(R.id.LeaveGroup);
@@ -239,10 +310,6 @@ public class GroupInfoActivity extends AppCompatActivity {
                                     im.setImageDrawable(circularBitmapDrawable);
                                 }
                             });
-                        /*Glide
-                                .with(getApplicationContext())
-                                .load(p)
-                                .into(im);*/
                         }
                     }
 
@@ -393,31 +460,132 @@ public class GroupInfoActivity extends AppCompatActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-
         super.onActivityResult(requestCode, resultCode, data);
+        final int CAMERA_CAPTURE = 1;
+        final int CROP_PIC = 2;
+        if (resultCode == RESULT_OK) {
+            Uri selectedImageUri = null;
+            if (requestCode == 1) {
+                final boolean isCamera;
+                if (data == null) {
+                    isCamera = true;
+                } else {
+                    final String action = data.getAction();
+                    if (action == null) {
+                        isCamera = false;
+                    } else {
+                        isCamera = action.equals(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
+                    }
+                }
 
-        if (requestCode == 1 && resultCode == RESULT_OK && data != null) {
+                if (isCamera) {
+                    selectedImageUri = outputFileUri;
+                    imageUrl = selectedImageUri;
+                    ImageC = true;
+                    performCrop();
+                } else {
+                    if (data != null) {
+                        ImageC = true;
+                        selectedImageUri = data.getData();
+                        imageUrl= selectedImageUri;
+                        performCrop();
+                        System.out.println("++++++++---->" + selectedImageUri.toString());
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && checkSelfPermission(android.Manifest.permission.READ_EXTERNAL_STORAGE)
+                                != PackageManager.PERMISSION_GRANTED) {
 
-            Uri selectedImage = data.getData();
-            String[] filePathColumn = {MediaStore.Images.Media.DATA};
-            Cursor c = getContentResolver().query(selectedImage, filePathColumn, null, null, null);
-            c.moveToFirst();
-            int cIndex = c.getColumnIndex(filePathColumn[0]);
-            String picturePath = c.getString(cIndex);
-            c.close();
-            ImageView imageView = (ImageView) findViewById(R.id.im_g);
-            imageView.setImageBitmap(BitmapFactory.decodeFile(picturePath));
-            flag_img_edited = true;
-            tmp = picturePath;
-            //Toast.makeText(this, "path:"+ tmp, Toast.LENGTH_LONG).show();
+                            // Should we show an explanation?
+                            if (shouldShowRequestPermissionRationale(
+                                    android.Manifest.permission.READ_EXTERNAL_STORAGE)) {
+                                // Explain to the user why we need to read the contacts
+                            }
 
+                            requestPermissions(new String[]{android.Manifest.permission.READ_EXTERNAL_STORAGE},
+                                    MY_PERMISSIONS_REQUEST_READ_CONTACTS);
+
+                            // MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE is an
+                            // app-defined int constant that should be quite unique
+
+                            return;
+                        }
+                        Bitmap photo = null;
+                        try {
+                            photo = MediaStore.Images.Media.getBitmap(this.getContentResolver(), selectedImageUri);
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                        System.out.println("................. galleria photo" + photo);
+                        ImageView imageG = (ImageView) findViewById(R.id.im_g);
+                        imageG.setImageBitmap(photo);
+                    }
+
+                }
+            }else if(requestCode==CROP_PIC){
+                Bundle extras = data.getExtras();
+                System.out.println("......bundle"+extras);
+                Bitmap thePic = extras.getParcelable("data");
+                System.out.println("...bitmap"+thePic);
+                ImageView picView = (ImageView) findViewById(R.id.im_g);
+                picView.setImageBitmap(thePic);
+                System.out.println(".........Url image"+imageUrl);
+                System.out.println(".........Url image"+outputFileUri);
+                File f = new File(outputFileUri.getPath());
+                if (f.exists()) {
+                    f.delete();
+                }
+
+                f = new File(outputFileUri.getPath());
+                try {
+                    f.createNewFile();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                //Convert bitmap to byte array
+                ByteArrayOutputStream bos = new ByteArrayOutputStream();
+                thePic.compress(Bitmap.CompressFormat.PNG, 0 , bos);
+                byte[] bitmapdata = bos.toByteArray();
+                FileOutputStream fos = null;
+                try {
+                    fos = new FileOutputStream(f);
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                }
+                try {
+                    fos.write(bitmapdata);
+                    fos.flush();
+                    fos.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case 1: {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+
+                    // permission was granted, yay! Do the
+                    // contacts-related task you need to do.
+
+                } else {
+
+                    // permission denied, boo! Disable the
+                    // functionality that depends on this permission.
+                }
+                return;
+            }
+
+            // other 'case' lines to check for other
+            // permissions this app might request
         }
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item){
-
-        Intent i = getIntent();
 
         switch(item.getItemId()){
             case android.R.id.home:
@@ -425,6 +593,7 @@ public class GroupInfoActivity extends AppCompatActivity {
                 Intent intent = new Intent(this, GroupActivity.class);
                 intent.putExtra("groupId", gId);
                 intent.putExtra("groupName", gName);
+                intent.putExtra("imagePath", gImage);
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 //startActivity(intent);
                 finish();
@@ -433,8 +602,6 @@ public class GroupInfoActivity extends AppCompatActivity {
 
             case R.id.action_menu_done:
 
-                Intent in = new Intent(GroupInfoActivity.this, GroupActivity.class);
-
                 if (flag_name_edited) {
 
                     final EditText Ename = (EditText) findViewById(R.id.name_g_ed);
@@ -442,22 +609,14 @@ public class GroupInfoActivity extends AppCompatActivity {
 
                     if (newname != null && !newname.equals("") && !newname.equals(gId)) {
                         FirebaseDatabase database3 = FirebaseDatabase.getInstance();
-                        DatabaseReference myRef3 = database3.getReference("Groups").child(gId).child("gId");
+                        DatabaseReference myRef3 = database3.getReference("Groups").child(gId).child("name");
+                        myRef3.setValue(newname);
+                        myRef3 = database3.getReference("Users").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("Groups").child(gId).child("name");
                         myRef3.setValue(newname);
                         //GD.setName(newname);
                         //MainData.getInstance().changeGroupName(GroupName, newname);
-                        in.putExtra("groupId", gId);
-                        in.putExtra("groupName", gName);
-                    } else {
-                        in.putExtra("groupId", gId);
-                        in.putExtra("groupName", gName);
+                        gName = newname;
                     }
-
-                    Log.e("DEBUG", newname + " " + gId);
-                    System.out.println();
-                } else {
-                    in.putExtra("groupId", gId);
-                    in.putExtra("groupName", gName);
                 }
 
                 if (flag_desc_edited) {
@@ -474,13 +633,51 @@ public class GroupInfoActivity extends AppCompatActivity {
 
                 }
 
-                if (flag_img_edited) {
-                    FirebaseDatabase database5 = FirebaseDatabase.getInstance();
-                    DatabaseReference myRef5 = database5.getReference("Groups").child(gId).child("imagePath");
-                    myRef5.setValue(tmp);
-                    //GD.setImagePath(tmp);
+                if (ImageC) {
+                    ProgressBar progressBar = (ProgressBar) findViewById(R.id.progress_bar_group_info);
+                    progressBar.setVisibility(View.VISIBLE);
+                    LinearLayout ll=(LinearLayout) findViewById(R.id.llgourpinfo);
+                    ll.setVisibility(View.INVISIBLE);
+                    final FirebaseDatabase database = FirebaseDatabase.getInstance();
+                    StorageReference mStorageRef = FirebaseStorage.getInstance().getReference();
+                    try {
+                        System.out.println(".......carica in"+outputFileUri.toString().substring(7));
+                        InputStream stream = new FileInputStream(new File(outputFileUri.toString().substring(7)));
+                        StorageReference imageStorage = mStorageRef.child(gId);
+                        UploadTask uploadTask = imageStorage.putStream(stream);
+                        uploadTask.addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                Log.d("myStorage", "failure :(");
+                            }
+                        }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                            @Override
+                            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                                downloadUrl = taskSnapshot.getDownloadUrl();
+                                DatabaseReference myRef = database.getReference("Groups/"+ gId + "/imagePath");
+                                myRef.setValue(downloadUrl.toString());
+                                System.out.println("------------>GroupPAth"+"Groups/"+ gId + "/imagePath"+ downloadUrl);
+                                System.out.println("------------>UserPAth"+"Users/"+ FirebaseAuth.getInstance().getCurrentUser().getUid()+"/"+gId + "/imagePath"+ downloadUrl);
+                                DatabaseReference myRef2 = database.getReference("Users/"+ FirebaseAuth.getInstance().getCurrentUser().getUid()+"/Groups/"+gId + "/imagePath");
+                                myRef2.setValue(downloadUrl.toString());
+                                Intent in = new Intent(GroupInfoActivity.this, GroupActivity.class);
+                                in.putExtra("groupId", gId);
+                                in.putExtra("groupName", gName);
+                                in.putExtra("imagePath", downloadUrl.toString());
+                                setResult(RESULT_OK, null);
+                                finish();
+                                Log.d("myStorage", "success!");
+                            }
+                        });
+                    }catch (FileNotFoundException e) {
+                        e.printStackTrace();
+                    }
                 }
-
+                Intent in = new Intent(GroupInfoActivity.this, GroupActivity.class);
+                in.putExtra("imagePath", gImage);
+                in.putExtra("groupId", gId);
+                in.putExtra("groupName", gName);
+                System.out.println("Devo capire"+in.getExtras());
                 setResult(RESULT_OK, in);
                 finish();
                 return true;
@@ -490,5 +687,24 @@ public class GroupInfoActivity extends AppCompatActivity {
         }
 
 
+    }
+    private void performCrop() {
+        try {
+            Intent cropIntent = new Intent("com.android.camera.action.CROP");
+            cropIntent.setDataAndType(imageUrl, "image/*");
+            cropIntent.putExtra("crop", "true");
+            cropIntent.putExtra("aspectX", 1);
+            cropIntent.putExtra("aspectY", 1);
+            cropIntent.putExtra("outputX", 200);
+            cropIntent.putExtra("outputY", 200);
+            cropIntent.putExtra("return-data", true);
+            final Intent cIntent = Intent.createChooser(cropIntent, "Tha image should be cropped,select a source");
+            startActivityForResult(cIntent , 2);
+        }
+        catch (ActivityNotFoundException anfe) {
+            Toast toast = Toast
+                    .makeText(this, "This device doesn't support the crop action!", Toast.LENGTH_SHORT);
+            toast.show();
+        }
     }
 }

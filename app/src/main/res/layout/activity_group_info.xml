@@ -31,154 +31,166 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content">
 
-       <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="@dimen/activity_margin"
-            android:orientation="horizontal">
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+            <ProgressBar
+                android:id="@+id/progress_bar_group_info"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:layout_margin="30dp"
+                android:layout_centerHorizontal="true"
+                android:indeterminate="false"
+                android:visibility="invisible"/>
             <LinearLayout
-                android:layout_width="wrap_content"
-                android:orientation="vertical"
-                android:layout_height="wrap_content">
-                <ImageView
-                    android:id="@+id/im_g"
-                    android:layout_width="100dp"
-                    android:layout_height="100dp" />
+                android:id="@+id/llgourpinfo"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/activity_margin"
+                    android:orientation="horizontal">
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:orientation="vertical"
+                        android:layout_height="wrap_content">
+                        <ImageView
+                            android:id="@+id/im_g"
+                            android:layout_width="100dp"
+                            android:layout_height="100dp" />
+                        <Button
+                            android:id="@+id/m_image_g"
+                            android:background="@null"
+                            android:layout_width="wrap_content"
+                            android:text="Modify"
+                            android:layout_height="wrap_content" />
+                    </LinearLayout>
+                    <TextView
+                        android:id="@+id/name_g"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:textAlignment="gravity"
+                        android:textSize="30sp" />
+
+                    <EditText
+                        android:id="@+id/name_g_ed"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="0.2"
+                        android:gravity="center"
+                        android:textAlignment="gravity"
+                        android:textSize="30sp"
+                        android:visibility="gone" />
+
+                </LinearLayout>
+
+                <View style="@style/Divider" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="16sp"
+                    android:layout_marginRight="16sp"
+                    android:layout_marginTop="5dp"
+                    android:text="Description:"
+                    android:textSize="13sp" />
+
+                <EditText
+                    android:id="@+id/de_g_ed"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="5dp"
+                    android:layout_marginLeft="16sp"
+                    android:layout_marginRight="16sp"
+                    android:layout_marginTop="5dp"
+                    android:textSize="20sp"
+                    android:visibility="gone" />
+
+                <TextView
+                    android:id="@+id/de_g"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="5dp"
+                    android:layout_marginLeft="16sp"
+                    android:layout_marginRight="16sp"
+                    android:layout_marginTop="5dp"
+                    android:textSize="20sp" />
+
+                <View style="@style/Divider" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="20sp"
+                    android:layout_marginLeft="16sp"
+                    android:layout_marginRight="16sp"
+                    android:layout_marginTop="5dp"
+                    android:text="Users:"
+                    android:textSize="13sp" />
+
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/users"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="16sp"
+                    android:layout_marginRight="16sp"
+                    android:orientation="vertical"
+                    android:scrollbars="vertical" />
+
                 <Button
-                    android:id="@+id/m_image_g"
-                    android:background="@null"
-                    android:layout_width="wrap_content"
-                    android:text="Modify"
-                    android:layout_height="wrap_content" />
+                    android:id="@+id/addUserInExistingGroup"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center"
+                    android:text="Add new user"/>
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="20sp"
+                    android:layout_marginLeft="16sp"
+                    android:layout_marginRight="16sp"
+                    android:layout_marginTop="5dp"
+                    android:text="Currencies:"
+                    android:textSize="13sp" />
+
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/currencies"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="16sp"
+                    android:layout_marginRight="16sp"
+                    android:orientation="vertical"
+                    android:scrollbars="vertical" />
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/activity_margin"
+                    android:orientation="horizontal">
+                    <Button
+                        android:id="@+id/DeleteGroup"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="left"
+                        android:layout_weight="0.5"
+                        android:text="Delete Group"/>
+                    <Button
+                        android:id="@+id/LeaveGroup"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="0.5"
+                        android:layout_gravity="right"
+                        android:text="Leave Group"/>
+                </LinearLayout>
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="16sp"
+                    android:layout_marginRight="16sp"
+                    android:text="Pressing Delete or Leave group is not executive. Action has to be accepted from all the group's members to be executed."
+                    android:textSize="12sp" />
             </LinearLayout>
-            <TextView
-                android:id="@+id/name_g"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:textAlignment="gravity"
-                android:textSize="30sp" />
-
-            <EditText
-                android:id="@+id/name_g_ed"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="0.2"
-                android:gravity="center"
-                android:textAlignment="gravity"
-                android:textSize="30sp"
-                android:visibility="gone" />
-
-        </LinearLayout>
-
-        <View style="@style/Divider" />
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="16sp"
-            android:layout_marginRight="16sp"
-            android:layout_marginTop="5dp"
-            android:text="Description:"
-            android:textSize="13sp" />
-
-        <EditText
-            android:id="@+id/de_g_ed"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="5dp"
-            android:layout_marginLeft="16sp"
-            android:layout_marginRight="16sp"
-            android:layout_marginTop="5dp"
-            android:textSize="20sp"
-            android:visibility="gone" />
-
-        <TextView
-            android:id="@+id/de_g"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="5dp"
-            android:layout_marginLeft="16sp"
-            android:layout_marginRight="16sp"
-            android:layout_marginTop="5dp"
-            android:textSize="20sp" />
-
-        <View style="@style/Divider" />
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="20sp"
-            android:layout_marginLeft="16sp"
-            android:layout_marginRight="16sp"
-            android:layout_marginTop="5dp"
-            android:text="Users:"
-            android:textSize="13sp" />
-
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/users"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="16sp"
-            android:layout_marginRight="16sp"
-            android:orientation="vertical"
-            android:scrollbars="vertical" />
-
-        <Button
-            android:id="@+id/addUserInExistingGroup"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_gravity="center"
-            android:text="Add new user"/>
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="20sp"
-            android:layout_marginLeft="16sp"
-            android:layout_marginRight="16sp"
-            android:layout_marginTop="5dp"
-            android:text="Currencies:"
-            android:textSize="13sp" />
-
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/currencies"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="16sp"
-            android:layout_marginRight="16sp"
-            android:orientation="vertical"
-            android:scrollbars="vertical" />
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="@dimen/activity_margin"
-            android:orientation="horizontal">
-            <Button
-                android:id="@+id/DeleteGroup"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_gravity="left"
-                android:layout_weight="0.5"
-                android:text="Delete Group"/>
-            <Button
-                android:id="@+id/LeaveGroup"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_weight="0.5"
-                android:layout_gravity="right"
-                android:text="Leave Group"/>
-        </LinearLayout>
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="16sp"
-            android:layout_marginRight="16sp"
-            android:text="Pressing Delete or Leave group is not executive. Action has to be accepted from all the group's members to be executed."
-            android:textSize="12sp" />
-    </LinearLayout>
+        </RelativeLayout>
     </RelativeLayout>
     </android.support.v4.widget.NestedScrollView>
 </android.support.design.widget.CoordinatorLayout>

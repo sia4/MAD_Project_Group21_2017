@@ -53,12 +53,13 @@ public class GroupActivity extends AppCompatActivity {
         gKey = intent.getStringExtra("groupId");
         gName = intent.getStringExtra("groupName");
         gImage= intent.getStringExtra("imagePath");
+        System.out.println("---->intent"+intent);
+        System.out.println("---->intent boooooooo"+intent.getExtras());
 
         final Bundle b = new Bundle();
         b.putString("GroupId", gKey);
         b.putString("GroupName", gName);
         b.putString("imagePath", gImage);
-        //TODO take the Imagepath
 
         //System.out.println("CICCIOBOMBA" + datigruppo.getName());
 
@@ -204,6 +205,7 @@ public class GroupActivity extends AppCompatActivity {
                 Intent intent = new Intent(getApplicationContext(), GroupInfoActivity.class);
                 intent.putExtra("groupId", gKey);
                 intent.putExtra("groupName", gName);
+                intent.putExtra("imagePath", gImage);
                 startActivityForResult(intent, 1);
                 return true;
 

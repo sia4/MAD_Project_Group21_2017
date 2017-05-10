@@ -283,6 +283,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             Intent i = new Intent(MainActivity.this, UserInformationActivity.class);
 
             i.putExtra("userId", mAuth.getCurrentUser().getUid().toString());
+            i.putExtra("UserInfo","true");
             startActivity(i);
 
         }

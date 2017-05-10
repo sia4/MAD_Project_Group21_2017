@@ -93,6 +93,7 @@ public class InsertGroupActivity extends AppCompatActivity {
     private StorageReference mStorageRef;
     private FirebaseDatabase database;
     private User ud;
+    private List<User> u_l=new ArrayList<>();
     private DatabaseReference myRef;
     private String key;
     private Uri imageUrl;
@@ -102,7 +103,7 @@ public class InsertGroupActivity extends AppCompatActivity {
     private List<String> u= new ArrayList<>();
     private Map<String,String>my= new TreeMap<>();//TODO da cambiare
     private Map<String,Boolean>m= new TreeMap<>();
-    private UsersToAddAdapter uAdapter = null;
+    private UserAdapterIm uAdapter = null;
     String uKey = null;
     String uName = null;
     private List<String> userNotPresentInDb = new ArrayList<String>();
@@ -245,7 +246,7 @@ public class InsertGroupActivity extends AppCompatActivity {
         userRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         userRecyclerView.addItemDecoration(new android.support.v7.widget.DividerItemDecoration(InsertGroupActivity.this,
                 android.support.v7.widget.DividerItemDecoration.VERTICAL));
-        uAdapter = new UsersToAddAdapter(u);
+        uAdapter = new UserAdapterIm(u_l);
         userRecyclerView.setAdapter(uAdapter);
         final DatabaseReference mTest = FirebaseDatabase.getInstance().getReference();
         final Query quer=mTest.child("Users").orderByChild("email");
@@ -278,6 +279,7 @@ public class InsertGroupActivity extends AppCompatActivity {
                             Uemail.setText("");
                             m.put(key,true);
                             my.put(key,ud.getName() + " " + ud.getSurname());
+                            u_l.add(ud);
                             u.add(ud.getName() + " " + ud.getSurname());
                             uAdapter.notifyDataSetChanged();
                             key=null;
