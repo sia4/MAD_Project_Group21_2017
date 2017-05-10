@@ -7,6 +7,8 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
+import java.sql.Date;
+import java.text.SimpleDateFormat;
 import java.util.List;
 
 import it.polito.mad.mad_app.model.ActivityData;
@@ -43,7 +45,12 @@ public class ActivitiesAdapter extends RecyclerView.Adapter<ActivitiesAdapter.My
     @Override
     public void onBindViewHolder(MyViewHolder holder, int position) {
         ActivityData activity = activityData.get(position);
-        holder.date.setText(activity.getDate().toString());
+
+
+        SimpleDateFormat sdf = new SimpleDateFormat("MMM dd,yyyy HH:mm");
+        Date resultdate = new Date(new Long(activity.getDate()));
+
+        holder.date.setText(sdf.format(resultdate));
         holder.text.setText(activity.getText().toString());
         if(activity.getType().equals("deletegroup")||activity.getType().equals("leavegroup")){
             holder.accept.setVisibility(View.VISIBLE);

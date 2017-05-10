@@ -150,8 +150,8 @@ public class InsertExActivity extends AppCompatActivity {
             public void onDataChange(DataSnapshot dataSnapshot) {
 
                 Map<String, Object> map2 = (Map<String, Object>) dataSnapshot.getValue();
-                map2.put(uid, uid); //aggiungo user corrente
                 if(map2!=null) {
+                    map2.put(uid, uid); //aggiungo user corrente
                     for (final String k : map2.keySet()){
                         FirebaseDatabase database3 = FirebaseDatabase.getInstance();
                         DatabaseReference myRef3 = database3.getReference("Users").child(k);
@@ -652,7 +652,8 @@ public class InsertExActivity extends AppCompatActivity {
 
                     if (flagok == 1 && values.size() == users.size()) {
                         DatabaseReference ActRef = database.getReference("Activities").child(Gname).push();
-                        ActRef.setValue(new ActivityData(myname+" "+mysurname, myname +" "+mysurname+" added a new expense in group "+ groupName, new SimpleDateFormat("d MMM yyyy, HH:mm").format(Calendar.getInstance().getTime()), "expense", refkey, Gname));
+
+                        ActRef.setValue(new ActivityData(myname+" "+mysurname, myname +" "+mysurname+" added a new expense in group "+ groupName, Long.toString(System.currentTimeMillis()), "expense", refkey, Gname));
                         myRef.setValue(new ExpenseData(name, description, category, currency, String.format("%.2f", value), "0.00", algorithm));
                         final DatabaseReference myRef2=myRef;
                         myRef.child("creator").setValue(myname + " " + mysurname);
@@ -660,6 +661,7 @@ public class InsertExActivity extends AppCompatActivity {
                         myRef.child("contested").setValue("no");
                         ii = 0;
                         for(final UserData key : users){
+
 
                             myRef = database.getReference("/Users/"+key.getuId()+"/Groups/"+Gname+"/lastOperation/");
                             myRef.setValue(myname + " added an expense.");

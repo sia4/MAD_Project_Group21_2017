@@ -17,7 +17,10 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.sql.Date;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -89,10 +92,12 @@ public class ActivitiesFragment extends Fragment {
                                         tmpty = map3.get(j).get("type");
                                         tmpid = map3.get(j).get("itemId");
                                         tmpgid = map3.get(j).get("groupId");
+
                                         ActivityData a =new ActivityData(tmpc, tmpt, tmpd, tmpty, tmpid, tmpgid);
                                         a.setGroupName(groupName);
                                         activities.add(a);
                                     }
+                                    Collections.sort(activities);
                                     aAdapter.notifyDataSetChanged();
                                 }
                                 else{

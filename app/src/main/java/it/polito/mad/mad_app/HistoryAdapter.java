@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import java.sql.Date;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -52,7 +53,10 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.MyViewHo
         final ExpenseData expense = expenseData.get(position);
         holder.name_ex.setText(expense.getName());
 
-        holder.data_ex.setText(expense.getDate());
+        SimpleDateFormat sdf = new SimpleDateFormat("MMM dd,yyyy HH:mm");
+        Date resultdate = new Date(new Long(expense.getDate()));
+
+        holder.data_ex.setText(sdf.format(resultdate));
         holder.money_ex.setText(expense.getMyvalue());
         holder.creator_ex.setText(expense.getCreator());
         holder.impact_ex.setTextColor(Color.parseColor("#27B011"));

@@ -252,9 +252,11 @@ public class PolActivity extends AppCompatActivity {
 
                             DatabaseReference ActRef = database.getReference("Activities").child(GroupId).push();
                             if(type.equals("leavegroup")) {
-                                ActRef.setValue(new ActivityData(myname + " " + mysurname, myname + " " + mysurname + " accepted the propose to leave group " + GroupName, new SimpleDateFormat("d MMM yyyy, HH:mm").format(Calendar.getInstance().getTime()), "acceptleavegroup", PolId, GroupId));
+
+                                ActRef.setValue(new ActivityData(myname + " " + mysurname, myname + " " + mysurname + " accepted the propose to leave group " + GroupName, Long.toString(System.currentTimeMillis()), "acceptleavegroup", PolId, GroupId));
                                 if(users.size()==Integer.parseInt(totu)){
-                                    ActRef.push().setValue(new ActivityData(myname + " " + mysurname, myname + " " + mysurname + " has been successful deleted from group " + GroupName, new SimpleDateFormat("d MMM yyyy, HH:mm").format(Calendar.getInstance().getTime()), "acceptleavegroup", PolId, GroupId));
+
+                                    ActRef.push().setValue(new ActivityData(myname + " " + mysurname, myname + " " + mysurname + " has been successful deleted from group " + GroupName, Long.toString(System.currentTimeMillis()), "acceptleavegroup", PolId, GroupId));
                                     database.getReference("Groups").child(GroupId).child("members").child(creator).removeValue();
                                     database.getReference("Users").child(creator).child("Groups").child(GroupId).removeValue();
                                     database.getReference("Balance").child(GroupId).child(creator).removeValue();
@@ -265,9 +267,11 @@ public class PolActivity extends AppCompatActivity {
                                 }
                             }
                             if(type.equals("deletegroup")){
-                                ActRef.setValue(new ActivityData(myname + " " + mysurname, myname + " " + mysurname + " accepted the propose to delete group " + GroupName, new SimpleDateFormat("d MMM yyyy, HH:mm").format(Calendar.getInstance().getTime()), "acceptdeletegroup", PolId, GroupId));
+
+                                ActRef.setValue(new ActivityData(myname + " " + mysurname, myname + " " + mysurname + " accepted the propose to delete group " + GroupName, Long.toString(System.currentTimeMillis()), "acceptdeletegroup", PolId, GroupId));
                                 if(users.size()==Integer.parseInt(totu)){
-                                    ActRef.push().setValue(new ActivityData(myname + " " + mysurname, "Group "+GroupName+ " has been successful deleted", new SimpleDateFormat("d MMM yyyy, HH:mm").format(Calendar.getInstance().getTime()), "acceptdeletegroup", PolId, GroupId));
+
+                                    ActRef.push().setValue(new ActivityData(myname + " " + mysurname, "Group "+GroupName+ " has been successful deleted", Long.toString(System.currentTimeMillis()), "acceptdeletegroup", PolId, GroupId));
                                     database.getReference("Groups").child(GroupId).removeValue();
                                     database.getReference("Expenses").child(GroupId).removeValue();
                                     database.getReference("Balance").child(GroupId).removeValue();

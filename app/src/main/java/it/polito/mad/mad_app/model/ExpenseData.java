@@ -1,10 +1,12 @@
 package it.polito.mad.mad_app.model;
 
+import android.support.annotation.NonNull;
+
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
-public class ExpenseData {
+public class ExpenseData implements Comparable<ExpenseData>{
     private String idEx;
     private String name;
     private String descr;
@@ -25,8 +27,7 @@ public class ExpenseData {
         this.value = value;
         this.myvalue = myvalue;
         this.algorithm = algorithm;
-        DateFormat df = new SimpleDateFormat("d MMM yyyy, HH:mm");
-        this.date = df.format(Calendar.getInstance().getTime());
+        this.date = Long.toString(System.currentTimeMillis());
     }
     public String getIdEx(){return this.idEx;}
     public void setIdEx(String idEx){this.idEx = idEx;}
@@ -57,4 +58,16 @@ public class ExpenseData {
     }
     public String getMyvalue(){return this.myvalue;}
     public String getAlgorithm(){ return this.algorithm;}
+
+    public int compareTo(@NonNull ExpenseData e) {
+
+        long o1, o2;
+
+        o1 = Long.valueOf(date);
+
+        o2 = Long.valueOf(e.getDate());
+
+
+        return (int)(o2 - o1);
+    }
 }

@@ -95,12 +95,12 @@ public class GroupsFragment extends Fragment {
             if(date.equals(""))
                 o1 = 0;
             else
-                o1 = new Long(date);
+                o1 = Long.valueOf(date);
 
             if(dateLastOperation.equals(""))
                 o2 = 0;
             else
-                o2 = new Long(dateLastOperation);
+                o2 = Long.valueOf(dateLastOperation);
 
             return (int)(o1 - o2);
         }

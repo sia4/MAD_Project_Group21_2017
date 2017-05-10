@@ -10,6 +10,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -27,6 +28,7 @@ import com.google.firebase.database.MutableData;
 import com.google.firebase.database.Transaction;
 import com.google.firebase.database.ValueEventListener;
 
+import java.sql.Date;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Map;
@@ -129,7 +131,11 @@ public class ExpenseInfoActivity extends AppCompatActivity {
                     currency_ex.setText(currency);
                     myvalue_ex.setText(myvalue);
                     algorithm_ex.setText(algorithm);
-                    date_ex.setText(date);
+
+                    SimpleDateFormat sdf = new SimpleDateFormat("MMM dd,yyyy HH:mm");
+                    Date resultdate = new Date(new Long(date));
+
+                    date_ex.setText(sdf.format(resultdate));
                     if(n>0){
                         s_ex.setTextColor(Color.parseColor("#27B011"));
                         myvalue_ex.setTextColor(Color.parseColor("#27B011"));
@@ -163,12 +169,17 @@ public class ExpenseInfoActivity extends AppCompatActivity {
         myRef2.child("users").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                usermap = (Map<String, Float>) dataSnapshot.getValue();
-                if(usermap==null) {
-                    Toast.makeText(ExpenseInfoActivity.this, "no users found!", Toast.LENGTH_LONG).show();
-                }
-                else{
+                Map<String, Long> usermapTemp;
+                usermapTemp = (Map<String, Long>) dataSnapshot.getValue();
+
+                if(usermapTemp !=null) {
+                    for(Map.Entry<String, Long> e : usermapTemp.entrySet()) {
+                        usermap.put(e.getKey(), e.getValue().floatValue());
+                    }
                     System.out.println("usermapppppppppppppppp " + usermap);
+                    } else{
+                    Toast.makeText(ExpenseInfoActivity.this, "no users found!", Toast.LENGTH_LONG).show();
+
                 }
             }
 
@@ -230,11 +241,11 @@ public class ExpenseInfoActivity extends AppCompatActivity {
                             myname = (String)mapname.get("name");
                             mysurname = (String)mapname.get("surname");
                             DatabaseReference ActRef = database.getReference("Activities").child(GroupId).push();
-                            ActRef.setValue(new ActivityData(myname+" "+mysurname, myname+" "+mysurname +" contested expense "+ name+" in group "+ groupName, new SimpleDateFormat("d MMM yyyy, HH:mm").format(Calendar.getInstance().getTime()), "contest", exid, GroupId));
+                            ActRef.setValue(new ActivityData(myname+" "+mysurname, myname+" "+mysurname +" contested expense "+ name+" in group "+ groupName, Long.toString(System.currentTimeMillis()), "contest", exid, GroupId));
 
                         }
                         else{
-                            System.out.println("balancemapppppppppppppppp " + balancemap);
+                            Log.d("ExpenseInfo", "balancemapppppppppppppppp " + balancemap);
                         }
 
                     }
@@ -251,20 +262,21 @@ public class ExpenseInfoActivity extends AppCompatActivity {
                 final FirebaseDatabase database5 = FirebaseDatabase.getInstance();
                 DatabaseReference myRef5 = database5.getReference("Balance").child(GroupId);
                 float value1, value2, value3, value4;
-                for( String k : usermap.keySet()) {
-                    if(!k.equals(mAuth.getCurrentUser().getUid())) {
-                        //value1 = new Float (balancemap.get(mAuth.getCurrentUser().getUid()).get(k).get("value").toString());
-                        //value2 = new Float (balancemap.get(k).get(mAuth.getCurrentUser().getUid()).get("value").toString());
+                for( Map.Entry<String, Float> e : usermap.entrySet()) {
+                    if(!e.getKey().equals(mAuth.getCurrentUser().getUid())) {
+                        value1 = new Float (balancemap.get(mAuth.getCurrentUser().getUid()).get(e.getKey()).get("value").toString());
+                        value2 = new Float (balancemap.get(e.getKey()).get(mAuth.getCurrentUser().getUid()).get("value").toString());
                         //value3 = new Float (Float.parseFloat(usermap.get(k).toString()));
-                        //System.out.println("buttonnnnnnn1 "+value1);
-                        //System.out.println("buttonnnnnnn2 "+value2);
+                        System.out.println("buttonnnnnnn1 "+value1);
+                        System.out.println("buttonnnnnnn2 "+value2);
                         //System.out.println("buttonnnnnnn3 "+value3);
-                        System.out.println("USERMAPPPPPPP" + usermap.get(k));
+                        System.out.println("USERMAPPPPPPP" + e.getValue());
                         //TODO QUI HO IL PROBLEMA, NON RIESCO A SOMMARE VALUE1 (VALORE DI BILANCIO PRECEDENTE) A USERMAP.GET(K) (VALORE DELLA SPESA CONTESTATA DA TOGLIERE)
-                        //value1 = value1 + usermap.get(k);
-                        //value2 = value2 - usermap.get(k);
-                        //myRef5.child(mAuth.getCurrentUser().getUid()).child(k).child("value").setValue(value1 /*- usermap.get(k)*/);
-                        //myRef5.child(k).child(mAuth.getCurrentUser().getUid()).child("value").setValue(value2 /*+ usermap.get(k)*/);
+                        value3 = e.getValue();
+                        value1 = value1 + value3;
+                        value2 = value2 - e.getValue();
+                        myRef5.child(mAuth.getCurrentUser().getUid()).child(e.getKey()).child("value").setValue(value1 /*- usermap.get(k)*/);
+                        myRef5.child(e.getKey()).child(mAuth.getCurrentUser().getUid()).child("value").setValue(value2 /*+ usermap.get(k)*/);
                     }
 
                 }

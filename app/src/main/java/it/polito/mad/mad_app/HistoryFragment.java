@@ -20,7 +20,11 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.GenericTypeIndicator;
 import com.google.firebase.database.ValueEventListener;
 
+import java.sql.Date;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -111,10 +115,12 @@ public class    HistoryFragment extends Fragment {
                                         ExpenseData e = new ExpenseData((String) map3.get("name"), (String) map3.get("description"), (String) map3.get("category"), (String) map3.get("currency"), map3.get("value").toString(), map3.get("myvalue").toString(), (String) map3.get("algorithm"));
                                         e.setCreator((String) map3.get("creator"));
                                         e.setIdEx(k);
+
                                         e.setDate((String) map3.get("date"));
                                         e.setContested((String) map3.get("contested"));
                                         lex.add(e);
                                         System.out.println("valueeeeeeeeeeeeeeeeeeeeeeasdf" + map3.get("value"));
+                                        Collections.sort(lex);
                                         hAdapter.notifyDataSetChanged();
                                     }
                                 }

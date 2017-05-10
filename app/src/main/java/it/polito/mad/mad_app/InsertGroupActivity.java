@@ -166,7 +166,6 @@ public class InsertGroupActivity extends AppCompatActivity {
                 /*Intent i = new Intent(
                         Intent.ACTION_PICK,
                         android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-
                 startActivityForResult(i, 1);*/
 
                 // Determine Uri of camera image to save.
@@ -228,7 +227,6 @@ public class InsertGroupActivity extends AppCompatActivity {
                 galleryIntent.setType("image/*");
                 galleryIntent.setAction(Intent.ACTION_GET_CONTENT);
                 //cameraIntents.add(captureIntent );
-
                 // Chooser of filesystem options.
                 final Intent chooserIntent = Intent.createChooser(galleryIntent, "Select Source");*/
                 // Chooser of filesystem options.
@@ -294,7 +292,7 @@ public class InsertGroupActivity extends AppCompatActivity {
 
             }
 
-    });
+        });
 
     }
     @Override
@@ -305,38 +303,35 @@ public class InsertGroupActivity extends AppCompatActivity {
         /*if (requestCode == 1 && resultCode == RESULT_OK && null != data) {
             Uri selectedImage = data.getData();
             String[] filePathColumn = {MediaStore.Images.Media.DATA};
-
             Cursor cursor = getContentResolver().query(selectedImage,
                     filePathColumn, null, null, null);
             cursor.moveToFirst();
-
             int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
             picturePath = cursor.getString(columnIndex);
             cursor.close();
-
             ImageView imageG=(ImageView) findViewById(R.id.ImageG);
             imageG.setImageBitmap(BitmapFactory.decodeFile(picturePath));*/
-            if (resultCode == RESULT_OK) {
-                Uri selectedImageUri = null;
-                if (requestCode == 1) {
-                    final boolean isCamera;
-                    if (data == null) {
-                        isCamera = true;
+        if (resultCode == RESULT_OK) {
+            Uri selectedImageUri = null;
+            if (requestCode == 1) {
+                final boolean isCamera;
+                if (data == null) {
+                    isCamera = true;
+                } else {
+                    final String action = data.getAction();
+                    if (action == null) {
+                        isCamera = false;
                     } else {
-                        final String action = data.getAction();
-                        if (action == null) {
-                            isCamera = false;
-                        } else {
-                            isCamera = action.equals(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
-                        }
+                        isCamera = action.equals(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
                     }
+                }
 
-                    if (isCamera) {
-                        imageUrl = outputFileUri;
-                        System.out.println("......."+imageUrl);
-                        //downloadUrl = selectedImageUri;
-                        ImageC = true;
-                        performCrop();
+                if (isCamera) {
+                    imageUrl = outputFileUri;
+                    System.out.println("......."+imageUrl);
+                    //downloadUrl = selectedImageUri;
+                    ImageC = true;
+                    performCrop();
                         /*Bitmap photo = null;
                         try {
                             photo = MediaStore.Images.Media.getBitmap(this.getContentResolver(), selectedImageUri);
@@ -346,101 +341,99 @@ public class InsertGroupActivity extends AppCompatActivity {
                         System.out.println(".................camera" + photo);
                         ImageView imageG = (ImageView) findViewById(R.id.ImageG);
                         imageG.setImageBitmap(photo);*/
-                    } else {
-                        if (data != null) {
-                            System.out.println("++++++----------"+data);
-                            ImageC = true;
-                            selectedImageUri = data.getData();
+                } else {
+                    if (data != null) {
+                        System.out.println("++++++----------"+data);
+                        ImageC = true;
+                        selectedImageUri = data.getData();
                             /*if(selectedImageUri==null){
                                 String p=data.getAction();
                                 selectedImageUri = Uri.parse(p);
                             }*/
-                            imageUrl = selectedImageUri;
-                            performCrop();
-                            System.out.println("++++++----->"+selectedImageUri);
-                            //System.out.println("++++++++---->" + selectedImageUri.toString());
+                        imageUrl = selectedImageUri;
+                        performCrop();
+                        System.out.println("++++++----->"+selectedImageUri);
+                        //System.out.println("++++++++---->" + selectedImageUri.toString());
                             /*String[] filePathColumn = {MediaStore.Images.Media.DATA};
-
                             Cursor cursor = getContentResolver().query(selectedImageUri,
                                     filePathColumn, null, null, null);
                             cursor.moveToFirst();
-
                             int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
                             picturePath = cursor.getString(columnIndex);
                             System.out.println("........... galleria picturePath "+picturePath);
                             cursor.close();
                             ImageView imageG=(ImageView) findViewById(R.id.ImageG);
                             imageG.setImageBitmap(BitmapFactory.decodeFile(picturePath));*/
-                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && checkSelfPermission(android.Manifest.permission.READ_EXTERNAL_STORAGE)
-                                    != PackageManager.PERMISSION_GRANTED) {
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && checkSelfPermission(android.Manifest.permission.READ_EXTERNAL_STORAGE)
+                                != PackageManager.PERMISSION_GRANTED) {
 
-                                // Should we show an explanation?
-                                if (shouldShowRequestPermissionRationale(
-                                        android.Manifest.permission.READ_EXTERNAL_STORAGE)) {
-                                    // Explain to the user why we need to read the contacts
-                                }
-
-                                requestPermissions(new String[]{android.Manifest.permission.READ_EXTERNAL_STORAGE},
-                                        MY_PERMISSIONS_REQUEST_READ_CONTACTS);
-
-                                // MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE is an
-                                // app-defined int constant that should be quite unique
-
-                                return;
+                            // Should we show an explanation?
+                            if (shouldShowRequestPermissionRationale(
+                                    android.Manifest.permission.READ_EXTERNAL_STORAGE)) {
+                                // Explain to the user why we need to read the contacts
                             }
-                            Bitmap photo = null;
-                            try {
-                                photo = MediaStore.Images.Media.getBitmap(this.getContentResolver(), selectedImageUri);
-                            } catch (IOException e) {
-                                e.printStackTrace();
-                            }
-                            System.out.println("................." + photo);
-                            ImageView imageG = (ImageView) findViewById(R.id.ImageG);
-                            imageG.setImageBitmap(photo);
 
+                            requestPermissions(new String[]{android.Manifest.permission.READ_EXTERNAL_STORAGE},
+                                    MY_PERMISSIONS_REQUEST_READ_CONTACTS);
+
+                            // MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE is an
+                            // app-defined int constant that should be quite unique
+
+                            return;
                         }
+                        Bitmap photo = null;
+                        try {
+                            photo = MediaStore.Images.Media.getBitmap(this.getContentResolver(), selectedImageUri);
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                        System.out.println("................." + photo);
+                        ImageView imageG = (ImageView) findViewById(R.id.ImageG);
+                        imageG.setImageBitmap(photo);
 
                     }
-                }else if(requestCode==CROP_PIC){
-                    Bundle extras = data.getExtras();
-                    System.out.println("......bundle"+extras);
-                    Bitmap thePic = extras.getParcelable("data");
-                    System.out.println("...bitmap"+thePic);
-                    ImageView picView = (ImageView) findViewById(R.id.ImageG);
-                    picView.setImageBitmap(thePic);
-                    System.out.println(".........Url image"+imageUrl);
-                    System.out.println(".........Url image"+outputFileUri);
-                    File f = new File(outputFileUri.getPath());
-                    if (f.exists()) {
-                        f.delete();
-                    }
 
-                    f = new File(outputFileUri.getPath());
-                    try {
-                        f.createNewFile();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                    //Convert bitmap to byte array
-                    ByteArrayOutputStream bos = new ByteArrayOutputStream();
-                    thePic.compress(Bitmap.CompressFormat.PNG, 0 , bos);
-                    byte[] bitmapdata = bos.toByteArray();
-                    FileOutputStream fos = null;
-                    try {
-                        fos = new FileOutputStream(f);
-                    } catch (FileNotFoundException e) {
-                        e.printStackTrace();
-                    }
-                    try {
-                        fos.write(bitmapdata);
-                        fos.flush();
-                        fos.close();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
+                }
+            }else if(requestCode==CROP_PIC){
+                Bundle extras = data.getExtras();
+                System.out.println("......bundle"+extras);
+                Bitmap thePic = extras.getParcelable("data");
+                System.out.println("...bitmap"+thePic);
+                ImageView picView = (ImageView) findViewById(R.id.ImageG);
+                picView.setImageBitmap(thePic);
+                System.out.println(".........Url image"+imageUrl);
+                System.out.println(".........Url image"+outputFileUri);
+                File f = new File(outputFileUri.getPath());
+                if (f.exists()) {
+                    f.delete();
+                }
+
+                f = new File(outputFileUri.getPath());
+                try {
+                    f.createNewFile();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                //Convert bitmap to byte array
+                ByteArrayOutputStream bos = new ByteArrayOutputStream();
+                thePic.compress(Bitmap.CompressFormat.PNG, 0 , bos);
+                byte[] bitmapdata = bos.toByteArray();
+                FileOutputStream fos = null;
+                try {
+                    fos = new FileOutputStream(f);
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                }
+                try {
+                    fos.write(bitmapdata);
+                    fos.flush();
+                    fos.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
                 }
             }
-            }
+        }
+    }
     @Override
     public void onRequestPermissionsResult(int requestCode,
                                            String permissions[], int[] grantResults) {
@@ -492,9 +485,7 @@ public class InsertGroupActivity extends AppCompatActivity {
                     Toast.makeText(InsertGroupActivity.this, "Please insert group description.", Toast.LENGTH_LONG).show();
 
                 }/*else if (m.isEmpty()) {
-
                     Toast.makeText(InsertGroupActivity.this, "Please insert at least one other member.", Toast.LENGTH_LONG).show();
-
                 }*/ else if (Tcurrency.getSelectedItem().toString().equals("Select currency")) {
 
                     Toast.makeText(InsertGroupActivity.this, "Please insert currency.", Toast.LENGTH_LONG).show();
@@ -545,7 +536,7 @@ public class InsertGroupActivity extends AppCompatActivity {
                                     myRef = database.getReference("/Users/" + key + "/Groups/" + groupId + "/lastOperation/");
                                     myRef.setValue(uName + " has created the group.");
                                     myRef = database.getReference("/Users/" + key + "/Groups/" + groupId + "/dateLastOperation/");
-                                    myRef.setValue(Long.toString(System.currentTimeMillis()).toString());
+                                    myRef.setValue(Long.toString(System.currentTimeMillis()));
 
                                     for (Iterator n = others.iterator(); n.hasNext(); ) {
                                         String k = (String) n.next();
@@ -585,23 +576,17 @@ public class InsertGroupActivity extends AppCompatActivity {
 
 
     /*private void onInviteClicked(String email) {
-
         Intent intent = new AppInviteInvitation.IntentBuilder("Invite your friends!")
                 .setMessage("You have been invited to AllaRomana (mail: "+ email)
                 .setEmailHtmlContent("Hi! I invited you to join a group on AllaRomana. Download the app and SignIn with the email "+ email +" to join the group. See you on AllaRomana!")
                 .setDeepLink(Uri.EMPTY)
                 .setEmailSubject("Invite you on AllaRomana")
                 .build();
-
-
         startActivityForResult(intent, REQUEST_INVITE);
     }
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-
         super.onActivityResult(requestCode, resultCode, data);
-
         if (requestCode == REQUEST_INVITE) {
             if (resultCode == RESULT_OK) {
                 // Get the invitation IDs of all sent messages
@@ -609,18 +594,14 @@ public class InsertGroupActivity extends AppCompatActivity {
                 for (String id : ids) {
                     Log.d("INFO", "onActivityResult: sent invitation " + id);
                 }
-
                 userNotPresentInDb.add(userNotPresentInDbMail);
-
                 finish();
             } else {
-
                 System.out.println("Errore..." + resultCode);
                 // Sending failed or it was canceled, show failure message to the user
                 // ...
             }
         }
-
     }*/
     private void performCrop() {
         // take care of exceptions
