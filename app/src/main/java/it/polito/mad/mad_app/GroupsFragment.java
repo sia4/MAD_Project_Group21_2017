@@ -17,6 +17,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -170,7 +171,11 @@ public class GroupsFragment extends Fragment {
                                     }
                                 } else {
                                     progressBar.setVisibility(view.INVISIBLE);
-                                    Toast.makeText(getActivity(), "There are no groups!", Toast.LENGTH_LONG).show();
+
+                                    TextView tv = (TextView) getView().findViewById(R.id.noGroups);
+                                    tv.setVisibility(view.VISIBLE);
+
+                                    //Toast.makeText(getActivity(), "There are no groups!", Toast.LENGTH_LONG).show();
                                 }
                             }
 

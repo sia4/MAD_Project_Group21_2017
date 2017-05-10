@@ -11,6 +11,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.firebase.database.DataSnapshot;
@@ -48,7 +49,8 @@ public class    HistoryFragment extends Fragment {
 
         context = view.getContext();
         lex.clear();
-        final RecyclerView recyclerView = (RecyclerView) view;
+
+        final RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.expenses);
         recyclerView.setLayoutManager(new LinearLayoutManager(context));
         //recyclerView.addItemDecoration(new DividerItemDecoration(getActivity(),
          //       DividerItemDecoration.VERTICAL));
@@ -134,6 +136,10 @@ public class    HistoryFragment extends Fragment {
 
                     }
 
+                }else {
+
+                    TextView tv = (TextView) getView().findViewById(R.id.noExpenses);
+                    tv.setVisibility(view.VISIBLE);
                 }
 
             }
