@@ -84,7 +84,7 @@ public class InsertExActivity extends AppCompatActivity {
     private String description;
     private String category;
     private String currency;
-    private float value;
+    private double value;
     private Boolean fish=false;
     private String algorithm;
     private String myname, mysurname;
@@ -92,8 +92,8 @@ public class InsertExActivity extends AppCompatActivity {
     private StorageReference mStorageRef;
     private Map<String,Balance>users_l=new TreeMap<>();
     private int i=0, ii=0;
-    private float v = 0, v1 = 0;
-    private Map<String, Float> values = new TreeMap<>();
+    private double v = 0, v1 = 0;
+    private Map<String, Double> values = new TreeMap<>();
     private String defaultcurrency;
     private FirebaseAuth mAuth = FirebaseAuth.getInstance();
     private List<UserData> users = new ArrayList<>();
@@ -594,7 +594,7 @@ public class InsertExActivity extends AppCompatActivity {
                 } else if(category.equals("Select category")) {
                     Toast.makeText(InsertExActivity.this, "Please insert category.", Toast.LENGTH_LONG).show();
                 } else {
-                    value = Float.parseFloat(Tvalue.getText().toString());
+                    value = new Double(Tvalue.getText().toString());
 
                    if (algorithm.equals("equally")) {
                         v = value/users.size();
@@ -605,7 +605,7 @@ public class InsertExActivity extends AppCompatActivity {
 
 
                 else{
-                    float algValue, algSum=0, meValue=0;
+                    double algValue, algSum=0, meValue=0;
                     int i;
                     for(i = 0; i< uAdapter.getItemCount(); i++){
                         View view = userRecyclerView.getChildAt(i);
