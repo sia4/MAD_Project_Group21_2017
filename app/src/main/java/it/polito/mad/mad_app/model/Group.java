@@ -68,8 +68,6 @@ public class Group {
         return m;
     }
 
-    public Map<String, Float> getCurrencies() {return currencies; }
-
     public Map<String, Boolean> getExpenses(){return expenses; }
 
     public void addMember(String s) {
@@ -79,4 +77,21 @@ public class Group {
     public void addCurrencies(Map<String, Float> currencies) {
         this.currencies = currencies;
     }
+
+    public void addCurrency(String s, Float v) {
+        currencies.put(s, v);
+    }
+
+    public Map<String, Float> getCurrencies() {
+        return currencies;
+    }
+
+    public Float getCurrencyValue(String s) {
+        if (currencies.containsKey(s)) {
+            return currencies.get(s);
+        } else {
+            return new Float(-1);
+        }
+    }
+
 }
