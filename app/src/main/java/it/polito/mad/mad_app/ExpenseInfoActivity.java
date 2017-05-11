@@ -169,12 +169,12 @@ public class ExpenseInfoActivity extends AppCompatActivity {
         myRef2.child("users").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                Map<String, Double> usermapTemp;
-                usermapTemp = (Map<String, Double>) dataSnapshot.getValue();
+                Map<String, String> usermapTemp;
+                usermapTemp = (Map<String, String>) dataSnapshot.getValue();
 
                 if(usermapTemp !=null) {
-                    for(Map.Entry<String, Double> e : usermapTemp.entrySet()) {
-                        usermap.put(e.getKey(), e.getValue().floatValue());
+                    for(Map.Entry<String, String> e : usermapTemp.entrySet()) {
+                        usermap.put(e.getKey(), Float.parseFloat(e.getValue()));
                     }
                     System.out.println("usermapppppppppppppppp " + usermap);
                     } else{

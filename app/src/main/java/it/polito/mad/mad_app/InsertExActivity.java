@@ -594,7 +594,7 @@ public class InsertExActivity extends AppCompatActivity {
                 } else if(category.equals("Select category")) {
                     Toast.makeText(InsertExActivity.this, "Please insert category.", Toast.LENGTH_LONG).show();
                 } else {
-                    value = new Double(Tvalue.getText().toString());
+                    value = Double.valueOf(Tvalue.getText().toString());
 
                    if (algorithm.equals("equally")) {
                         v = value/users.size();
@@ -657,7 +657,10 @@ public class InsertExActivity extends AppCompatActivity {
                         myRef.setValue(new ExpenseData(name, description, category, currency, String.format("%.2f", value), "0.00", algorithm));
                         final DatabaseReference myRef2=myRef;
                         myRef.child("creator").setValue(myname + " " + mysurname);
-                        myRef.child("users").setValue(values);
+
+                        for(Map.Entry<String, Double> e : values.entrySet())
+                            myRef.child("users").child(e.getKey()).setValue(String.format("%.2f", e.getValue()));
+
                         myRef.child("contested").setValue("no");
                         ii = 0;
                         for(final UserData key : users){
@@ -681,9 +684,9 @@ public class InsertExActivity extends AppCompatActivity {
                                             System.out.println("valueeeeeeeeeeeeeeeeeeeeee " + value);
                                             if (value == null) {
                                                 mutableData.child("name").setValue(key.getName() + " " + key.getSurname());
-                                                mutableData.child("value").setValue(values.get(key.getuId()));
+                                                mutableData.child("value").setValue(String.format("%.2f", values.get(key.getuId())));
                                             } else {
-                                                mutableData.child("value").setValue(value + values.get(key.getuId()));
+                                                mutableData.child("value").setValue(String.format("%.2f", value + values.get(key.getuId())));
                                                 mutableData.child("name").setValue(key.getName() + " " + key.getSurname());
                                             }
                                         }
@@ -708,10 +711,10 @@ public class InsertExActivity extends AppCompatActivity {
                                             Float value = mutableData.child("value").getValue(Float.class);
                                             System.out.println("valueeeeeeeeeeeeeeeeeeeeee " + value);
                                             if (value == null) {
-                                                mutableData.child("value").setValue(-values.get(key.getuId()));
+                                                mutableData.child("value").setValue(String.format("%.2f", -values.get(key.getuId())));
                                                 mutableData.child("name").setValue(myname + " " + mysurname);
                                             } else {
-                                                mutableData.child("value").setValue(value - values.get(key.getuId()));
+                                                mutableData.child("value").setValue(String.format("%.2f", value - values.get(key.getuId())));
                                                 mutableData.child("name").setValue(myname + " " + mysurname);
                                             }
                                         }

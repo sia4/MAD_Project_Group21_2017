@@ -62,7 +62,8 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.MyViewHo
         holder.impact_ex.setTextColor(Color.parseColor("#27B011"));
         holder.impact_ex.setText("They owe you:");
         holder.money_ex.setTextColor(Color.parseColor("#27B011"));
-        if(expense.getContested().equals("yes"))
+
+        if(expense.getContested() != null && expense.getContested().equals("yes"))
             holder.contested_ex.setVisibility(View.VISIBLE);
 
     }
