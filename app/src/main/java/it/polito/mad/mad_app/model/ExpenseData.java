@@ -48,7 +48,8 @@ public class ExpenseData {
     }
 
     public String getCurrency(){
-        return this.currency;
+        Currencies c = new Currencies();
+        return c.getCurrencyString(this.currency);
     }
 
     public float getValue(){

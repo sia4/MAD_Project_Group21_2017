@@ -179,7 +179,6 @@ public class InsertGroupActivity extends AppCompatActivity {
                 GroupName = Gname.getText().toString();
                 GroupDescription = Gdescription.getText().toString();
 
-
                 if (GroupName.equals("")) {
 
                     Toast.makeText(InsertGroupActivity.this, "Please insert group name.", Toast.LENGTH_LONG).show();
@@ -197,6 +196,7 @@ public class InsertGroupActivity extends AppCompatActivity {
                     Toast.makeText(InsertGroupActivity.this, "Please insert currency.", Toast.LENGTH_LONG).show();
 
                 } else {
+
                     Currencies c = new Currencies();
                     String code = c.getCurrencyCode(Tcurrency.getSelectedItem().toString());
 
