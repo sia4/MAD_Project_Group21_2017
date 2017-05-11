@@ -477,7 +477,7 @@ public class InsertExActivity extends AppCompatActivity {
 
                                         if(!key.getuId().equals(mAuth.getCurrentUser().getUid())) {
                                             Float value = mutableData.child("value").getValue(Float.class);
-                                            System.out.println("valueeeeeeeeeeeeeeeeeeeeee " + value);
+                                            System.out.println("1+++valueeeeeeeeeeeeeeeeeeeeee " + value);
                                             if (cambio != 0) {
                                                 if (value == null) {
                                                     mutableData.child("name").setValue(key.getName() + " " + key.getSurname());
@@ -515,7 +515,7 @@ public class InsertExActivity extends AppCompatActivity {
                                     public Transaction.Result doTransaction(MutableData mutableData) {
                                         if(!key.getuId().equals(mAuth.getCurrentUser().getUid())) {
                                             Float value = mutableData.child("value").getValue(Float.class);
-                                            System.out.println("valueeeeeeeeeeeeeeeeeeeeee " + value);
+                                            System.out.println("+++valueeeeeeeeeeeeeeeeeeeeee " + value);
                                             if (cambio != 0) {
                                                 if (value == null) {
                                                     mutableData.child("value").setValue(-(values.get(key.getuId()) * cambio));
