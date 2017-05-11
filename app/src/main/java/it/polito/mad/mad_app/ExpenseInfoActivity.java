@@ -115,8 +115,8 @@ public class ExpenseInfoActivity extends AppCompatActivity {
                     }
                     category = (String)map.get("category");
                     currency = (String)map.get("currency");
-                    myvalue = (String)map.get("myvalue");
-                    n=Integer.parseInt(myvalue.replaceAll("[\\D]",""));
+
+
                     algorithm = (String)map.get("algorithm");
                     date = (String)map.get("date");
                     groupName = (String)map.get("groupName");
@@ -129,23 +129,14 @@ public class ExpenseInfoActivity extends AppCompatActivity {
                         description_ex.setText(description);
                     category_ex.setText(category);
                     currency_ex.setText(currency);
-                    myvalue_ex.setText(myvalue);
+                    s_ex.setText("Your quote:");
                     algorithm_ex.setText(algorithm);
 
                     SimpleDateFormat sdf = new SimpleDateFormat("MMM dd,yyyy HH:mm");
                     Date resultdate = new Date(new Long(date));
 
                     date_ex.setText(sdf.format(resultdate));
-                    if(n>0){
-                        s_ex.setTextColor(Color.parseColor("#27B011"));
-                        myvalue_ex.setTextColor(Color.parseColor("#27B011"));
-                        s_ex.setText("Import to receive:");
-                    }
-                    else{
-                        s_ex.setTextColor(Color.parseColor("#D51111"));
-                        myvalue_ex.setTextColor(Color.parseColor("#D51111"));
-                        s_ex.setText("Import to pay:");
-                    }
+
 
 
                 }
@@ -175,6 +166,18 @@ public class ExpenseInfoActivity extends AppCompatActivity {
                 if(usermapTemp !=null) {
                     for(Map.Entry<String, String> e : usermapTemp.entrySet()) {
                         usermap.put(e.getKey(), Float.parseFloat(e.getValue()));
+                    }
+                    myvalue_ex.setText(String.valueOf(usermap.get(mAuth.getCurrentUser().getUid())));
+
+                    if(usermap.get(mAuth.getCurrentUser().getUid())>0){
+                        s_ex.setTextColor(Color.parseColor("#27B011"));
+                        myvalue_ex.setTextColor(Color.parseColor("#27B011"));
+
+                    }
+                    else{
+                        s_ex.setTextColor(Color.parseColor("#D51111"));
+                        myvalue_ex.setTextColor(Color.parseColor("#D51111"));
+
                     }
                     System.out.println("usermapppppppppppppppp " + usermap);
                     } else{

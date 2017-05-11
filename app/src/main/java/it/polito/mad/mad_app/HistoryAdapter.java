@@ -8,6 +8,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.google.firebase.auth.FirebaseAuth;
+
 import java.sql.Date;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -59,9 +61,15 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.MyViewHo
         holder.data_ex.setText(sdf.format(resultdate));
         holder.money_ex.setText(expense.getMyvalue());
         holder.creator_ex.setText(expense.getCreator());
-        holder.impact_ex.setTextColor(Color.parseColor("#27B011"));
-        holder.impact_ex.setText("They owe you:");
-        holder.money_ex.setTextColor(Color.parseColor("#27B011"));
+        if(expense.getCreatorId().equals(FirebaseAuth.getInstance().getCurrentUser().getUid())) {
+            holder.impact_ex.setTextColor(Color.parseColor("#27B011"));
+            holder.money_ex.setTextColor(Color.parseColor("#27B011"));
+        }
+        else
+        {
+            holder.impact_ex.setTextColor(Color.parseColor("#D51111"));
+            holder.money_ex.setTextColor(Color.parseColor("#D51111"));
+        }
 
         if(expense.getContested() != null && expense.getContested().equals("yes"))
             holder.contested_ex.setVisibility(View.VISIBLE);

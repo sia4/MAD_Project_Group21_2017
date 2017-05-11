@@ -18,6 +18,7 @@ public class ExpenseData implements Comparable<ExpenseData>{
     private String date;
     private String creator;
     private String contested;
+    private String creatorId="0";
 
     public ExpenseData(String n, String d, String ca, String cu, String value,String myvalue, String algorithm){
         this.name = n;
@@ -29,9 +30,12 @@ public class ExpenseData implements Comparable<ExpenseData>{
         this.algorithm = algorithm;
         this.date = Long.toString(System.currentTimeMillis());
     }
+    public String getCreatorId(){return this.creatorId;}
+    public void setCreatorId(String id){this.creatorId=id;}
     public String getIdEx(){return this.idEx;}
     public void setIdEx(String idEx){this.idEx = idEx;}
     public void setContested(String i){this.contested=i;}
+    public void setMyvalue(String i){this.myvalue = i;}
     public void setDate(String date){this.date = date;}
     public String getContested(){return this.contested;}
     public String getDate(){ return this.date;}

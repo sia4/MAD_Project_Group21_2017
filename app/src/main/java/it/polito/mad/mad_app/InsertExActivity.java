@@ -84,7 +84,7 @@ public class InsertExActivity extends AppCompatActivity {
     private String description;
     private String category;
     private String currency;
-    private double value;
+    private double value, myvalue=0;
     private Boolean fish=false;
     private String algorithm;
     private String myname, mysurname;
@@ -598,8 +598,10 @@ public class InsertExActivity extends AppCompatActivity {
                     System.out.println("valuebuggggggggggggggggggg "+value);
                    if (algorithm.equals("equally")) {
                         v = value/users.size();
-                       for(UserData k : users)
+                       for(UserData k : users){
                             values.put(k.getuId(), v);
+                       }
+                       myvalue = v;
                         flagok = 1;
                     }
 
@@ -612,6 +614,7 @@ public class InsertExActivity extends AppCompatActivity {
                         EditText EditValue = (EditText)view.findViewById(R.id.alg_value);
                         if(EditValue.getText().toString().equals("")) {
                             algValue = 0;
+                            myvalue = 0;
                             if (algorithm.equals("by percentuage"))
                                 values.put(users.get(i).getuId(), algValue);
                             else
@@ -620,10 +623,16 @@ public class InsertExActivity extends AppCompatActivity {
                         else {
                             algValue = Float.parseFloat(EditValue.getText().toString());
 
-                            if (algorithm.equals("by percentuage"))
+                            if (algorithm.equals("by percentuage")) {
                                 values.put(users.get(i).getuId(), value * algValue / 100);
-                            else
+                                if(users.get(i).getuId().equals(mAuth.getCurrentUser().getUid()))
+                                    myvalue = value*algValue/100;
+                            }
+                            else{
                                 values.put(users.get(i).getuId(), algValue);
+                                if(users.get(i).getuId().equals(mAuth.getCurrentUser().getUid()))
+                                    myvalue = value;
+                            }
                         }
                         algSum += algValue;
                     }
@@ -658,6 +667,7 @@ public class InsertExActivity extends AppCompatActivity {
                         myRef.setValue(new ExpenseData(name, description, category, currency, String.valueOf(value), "0.00", algorithm));
                         final DatabaseReference myRef2=myRef;
                         myRef.child("creator").setValue(myname + " " + mysurname);
+                        myRef.child("creatorId").setValue(mAuth.getCurrentUser().getUid());
                         System.out.println(String.format("%.2f", value));
                         for(Map.Entry<String, Double> e : values.entrySet())
                             myRef.child("users").child(e.getKey()).setValue(String.valueOf(e.getValue()));
@@ -685,9 +695,9 @@ public class InsertExActivity extends AppCompatActivity {
                                             System.out.println("valueeeeeeeeeeeeeeeeeeeeee " + value);
                                             if (value == null) {
                                                 mutableData.child("name").setValue(key.getName() + " " + key.getSurname());
-                                                mutableData.child("value").setValue(String.format("%.2f", values.get(key.getuId())));
+                                                mutableData.child("value").setValue(String.valueOf(values.get(key.getuId())));
                                             } else {
-                                                mutableData.child("value").setValue(String.format("%.2f", value + values.get(key.getuId())));
+                                                mutableData.child("value").setValue(String.valueOf(value + values.get(key.getuId())));
                                                 mutableData.child("name").setValue(key.getName() + " " + key.getSurname());
                                             }
                                         }
@@ -712,10 +722,10 @@ public class InsertExActivity extends AppCompatActivity {
                                             Float value = mutableData.child("value").getValue(Float.class);
                                             System.out.println("valueeeeeeeeeeeeeeeeeeeeee " + value);
                                             if (value == null) {
-                                                mutableData.child("value").setValue(String.format("%.2f", -values.get(key.getuId())));
+                                                mutableData.child("value").setValue(String.valueOf(-values.get(key.getuId())));
                                                 mutableData.child("name").setValue(myname + " " + mysurname);
                                             } else {
-                                                mutableData.child("value").setValue(String.format("%.2f", value - values.get(key.getuId())));
+                                                mutableData.child("value").setValue(String.valueOf(value - values.get(key.getuId())));
                                                 mutableData.child("name").setValue(myname + " " + mysurname);
                                             }
                                         }

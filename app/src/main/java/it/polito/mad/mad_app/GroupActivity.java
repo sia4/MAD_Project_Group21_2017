@@ -28,18 +28,29 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.bumptech.glide.request.target.SimpleTarget;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
 
 public class GroupActivity extends AppCompatActivity {
     private String gName, gKey,gImage;
     private ListView lv;
+    private float tmppos=0;
+    private float tmpneg=0;
+    Float pos = (float)10.2;//datigruppo.getPosExpenses();
+    Float neg = (float)10.2;//datigruppo.getNegExpenses();
+    private Map<String, Map<String, Object>> balancemap;
 
-    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_group);
@@ -63,15 +74,58 @@ public class GroupActivity extends AppCompatActivity {
 
         //System.out.println("CICCIOBOMBA" + datigruppo.getName());
 
-        Float pos = (float)10.2;//datigruppo.getPosExpenses();
-        Float neg = (float)10.2;//datigruppo.getNegExpenses();
-
-        String subtitle = "";
-        subtitle +=" "+ "They Owe You: " + pos.toString()+ " - You Owe: " + neg.toString();
 
 
-        getSupportActionBar().setTitle(" "+gName);
-        getSupportActionBar().setSubtitle(subtitle);
+
+
+        final FirebaseDatabase database3 = FirebaseDatabase.getInstance();
+        DatabaseReference myRef3 = database3.getReference("Balance").child(gKey).child(FirebaseAuth.getInstance().getCurrentUser().getUid());
+
+        myRef3.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                balancemap = (Map<String, Map<String, Object>>) dataSnapshot.getValue();
+                if(balancemap!=null) {
+                    System.out.println("MAPPAAAAAAAAAAHAHHAHAH +" + balancemap);
+                     for(String u : balancemap.keySet()){
+                         float tttt = Float.parseFloat(balancemap.get(u).get("value").toString());
+                         if(tttt>=0)
+                             tmppos +=  tttt;
+                         else
+                             tmpneg +=tttt;
+                     }
+
+                     String subtitle = "";
+                     subtitle +=" "+ "They Owe You: " + String.valueOf(tmppos)+ " - You Owe: " + String.valueOf(tmpneg);
+
+
+
+                     getSupportActionBar().setSubtitle(subtitle);
+
+                }
+                else{
+                    Toast.makeText(GroupActivity.this, "no balance found!", Toast.LENGTH_LONG).show();
+                }
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+
+
+
+          getSupportActionBar().setTitle(" "+gName);
+         String subtitle = "";
+         subtitle +=" "+ "They Owe You: " + String.valueOf(tmppos)+ " - You Owe: " + String.valueOf(tmpneg);
+
+
+
+         getSupportActionBar().setSubtitle(subtitle);
+
         //Drawable dr = getResources().getDrawable(R.drawable.group_default);
         Glide
                 .with(getApplicationContext())

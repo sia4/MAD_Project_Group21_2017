@@ -3,6 +3,7 @@ package it.polito.mad.mad_app;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -14,6 +15,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -41,7 +43,7 @@ public class    HistoryFragment extends Fragment {
 
     static private List<ExpenseData> lex = new ArrayList<>();
     private Context context;
-    private String GroupName;
+    private String GroupName, myvalue;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -78,6 +80,9 @@ public class    HistoryFragment extends Fragment {
             }
         }));
 
+
+
+
         GroupName = this.getArguments().getString("GroupId");
 
         System.out.println("H: " + GroupName);
@@ -90,6 +95,9 @@ public class    HistoryFragment extends Fragment {
         recyclerView.setLayoutManager(mLayoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setAdapter(hAdapter);
+
+
+
 
         myRef.addValueEventListener(new ValueEventListener() {
             @Override
@@ -114,16 +122,46 @@ public class    HistoryFragment extends Fragment {
                                             flag =1;
                                     }
                                     if(flag!=1) {
-                                        ExpenseData e = new ExpenseData((String) map3.get("name"), (String) map3.get("description"), (String) map3.get("category"), (String) map3.get("currency"), map3.get("value").toString(), map3.get("myvalue").toString(), (String) map3.get("algorithm"));
+                                        final ExpenseData e = new ExpenseData((String) map3.get("name"), (String) map3.get("description"), (String) map3.get("category"), (String) map3.get("currency"), map3.get("value").toString(), map3.get("myvalue").toString(), (String) map3.get("algorithm"));
                                         e.setCreator((String) map3.get("creator"));
                                         e.setIdEx(k);
-
                                         e.setDate((String) map3.get("date"));
                                         e.setContested((String) map3.get("contested"));
-                                        lex.add(e);
+                                        if((String)map3.get("creatorId")!=null)
+                                            e.setCreatorId((String)map3.get("creatorId"));
+
+                                        final FirebaseDatabase database2 = FirebaseDatabase.getInstance();
+                                        DatabaseReference myRef2 = database2.getReference("Expenses").child(GroupName).child(k);
+                                        myRef2.child("users").addListenerForSingleValueEvent(new ValueEventListener() {
+                                            @Override
+                                            public void onDataChange(DataSnapshot dataSnapshot) {
+                                                Map<String, String> usermapTemp;
+                                                usermapTemp = (Map<String, String>) dataSnapshot.getValue();
+                                                System.out.println("USERMAPPPPPP "+usermapTemp);
+                                                if(usermapTemp !=null) {
+                                                    for(String h : usermapTemp.keySet()) {
+                                                        if(h.equals(FirebaseAuth.getInstance().getCurrentUser().getUid())) {
+                                                            myvalue = usermapTemp.get(h);
+                                                            e.setMyvalue(myvalue);
+                                                            lex.add(e);
+                                                            Collections.sort(lex);
+                                                            hAdapter.notifyDataSetChanged();
+                                                        }
+                                                    }
+
+                                                }
+                                            }
+
+                                            @Override
+                                            public void onCancelled(DatabaseError databaseError) {
+
+                                            }
+                                        });
+
+
+
                                         System.out.println("valueeeeeeeeeeeeeeeeeeeeeeasdf" + map3.get("value"));
-                                        Collections.sort(lex);
-                                        hAdapter.notifyDataSetChanged();
+
                                     }
                                 }
                             }
