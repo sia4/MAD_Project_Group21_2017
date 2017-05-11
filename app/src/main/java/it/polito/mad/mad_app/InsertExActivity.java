@@ -71,6 +71,8 @@ public class InsertExActivity extends AppCompatActivity {
     private boolean flag_name_edited = false, flag_desc_edited = false, flag_img_edited = false;
     private String tmp;
     String mCurrentPhotoPath;
+    private Map<String, Float> Cambi = new TreeMap<>();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -193,6 +195,7 @@ public class InsertExActivity extends AppCompatActivity {
 
                 if (g != null) {
                     Currencies.addAll(g.getCurrencies().keySet());
+                    Cambi.putAll(g.getCurrencies());
                 }
             }
 
@@ -398,6 +401,7 @@ public class InsertExActivity extends AppCompatActivity {
                 } else if(category.equals("Select category")) {
                     Toast.makeText(InsertExActivity.this, "Please insert category.", Toast.LENGTH_LONG).show();
                 } else {
+
                     value = Float.parseFloat(Tvalue.getText().toString());
 
                    if (algorithm.equals("equally")) {
@@ -460,6 +464,9 @@ public class InsertExActivity extends AppCompatActivity {
                         myRef.child("users").setValue(values);
                         myRef.child("contested").setValue("no");
                         ii = 0;
+
+                        final float cambio = Cambi.get(currency);
+
                         for(final UserData key : users){
 
                                 final DatabaseReference myRef3 = database.getReference("Balance").child(Gname).child(mAuth.getCurrentUser().getUid()).child(key.getuId());
@@ -471,13 +478,24 @@ public class InsertExActivity extends AppCompatActivity {
                                         if(!key.getuId().equals(mAuth.getCurrentUser().getUid())) {
                                             Float value = mutableData.child("value").getValue(Float.class);
                                             System.out.println("valueeeeeeeeeeeeeeeeeeeeee " + value);
-                                            if (value == null) {
-                                                mutableData.child("name").setValue(key.getName() + " " + key.getSurname());
-                                                mutableData.child("value").setValue(values.get(key.getuId()));
+                                            if (cambio != 0) {
+                                                if (value == null) {
+                                                    mutableData.child("name").setValue(key.getName() + " " + key.getSurname());
+                                                    mutableData.child("value").setValue(values.get(key.getuId()) * cambio);
+                                                } else {
+                                                    mutableData.child("value").setValue((value + values.get(key.getuId())) * cambio);
+                                                    mutableData.child("name").setValue(key.getName() + " " + key.getSurname());
+                                                }
                                             } else {
-                                                mutableData.child("value").setValue(value + values.get(key.getuId()));
-                                                mutableData.child("name").setValue(key.getName() + " " + key.getSurname());
+                                                if (value == null) {
+                                                    mutableData.child("name").setValue(key.getName() + " " + key.getSurname());
+                                                    mutableData.child("value").setValue(values.get(key.getuId()));
+                                                } else {
+                                                    mutableData.child("value").setValue(value + values.get(key.getuId()));
+                                                    mutableData.child("name").setValue(key.getName() + " " + key.getSurname());
+                                                }
                                             }
+
                                         }
                                         return Transaction.success(mutableData);
                                     }
@@ -498,13 +516,24 @@ public class InsertExActivity extends AppCompatActivity {
                                         if(!key.getuId().equals(mAuth.getCurrentUser().getUid())) {
                                             Float value = mutableData.child("value").getValue(Float.class);
                                             System.out.println("valueeeeeeeeeeeeeeeeeeeeee " + value);
-                                            if (value == null) {
-                                                mutableData.child("value").setValue(-values.get(key.getuId()));
-                                                mutableData.child("name").setValue(myname + " " + mysurname);
+                                            if (cambio != 0) {
+                                                if (value == null) {
+                                                    mutableData.child("value").setValue(-(values.get(key.getuId()) * cambio));
+                                                    mutableData.child("name").setValue(myname + " " + mysurname);
+                                                } else {
+                                                    mutableData.child("value").setValue(((value - values.get(key.getuId())) * cambio));
+                                                    mutableData.child("name").setValue(myname + " " + mysurname);
+                                                }
                                             } else {
-                                                mutableData.child("value").setValue(value - values.get(key.getuId()));
-                                                mutableData.child("name").setValue(myname + " " + mysurname);
+                                                if (value == null) {
+                                                    mutableData.child("value").setValue(-(values.get(key.getuId())));
+                                                    mutableData.child("name").setValue(myname + " " + mysurname);
+                                                } else {
+                                                    mutableData.child("value").setValue(value - values.get(key.getuId()));
+                                                    mutableData.child("name").setValue(myname + " " + mysurname);
+                                                }
                                             }
+
                                         }
                                         return Transaction.success(mutableData);
                                     }
