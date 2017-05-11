@@ -178,10 +178,12 @@ public class GroupActivity extends AppCompatActivity {
         if (resultCode == RESULT_OK) {
             final String gkey1 = data.getStringExtra("groupId");
             final String gName1 = data.getStringExtra("groupName");
+            final String gImg1 = data.getStringExtra("imagePath");
             Intent refresh = new Intent(this, GroupActivity.class);
 
             refresh.putExtra("groupId", gkey1);
             refresh.putExtra("groupName", gName1);
+            refresh.putExtra("imagePath", gImg1);
             startActivity(refresh);
             this.finish();
         }
