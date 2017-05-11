@@ -13,7 +13,6 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -41,12 +40,10 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.TreeMap;
 
 import it.polito.mad.mad_app.model.Balance;
 import it.polito.mad.mad_app.model.ExpenseData;
-import it.polito.mad.mad_app.model.MainData;
 import it.polito.mad.mad_app.model.UserData;
 
 
@@ -171,7 +168,14 @@ public class InsertExActivity extends AppCompatActivity {
 
         System.out.println("2");
 
+
         Spinner spinner = (Spinner) findViewById(R.id.Currency);
+
+        final List<String> Currencies = new ArrayList<>();
+        Currencies.add("Select currency");
+        //Currencies.add("EUR €");
+
+        //Currencies.add(defaultcurrency);
         // Create an ArrayAdapter using the string array and a default spinner layout
         FirebaseDatabase database4 = FirebaseDatabase.getInstance();
         DatabaseReference myRef4 = database4.getReference("Groups").child(Gname);
@@ -179,12 +183,16 @@ public class InsertExActivity extends AppCompatActivity {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 Map<String, Object> map = (Map<String, Object>) dataSnapshot.getValue();
+                it.polito.mad.mad_app.model.Group g = dataSnapshot.getValue(it.polito.mad.mad_app.model.Group.class);
+
                 if(map!=null) {
                     defaultcurrency = (String)map.get("defaultcurrency");
-
-                }
-                else{
+                } else {
                     Toast.makeText(InsertExActivity.this, "no user key found!", Toast.LENGTH_LONG).show();
+                }
+
+                if (g != null) {
+                    Currencies.addAll(g.getCurrencies().keySet());
                 }
             }
 
@@ -196,12 +204,6 @@ public class InsertExActivity extends AppCompatActivity {
 
 
         System.out.println("3");
-
-        List<String> Currencies = new ArrayList<>();
-        Currencies.add("Select currency");
-        Currencies.add("EUR €");
-        //Currencies.add(defaultcurrency);
-        //TODO AGGIUNGERE TUTTE LE CURRENCIES ALLO SPINNER
 
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, R.layout.currency_item, Currencies);
         // Specify the layout to use when the list of choices appears
