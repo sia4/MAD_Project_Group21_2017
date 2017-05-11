@@ -87,8 +87,8 @@ public class BudgetFragment extends Fragment {
                             Double v = (Double) ((Map<String, Object>) k.getValue()).get("value");
                             value = v.floatValue();
                         } else {
-                            Long v = (Long) ((Map<String, Object>) k.getValue()).get("value");
-                            value = v.floatValue();
+                            String v = (String) ((Map<String, Object>) k.getValue()).get("value");
+                            value = Float.parseFloat(v);
                         }
                         users.add(new Balance(k.getKey(), name, value, groupId));
                         bAdapter.notifyDataSetChanged();
