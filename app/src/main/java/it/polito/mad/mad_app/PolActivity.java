@@ -84,6 +84,7 @@ public class PolActivity extends AppCompatActivity {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 users.clear();
+                usersid.clear();
                 Map<String, Object> map2 = (Map<String, Object>) dataSnapshot.getValue();
                 System.out.println("POLLLLLLLLLLLLLLLLLLLL "+map2);
                 if(map2!=null) {
@@ -93,8 +94,10 @@ public class PolActivity extends AppCompatActivity {
                             already.setVisibility(View.VISIBLE);
                             already.setTextColor(Color.parseColor("#27B011"));
                         }
-                       users.add((String)map2.get(k));
-                       usersid.add(k);
+                        if(!usersid.contains(k)) {
+                            users.add((String) map2.get(k));
+                            usersid.add(k);
+                        }
                     }
 
 

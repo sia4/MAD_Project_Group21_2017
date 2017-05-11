@@ -595,7 +595,7 @@ public class InsertExActivity extends AppCompatActivity {
                     Toast.makeText(InsertExActivity.this, "Please insert category.", Toast.LENGTH_LONG).show();
                 } else {
                     value = Double.valueOf(Tvalue.getText().toString());
-
+                    System.out.println("valuebuggggggggggggggggggg "+value);
                    if (algorithm.equals("equally")) {
                         v = value/users.size();
                        for(UserData k : users)
@@ -654,12 +654,13 @@ public class InsertExActivity extends AppCompatActivity {
                         DatabaseReference ActRef = database.getReference("Activities").child(Gname).push();
 
                         ActRef.setValue(new ActivityData(myname+" "+mysurname, myname +" "+mysurname+" added a new expense in group "+ groupName, Long.toString(System.currentTimeMillis()), "expense", refkey, Gname));
-                        myRef.setValue(new ExpenseData(name, description, category, currency, String.format("%.2f", value), "0.00", algorithm));
+
+                        myRef.setValue(new ExpenseData(name, description, category, currency, String.valueOf(value), "0.00", algorithm));
                         final DatabaseReference myRef2=myRef;
                         myRef.child("creator").setValue(myname + " " + mysurname);
-
+                        System.out.println(String.format("%.2f", value));
                         for(Map.Entry<String, Double> e : values.entrySet())
-                            myRef.child("users").child(e.getKey()).setValue(String.format("%.2f", e.getValue()));
+                            myRef.child("users").child(e.getKey()).setValue(String.valueOf(e.getValue()));
 
                         myRef.child("contested").setValue("no");
                         ii = 0;
