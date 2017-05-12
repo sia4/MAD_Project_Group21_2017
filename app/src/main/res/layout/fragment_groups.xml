@@ -26,7 +26,19 @@
         android:indeterminate="false"
         android:visibility="visible" />
 
-    <Button
+    <TextView
+        android:id="@+id/noGroups"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:textSize="20sp"
+        android:text="You have no groups. Press on the + button to add a new group!"
+        android:visibility="gone"
+        android:layout_margin="@dimen/activity_margin"
+        android:textAlignment="center"
+        />
+
+  <!--  <Button
         android:id="@+id/relaod"
         android:layout_width="40dp"
         android:layout_height="40dp"
@@ -35,5 +47,5 @@
         android:layout_centerInParent="true"
         android:layout_centerVertical="true"
         android:layout_gravity="center"
-        android:background="@drawable/reload"/>
+        android:background="@drawable/reload"/>-->
 </RelativeLayout>

@@ -29,7 +29,7 @@ public class MainData {
         mySurname = "Rossi (Me)";
 
         me = new UserData(myEmail, myName, mySurname, 33333332);
-
+        /*
         GroupData group1 = new GroupData("Coinquilini", "Gruppo dei coinquilini di via Tolmino 7", "EUR €");
         GroupData group2 = new GroupData("Quartiere", "Gruppo dei vicini di quartiere Crocetta", "EUR €");
         GroupData group3 = new GroupData("Viaggio", "Gruppo dei compagni di viaggio", "EUR €");
@@ -45,11 +45,11 @@ public class MainData {
         UserData user9 = new UserData("gianpaolo.cabodi@gmail.com", "Gianpaolo", "Cabodi", 31113333);
         UserData user10 = new UserData("stefano.quer@gmail.com", "Stefano", "Quer", 444234554);
 
-        /*group1.addUser(this.returnMyData());
+        group1.addUser(this.returnMyData());
         group2.addUser(this.returnMyData());
         group3.addUser(this.returnMyData());
 
-        lUser.put(myEmail, this.returnMyData());*/
+        lUser.put(myEmail, this.returnMyData());
 
         group1.addUser(user1);
         group1.addUser(user4);
@@ -100,7 +100,7 @@ public class MainData {
         lActivities.add(new ActivityData("stefano.quer@gmail.it", "Stefano added an expense on group Viaggio", "4 apr 2017, 18:21"));
         lActivities.add(new ActivityData("giovanni.malnati@gmail.it", "Giovanni invited you on group MAD21", "8 mar 2017, 8:17"));
         lActivities.add(new ActivityData("silvia.chiusano@gmail.it", "Silvia added an user on group Quartiere", "4 apr 2017, 19:44"));
-
+        */
     }
 
     public GroupData addGroup(String n, String d, String c) {
@@ -111,7 +111,7 @@ public class MainData {
         return g;
     }
 
-    public void addActivity(String email, String text, String date){this.lActivities.add(new ActivityData(email, text, date));    }
+    //public void addActivity(String email, String text, String date){this.lActivities.add(new ActivityData(email, text, date));    }
     public List<ActivityData> getActivitiesList(){return lActivities;}
 
     public List<GroupData> getGroupList(){
@@ -130,9 +130,6 @@ public class MainData {
     public void setMyPassword(String password){this.myPassword = password;}
     public UserData returnMyData() {return me;}
 
-    public void addExpensiveToGroup(String Gname, String name, String descr, String category, String currency, float value, float myvalue, String algorithm){
-        this.lGroups.get(Gname).addExpensive(name, descr, category, currency, value, myvalue, algorithm);
-    }
 
     public UserData findUserByMail(String email) {
         if(!lUser.containsKey(email))

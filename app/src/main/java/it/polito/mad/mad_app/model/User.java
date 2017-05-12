@@ -31,7 +31,14 @@ public class User {
         //this.imagePath=imagePath;
         //this.Groups.put("", true);
     }
-
+    public User(String username, String email, String name, String surname,String imagePath) {
+        this.username = username;
+        this.email = email;
+        this.name = name;
+        this.surname = surname;
+        this.imagePath=imagePath;
+        //this.Groups.put("", true);
+    }
     public String getSurname(){
         return this.surname;
     }
