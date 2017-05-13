@@ -44,6 +44,7 @@ public class InsertUserToGroupActivity extends AppCompatActivity {
     public String gName;
     public String gPath;
     public String email;
+    private String name, surname;
     private List<UserData> users = new ArrayList<>();
     private FirebaseDatabase database2 = FirebaseDatabase.getInstance();
     @Override
@@ -157,8 +158,11 @@ public class InsertUserToGroupActivity extends AppCompatActivity {
                         public void onDataChange(DataSnapshot dataSnapshot) {
                             for (DataSnapshot userSnapshot: dataSnapshot.getChildren()) {
                                 ud = userSnapshot.getValue(User.class);
+                                name = ud.getName();
+                                surname = ud.getSurname();
                                 key=userSnapshot.getKey(); //ritorna la chive dell'utente che quindi
                                 // poi va inserito nell'oggetto gruppo come chiave:true
+
                                 Toast.makeText(InsertUserToGroupActivity.this, key, Toast.LENGTH_LONG).show();
                             }
                             if(key == null) {
@@ -188,10 +192,10 @@ public class InsertUserToGroupActivity extends AppCompatActivity {
 
                                 for(UserData u : users){
                                     database.getReference("/Balance/" + gId + "/" + key + "/" + u.getuId() +"/" + "name").setValue(u.getName()+" "+u.getSurname());;
-                                    database.getReference("/Balance/" + gId + "/" + key + "/" + u.getuId() + "/" + "value").setValue(df.format(f));
+                                    database.getReference("/Balance/" + gId + "/" + key + "/" + u.getuId() + "/" + "value").setValue("0.00");
 
-                                    database.getReference("/Balance/" + gId + "/" + u.getuId()+ "/" + key  + "/" + "name").setValue(u.getName()+" "+u.getSurname());;
-                                    database.getReference("/Balance/" + gId + "/" + u.getuId()+ "/" + key  + "/" + "value").setValue(df.format(f));
+                                    database.getReference("/Balance/" + gId + "/" + u.getuId()+ "/" + key  + "/" + "name").setValue(name+" "+surname);
+                                    database.getReference("/Balance/" + gId + "/" + u.getuId()+ "/" + key  + "/" + "value").setValue("0.00");
 
                                 }
 
