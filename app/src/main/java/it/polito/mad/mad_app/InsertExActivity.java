@@ -14,6 +14,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.Parcelable;
 import android.provider.MediaStore;
+import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -97,7 +98,8 @@ public class InsertExActivity extends AppCompatActivity {
     private Map<String, Double> values = new TreeMap<>();
     private String defaultcurrency;
     private FirebaseAuth mAuth = FirebaseAuth.getInstance();
-    private List<UserData> users = new ArrayList<>();
+    private List<UserData> users;
+    private Map<String,UserData>m_users=new TreeMap<>();
     static private RecyclerView userRecyclerView;
     static private AlgorithmParametersAdapter uAdapter;
     static final int REQUEST_TAKE_PHOTO = 1;
@@ -144,34 +146,6 @@ public class InsertExActivity extends AppCompatActivity {
 
         final String uid = mAuth.getCurrentUser().getUid().toString();
 
-        final FirebaseDatabase database3 = FirebaseDatabase.getInstance();
-        DatabaseReference myRef3 = database3.getReference("Balance").child(Gname);
-        System.out.println("Path "+myRef3);
-
-        myRef3.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                balancemap = (Map<String, Map<String, Map<String, Object>>>) dataSnapshot.getValue();
-                if(balancemap==null) {
-                    Toast.makeText(InsertExActivity.this, "no balance found!", Toast.LENGTH_LONG).show();
-                }
-                else{
-                    System.out.println("balancemapppppppppppppppp " + balancemap);
-                }
-
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
-
-
-
-
-
-
         FirebaseDatabase database2 = FirebaseDatabase.getInstance();
         DatabaseReference myRef2 = database2.getReference("Groups").child(Gname).child("members");
 
@@ -194,7 +168,10 @@ public class InsertExActivity extends AppCompatActivity {
                                     System.out.println(s);
                                     UserData u = new UserData("aaaa", (String)map3.get("name"), (String)map3.get("surname"), 5555);
                                     u.setuId(k);
-                                    users.add(u);
+                                    m_users.put(k,u);
+                                    users=new ArrayList<>(m_users.values());
+                                    System.out.println("lista utenti: "+users);
+                                    System.out.println("lista utenti: "+users.size());
                                     System.out.println("+++++++utente trovato"+k);
                                     if(k.equals(mAuth.getCurrentUser().getUid())){
                                         myname = (String)map3.get("name");
@@ -685,7 +662,6 @@ public class InsertExActivity extends AppCompatActivity {
                     }
 
                     if (flagok == 1 && values.size() == users.size()) {
-
                         //Quì inseriamo la nuova ttività relativa all'inserimento della spesa
                         DatabaseReference ActRef = database.getReference("Activities").child(Gname).push();
                         ActRef.setValue(new ActivityData(myname + " " + mysurname, myname + " " + mysurname + " added a new expense in group " + groupName, Long.toString(System.currentTimeMillis()), "expense", refkey, Gname));
@@ -699,35 +675,58 @@ public class InsertExActivity extends AppCompatActivity {
                             myRef.child("users").child(e.getKey()).setValue(String.valueOf(e.getValue()));
                         myRef.child("contested").setValue("no");
                         ii = 0;
-                        for (final UserData key : users) {
-                            myRef = database.getReference("/Users/" + key.getuId() + "/Groups/" + Gname + "/lastOperation/");
+                        for(final UserData k:users){
+                            myRef = database.getReference("/Users/" + k.getuId() + "/Groups/" + Gname + "/lastOperation/");
                             myRef.setValue(myname + " added an expense.");
-                            myRef = database.getReference("/Users/" + key.getuId() + "/Groups/" + Gname + "/dateLastOperation/");
+                            myRef = database.getReference("/Users/" + k.getuId() + "/Groups/" + Gname + "/dateLastOperation/");
                             myRef.setValue(Long.toString(System.currentTimeMillis()).toString());
-                            final FirebaseDatabase database5 = FirebaseDatabase.getInstance();
-                            DatabaseReference myRef5 = database5.getReference("Balance").child(Gname);
-                            float value1, value2, value3, value4;
-                            for (UserData u : users) {
-                                if (!u.getuId().equals(mAuth.getCurrentUser().getUid()) && balancemap != null) {
+                        }
 
-                                    value1 = Float.parseFloat((String) balancemap.get(mAuth.getCurrentUser().getUid()).get(u.getuId()).get("value"));
-                                    value2 = Float.parseFloat((String) balancemap.get(u.getuId()).get(mAuth.getCurrentUser().getUid()).get("value"));
-                                    //value3 = new Float (Float.parseFloat(usermap.get(k).toString()));
-                                    System.out.println("buttonnnnnnn1 " + value1);
-                                    System.out.println("buttonnnnnnn2 " + value2);
-                                    //System.out.println("buttonnnnnnn3 "+value3);
+                        //TODO
+                        final FirebaseDatabase database3 = FirebaseDatabase.getInstance();
+                        DatabaseReference myRef3 = database3.getReference("Balance").child(Gname);
+                        System.out.println("Path "+myRef3);
 
-                                    value3 = values.get(u.getuId()).floatValue();
-                                    value1 = value1 + value3;
-                                    value2 = value2 - value3;
-                                    myRef5.child(mAuth.getCurrentUser().getUid()).child(u.getuId()).child("value").setValue(String.valueOf(value1));
-                                    myRef5.child(u.getuId()).child(mAuth.getCurrentUser().getUid()).child("value").setValue(String.valueOf(value2));
+                        myRef3.addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(DataSnapshot dataSnapshot) {
+                                balancemap = (Map<String, Map<String, Map<String, Object>>>) dataSnapshot.getValue();
+                                if(balancemap==null) {
+                                    Toast.makeText(InsertExActivity.this, "no balance found!", Toast.LENGTH_LONG).show();
+                                }
+                                else{
+                                        for (UserData u : users) {
+                                            final FirebaseDatabase database5 = FirebaseDatabase.getInstance();
+                                            DatabaseReference myRef5 = database5.getReference("Balance").child(Gname);
+                                            float value1, value2, value3, value4;
+                                            if (!u.getuId().equals(mAuth.getCurrentUser().getUid()) && balancemap != null) {
+                                                value1 = Float.parseFloat((String) balancemap.get(mAuth.getCurrentUser().getUid()).get(u.getuId()).get("value"));
+                                                value2 = Float.parseFloat((String) balancemap.get(u.getuId()).get(mAuth.getCurrentUser().getUid()).get("value"));
+                                                //value3 = new Float (Float.parseFloat(usermap.get(k).toString()));
+                                                System.out.println("buttonnnnnnn1 " + value1);
+                                                System.out.println("buttonnnnnnn2 " + value2);
+                                                //System.out.println("buttonnnnnnn3 "+value3);
+
+                                                value3 = values.get(u.getuId()).floatValue();
+                                                value1 = value1 + value3;
+                                                value2 = value2 - value3;
+                                                myRef5.child(mAuth.getCurrentUser().getUid()).child(u.getuId()).child("value").setValue(String.valueOf(value1));
+                                                myRef5.child(u.getuId()).child(mAuth.getCurrentUser().getUid()).child("value").setValue(String.valueOf(value2));
 
 
+                                            }
+
+                                        }
+                                    System.out.println("balancemapppppppppppppppp " + balancemap);
                                 }
 
                             }
-                        }
+
+                            @Override
+                            public void onCancelled(DatabaseError databaseError) {
+
+                            }
+                        });
                         if(ImageC==true) {
                             mStorageRef = FirebaseStorage.getInstance().getReference();
                             try {
@@ -814,7 +813,7 @@ public class InsertExActivity extends AppCompatActivity {
                             //}
                             //return true;
                         } else{
-                            String p = String.format("problems... flagok: %d, values.size: %d, users.size: %d, uAdapter: %d", flagok, values.size(), users.size(), uAdapter.getItemCount());
+                            String p = String.format("problems... flagok: %d, values.size: %d, users.size: %d", flagok, values.size(), users.size());
                             Toast.makeText(InsertExActivity.this, p, Toast.LENGTH_LONG).show();
                             return super.onOptionsItemSelected(item);
                         }
