@@ -45,8 +45,13 @@
                 android:text="Activity" />
         </android.support.design.widget.TabLayout>
     </android.support.design.widget.AppBarLayout>-->
+    <android.support.v4.view.ViewPager
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/pager"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
 
-    <android.support.v4.widget.NestedScrollView
+    <!--<android.support.v4.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_behavior="android.support.design.widget.AppBarLayout$ScrollingViewBehavior">
@@ -57,7 +62,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
 
-    </android.support.v4.widget.NestedScrollView>
+    </android.support.v4.widget.NestedScrollView>-->
 
     <!--<ListView
             android:id="@+id/lv"

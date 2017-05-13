@@ -13,6 +13,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.support.v4.view.GravityCompat;
+import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
@@ -37,6 +38,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import it.polito.mad.mad_app.model.MainData;
+import it.polito.mad.mad_app.model.PagerAdapter;
 import it.polito.mad.mad_app.model.User;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener{
@@ -47,6 +49,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private boolean user_exists = false;
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
+    private ViewPager mViewPager;
     MainData ad = MainData.getInstance();
 
     @Override
@@ -152,19 +155,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     }
                 });
                 //t.setImageAlpha();
-
-
-                FragmentManager f = getSupportFragmentManager();
-                FragmentTransaction transaction = f.beginTransaction();
-                transaction.replace(R.id.main_framelayout, new GroupsFragment());
-                transaction.commit();
-
-                final FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.addGroup);
-                TabLayout tabL = (TabLayout) findViewById(R.id.tabs);
-                tabL.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+                PagerAdapter mPagerAdapter = new PagerAdapter(getSupportFragmentManager());
+                final TabLayout tabL = (TabLayout) findViewById(R.id.tabs);
+                final TabLayout.OnTabSelectedListener OnT=new TabLayout.OnTabSelectedListener(){
                     @Override
                     public void onTabSelected(TabLayout.Tab tab) {
-                        Fragment frag;
+                        mViewPager.setCurrentItem(tab.getPosition());
+                        /*
                         switch (tab.getPosition()) {
                             case 0:
                                 frag = new GroupsFragment();
@@ -183,8 +180,73 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         FragmentManager f = getSupportFragmentManager();
                         FragmentTransaction transaction = f.beginTransaction();
                         transaction.replace(R.id.main_framelayout, frag);
-                        transaction.commit();
+                        transaction.commit();*/
 
+                    }
+
+                    @Override
+                    public void onTabUnselected(TabLayout.Tab tab) {
+
+                    }
+
+                    @Override
+                    public void onTabReselected(TabLayout.Tab tab) {
+
+                    }
+                };
+                mViewPager = (ViewPager) findViewById(R.id.pager);
+                mViewPager.setAdapter(mPagerAdapter);
+                tabL.setupWithViewPager(mViewPager);
+                mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+                    @Override
+                    public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+                        tabL.addOnTabSelectedListener(OnT);
+                    }
+
+                    @Override
+                    public void onPageSelected(int position) {
+
+                    }
+
+                    @Override
+                    public void onPageScrollStateChanged(int state) {
+
+                    }
+                });
+
+                        /*addOnPageChangeListener(
+                        new ViewPager.SimpleOnPageChangeListener() {
+                            @Override
+                            public void onPageSelected(int position) {
+                                // When swiping between pages, select the
+                                // corresponding tab.
+                                tabL.addOnTabSelectedListener(OnT);
+                            }
+                        });*/
+
+                /*FragmentManager f = getSupportFragmentManager();
+                FragmentTransaction transaction = f.beginTransaction();
+                transaction.replace(R.id.main_framelayout, new GroupsFragment());
+                transaction.commit();*/
+
+
+                final FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.addGroup);
+
+                tabL.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+                    @Override
+                    public void onTabSelected(TabLayout.Tab tab) {
+                        mViewPager.setCurrentItem(tab.getPosition());
+                        switch (tab.getPosition()) {
+                            case 0:
+                                fab.setVisibility(View.VISIBLE);
+                                break;
+                            case 1:
+                                fab.setVisibility(View.INVISIBLE);
+                                break;
+                            default:
+                                fab.setVisibility(View.VISIBLE);
+                                break;
+                        }
                     }
 
                     @Override

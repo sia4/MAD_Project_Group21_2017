@@ -13,6 +13,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
@@ -41,8 +42,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
+import it.polito.mad.mad_app.model.PagerAdapter;
+import it.polito.mad.mad_app.model.PagerAdapterGroup;
+
 
 public class GroupActivity extends AppCompatActivity {
+    private ViewPager mViewPager;
     private String gName, gKey,gImage;
     private ListView lv;
     private float tmppos=0;
@@ -162,40 +167,93 @@ public class GroupActivity extends AppCompatActivity {
         //getSupportActionBar().setIcon(R.drawable.group_default);
         //getSupportActionBar().setLogo(R.);
         //getSupportActionBar().setDisplayUseLogoEnabled(true);
-        Fragment hfrag = new HistoryFragment();
+        PagerAdapterGroup mPagerAdapter = new PagerAdapterGroup(getSupportFragmentManager(),b);
+        mViewPager = (ViewPager) findViewById(R.id.pager_group);
+        mViewPager.setAdapter(mPagerAdapter);
+        /*Fragment hfrag = new HistoryFragment();
         hfrag.setArguments(b);
         FragmentManager fm = getSupportFragmentManager();
         FragmentTransaction transaction = fm.beginTransaction();
         final FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
 
         transaction.replace(R.id.group_framelayout, hfrag);
-        transaction.commit();
+        transaction.commit();*/
+        final FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        final TabLayout.OnTabSelectedListener OnT=new TabLayout.OnTabSelectedListener(){
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                mViewPager.setCurrentItem(tab.getPosition());
+                       /* switch (tab.getPosition()) {
+                            case 0:
+                                fab.setVisibility(View.VISIBLE);
+                                break;
+                            case 1:
+                                frag = new ActivitiesFragment();
 
-        TabLayout tabLayout = (TabLayout) findViewById(R.id.tabsGroup);
+                                fab.setVisibility(View.INVISIBLE);
+                                break;
+                            default:
+                                frag = new GroupsFragment();
+                                fab.setVisibility(View.VISIBLE);
+                                break;
+                        }
+                        FragmentManager f = getSupportFragmentManager();
+                        FragmentTransaction transaction = f.beginTransaction();
+                        transaction.replace(R.id.main_framelayout, frag);
+                        transaction.commit();*/
+
+            }
+
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+
+            }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+
+            }
+        };
+        final TabLayout tabLayout = (TabLayout) findViewById(R.id.tabsGroup);
+        tabLayout.setupWithViewPager(mViewPager);
+        mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+                tabLayout.addOnTabSelectedListener(OnT);
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
         tabLayout.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
                 Fragment frag;
+                mViewPager.setCurrentItem(tab.getPosition());
                 switch (tab.getPosition()) {
                     case 0:
-                        frag = new HistoryFragment();
                         fab.setVisibility(View.VISIBLE);
                         break;
                     case 1:
-                        frag = new BudgetFragment();
                         fab.setVisibility(View.INVISIBLE);
                         break;
                     default:
-                        frag = new HistoryFragment();
                         fab.setVisibility(View.VISIBLE);
                         break;
                 }
 
-                frag.setArguments(b);
+                /*frag.setArguments(b);
                 FragmentManager fm = getSupportFragmentManager();
                 FragmentTransaction transaction = fm.beginTransaction();
                 transaction.replace(R.id.group_framelayout, frag);
-                transaction.commit();
+                transaction.commit();*/
 
             }
 
