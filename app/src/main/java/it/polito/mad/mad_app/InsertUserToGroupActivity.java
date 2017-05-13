@@ -21,8 +21,14 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
+import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
 import it.polito.mad.mad_app.model.Invite;
 import it.polito.mad.mad_app.model.User;
+import it.polito.mad.mad_app.model.UserData;
 
 /**
  * Created by Silvia Vitali on 27/04/2017.
@@ -37,7 +43,8 @@ public class InsertUserToGroupActivity extends AppCompatActivity {
     public String gName;
     public String gPath;
     public String email;
-
+    private List<UserData> users = new ArrayList<>();
+    private FirebaseDatabase database2 = FirebaseDatabase.getInstance();
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_done, menu);
@@ -62,6 +69,66 @@ public class InsertUserToGroupActivity extends AppCompatActivity {
         if (getSupportActionBar() != null)
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle("Add user");
+
+
+        FirebaseDatabase database2 = FirebaseDatabase.getInstance();
+        DatabaseReference myRef2 = database2.getReference("Groups").child(gId).child("members");
+
+        myRef2.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                Map<String, Object> map2 = (Map<String, Object>) dataSnapshot.getValue();
+                if(map2!=null) {
+                    map2.put(key, key); //aggiungo user corrente
+                    for (final String k : map2.keySet()){
+                        FirebaseDatabase database3 = FirebaseDatabase.getInstance();
+                        DatabaseReference myRef3 = database3.getReference("Users").child(k);
+                        myRef3.addValueEventListener(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(DataSnapshot dataSnapshot) {
+                                Map<String, Object> map3 = (Map<String, Object>) dataSnapshot.getValue();
+                                if(map3!=null) {
+                                    String s = String.format("user %s added\n", (String)map3.get("name"));
+                                    System.out.println(s);
+                                    UserData u = new UserData("aaaa", (String)map3.get("name"), (String)map3.get("surname"), 5555);
+                                    u.setuId(k);
+                                    users.add(u);
+
+                                }
+                                else{
+                                    Toast.makeText(InsertUserToGroupActivity.this, "no user key found!", Toast.LENGTH_LONG).show();
+                                }
+                            }
+
+                            @Override
+                            public void onCancelled(DatabaseError databaseError) {
+
+                            }
+                        });
+
+
+                    }
+
+                }
+                else{
+                    Toast.makeText(InsertUserToGroupActivity.this, "no users found!", Toast.LENGTH_LONG).show();
+
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError error) {
+                // Failed to read value
+                //log.w(TAG, "Failed to read value.", error.toException());
+            }
+        });
+
+
+
+
+
+
 
     }
 
@@ -114,6 +181,23 @@ public class InsertUserToGroupActivity extends AppCompatActivity {
                                 myRef.setValue(gPath);
                                 myRef = database.getReference("/Groups/"+gId+"/members/"+key);
                                 myRef.setValue(true);
+                                DecimalFormat df = new DecimalFormat("0.00");
+                                float f = 0;
+
+
+                                for(UserData u : users){
+                                    database.getReference("/Balance/" + gId + "/" + key + "/" + u.getuId() +"/" + "name").setValue(u.getName()+" "+u.getSurname());;
+                                    database.getReference("/Balance/" + gId + "/" + key + "/" + u.getuId() + "/" + "value").setValue(df.format(f));
+
+                                    database.getReference("/Balance/" + gId + "/" + u.getuId()+ key + "/"  + "/" + "name").setValue(u.getName()+" "+u.getSurname());;
+                                    database.getReference("/Balance/" + gId + "/" + u.getuId()+ key + "/"  + "/" + "value").setValue(df.format(f));
+
+                                }
+
+
+
+
+
 
                                 finish();
                             }

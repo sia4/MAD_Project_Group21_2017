@@ -61,6 +61,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -539,14 +540,16 @@ public class InsertGroupActivity extends AppCompatActivity {
                                     myRef.setValue(uName + " has created the group.");
                                     myRef = database.getReference("/Users/" + key + "/Groups/" + groupId + "/dateLastOperation/");
                                     myRef.setValue(Long.toString(System.currentTimeMillis()));
-
+                                    DecimalFormat df = new DecimalFormat("0.00");
+                                    float f = 0;
                                     for (Iterator n = others.iterator(); n.hasNext(); ) {
                                         String k = (String) n.next();
                                         if (k != key) {
                                             myRef = database.getReference("/Balance/" + groupId + "/" + key + "/" + k + "/" + "name");
                                             myRef.setValue(my.get(k));
                                             myRef = database.getReference("/Balance/" + groupId + "/" + key + "/" + k + "/" + "value");
-                                            myRef.setValue("0.00");
+
+                                            myRef.setValue(df.format(f));
                                         }
                                     }
                                 }

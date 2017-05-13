@@ -42,6 +42,7 @@ public class    HistoryFragment extends Fragment {
     private static final int VERTICAL_ITEM_SPACE = 48;
 
     static private List<ExpenseData> lex = new ArrayList<>();
+    private Map<String, ExpenseData> m_lex = new TreeMap<>();
     private Context context;
     private String GroupName, myvalue;
     @Override
@@ -50,9 +51,15 @@ public class    HistoryFragment extends Fragment {
         final View view = inflater.inflate(R.layout.fragment_history, container, false);
 
         context = view.getContext();
-        lex.clear();
+
 
         final RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.expenses);
+        final HistoryAdapter hAdapter = new HistoryAdapter(lex);
+        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(context);
+        recyclerView.setItemAnimator(new DefaultItemAnimator());
+        recyclerView.setAdapter(hAdapter);
+
+
         recyclerView.setLayoutManager(new LinearLayoutManager(context));
         //recyclerView.addItemDecoration(new DividerItemDecoration(getActivity(),
          //       DividerItemDecoration.VERTICAL));
@@ -90,11 +97,7 @@ public class    HistoryFragment extends Fragment {
         DatabaseReference myRef = database.getReference("Expenses").child(GroupName);
 
 
-        final HistoryAdapter hAdapter = new HistoryAdapter(lex);
-        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(context);
-        recyclerView.setLayoutManager(mLayoutManager);
-        recyclerView.setItemAnimator(new DefaultItemAnimator());
-        recyclerView.setAdapter(hAdapter);
+
 
 
 
@@ -102,7 +105,7 @@ public class    HistoryFragment extends Fragment {
         myRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                lex.clear();
+
                 Map<String, Object> map2 = (Map<String, Object>) dataSnapshot.getValue();
                 if(map2!=null) {
 
@@ -120,12 +123,6 @@ public class    HistoryFragment extends Fragment {
                                 if(map3!=null) {
                                     //Float tmp = new Float(map3.get("value").toString());
                                     //Float tmp1 = new Float(map3.get("myvalue").toString());
-                                    int flag = 0;
-                                    for(ExpenseData ex : lex){
-                                        if(ex.getIdEx().equals(k))
-                                            flag =1;
-                                    }
-                                    if(flag!=1) {
                                         final ExpenseData e = new ExpenseData((String) map3.get("name"), (String) map3.get("description"), (String) map3.get("category"), (String) map3.get("currency"), map3.get("value").toString(), map3.get("myvalue").toString(), (String) map3.get("algorithm"));
                                         e.setCreator((String) map3.get("creator"));
                                         e.setIdEx(k);
@@ -147,9 +144,13 @@ public class    HistoryFragment extends Fragment {
                                                         if(h.equals(FirebaseAuth.getInstance().getCurrentUser().getUid())) {
                                                             myvalue = usermapTemp.get(h);
                                                             e.setMyvalue(myvalue);
-                                                            lex.add(e);
+                                                            //lex.add(e);
+                                                            m_lex.put(k, e);
+                                                            lex = new ArrayList<ExpenseData>(m_lex.values());
                                                             Collections.sort(lex);
-                                                            hAdapter.notifyDataSetChanged();
+                                                            final HistoryAdapter hAdapter = new HistoryAdapter(lex);
+                                                            recyclerView.setAdapter(hAdapter);
+
                                                         }
                                                     }
 
@@ -166,8 +167,10 @@ public class    HistoryFragment extends Fragment {
 
                                         System.out.println("valueeeeeeeeeeeeeeeeeeeeeeasdf" + map3.get("value"));
 
-                                    }
+
                                 }
+
+                               // hAdapter.notifyDataSetChanged();
                             }
 
                             @Override
@@ -184,6 +187,7 @@ public class    HistoryFragment extends Fragment {
                     tv.setVisibility(view.VISIBLE);
                 }
 
+              //  hAdapter.notifyDataSetChanged();
             }
 
             @Override
