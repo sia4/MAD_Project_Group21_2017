@@ -10,6 +10,7 @@ import android.widget.TextView;
 import java.sql.Date;
 import java.text.SimpleDateFormat;
 import java.util.List;
+import java.util.Locale;
 
 import it.polito.mad.mad_app.model.ActivityData;
 import it.polito.mad.mad_app.model.BalanceData;
@@ -20,12 +21,12 @@ public class ActivitiesAdapter extends RecyclerView.Adapter<ActivitiesAdapter.My
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
         public TextView date, text;
-        public Button accept;
+        public Button viewMore;
         public MyViewHolder(View view) {
             super(view);
             date = (TextView) view.findViewById(R.id.date_act);
             text = (TextView) view.findViewById(R.id.text_act);
-            accept = (Button) view.findViewById(R.id.AcceptActivity);
+            viewMore = (Button) view.findViewById(R.id.AcceptActivity);
         }
     }
 
@@ -47,16 +48,16 @@ public class ActivitiesAdapter extends RecyclerView.Adapter<ActivitiesAdapter.My
         ActivityData activity = activityData.get(position);
 
 
-        SimpleDateFormat sdf = new SimpleDateFormat("MMM dd,yyyy HH:mm");
-        Date resultdate = new Date(new Long(activity.getDate()));
+        SimpleDateFormat sdf = new SimpleDateFormat("MMM dd,yyyy HH:mm", Locale.ITALIAN);
+        Date resultdate = new Date(Long.valueOf(activity.getDate()));
 
         holder.date.setText(sdf.format(resultdate));
-        holder.text.setText(activity.getText().toString());
+        holder.text.setText(activity.getText());
         if(activity.getType().equals("deletegroup")||activity.getType().equals("leavegroup")){
-            holder.accept.setVisibility(View.VISIBLE);
+            holder.viewMore.setVisibility(View.VISIBLE);
         }
         else{
-            holder.accept.setVisibility(View.GONE);
+            holder.viewMore.setVisibility(View.GONE);
         }
     }
 

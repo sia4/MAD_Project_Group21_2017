@@ -7,9 +7,6 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.support.v4.view.GravityCompat;
@@ -18,6 +15,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -37,47 +35,43 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import it.polito.mad.mad_app.model.MainData;
 import it.polito.mad.mad_app.model.PagerAdapter;
 import it.polito.mad.mad_app.model.User;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener{
 
-    private TextView t1;
-    private TextView t2;
     private DatabaseReference Firebase_DB;
     private boolean user_exists = false;
     private FirebaseAuth mAuth;
-    private FirebaseAuth.AuthStateListener mAuthListener;
     private ViewPager mViewPager;
-    MainData ad = MainData.getInstance();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        String uKey = null;
+
+        FirebaseAuth.AuthStateListener mAuthListener;
+        String uKey;
+        //TODO correzione: 1 sola istanza firebase e utente?
         //FirebaseDatabase.getInstance().setPersistenceEnabled(true);
         Firebase_DB = FirebaseDatabase.getInstance().getReference();
         mAuth = FirebaseAuth.getInstance();
 
         CheckLoggedUser();
 
-        mAuthListener = new FirebaseAuth.AuthStateListener() { // listener lo istanzio comunque, se ho modifiche che lo triggerano
-
+        //TODO correzione: serve un listener qui?
+        mAuthListener = new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
 
-                System.out.println("++++++onAuthStateChanged IN+++++");
+                Log.d("Main Activity","onAuthStateChanged IN");
                 FirebaseUser user = firebaseAuth.getCurrentUser();
 
                 if (user != null) {
-
-                    System.out.println("++++++QUI che succede?+++++");
-                    System.out.println(user.toString());
-
+                    Log.d("Main Activity", "Utente loggato: "+user.toString());
                     CheckUser(user);
 
                 } else {
 
+                    Log.d("Main Activity", "Utente non loggato, torno al login.");
                     startActivity(new Intent(MainActivity.this, LoginActivity.class));
                     finish();
 
@@ -87,16 +81,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_info);
 
-        /*Toolbar mainToolbar = (Toolbar) findViewById(R.id.main_toolbar);
-        setSupportActionBar(mainToolbar);*/
-
+        //set toolbar
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        //menu con info utente e impostazioni
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.setDrawerListener(toggle);
+        drawer.addDrawerListener(toggle);
         toggle.syncState();
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
@@ -106,6 +99,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         final TextView nav_surname = (TextView)hView.findViewById(R.id.surnameU);
         final ImageView nav_photo = (ImageView)hView.findViewById(R.id.imageU);
 
+        Log.d("Main Activity", "Drawer creato");
         FirebaseUser currentFUser = FirebaseAuth.getInstance().getCurrentUser() ;
 
         if(currentFUser != null) {
@@ -114,8 +108,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
             if (uKey != null) {
 
-                FirebaseDatabase database = FirebaseDatabase.getInstance();
-                DatabaseReference myRef = database.getReference("Users").child(uKey);
+                DatabaseReference myRef = Firebase_DB.child("Users").child(uKey);
                 myRef.addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
@@ -123,8 +116,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         nav_surname.setText(myu.getSurname() + " " + myu.getName());
                         nav_name.setText(myu.getEmail());
                         String p = myu.getImagePath();
-                        System.out.println("+++++++++++++++" + p);
+                        Log.d("Main Activity", "Image path: "+p);
                         if (p == null) {
+                            Log.d("Main Activity", "Image not present.");
                             Glide.with(getApplicationContext()).load(R.drawable.group_default).asBitmap().centerCrop().into(new BitmapImageViewTarget(nav_photo) {
                                 @Override
                                 protected void setResource(Bitmap resource) {
@@ -135,7 +129,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                 }
                             });
                         } else {
-                            p=myu.getImagePath();
+                            Log.d("Main Activity", "Set image");
                             Glide.with(getApplicationContext()).load(p).asBitmap().centerCrop().into(new BitmapImageViewTarget(nav_photo) {
                                 @Override
                                 protected void setResource(Bitmap resource) {
@@ -151,10 +145,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     @Override
                     public void onCancelled(DatabaseError error) {
                         // Failed to read value
-                        //log.w(TAG, "Failed to read value.", error.toException());
+                        Log.d("Main Activity", "Failed to read value.", error.toException());
                     }
                 });
-                //t.setImageAlpha();
+
+                //Swap between fragment
                 PagerAdapter mPagerAdapter = new PagerAdapter(getSupportFragmentManager());
                 final TabLayout tabL = (TabLayout) findViewById(R.id.tabs);
                 final TabLayout.OnTabSelectedListener OnT=new TabLayout.OnTabSelectedListener(){
@@ -194,6 +189,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
                     }
                 };
+
                 mViewPager = (ViewPager) findViewById(R.id.pager);
                 mViewPager.setAdapter(mPagerAdapter);
                 tabL.setupWithViewPager(mViewPager);
@@ -230,9 +226,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 transaction.commit();*/
 
 
+                //floating button
                 final FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.addGroup);
 
-                tabL.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+                tabL.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
                     @Override
                     public void onTabSelected(TabLayout.Tab tab) {
                         mViewPager.setCurrentItem(tab.getPosition());
@@ -260,8 +257,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     }
                 });
 
-
-                //FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.addGroup);
                 fab.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
@@ -270,15 +265,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         );
 
                         startActivityForResult(intent, 1);
-
                     }
                 });
-
             }
-
         }
-
-
     }
 
     @Override
@@ -295,20 +285,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        //getMenuInflater().inflate(R.menu.user_info, menu);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-
-        //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
             return true;
         }
@@ -316,38 +299,29 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         return super.onOptionsItemSelected(item);
     }
 
-    @SuppressWarnings("StatementWithEmptyBody")
     @Override
-    public boolean onNavigationItemSelected(MenuItem item) {
-        // Handle navigation view item clicks here.
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         int id = item.getItemId();
 
+        FirebaseUser userF = mAuth.getCurrentUser();
         if (id == R.id.nav_logout) {
-            // TODO devi fare il logout
-            System.out.println("LOGOUT");
+            Log.d("Main Activity", "Logout");
             mAuth.signOut();
 
+            //TODO a cosa serve questo controllo sull'user @edo?
             FirebaseUser user = mAuth.getCurrentUser();
 
             if (user != null) {
-
                 CheckUser(user);
-
             } else {
-
                 startActivity(new Intent(MainActivity.this, LoginActivity.class));
                 finish();
-
             }
-
-        } else if (id == R.id.nav_setting) {
-
+        } else if (id == R.id.nav_setting && userF!=null) {
             Intent i = new Intent(MainActivity.this, UserInformationActivity.class);
-
-            i.putExtra("userId", mAuth.getCurrentUser().getUid().toString());
+            i.putExtra("userId", userF.getUid());
             i.putExtra("UserInfo","true");
             startActivity(i);
-
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -357,10 +331,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     protected void CheckUser(FirebaseUser U) {
 
-        System.out.println("-- Check User -- ");
-
+        Log.d("Main Activity", "Check user");
         final String uID = U.getUid();
-        System.out.println(U.toString());
+        Log.d("Main activity", "Check user - " + U.toString());
 
         U.getToken(true).addOnCompleteListener(new OnCompleteListener<GetTokenResult>() {
             @Override
@@ -375,7 +348,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
                             if (dataSnapshot.getValue() != null) {
 
-                                System.out.println("++++++ UTENTE ESISTENTE IN DB: " + dataSnapshot.getValue().toString());
+                                Log.d("Main Activity", "Utente esistente in db: " + dataSnapshot.getValue().toString());
                                 user_exists = true;
 
                             } else {
@@ -384,7 +357,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
                             if (!user_exists) {
 
-                                System.out.println("++++++ NOPE --> UTENTE NON ESISTENTE +++++");
+                                Log.d("Main Activity", "Utente non esistente in db.");
                                 mAuth.signOut();
                                 startActivity(new Intent(MainActivity.this, LoginActivity.class));
                                 finish();
@@ -402,10 +375,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     Firebase_DB.child("Users").child(uID).addListenerForSingleValueEvent(SingleEvent);
 
                 } else {
-
-                    // lol
-
-                    System.out.println("++++++ NOPE --> TOKEN ERROR +++++");
+                    Log.d("Main Activity", "TOKEN ERROR!!!" );
                     mAuth.signOut();
                     startActivity(new Intent(MainActivity.this, LoginActivity.class));
                     finish();
@@ -423,8 +393,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         if (user != null) {
 
-            System.out.println("++++++QUI che cazzo succede+++++");
-            System.out.println(user.toString());
+            Log.d("Main Activity", "Error: utente nullo!! "+user.toString());
 
             CheckUser(user);
 
@@ -444,17 +413,4 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
 
     }
-/*
-    protected void onResume(Bundle savedInstanceState) {
-
-        super.onResume();
-
-        Fragment frag = getSupportFragmentManager().findFragmentByTag("GroupsFragment");
-        final FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-        ft.detach(frag);
-        ft.attach(frag);
-        ft.commit();
-
-    }
-*/
 }
