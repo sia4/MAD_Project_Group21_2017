@@ -154,8 +154,8 @@ public class GroupsFragment extends Fragment {
 
                                 if (map != null) {
 
-                                    TextView tv = (TextView) getView().findViewById(R.id.noGroups);
-                                    tv.setVisibility(view.GONE);
+                                    //TextView tv = (TextView) getView().findViewById(R.id.noGroups);
+                                    //tv.setVisibility(view.GONE);
 
                                     groups.clear();
                                     for (Map.Entry<String, Object> k : map.entrySet()) {

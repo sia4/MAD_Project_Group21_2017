@@ -280,6 +280,7 @@ public class GroupActivity extends AppCompatActivity {
                 startActivityForResult(intent, 1);
             }
         });
+        System.out.println("------>GroupActivity arrivata alla fine");
     }
 
     @Override

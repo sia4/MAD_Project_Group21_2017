@@ -625,105 +625,96 @@ public class InsertExActivity extends AppCompatActivity {
                     Toast.makeText(InsertExActivity.this, "Please insert category.", Toast.LENGTH_LONG).show();
                 } else {
                     value = Double.valueOf(Tvalue.getText().toString());
-                    System.out.println("valuebuggggggggggggggggggg "+value);
-                   if (algorithm.equals("equally")) {
-                        v = value/users.size();
-                       for(UserData k : users){
+                    System.out.println("valuebuggggggggggggggggggg " + value);
+                    if (algorithm.equals("equally")) {
+                        v = value / users.size();
+                        for (UserData k : users) {
                             values.put(k.getuId(), v);
-                       }
-                       myvalue = v;
-                        flagok = 1;
-                    }
-
-
-                else{
-                    double algValue, algSum=0, meValue=0;
-                    int i;
-                    for(i = 0; i< uAdapter.getItemCount(); i++){
-                        View view = userRecyclerView.getChildAt(i);
-                        EditText EditValue = (EditText)view.findViewById(R.id.alg_value);
-                        if(EditValue.getText().toString().equals("")) {
-                            algValue = 0;
-                            myvalue = 0;
-                            if (algorithm.equals("by percentuage"))
-                                values.put(users.get(i).getuId(), algValue);
-                            else
-                                values.put(users.get(i).getuId(), algValue);
                         }
-                        else {
-                            algValue = Float.parseFloat(EditValue.getText().toString());
+                        myvalue = v;
+                        flagok = 1;
+                    } else {
+                        double algValue, algSum = 0, meValue = 0;
+                        int i;
+                        for (i = 0; i < uAdapter.getItemCount(); i++) {
+                            View view = userRecyclerView.getChildAt(i);
+                            EditText EditValue = (EditText) view.findViewById(R.id.alg_value);
+                            if (EditValue.getText().toString().equals("")) {
+                                algValue = 0;
+                                myvalue = 0;
+                                if (algorithm.equals("by percentuage"))
+                                    values.put(users.get(i).getuId(), algValue);
+                                else
+                                    values.put(users.get(i).getuId(), algValue);
+                            } else {
+                                algValue = Float.parseFloat(EditValue.getText().toString());
 
-                            if (algorithm.equals("by percentuage")) {
-                                values.put(users.get(i).getuId(), value * algValue / 100);
-                                if(users.get(i).getuId().equals(mAuth.getCurrentUser().getUid()))
-                                    myvalue = value*algValue/100;
+                                if (algorithm.equals("by percentuage")) {
+                                    values.put(users.get(i).getuId(), value * algValue / 100);
+                                    if (users.get(i).getuId().equals(mAuth.getCurrentUser().getUid()))
+                                        myvalue = value * algValue / 100;
+                                } else {
+                                    values.put(users.get(i).getuId(), algValue);
+                                    if (users.get(i).getuId().equals(mAuth.getCurrentUser().getUid()))
+                                        myvalue = value;
+                                }
                             }
-                            else{
-                                values.put(users.get(i).getuId(), algValue);
-                                if(users.get(i).getuId().equals(mAuth.getCurrentUser().getUid()))
-                                    myvalue = value;
-                            }
+                            algSum += algValue;
                         }
-                        algSum += algValue;
+
+                        if ((algorithm.equals("by percentuage") && algSum == 100)) {
+
+                            flagok = 1;
+                        }
+
+                        if ((algorithm.equals("by import") && algSum == value)) {
+
+                            flagok = 1;
+                        }
+
+                        if ((algorithm.equals("by percentuage") && algSum != 100)) {
+                            flagok = 0;
+                            String text = String.format("Percentuage sum values must be equal to 100!", algSum, i);
+                            Toast.makeText(InsertExActivity.this, text, Toast.LENGTH_LONG).show();
+                        }
+                        if ((algorithm.equals("by import") && algSum != value)) {
+                            flagok = 0;
+                            Toast.makeText(InsertExActivity.this, "Import sum values must be equal to the total value!", Toast.LENGTH_LONG).show();
+                        }
+
                     }
-
-                    if((algorithm.equals("by percentuage") && algSum==100)) {
-
-                        flagok = 1;
-                    }
-
-                    if((algorithm.equals("by import") && algSum==value)) {
-
-                        flagok = 1;
-                    }
-
-                    if((algorithm.equals("by percentuage") && algSum!=100)){
-                        flagok = 0;
-                        String text = String.format("Percentuage sum values must be equal to 100!", algSum, i);
-                        Toast.makeText(InsertExActivity.this, text, Toast.LENGTH_LONG).show();
-                    }
-                    if((algorithm.equals("by import") && algSum!=value)){
-                        flagok = 0;
-                        Toast.makeText(InsertExActivity.this, "Import sum values must be equal to the total value!", Toast.LENGTH_LONG).show();
-                    }
-
-                }
 
                     if (flagok == 1 && values.size() == users.size()) {
+
+                        //Quì inseriamo la nuova ttività relativa all'inserimento della spesa
                         DatabaseReference ActRef = database.getReference("Activities").child(Gname).push();
-
-                        ActRef.setValue(new ActivityData(myname+" "+mysurname, myname +" "+mysurname+" added a new expense in group "+ groupName, Long.toString(System.currentTimeMillis()), "expense", refkey, Gname));
-
+                        ActRef.setValue(new ActivityData(myname + " " + mysurname, myname + " " + mysurname + " added a new expense in group " + groupName, Long.toString(System.currentTimeMillis()), "expense", refkey, Gname));
+                        //Quì inseriamo una nuova spesa con relative immagine, se è stata caricata
                         myRef.setValue(new ExpenseData(name, description, category, currency, String.valueOf(value), "0.00", algorithm));
-                        final DatabaseReference myRef2=myRef;
+                        final DatabaseReference myRef2 = myRef;
                         myRef.child("creator").setValue(myname + " " + mysurname);
                         myRef.child("creatorId").setValue(mAuth.getCurrentUser().getUid());
                         System.out.println(String.format("%.2f", value));
-                        for(Map.Entry<String, Double> e : values.entrySet())
+                        for (Map.Entry<String, Double> e : values.entrySet())
                             myRef.child("users").child(e.getKey()).setValue(String.valueOf(e.getValue()));
-
                         myRef.child("contested").setValue("no");
                         ii = 0;
-                        for(final UserData key : users){
-
-
-                            myRef = database.getReference("/Users/"+key.getuId()+"/Groups/"+Gname+"/lastOperation/");
+                        for (final UserData key : users) {
+                            myRef = database.getReference("/Users/" + key.getuId() + "/Groups/" + Gname + "/lastOperation/");
                             myRef.setValue(myname + " added an expense.");
-                            myRef = database.getReference("/Users/"+key.getuId()+"/Groups/"+Gname+"/dateLastOperation/");
+                            myRef = database.getReference("/Users/" + key.getuId() + "/Groups/" + Gname + "/dateLastOperation/");
                             myRef.setValue(Long.toString(System.currentTimeMillis()).toString());
-
-/*
                             final FirebaseDatabase database5 = FirebaseDatabase.getInstance();
                             DatabaseReference myRef5 = database5.getReference("Balance").child(Gname);
                             float value1, value2, value3, value4;
-                            for( UserData u : users) {
-                                if(!u.getuId().equals(mAuth.getCurrentUser().getUid())&&balancemap!=null) {
+                            for (UserData u : users) {
+                                if (!u.getuId().equals(mAuth.getCurrentUser().getUid()) && balancemap != null) {
 
-                                    value1 = Float.parseFloat((String)balancemap.get(mAuth.getCurrentUser().getUid()).get(u.getuId()).get("value"));
-                                    value2 = Float.parseFloat((String)balancemap.get(u.getuId()).get(mAuth.getCurrentUser().getUid()).get("value"));
+                                    value1 = Float.parseFloat((String) balancemap.get(mAuth.getCurrentUser().getUid()).get(u.getuId()).get("value"));
+                                    value2 = Float.parseFloat((String) balancemap.get(u.getuId()).get(mAuth.getCurrentUser().getUid()).get("value"));
                                     //value3 = new Float (Float.parseFloat(usermap.get(k).toString()));
-                                    System.out.println("buttonnnnnnn1 "+value1);
-                                    System.out.println("buttonnnnnnn2 "+value2);
+                                    System.out.println("buttonnnnnnn1 " + value1);
+                                    System.out.println("buttonnnnnnn2 " + value2);
                                     //System.out.println("buttonnnnnnn3 "+value3);
 
                                     value3 = values.get(u.getuId()).floatValue();
@@ -736,12 +727,40 @@ public class InsertExActivity extends AppCompatActivity {
                                 }
 
                             }
+                        }
+                        if(ImageC==true) {
+                            mStorageRef = FirebaseStorage.getInstance().getReference();
+                            try {
+                                ProgressBar p = (ProgressBar) findViewById(R.id.progress_bar_insertex);
+                                p.setVisibility(View.VISIBLE);
+                                System.out.println(".......carica in" + outputFileUri.toString().substring(7));
+                                InputStream stream = new FileInputStream(new File(outputFileUri.toString().substring(7)));
+                                StorageReference imageStorage = mStorageRef.child(refkey);
+                                UploadTask uploadTask = imageStorage.putStream(stream);
+                                uploadTask.addOnFailureListener(new OnFailureListener() {
+                                    @Override
+                                    public void onFailure(@NonNull Exception e) {
+                                        Log.d("myStorage", "failure :(");
+                                    }
+                                }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                                    @Override
+                                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                                        downloadUrl = taskSnapshot.getDownloadUrl();
+                                        myRef2.child("imagePath").setValue(downloadUrl.toString());
+                                        Intent i2 = new Intent(InsertExActivity.this, GroupActivity.class);
+                                        System.out.println("+++++++++++++++++" + Gname + groupName);
+                                        i2.putExtra("groupId", Gname);
+                                        i2.putExtra("groupName", groupName);
 
-
-                        */
-
-
-
+                                        setResult(RESULT_OK, i2);
+                                        finish();
+                                        Log.d("myStorage", "success!");
+                                    }
+                                });
+                            } catch (FileNotFoundException e) {
+                                e.printStackTrace();
+                            }
+                        }
                             //final DatabaseReference myRef3 = database.getReference("Balance").child(Gname);
                                 /*
                                 myRef3.runTransaction(new Transaction.Handler() {
@@ -776,62 +795,30 @@ public class InsertExActivity extends AppCompatActivity {
                                        //Log.d(TAG, "transaction:onComplete:" + databaseError);
                                     }
                                 });*/
-
+                            /*
 
                             ii++;
 
                             System.out.println(String.format("balance update cycles: %d\n", ii));
                         }
-                        if(ImageC==true){
-                            mStorageRef = FirebaseStorage.getInstance().getReference();
-                            try {
-                                ProgressBar p=(ProgressBar) findViewById(R.id.progress_bar_insertex);
-                                p.setVisibility(View.VISIBLE);
-                                System.out.println(".......carica in"+outputFileUri.toString().substring(7));
-                                InputStream stream = new FileInputStream(new File(outputFileUri.toString().substring(7)));
-                                StorageReference imageStorage = mStorageRef.child(refkey);
-                                UploadTask uploadTask = imageStorage.putStream(stream);
-                                uploadTask.addOnFailureListener(new OnFailureListener() {
-                                    @Override
-                                    public void onFailure(@NonNull Exception e) {
-                                        Log.d("myStorage", "failure :(");
-                                    }
-                                }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                                    @Override
-                                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                                        downloadUrl = taskSnapshot.getDownloadUrl();
-                                        myRef2.child("imagePath").setValue(downloadUrl.toString());
-                                        Intent i2 = new Intent(InsertExActivity.this, GroupActivity.class);
-                                        System.out.println("+++++++++++++++++"+Gname + groupName);
-                                        i2.putExtra("groupId", Gname);
-                                        i2.putExtra("groupName", groupName);
-
-                                        setResult(RESULT_OK, i2);
-                                        finish();
-                                        Log.d("myStorage", "success!");
-                                    }
-                                });
-                            }catch (FileNotFoundException e) {
-                                e.printStackTrace();
-                            }
                         }
-                        else{
+                        else{*/
                             Intent i2 = new Intent(InsertExActivity.this, GroupActivity.class);
-                            System.out.println("+++++++++++++++++"+Gname + groupName);
+                            System.out.println("+++++++++++++++++" + Gname + groupName);
                             i2.putExtra("groupId", Gname);
                             i2.putExtra("groupName", groupName);
 
                             setResult(RESULT_OK, i2);
                             finish();
                             Log.d("myStorage", "success!");
+                            //}
+                            //return true;
+                        } else{
+                            String p = String.format("problems... flagok: %d, values.size: %d, users.size: %d, uAdapter: %d", flagok, values.size(), users.size(), uAdapter.getItemCount());
+                            Toast.makeText(InsertExActivity.this, p, Toast.LENGTH_LONG).show();
+                            return super.onOptionsItemSelected(item);
                         }
-                        //return true;
-                    } else {
-                        String p = String.format("problems... flagok: %d, values.size: %d, users.size: %d, uAdapter: %d", flagok, values.size(), users.size(), uAdapter.getItemCount());
-                        Toast.makeText(InsertExActivity.this, p, Toast.LENGTH_LONG).show();
-                        return super.onOptionsItemSelected(item);
                     }
-                }
             default:
                 return super.onOptionsItemSelected(item);
         }

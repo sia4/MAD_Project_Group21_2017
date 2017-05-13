@@ -106,8 +106,9 @@ public class    HistoryFragment extends Fragment {
                 Map<String, Object> map2 = (Map<String, Object>) dataSnapshot.getValue();
                 if(map2!=null) {
 
-                    TextView tv = (TextView) getView().findViewById(R.id.noExpenses);
-                    tv.setVisibility(view.GONE);
+                    //TODO questa cosa a me ogni tanto crusha dicendo che Attempt to invoke virtual method 'android.view.View android.view.View.findViewById(int)' on a null object reference
+                    //TextView tv = (TextView) getView().findViewById(R.id.noExpenses);
+                    //tv.setVisibility(view.GONE);
                     //lex = new ArrayList<ExpenseData>();
                     for (final String k : map2.keySet()){
                         FirebaseDatabase database3 = FirebaseDatabase.getInstance();
