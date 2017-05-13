@@ -14,6 +14,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.google.android.gms.appinvite.AppInviteInvitation;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -70,7 +71,7 @@ public class InsertUserToGroupActivity extends AppCompatActivity {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle("Add user");
 
-
+        key = FirebaseAuth.getInstance().getCurrentUser().getUid();
         FirebaseDatabase database2 = FirebaseDatabase.getInstance();
         DatabaseReference myRef2 = database2.getReference("Groups").child(gId).child("members");
 
@@ -189,8 +190,8 @@ public class InsertUserToGroupActivity extends AppCompatActivity {
                                     database.getReference("/Balance/" + gId + "/" + key + "/" + u.getuId() +"/" + "name").setValue(u.getName()+" "+u.getSurname());;
                                     database.getReference("/Balance/" + gId + "/" + key + "/" + u.getuId() + "/" + "value").setValue(df.format(f));
 
-                                    database.getReference("/Balance/" + gId + "/" + u.getuId()+ key + "/"  + "/" + "name").setValue(u.getName()+" "+u.getSurname());;
-                                    database.getReference("/Balance/" + gId + "/" + u.getuId()+ key + "/"  + "/" + "value").setValue(df.format(f));
+                                    database.getReference("/Balance/" + gId + "/" + u.getuId()+ "/" + key  + "/" + "name").setValue(u.getName()+" "+u.getSurname());;
+                                    database.getReference("/Balance/" + gId + "/" + u.getuId()+ "/" + key  + "/" + "value").setValue(df.format(f));
 
                                 }
 
