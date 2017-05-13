@@ -546,7 +546,7 @@ public class InsertGroupActivity extends AppCompatActivity {
                                             myRef = database.getReference("/Balance/" + groupId + "/" + key + "/" + k + "/" + "name");
                                             myRef.setValue(my.get(k));
                                             myRef = database.getReference("/Balance/" + groupId + "/" + key + "/" + k + "/" + "value");
-                                            myRef.setValue(0.00);
+                                            myRef.setValue("0.00");
                                         }
                                     }
                                 }

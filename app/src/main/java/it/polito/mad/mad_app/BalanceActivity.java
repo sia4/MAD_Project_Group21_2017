@@ -100,9 +100,9 @@ public class BalanceActivity extends AppCompatActivity {
                         System.out.println("+++++++++"+b.getValue());
                         FirebaseDatabase database = FirebaseDatabase.getInstance();
                         DatabaseReference myRef = database.getReference("/Balance/"+b.getgID()+"/"+auKey+"/"+b.getKey()+"/"+"value");
-                        myRef.setValue(b.getValue());
+                        myRef.setValue(String.valueOf(b.getValue()));
                         myRef = database.getReference("/Balance/"+b.getgID()+"/"+b.getKey()+"/"+auKey+"/"+"value");
-                        myRef.setValue(o);
+                        myRef.setValue(String.valueOf(o));
                         //    Toast.makeText(BalanceActivity.this, String.valueOf(MainData.getInstance().getGroup(groupName).getExpense(userName)+insertValue), Toast.LENGTH_LONG).show();
                         setResult(RESULT_OK, null);
                         finish();

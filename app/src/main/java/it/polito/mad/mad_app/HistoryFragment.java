@@ -105,6 +105,9 @@ public class    HistoryFragment extends Fragment {
                 lex.clear();
                 Map<String, Object> map2 = (Map<String, Object>) dataSnapshot.getValue();
                 if(map2!=null) {
+
+                    TextView tv = (TextView) getView().findViewById(R.id.noExpenses);
+                    tv.setVisibility(view.GONE);
                     //lex = new ArrayList<ExpenseData>();
                     for (final String k : map2.keySet()){
                         FirebaseDatabase database3 = FirebaseDatabase.getInstance();

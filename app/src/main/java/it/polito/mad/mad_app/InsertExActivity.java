@@ -92,6 +92,7 @@ public class InsertExActivity extends AppCompatActivity {
     private StorageReference mStorageRef;
     private Map<String,Balance>users_l=new TreeMap<>();
     private int i=0, ii=0;
+    private Map<String, Map<String, Map<String, Object>>> balancemap;
     private double v = 0, v1 = 0;
     private Map<String, Double> values = new TreeMap<>();
     private String defaultcurrency;
@@ -142,6 +143,35 @@ public class InsertExActivity extends AppCompatActivity {
             Tdescription.setText(cdescr);
 
         final String uid = mAuth.getCurrentUser().getUid().toString();
+
+        final FirebaseDatabase database3 = FirebaseDatabase.getInstance();
+        DatabaseReference myRef3 = database3.getReference("Balance").child(Gname);
+        System.out.println("Path "+myRef3);
+
+        myRef3.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                balancemap = (Map<String, Map<String, Map<String, Object>>>) dataSnapshot.getValue();
+                if(balancemap==null) {
+                    Toast.makeText(InsertExActivity.this, "no balance found!", Toast.LENGTH_LONG).show();
+                }
+                else{
+                    System.out.println("balancemapppppppppppppppp " + balancemap);
+                }
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+
+
+
+
+
         FirebaseDatabase database2 = FirebaseDatabase.getInstance();
         DatabaseReference myRef2 = database2.getReference("Groups").child(Gname).child("members");
 
@@ -682,23 +712,58 @@ public class InsertExActivity extends AppCompatActivity {
                             myRef = database.getReference("/Users/"+key.getuId()+"/Groups/"+Gname+"/dateLastOperation/");
                             myRef.setValue(Long.toString(System.currentTimeMillis()).toString());
 
+/*
+                            final FirebaseDatabase database5 = FirebaseDatabase.getInstance();
+                            DatabaseReference myRef5 = database5.getReference("Balance").child(Gname);
+                            float value1, value2, value3, value4;
+                            for( UserData u : users) {
+                                if(!u.getuId().equals(mAuth.getCurrentUser().getUid())&&balancemap!=null) {
+
+                                    value1 = Float.parseFloat((String)balancemap.get(mAuth.getCurrentUser().getUid()).get(u.getuId()).get("value"));
+                                    value2 = Float.parseFloat((String)balancemap.get(u.getuId()).get(mAuth.getCurrentUser().getUid()).get("value"));
+                                    //value3 = new Float (Float.parseFloat(usermap.get(k).toString()));
+                                    System.out.println("buttonnnnnnn1 "+value1);
+                                    System.out.println("buttonnnnnnn2 "+value2);
+                                    //System.out.println("buttonnnnnnn3 "+value3);
+
+                                    value3 = values.get(u.getuId()).floatValue();
+                                    value1 = value1 + value3;
+                                    value2 = value2 - value3;
+                                    myRef5.child(mAuth.getCurrentUser().getUid()).child(u.getuId()).child("value").setValue(String.valueOf(value1));
+                                    myRef5.child(u.getuId()).child(mAuth.getCurrentUser().getUid()).child("value").setValue(String.valueOf(value2));
 
 
-                            final DatabaseReference myRef3 = database.getReference("Balance").child(Gname).child(mAuth.getCurrentUser().getUid()).child(key.getuId());
+                                }
 
+                            }
+
+
+                        */
+
+
+
+                            //final DatabaseReference myRef3 = database.getReference("Balance").child(Gname);
+                                /*
                                 myRef3.runTransaction(new Transaction.Handler() {
                                     @Override
                                     public Transaction.Result doTransaction(MutableData mutableData) {
 
                                         if(!key.getuId().equals(mAuth.getCurrentUser().getUid())) {
-                                            Float value = mutableData.child("value").getValue(Float.class);
-                                            System.out.println("valueeeeeeeeeeeeeeeeeeeeee " + value);
+                                            Float value = Float.parseFloat((String)mutableData.child(mAuth.getCurrentUser().getUid()).child(key.getuId()).child("value").getValue());
+                                            System.out.println("value prima " + value);
+
+                                            System.out.println(String.valueOf(values.get(key.getuId())));
                                             if (value == null) {
-                                                mutableData.child("name").setValue(key.getName() + " " + key.getSurname());
-                                                mutableData.child("value").setValue(String.valueOf(values.get(key.getuId())));
+                                                //mutableData.child("name").setValue(key.getName() + " " + key.getSurname());
+                                                mutableData.child(mAuth.getCurrentUser().getUid()).child(key.getuId()).child("value").setValue(String.valueOf(values.get(key.getuId())));
+                                                mutableData.child(key.getuId()).child(mAuth.getCurrentUser().getUid()).child("value").setValue(String.valueOf(-values.get(key.getuId())));
+
                                             } else {
-                                                mutableData.child("value").setValue(String.valueOf(value + values.get(key.getuId())));
-                                                mutableData.child("name").setValue(key.getName() + " " + key.getSurname());
+
+                                                mutableData.child(mAuth.getCurrentUser().getUid()).child(key.getuId()).child("value").setValue(String.valueOf(value + values.get(key.getuId())));
+                                                mutableData.child(key.getuId()).child(mAuth.getCurrentUser().getUid()).child("value").setValue(String.valueOf(value - values.get(key.getuId())));
+
+                                                // mutableData.child("name").setValue(key.getName() + " " + key.getSurname());
                                             }
                                         }
 
@@ -710,34 +775,8 @@ public class InsertExActivity extends AppCompatActivity {
                                                            DataSnapshot dataSnapshot) {
                                        //Log.d(TAG, "transaction:onComplete:" + databaseError);
                                     }
-                                });
+                                });*/
 
-
-
-                                final DatabaseReference myRef5 = database.getReference("Balance").child(Gname).child(key.getuId()).child(mAuth.getCurrentUser().getUid());
-                                myRef5.runTransaction(new Transaction.Handler() {
-                                    @Override
-                                    public Transaction.Result doTransaction(MutableData mutableData) {
-                                        if(!key.getuId().equals(mAuth.getCurrentUser().getUid())) {
-                                            Float value = mutableData.child("value").getValue(Float.class);
-                                            System.out.println("valueeeeeeeeeeeeeeeeeeeeee " + value);
-                                            if (value == null) {
-                                                mutableData.child("value").setValue(String.valueOf(-values.get(key.getuId())));
-                                                mutableData.child("name").setValue(myname + " " + mysurname);
-                                            } else {
-                                                mutableData.child("value").setValue(String.valueOf(value - values.get(key.getuId())));
-                                                mutableData.child("name").setValue(myname + " " + mysurname);
-                                            }
-                                        }
-                                        return Transaction.success(mutableData);
-                                    }
-
-                                    @Override
-                                    public void onComplete(DatabaseError databaseError, boolean b,
-                                                           DataSnapshot dataSnapshot) {
-                                        // Log.d(TAG, "transaction:onComplete:" + databaseError);
-                                    }
-                                });
 
                             ii++;
 

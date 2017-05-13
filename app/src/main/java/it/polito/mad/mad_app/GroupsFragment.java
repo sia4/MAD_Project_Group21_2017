@@ -153,6 +153,10 @@ public class GroupsFragment extends Fragment {
                                 Map<String, Object> map = (Map<String, Object>) dataSnapshot.getValue();
 
                                 if (map != null) {
+
+                                    TextView tv = (TextView) getView().findViewById(R.id.noGroups);
+                                    tv.setVisibility(view.GONE);
+
                                     groups.clear();
                                     for (Map.Entry<String, Object> k : map.entrySet()) {
                                         String name = (String) ((Map<String, Object>) k.getValue()).get("name");
