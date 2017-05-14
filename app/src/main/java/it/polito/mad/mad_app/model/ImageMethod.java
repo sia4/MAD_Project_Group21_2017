@@ -33,9 +33,10 @@ import java.util.List;
  * Created by Lucia on 13/05/2017.
  */
 
-public class Image_Method {
-    public static List<Intent> require_image(Uri outputFileUri,PackageManager p)
-    {   final List<Intent> cameraIntents = new ArrayList<Intent>();
+public class ImageMethod {
+    public static List<Intent> require_image(Uri outputFileUri,PackageManager p) {
+
+        final List<Intent> cameraIntents = new ArrayList<Intent>();
         Intent pickIntent = new Intent(Intent.ACTION_PICK,
                 android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
         final List<ResolveInfo> Im =p.queryIntentActivities(pickIntent, 0);
@@ -45,7 +46,6 @@ public class Image_Method {
             intent.setComponent(new ComponentName(packageName, res.activityInfo.name));
             intent.setPackage(packageName);
             intent.putExtra(MediaStore.EXTRA_OUTPUT, outputFileUri);
-            System.out.println(".........image intent " + intent);
             cameraIntents.add(intent);
         }
         final Intent captureIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
@@ -56,9 +56,8 @@ public class Image_Method {
             intent.setComponent(new ComponentName(packageName, res.activityInfo.name));
             intent.setPackage(packageName);
             intent.putExtra(MediaStore.EXTRA_OUTPUT, outputFileUri);
-            System.out.println(".........camera intent " + intent);
             cameraIntents.add(intent);
-        }//
+        }
 
         return cameraIntents;
     }

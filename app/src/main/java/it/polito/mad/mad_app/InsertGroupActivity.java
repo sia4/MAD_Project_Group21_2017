@@ -56,10 +56,10 @@ import java.util.TreeMap;
 import it.polito.mad.mad_app.model.Group;
 import it.polito.mad.mad_app.model.User;
 
-import static it.polito.mad.mad_app.model.Image_Method.circle_image;
-import static it.polito.mad.mad_app.model.Image_Method.create_image;
-import static it.polito.mad.mad_app.model.Image_Method.performCrop;
-import static it.polito.mad.mad_app.model.Image_Method.require_image;
+import static it.polito.mad.mad_app.model.ImageMethod.circle_image;
+import static it.polito.mad.mad_app.model.ImageMethod.create_image;
+import static it.polito.mad.mad_app.model.ImageMethod.performCrop;
+import static it.polito.mad.mad_app.model.ImageMethod.require_image;
 
 
 public class InsertGroupActivity extends AppCompatActivity {
@@ -87,6 +87,7 @@ public class InsertGroupActivity extends AppCompatActivity {
     private Button userbutton;
 
     private boolean imageC;
+    private boolean permission = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -157,17 +158,9 @@ public class InsertGroupActivity extends AppCompatActivity {
                             MY_PERMISSIONS_REQUEST_READ_CONTACTS);
                     return;
                 }
-                final File root = new File(Environment.getExternalStorageDirectory() + File.separator + "MyDir" + File.separator);
-                root.mkdirs();
-                final String fname = "img_" + System.currentTimeMillis() + ".jpg";
-                final File sdImageMainDirectory = new File(root, fname);
-                outputFileUri = Uri.fromFile(sdImageMainDirectory);
-                final PackageManager pManager = getPackageManager();
-                List<Intent> cameraIntents=require_image(outputFileUri,pManager);
-                final Intent chooserIntent = Intent.createChooser(cameraIntents.get(cameraIntents.size()-1), "Select Source");
-                cameraIntents.remove(cameraIntents.size()-1);
-                chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, cameraIntents.toArray(new Parcelable[cameraIntents.size()]));
-                startActivityForResult(chooserIntent, 1);
+
+                getImageFromDevice();
+
             }
         });
 
@@ -306,16 +299,13 @@ public class InsertGroupActivity extends AppCompatActivity {
             case 1: {
                 if (grantResults.length > 0
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    // permission was granted, yay! Do the
-                    // contacts-related task you need to do.
-                } else {
-                    // permission denied, boo! Disable the
-                    // functionality that depends on this permission.
+
+                    getImageFromDevice();
                 }
                 return;
             }
-            // other 'case' lines to check for other
-            // permissions this app might request
+            default: {
+            }
         }
     }
     @Override
@@ -468,6 +458,22 @@ public class InsertGroupActivity extends AppCompatActivity {
 
         findViewById(R.id.User1).setFocusableInTouchMode(true);
         userbutton.setEnabled(true);
+
+    }
+
+    private void getImageFromDevice() {
+
+        final File root = new File(Environment.getExternalStorageDirectory() + File.separator + "AllaRomana" + File.separator);
+        root.mkdirs();
+        final String fname = "img_" + System.currentTimeMillis() + ".jpg";
+        final File sdImageMainDirectory = new File(root, fname);
+        outputFileUri = Uri.fromFile(sdImageMainDirectory);
+        final PackageManager pManager = getPackageManager();
+        List<Intent> cameraIntents=require_image(outputFileUri,pManager);
+        final Intent chooserIntent = Intent.createChooser(cameraIntents.get(cameraIntents.size()-1), "Select Source");
+        cameraIntents.remove(cameraIntents.size()-1);
+        chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, cameraIntents.toArray(new Parcelable[cameraIntents.size()]));
+        startActivityForResult(chooserIntent, 1);
 
     }
 }
