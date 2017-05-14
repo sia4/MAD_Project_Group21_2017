@@ -76,6 +76,11 @@ import it.polito.mad.mad_app.model.Group;
 import it.polito.mad.mad_app.model.MainData;
 import it.polito.mad.mad_app.model.UserData;
 
+import static it.polito.mad.mad_app.model.Image_Method.create_image;
+import static it.polito.mad.mad_app.model.Image_Method.performCrop;
+import static it.polito.mad.mad_app.model.Image_Method.require_image;
+
+
 
 public class InsertExActivity extends AppCompatActivity {
 
@@ -104,9 +109,9 @@ public class InsertExActivity extends AppCompatActivity {
     static private AlgorithmParametersAdapter uAdapter;
     static final int REQUEST_TAKE_PHOTO = 1;
     private Uri outputFileUri;
-    private boolean flag_name_edited = false, flag_desc_edited = false, flag_img_edited = false;
     private String tmp;
     private Uri downloadUrl;
+    private String groupImage;
     private Boolean ImageC=false;
     private Uri imageUrl;
     private Button load;
@@ -131,6 +136,7 @@ public class InsertExActivity extends AppCompatActivity {
         Intent intent = getIntent();
         Gname = intent.getStringExtra("groupId");
         groupName = intent.getStringExtra("groupName");
+        groupImage=intent.getStringExtra("imagePath");
 
         String cname = intent.getStringExtra("name");
         String cdescr = intent.getStringExtra("description");
@@ -330,39 +336,23 @@ public class InsertExActivity extends AppCompatActivity {
 
             @Override
             public void onClick(View arg0) {
-                // Determine Uri of camera image to save.
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && checkSelfPermission(android.Manifest.permission.READ_EXTERNAL_STORAGE)
+                        != PackageManager.PERMISSION_GRANTED) {
+                    if (shouldShowRequestPermissionRationale(
+                            android.Manifest.permission.READ_EXTERNAL_STORAGE)) {
+                    }
+
+                    requestPermissions(new String[]{android.Manifest.permission.READ_EXTERNAL_STORAGE},
+                            MY_PERMISSIONS_REQUEST_READ_CONTACTS);
+                    return;
+                }
                 final File root = new File(Environment.getExternalStorageDirectory() + File.separator + "MyDir" + File.separator);
                 root.mkdirs();
                 final String fname = "img_"+ System.currentTimeMillis() + ".jpg";
                 final File sdImageMainDirectory = new File(root, fname);
                 outputFileUri = Uri.fromFile(sdImageMainDirectory);
-                System.out.println("------>outputFileUri"+outputFileUri);
-                final List<Intent> cameraIntents = new ArrayList<Intent>();
-                Intent pickIntent = new Intent(Intent.ACTION_PICK,
-                        android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
                 final PackageManager pManager = getPackageManager();
-                final List<ResolveInfo> Im =pManager.queryIntentActivities(pickIntent, 0);
-                for(ResolveInfo res : Im) {
-                    final String packageName = res.activityInfo.packageName;
-                    final Intent intent = new Intent(pickIntent);
-                    intent.setComponent(new ComponentName(packageName, res.activityInfo.name));
-                    intent.setPackage(packageName);
-                    intent.putExtra(MediaStore.EXTRA_OUTPUT, outputFileUri);
-                    System.out.println(".........image intent " + intent);
-                    cameraIntents.add(intent);
-                }
-                final Intent captureIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
-                final PackageManager packageManager = getPackageManager();
-                final List<ResolveInfo> Cam =packageManager.queryIntentActivities(captureIntent, 0);
-                for(ResolveInfo res : Cam) {
-                    final String packageName = res.activityInfo.packageName;
-                    final Intent intent = new Intent(captureIntent);
-                    intent.setComponent(new ComponentName(packageName, res.activityInfo.name));
-                    intent.setPackage(packageName);
-                    intent.putExtra(MediaStore.EXTRA_OUTPUT, outputFileUri);
-                    System.out.println(".........camera intent " + intent);
-                    cameraIntents.add(intent);
-                }
+                List<Intent> cameraIntents=require_image(outputFileUri,pManager);
                 final Intent chooserIntent = Intent.createChooser(cameraIntents.get(cameraIntents.size()-1), "Select Source");
                 cameraIntents.remove(cameraIntents.size()-1);
                 chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, cameraIntents.toArray(new Parcelable[cameraIntents.size()]));
@@ -371,71 +361,10 @@ public class InsertExActivity extends AppCompatActivity {
         });
 
     }
-    /*
-    private File createImageFile() throws IOException {
-        // Create an image file name
-
-        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-        String imageFileName = "JPEG_" + timeStamp + "_";
-        File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
-        File image = File.createTempFile(
-                imageFileName,  /* prefix */
-         //       ".jpg",         /* suffix */
-           //     storageDir      /* directory */
-        /*);
-
-         Save a file: path for use with ACTION_VIEW intents
-        mCurrentPhotoPath = image.getAbsolutePath();
-        return image;
-    }
-    private void galleryAddPic() {
-        Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
-        File f = new File(mCurrentPhotoPath);
-        Uri contentUri = Uri.fromFile(f);
-        mediaScanIntent.setData(contentUri);
-        this.sendBroadcast(mediaScanIntent);
-    }*/
-    /*
-    private void dispatchTakePictureIntent() {
-        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        // Ensure that there's a camera activity to handle the intent
-        if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
-            // Create the File where the photo should go
-            File photoFile = null;
-            try {
-                photoFile = createImageFile();
-            } catch (IOException ex) {
-                Toast.makeText(InsertExActivity.this, "Error creating photo file!", Toast.LENGTH_LONG).show();
-            }
-            // Continue only if the File was successfully created
-            if (photoFile != null) {
-
-                //Uri photoURI = FileProvider.getUriForFile(this,"com.example.android.fileprovider",    photoFile);
-                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(photoFile));
-                startActivityForResult(takePictureIntent, REQUEST_TAKE_PHOTO);
-            }
-        }
-    }
-    */
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        final int CAMERA_CAPTURE = 1;
         final int CROP_PIC = 2;
-        /*if (requestCode == 1 && resultCode == RESULT_OK && null != data) {
-            Uri selectedImage = data.getData();
-            String[] filePathColumn = {MediaStore.Images.Media.DATA};
-
-            Cursor cursor = getContentResolver().query(selectedImage,
-                    filePathColumn, null, null, null);
-            cursor.moveToFirst();
-
-            int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
-            picturePath = cursor.getString(columnIndex);
-            cursor.close();
-
-            ImageView imageG=(ImageView) findViewById(R.id.ImageG);
-            imageG.setImageBitmap(BitmapFactory.decodeFile(picturePath));*/
         if (resultCode == RESULT_OK) {
             Uri selectedImageUri = null;
             if (requestCode == 1) {
@@ -450,86 +379,43 @@ public class InsertExActivity extends AppCompatActivity {
                         isCamera = action.equals(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
                     }
                 }
-
                 if (isCamera) {
                     imageUrl = outputFileUri;
-                    //downloadUrl = selectedImageUri;
                     ImageC = true;
-                    performCrop();
+                    final PackageManager pManager = getPackageManager();
+                    Intent cropIntent=performCrop(imageUrl,pManager);
+                    if(cropIntent!=null){
+                        final Intent cIntent = Intent.createChooser(cropIntent, "Tha image should be cropped,select a source");
+                        startActivityForResult(cIntent , 2);
+                    }
+                    else{
+                        Toast toast = Toast.makeText(this, "This device doesn't support the crop action!", Toast.LENGTH_SHORT);
+                        toast.show();
+                    }
                 } else {
                     if (data != null) {
                         ImageC = true;
                         selectedImageUri = data.getData();
                         imageUrl= selectedImageUri;
-                        performCrop();
-                        System.out.println("++++++++---->" + selectedImageUri.toString());
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && checkSelfPermission(android.Manifest.permission.READ_EXTERNAL_STORAGE)
-                                != PackageManager.PERMISSION_GRANTED) {
-
-                            // Should we show an explanation?
-                            if (shouldShowRequestPermissionRationale(
-                                    android.Manifest.permission.READ_EXTERNAL_STORAGE)) {
-                                // Explain to the user why we need to read the contacts
-                            }
-
-                            requestPermissions(new String[]{android.Manifest.permission.READ_EXTERNAL_STORAGE},
-                                    MY_PERMISSIONS_REQUEST_READ_CONTACTS);
-
-                            // MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE is an
-                            // app-defined int constant that should be quite unique
-
-                            return;
+                        final PackageManager pManager = getPackageManager();
+                        Intent cropIntent=performCrop(imageUrl,pManager);
+                        if(cropIntent!=null){
+                            startActivityForResult(cropIntent , 2);
                         }
-                        Bitmap photo = null;
-                        try {
-                            photo = MediaStore.Images.Media.getBitmap(this.getContentResolver(), selectedImageUri);
-                        } catch (IOException e) {
-                            e.printStackTrace();
+                        else{
+                            Toast toast = Toast.makeText(this, "This device doesn't support the crop action!", Toast.LENGTH_SHORT);
+                            toast.show();
                         }
-                        System.out.println("................." + photo);
-                        ImageView imageG = (ImageView) findViewById(R.id.ImageG);
-                        imageG.setImageBitmap(photo);
 
                     }
 
                 }
             }else if(requestCode==CROP_PIC){
                 Bundle extras = data.getExtras();
-                System.out.println("......bundle"+extras);
                 Bitmap thePic = extras.getParcelable("data");
-                System.out.println("...bitmap"+thePic);
                 ImageView picView = (ImageView) findViewById(R.id.ImageG);
                 picView.setImageBitmap(thePic);
-                System.out.println(".........Url image"+imageUrl);
-                System.out.println(".........Url image"+outputFileUri);
-                File f = new File(outputFileUri.getPath());
-                if (f.exists()) {
-                    f.delete();
-                }
-
-                f = new File(outputFileUri.getPath());
-                try {
-                    f.createNewFile();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                //Convert bitmap to byte array
-                ByteArrayOutputStream bos = new ByteArrayOutputStream();
-                thePic.compress(Bitmap.CompressFormat.PNG, 0 , bos);
-                byte[] bitmapdata = bos.toByteArray();
-                FileOutputStream fos = null;
-                try {
-                    fos = new FileOutputStream(f);
-                } catch (FileNotFoundException e) {
-                    e.printStackTrace();
-                }
-                try {
-                    fos.write(bitmapdata);
-                    fos.flush();
-                    fos.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+                create_image(outputFileUri,thePic);
             }
         }
 
@@ -540,23 +426,13 @@ public class InsertExActivity extends AppCompatActivity {
                                            String permissions[], int[] grantResults) {
         switch (requestCode) {
             case 1: {
-                // If request is cancelled, the result arrays are empty.
                 if (grantResults.length > 0
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-
-                    // permission was granted, yay! Do the
-                    // contacts-related task you need to do.
-
                 } else {
 
-                    // permission denied, boo! Disable the
-                    // functionality that depends on this permission.
                 }
                 return;
             }
-
-            // other 'case' lines to check for other
-            // permissions this app might request
         }
     }
 
@@ -682,7 +558,6 @@ public class InsertExActivity extends AppCompatActivity {
                             myRef.setValue(Long.toString(System.currentTimeMillis()).toString());
                         }
 
-                        //TODO
                         final FirebaseDatabase database3 = FirebaseDatabase.getInstance();
                         DatabaseReference myRef3 = database3.getReference("Balance").child(Gname);
                         System.out.println("Path "+myRef3);
@@ -702,10 +577,8 @@ public class InsertExActivity extends AppCompatActivity {
                                             if (!u.getuId().equals(mAuth.getCurrentUser().getUid()) && balancemap != null) {
                                                 value1 = Float.parseFloat((String) balancemap.get(mAuth.getCurrentUser().getUid()).get(u.getuId()).get("value"));
                                                 value2 = Float.parseFloat((String) balancemap.get(u.getuId()).get(mAuth.getCurrentUser().getUid()).get("value"));
-                                                //value3 = new Float (Float.parseFloat(usermap.get(k).toString()));
                                                 System.out.println("buttonnnnnnn1 " + value1);
                                                 System.out.println("buttonnnnnnn2 " + value2);
-                                                //System.out.println("buttonnnnnnn3 "+value3);
 
                                                 value3 = values.get(u.getuId()).floatValue();
                                                 value1 = value1 + value3;
@@ -822,33 +695,5 @@ public class InsertExActivity extends AppCompatActivity {
                 return super.onOptionsItemSelected(item);
         }
 
-    }
-    private void performCrop() {
-        try {
-            // support it)
-            Intent cropIntent = new Intent("com.android.camera.action.CROP");
-            // indicate image type and Uri
-            cropIntent.setDataAndType(imageUrl, "image/*");
-            // set crop properties
-            cropIntent.putExtra("crop", "true");
-            // indicate aspect of desired crop
-            cropIntent.putExtra("aspectX", 1);
-            cropIntent.putExtra("aspectY", 1);
-            // indicate output X and Y
-            cropIntent.putExtra("outputX", 200);
-            cropIntent.putExtra("outputY", 200);
-            // retrieve data on return
-            cropIntent.putExtra("return-data", true);
-            final Intent cIntent = Intent.createChooser(cropIntent, "Tha image should be cropped,select a source");
-            // Add the camera options.
-            // start the activity - we handle returning in onActivityResult
-            startActivityForResult(cIntent , 2);
-        }
-        // respond to users whose devices do not support the crop action
-        catch (ActivityNotFoundException anfe) {
-            Toast toast = Toast
-                    .makeText(this, "This device doesn't support the crop action!", Toast.LENGTH_SHORT);
-            toast.show();
-        }
     }
 }

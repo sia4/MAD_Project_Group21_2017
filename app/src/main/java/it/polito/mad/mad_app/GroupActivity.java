@@ -81,7 +81,34 @@ public class GroupActivity extends AppCompatActivity {
 
 
 
+        if(gImage==null){
+            final FirebaseDatabase database3 = FirebaseDatabase.getInstance();
+            DatabaseReference Ref_imagePath = database3.getReference("Groups").child(gKey).child("imagePath");
+            Ref_imagePath.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    gImage=dataSnapshot.getValue(String.class);
+                    Glide
+                            .with(getApplicationContext())
+                            .load(gImage)
+                            .asBitmap()
+                            .into(new SimpleTarget<Bitmap>(60,60) {
+                                @Override
+                                public void onResourceReady(Bitmap resource, GlideAnimation glideAnimation) {
+                                    RoundedBitmapDrawable circularBitmapDrawable =
+                                            RoundedBitmapDrawableFactory.create(getResources(), resource);
+                                    circularBitmapDrawable.setCircular(true);
+                                    getSupportActionBar().setLogo(circularBitmapDrawable);
+                                }
+                            });
+                }
 
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+            });
+        }
 
         final FirebaseDatabase database3 = FirebaseDatabase.getInstance();
         DatabaseReference myRef3 = database3.getReference("Balance").child(gKey).child(FirebaseAuth.getInstance().getCurrentUser().getUid());
@@ -102,10 +129,35 @@ public class GroupActivity extends AppCompatActivity {
 
                      String subtitle = "";
                      subtitle +=" "+ "They Owe You: " + String.valueOf(tmppos)+ " - You Owe: " + String.valueOf(tmpneg);
-
-
-
-                     getSupportActionBar().setSubtitle(subtitle);
+                    getSupportActionBar().setSubtitle(subtitle);
+                    Glide
+                            .with(getApplicationContext())
+                            .load(gImage)
+                            .asBitmap()
+                            .into(new SimpleTarget<Bitmap>(60,60) {
+                                @Override
+                                public void onResourceReady(Bitmap resource, GlideAnimation glideAnimation) {
+                                    RoundedBitmapDrawable circularBitmapDrawable =
+                                            RoundedBitmapDrawableFactory.create(getResources(), resource);
+                                    circularBitmapDrawable.setCircular(true);
+                                    getSupportActionBar().setLogo(circularBitmapDrawable);
+                                }
+                            });
+                    try{
+                        Field field = Toolbar.class.getDeclaredField( "mSubtitleTextView" );
+                        field.setAccessible( true );
+                        TextView subtitleTextView = (TextView)field.get( toolbar );
+                        subtitleTextView.setEllipsize(TextUtils.TruncateAt.MARQUEE);
+                        subtitleTextView.setFocusable(true);
+                        subtitleTextView.setFocusableInTouchMode(true);
+                        subtitleTextView.requestFocus();
+                        subtitleTextView.setSingleLine(true);
+                        subtitleTextView.setSelected(true);
+                        subtitleTextView.setMarqueeRepeatLimit(1);
+                        //subtitleTextView.setMarqueeRepeatLimit(-1); //continua all'infinito
+                    }catch (NoSuchFieldException e) {
+                    } catch (IllegalAccessException e) {
+                    }
 
                 }
                 else{
@@ -123,45 +175,15 @@ public class GroupActivity extends AppCompatActivity {
 
 
 
-          getSupportActionBar().setTitle(" "+gName);
-         String subtitle = "";
-         subtitle +=" "+ "They Owe You: " + String.valueOf(tmppos)+ " - You Owe: " + String.valueOf(tmpneg);
+         getSupportActionBar().setTitle(" "+gName);
+         //String subtitle = "";
+         //subtitle +=" "+ "They Owe You: " + String.valueOf(tmppos)+ " - You Owe: " + String.valueOf(tmpneg);
 
 
 
-         getSupportActionBar().setSubtitle(subtitle);
+         //getSupportActionBar().setSubtitle(subtitle);
 
         //Drawable dr = getResources().getDrawable(R.drawable.group_default);
-        Glide
-                .with(getApplicationContext())
-                .load(gImage)
-                .asBitmap()
-                .into(new SimpleTarget<Bitmap>(60,60) {
-                    @Override
-                    public void onResourceReady(Bitmap resource, GlideAnimation glideAnimation) {
-                        //image.setImageBitmap(resource); // Possibly runOnUiThread()
-                        RoundedBitmapDrawable circularBitmapDrawable =
-                                RoundedBitmapDrawableFactory.create(getResources(), resource);
-                        circularBitmapDrawable.setCircular(true);
-                        //Drawable d = new BitmapDrawable(getResources(), circularBitmapDrawable);
-                        getSupportActionBar().setLogo(circularBitmapDrawable);
-                    }
-                });
-        try{
-            Field field = Toolbar.class.getDeclaredField( "mSubtitleTextView" );
-            field.setAccessible( true );
-            TextView subtitleTextView = (TextView)field.get( toolbar );
-            subtitleTextView.setEllipsize(TextUtils.TruncateAt.MARQUEE);
-            subtitleTextView.setFocusable(true);
-            subtitleTextView.setFocusableInTouchMode(true);
-            subtitleTextView.requestFocus();
-            subtitleTextView.setSingleLine(true);
-            subtitleTextView.setSelected(true);
-            subtitleTextView.setMarqueeRepeatLimit(1);
-            //subtitleTextView.setMarqueeRepeatLimit(-1); //continua all'infinito
-        }catch (NoSuchFieldException e) {
-        } catch (IllegalAccessException e) {
-        }
         //toolbar.setLogo(ContextCompat.getDrawable(getApplicationContext(), R.drawable.group_default));
         //toolbar.setNavigationIcon(d);
         //getSupportActionBar().setIcon(R.drawable.group_default);
@@ -277,6 +299,7 @@ public class GroupActivity extends AppCompatActivity {
                 );
                 intent.putExtra("groupId", gKey);
                 intent.putExtra("groupName", gName);
+                intent.putExtra("imagePath",gImage);
                 startActivityForResult(intent, 1);
             }
         });
