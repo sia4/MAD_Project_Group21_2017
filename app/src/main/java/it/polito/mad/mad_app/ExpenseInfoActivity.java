@@ -31,6 +31,7 @@ import com.google.firebase.database.ValueEventListener;
 import java.sql.Date;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Locale;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -168,7 +169,7 @@ public class ExpenseInfoActivity extends AppCompatActivity {
                     for(Map.Entry<String, String> e : usermapTemp.entrySet()) {
                         usermap.put(e.getKey(), Float.parseFloat(e.getValue()));
                     }
-                    myvalue_ex.setText(String.valueOf(usermap.get(mAuth.getCurrentUser().getUid())));
+                    myvalue_ex.setText(String.format(Locale.US, "%.2f",usermap.get(mAuth.getCurrentUser().getUid())));
 
                     if(usermap.get(mAuth.getCurrentUser().getUid())>0){
                         s_ex.setTextColor(Color.parseColor("#27B011"));
@@ -279,8 +280,8 @@ public class ExpenseInfoActivity extends AppCompatActivity {
                         value3 = e.getValue();
                         value1 = value1 - value3;
                         value2 = value2 + e.getValue();
-                        myRef5.child(mAuth.getCurrentUser().getUid()).child(e.getKey()).child("value").setValue(String.valueOf(value1));
-                        myRef5.child(e.getKey()).child(mAuth.getCurrentUser().getUid()).child("value").setValue(String.valueOf(value2));
+                        myRef5.child(mAuth.getCurrentUser().getUid()).child(e.getKey()).child("value").setValue(String.format(Locale.US, "%.2f",value1));
+                        myRef5.child(e.getKey()).child(mAuth.getCurrentUser().getUid()).child("value").setValue(String.format(Locale.US, "%.2f",value2));
 
 
                     }

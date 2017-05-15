@@ -412,13 +412,12 @@ public class InsertGroupActivity extends AppCompatActivity {
             myRef.setValue(uName + " has created the group.");
             myRef = database.getReference("/Users/" + key + "/Groups/" + groupId + "/dateLastOperation/");
             myRef.setValue(Long.toString(System.currentTimeMillis()));
-            DecimalFormat df = new DecimalFormat("0.00");
-            float f = 0;
+
             for (Iterator n = others.iterator(); n.hasNext(); ) {
                 String k = (String) n.next();
                 if (!k.equals(key)) {
                     myRef = database.getReference("/Balance/" + groupId + "/" + key + "/" + k + "/" + "name");
-                    myRef.setValue(userKeys.get(k));
+                    myRef.setValue(userNames.get(k));
                     myRef = database.getReference("/Balance/" + groupId + "/" + key + "/" + k + "/" + "value");
                     myRef.setValue("0.00");
                 }

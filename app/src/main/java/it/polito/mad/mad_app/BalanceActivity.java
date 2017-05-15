@@ -18,6 +18,8 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+import java.util.Locale;
+
 import it.polito.mad.mad_app.model.Balance;
 import it.polito.mad.mad_app.model.GroupData;
 import it.polito.mad.mad_app.model.MainData;
@@ -100,9 +102,9 @@ public class BalanceActivity extends AppCompatActivity {
                         System.out.println("+++++++++"+b.getValue());
                         FirebaseDatabase database = FirebaseDatabase.getInstance();
                         DatabaseReference myRef = database.getReference("/Balance/"+b.getgID()+"/"+auKey+"/"+b.getKey()+"/"+"value");
-                        myRef.setValue(String.valueOf(b.getValue()));
+                        myRef.setValue(String.format(Locale.US, "%.2f",b.getValue()));
                         myRef = database.getReference("/Balance/"+b.getgID()+"/"+b.getKey()+"/"+auKey+"/"+"value");
-                        myRef.setValue(String.valueOf(o));
+                        myRef.setValue(String.format(Locale.US, "%.2f", o));
                         //    Toast.makeText(BalanceActivity.this, String.valueOf(MainData.getInstance().getGroup(groupName).getExpense(userName)+insertValue), Toast.LENGTH_LONG).show();
                         setResult(RESULT_OK, null);
                         finish();

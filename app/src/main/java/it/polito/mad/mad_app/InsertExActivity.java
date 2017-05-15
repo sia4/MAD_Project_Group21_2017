@@ -45,6 +45,7 @@ import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -52,6 +53,8 @@ import it.polito.mad.mad_app.model.ActivityData;
 import it.polito.mad.mad_app.model.Balance;
 import it.polito.mad.mad_app.model.ExpenseData;
 import it.polito.mad.mad_app.model.UserData;
+
+import static android.util.LayoutDirection.LOCALE;
 
 import static it.polito.mad.mad_app.model.ImageMethod.create_image;
 import static it.polito.mad.mad_app.model.ImageMethod.performCrop;
@@ -519,13 +522,13 @@ public class InsertExActivity extends AppCompatActivity {
                         DatabaseReference ActRef = database.getReference("Activities").child(Gname).push();
                         ActRef.setValue(new ActivityData(myname + " " + mysurname, myname + " " + mysurname + " added a new expense in group " + groupName, Long.toString(System.currentTimeMillis()), "expense", refkey, Gname));
                         //Quì inseriamo una nuova spesa con relative immagine, se è stata caricata
-                        myRef.setValue(new ExpenseData(name, description, category, currency, String.valueOf(value), "0.00", algorithm));
+                        myRef.setValue(new ExpenseData(name, description, category, currency, String.format(Locale.US, "%.2f", value), "0.00", algorithm));
                         final DatabaseReference myRef2 = myRef;
                         myRef.child("creator").setValue(myname + " " + mysurname);
                         myRef.child("creatorId").setValue(mAuth.getCurrentUser().getUid());
                         System.out.println(String.format("%.2f", value));
                         for (Map.Entry<String, Double> e : values.entrySet())
-                            myRef.child("users").child(e.getKey()).setValue(String.valueOf(e.getValue()));
+                            myRef.child("users").child(e.getKey()).setValue(String.format(Locale.US, "%.2f", e.getValue()));
                         myRef.child("contested").setValue("no");
                         ii = 0;
                         for(final UserData k:users){
@@ -560,8 +563,8 @@ public class InsertExActivity extends AppCompatActivity {
                                                 value3 = values.get(u.getuId()).floatValue();
                                                 value1 = value1 + value3;
                                                 value2 = value2 - value3;
-                                                myRef5.child(mAuth.getCurrentUser().getUid()).child(u.getuId()).child("value").setValue(String.valueOf(value1));
-                                                myRef5.child(u.getuId()).child(mAuth.getCurrentUser().getUid()).child("value").setValue(String.valueOf(value2));
+                                                myRef5.child(mAuth.getCurrentUser().getUid()).child(u.getuId()).child("value").setValue(String.format(Locale.US, "%.2f", value1));
+                                                myRef5.child(u.getuId()).child(mAuth.getCurrentUser().getUid()).child("value").setValue(String.format(Locale.US, "%.2f", value2));
 
 
                                             }

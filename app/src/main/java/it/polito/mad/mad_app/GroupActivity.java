@@ -39,6 +39,7 @@ import com.google.firebase.database.ValueEventListener;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
@@ -128,7 +129,7 @@ public class GroupActivity extends AppCompatActivity {
                      }
 
                      String subtitle = "";
-                     subtitle +=" "+ "They Owe You: " + String.valueOf(tmppos)+ " - You Owe: " + String.valueOf(tmpneg);
+                     subtitle +=" "+ "They Owe You: " + String.format(Locale.US, "%.2f",tmppos)+ " - You Owe: " + String.format(Locale.US, "%.2f",tmpneg);
                     getSupportActionBar().setSubtitle(subtitle);
                     Glide
                             .with(getApplicationContext())
