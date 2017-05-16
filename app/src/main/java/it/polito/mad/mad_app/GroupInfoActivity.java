@@ -6,16 +6,13 @@ import android.content.ComponentName;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
-import android.database.Cursor;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Parcelable;
 import android.provider.MediaStore;
-import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -36,6 +33,7 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -57,17 +55,13 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import it.polito.mad.mad_app.model.Currencies;
-
 import it.polito.mad.mad_app.model.ActivityData;
-import it.polito.mad.mad_app.model.ExpenseData;
+import it.polito.mad.mad_app.model.Currencies;
 import it.polito.mad.mad_app.model.PolData;
 import it.polito.mad.mad_app.model.RecyclerTouchListener;
 import it.polito.mad.mad_app.model.User;
@@ -161,6 +155,7 @@ public class GroupInfoActivity extends AppCompatActivity {
                 startActivityForResult(chooserIntent, 1);
             }
         });
+
         Button button = (Button) findViewById(R.id.addUserInExistingGroup);
         Button buttonDelete = (Button) findViewById(R.id.DeleteGroup);
         Button buttonLeave = (Button) findViewById(R.id.LeaveGroup);
@@ -279,13 +274,19 @@ public class GroupInfoActivity extends AppCompatActivity {
 
         });*/
 
-        RecyclerView userRecyclerView = (RecyclerView) findViewById(R.id.users);
+        /*RecyclerView userRecyclerView = (RecyclerView) findViewById(R.id.users);
         userRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         final UsersAdapter uAdapter = new UsersAdapter(users);
-        userRecyclerView.setAdapter(uAdapter);
+        userRecyclerView.setAdapter(uAdapter);*/
 
         final RecyclerView CurrenciesRecyclerView = (RecyclerView) findViewById(R.id.currencies);
         CurrenciesRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+
+        RecyclerView userRecyclerView = (RecyclerView) findViewById(R.id.users);
+        userRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        final UserAdapterIm uAdapter = new UserAdapterIm(user_l);
+        userRecyclerView.setAdapter(uAdapter);
+
 
         namet=(TextView) findViewById(R.id.name_g);
         nameted = (EditText) findViewById(R.id.name_g_ed);
@@ -296,19 +297,26 @@ public class GroupInfoActivity extends AppCompatActivity {
         myRef.addValueEventListener(new ValueEventListener() {
 
             @Override
+            public void onCancelled(DatabaseError error) {
+                // Failed to read value
+                //log.w(TAG, "Failed to read value.", error.toException());
+            }
+
+            @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
 
                 it.polito.mad.mad_app.model.Group g = dataSnapshot.getValue(it.polito.mad.mad_app.model.Group.class);
                 Map<String, Object> map = (Map<String, Object>) dataSnapshot.getValue();
-                if(map!=null) {
+                if (map != null) {
                     nametmp = (String) map.get("name");
                     desctmp = (String) map.get("description");
                     namet.setText(nametmp);
                     desc.setText(desctmp);
-                    if(map.get("imagePath")==null){
+
+                    if (map.get("imagePath") == null) {
                         im.setImageResource(R.drawable.group_default);
-                    }
-            				else{
+                    } else {
+
                         String p = (String) map.get("imagePath");
                         image = p;
 
@@ -326,103 +334,114 @@ public class GroupInfoActivity extends AppCompatActivity {
                             });
                         }
                     }
-								}
+                }
 
-                Group g = new Group((String)map.get("gId"),(String) map.get("surname"), (String)map.get("defaultCurrency"));
+                //Group g = new Group((String)map.get("gId"),(String) map.get("surname"), (String)map.get("defaultCurrency"));
 
-                    if (g.getCurrencies().size() != 0) {
+                if (g.getCurrencies().size() != 0) {
 
-                        System.out.println(g.getCurrencies().toString());
+                    System.out.println(g.getCurrencies().toString());
 
-                        for (Entry<String, Float> e : g.getCurrencies().entrySet()) {
-                            if (e.getValue() == 0.0) {
+                    for (Entry<String, Float> e : g.getCurrencies().entrySet()) {
+                        if (e.getValue() == 0.0) {
 
-                                String s = "Primary Currency: " + c.getCurrencyString(e.getKey());
-                                currencies.add(s);
-                            } else {
+                            String s = "Primary Currency: " + c.getCurrencyString(e.getKey());
+                            currencies.add(s);
+                        } else {
 
-                                String s = c.getCurrencyString(e.getKey());
-                                currencies.add(s + " " + e.getValue());
-                            }
-
-        RecyclerView userRecyclerView = (RecyclerView) findViewById(R.id.users);
-        userRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-        final UserAdapterIm uAdapter = new UserAdapterIm(user_l);
-        userRecyclerView.setAdapter(uAdapter);
-
+                            String s = c.getCurrencyString(e.getKey());
+                            currencies.add(s + " " + e.getValue());
                         }
 
-                        CurrenciesAdapter cAdapter = new CurrenciesAdapter(currencies);
-                        CurrenciesRecyclerView.setAdapter(cAdapter);
-                        cAdapter.notifyDataSetChanged();
-
-                    } else {
-
-                        Toast.makeText(GroupInfoActivity.this, "No Currencies found!", Toast.LENGTH_LONG).show();
-
                     }
+                    CurrenciesAdapter cAdapter = new CurrenciesAdapter(currencies);
+                    CurrenciesRecyclerView.setAdapter(cAdapter);
+                    cAdapter.notifyDataSetChanged();
 
-                    if (g.getMemberList().size() != 0) {
+                } else {
 
-                        for (final String k : g.getMemberList()) {
+                    Toast.makeText(GroupInfoActivity.this, "No Currencies found!", Toast.LENGTH_LONG).show();
 
-                            FirebaseDatabase database3 = FirebaseDatabase.getInstance();
-                            DatabaseReference myRef3 = database3.getReference("Users").child(k);
+                }
 
-                            myRef3.addValueEventListener(new ValueEventListener() {
-                                @Override
-                                public void onDataChange(DataSnapshot dataSnapshot) {
+                if (g.getMemberList().size() != 0) {
 
-                                    Map<String, Object> map3 = (Map<String, Object>) dataSnapshot.getValue();
+                    for (final String k : g.getMemberList()) {
 
-                                    if (map3 != null) {
-
-                                        String s = map3.get("name") + " " + map3.get("surname");
-                                        users.add(s);
-                                        uAdapter.notifyDataSetChanged();
-
-                                    } else {
-
-                                        Toast.makeText(GroupInfoActivity.this, "no user key found!", Toast.LENGTH_LONG).show();
-
-                                    }
-
-                Map<String, Object> map2 = (Map<String, Object>) dataSnapshot.getValue();
-                if(map2!=null) {
-                    for (final String k : map2.keySet()){
                         FirebaseDatabase database3 = FirebaseDatabase.getInstance();
                         DatabaseReference myRef3 = database3.getReference("Users").child(k);
+
                         myRef3.addValueEventListener(new ValueEventListener() {
                             @Override
                             public void onDataChange(DataSnapshot dataSnapshot) {
+
                                 Map<String, Object> map3 = (Map<String, Object>) dataSnapshot.getValue();
-                                if(map3!=null) {
-                                    String p=null;
-                                    if(map3.get("imagePath")==null){
-                                        p="https://firebasestorage.googleapis.com/v0/b/allaromana-3f98e.appspot.com/o/group_default.png?alt=media&token=40bc93f4-6b97-466e-b130-e140f57c5895";
-                                    }else{
-                                        p= map3.get("imagePath").toString();
-                                    }
-                                    String s = map3.get("name")+" "+map3.get("surname");
+
+                                if (map3 != null) {
+
+                                    String s = map3.get("name") + " " + map3.get("surname");
                                     users.add(s);
-                                    user_l.add(new User(null,null,map3.get("name").toString(),map3.get("surname").toString(),p));
-                                    usersId.add(k);
                                     uAdapter.notifyDataSetChanged();
+
+                                } else {
+
+                                    Toast.makeText(GroupInfoActivity.this, "no user key found!", Toast.LENGTH_LONG).show();
+
                                 }
 
-                                @Override
-                                public void onCancelled(DatabaseError databaseError) {
+                                Map<String, Object> map2 = (Map<String, Object>) dataSnapshot.getValue();
 
+                                if (map2 != null) {
+
+                                    for (final String k : map2.keySet()) {
+
+                                        FirebaseDatabase database3 = FirebaseDatabase.getInstance();
+                                        DatabaseReference myRef3 = database3.getReference("Users").child(k);
+                                        myRef3.addValueEventListener(new ValueEventListener() {
+                                            @Override
+                                            public void onDataChange(DataSnapshot dataSnapshot) {
+                                                Map<String, Object> map3 = (Map<String, Object>) dataSnapshot.getValue();
+                                                if (map3 != null) {
+                                                    String p = null;
+                                                    if (map3.get("imagePath") == null) {
+                                                        p = "https://firebasestorage.googleapis.com/v0/b/allaromana-3f98e.appspot.com/o/group_default.png?alt=media&token=40bc93f4-6b97-466e-b130-e140f57c5895";
+                                                    } else {
+                                                        p = map3.get("imagePath").toString();
+                                                    }
+                                                    String s = map3.get("name") + " " + map3.get("surname");
+                                                    users.add(s);
+                                                    user_l.add(new User(null, null, map3.get("name").toString(), map3.get("surname").toString(), p));
+                                                    usersId.add(k);
+                                                    uAdapter.notifyDataSetChanged();
+                                                }
+                                            }
+
+                                            @Override
+                                            public void onCancelled(DatabaseError databaseError) {
+
+                                            }
+                                        });
+                                    }
+
+                                } else {
+                                    Toast.makeText(GroupInfoActivity.this, "No users found!", Toast.LENGTH_LONG).show();
                                 }
-                            });
-                        }
 
-                    } else {
-                        Toast.makeText(GroupInfoActivity.this, "No users found!", Toast.LENGTH_LONG).show();
+                            }
+
+                            @Override
+                            public void onCancelled(DatabaseError error) {
+                                // Failed to read value
+                                //log.w(TAG, "Failed to read value.", error.toException());
+                            }
+                        });
                     }
-
-
                 }
+            }
+
+        });
+
+
 
                 /*Map<String, Object> map = (Map<String, Object>) dataSnapshot.getValue();
 
@@ -454,14 +473,7 @@ public class GroupInfoActivity extends AppCompatActivity {
                     //progressBar.setVisibility(View.INVISIBLE);
                     //gAdapter.notifyDataSetChanged();
                 }*/
-            }
 
-            @Override
-            public void onCancelled(DatabaseError error) {
-                // Failed to read value
-                //log.w(TAG, "Failed to read value.", error.toException());
-            }
-        });
 
         //TODO CLICKLISTENER DEL RECYCLERVIEW PER APRIRE LA USERINFORMATIONACTIVITY
         namet.setOnClickListener(new View.OnClickListener() {

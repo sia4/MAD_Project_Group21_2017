@@ -1,7 +1,6 @@
 package it.polito.mad.mad_app.model;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -96,8 +95,8 @@ public class Group {
             return new Float(-1);
         }
     }
-	
-    public void addCurrencies(Map<String, Float> currencies) {this.currencies = currencies; }
+
+    //public void addCurrencies(Map<String, Float> currencies) {this.currencies = currencies; }
 
     public void addLastOperation(String s) {this.lastOperation = s;}
 
