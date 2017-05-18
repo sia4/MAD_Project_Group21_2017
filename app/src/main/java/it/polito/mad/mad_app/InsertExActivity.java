@@ -2,7 +2,6 @@ package it.polito.mad.mad_app;
 
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.content.pm.ResolveInfo;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Build;
@@ -55,10 +54,7 @@ import it.polito.mad.mad_app.model.Balance;
 import it.polito.mad.mad_app.model.ExpenseData;
 import it.polito.mad.mad_app.model.UserData;
 
-import static android.util.LayoutDirection.LOCALE;
-
 import static it.polito.mad.mad_app.model.ImageMethod.create_image;
-import static it.polito.mad.mad_app.model.ImageMethod.performCrop;
 import static it.polito.mad.mad_app.model.ImageMethod.require_image;
 
 
@@ -91,14 +87,13 @@ public class InsertExActivity extends AppCompatActivity {
     static final int REQUEST_TAKE_PHOTO = 1;
     private Uri outputFileUri;
     private String tmp;
-    String mCurrentPhotoPath;
-    private Map<String, Float> Cambi = new TreeMap<>();
     private Uri downloadUrl;
     private String groupImage;
     private Boolean ImageC=false;
     private Uri imageUrl;
     private Button load;
-	
+    private Map<String, Float> Cambi = new TreeMap<>();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -193,14 +188,10 @@ public class InsertExActivity extends AppCompatActivity {
 
         System.out.println("2");
 
-
         Spinner spinner = (Spinner) findViewById(R.id.Currency);
-
         final List<String> Currencies = new ArrayList<>();
         Currencies.add("Select currency");
-        //Currencies.add("EUR €");
 
-        //Currencies.add(defaultcurrency);
         // Create an ArrayAdapter using the string array and a default spinner layout
         FirebaseDatabase database4 = FirebaseDatabase.getInstance();
         DatabaseReference myRef4 = database4.getReference("Groups").child(Gname);
@@ -211,11 +202,9 @@ public class InsertExActivity extends AppCompatActivity {
                 it.polito.mad.mad_app.model.Group g = dataSnapshot.getValue(it.polito.mad.mad_app.model.Group.class);
 
                 if(map!=null) {
-                  
-                  defaultcurrency = (String)map.get("defaultcurrency");
-                  
+                    defaultcurrency = (String) map.get("defaultcurrency");
                 } else {
-                    Toast.makeText(InsertExActivity.this, "no user key found!", Toast.LENGTH_LONG).show();
+                    System.out.println("Errore InsertExActivity: Non riesco a prendere la Mappa");
                 }
 
                 if (g != null) {
@@ -235,14 +224,10 @@ public class InsertExActivity extends AppCompatActivity {
         System.out.println("3");
 
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, R.layout.currency_item, Currencies);
-        // Specify the layout to use when the list of choices appears
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        // Apply the adapter to the spinner
         spinner.setAdapter(adapter);
 
-        //users.add(0, new UserData("null", "Me", "", 000));
         final Spinner Talgorithm = (Spinner)findViewById(R.id.ChooseAlgorithm);
-        //final EditText Tvalue = (EditText) findViewById(R.id.value);
         final Spinner Tcurrency = (Spinner) findViewById(R.id.Currency);
         final TextView algInfo = (TextView) findViewById(R.id.alg_info);
         final TextView algInfoSmall = (TextView) findViewById(R.id.alg_info_small);
@@ -287,34 +272,7 @@ public class InsertExActivity extends AppCompatActivity {
         } );
 
         System.out.println("4");
-        /*
-       Tvalue.addTextChangedListener(new TextWatcher() {
-           int p;
-           @Override
-           public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
-           }
-
-           @Override
-           public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-           }
-
-           @Override
-           public void afterTextChanged(Editable s) {
-               if(Talgorithm.getSelectedItem().toString().equals("by import") && !Tcurrency.getSelectedItem().toString().equals("Select currency")) {
-                   if(!Tvalue.getText().toString().isEmpty()) {
-                       uAdapter = new AlgorithmParametersAdapter(users, 2, Float.parseFloat(Tvalue.getText().toString()), Tcurrency.getSelectedItem().toString(), algInfo, algInfoSmall);
-                       userRecyclerView.setAdapter(uAdapter);
-                   }
-                   else{
-                       uAdapter = new AlgorithmParametersAdapter(users, 2, 0, Tcurrency.getSelectedItem().toString(), algInfo, algInfoSmall);
-                       userRecyclerView.setAdapter(uAdapter);
-                   }
-               }
-           }
-       });
-        */
         String s = "";
         load=(Button) findViewById(R.id.load_ex);
         load.setOnClickListener(new View.OnClickListener() {
@@ -368,29 +326,29 @@ public class InsertExActivity extends AppCompatActivity {
                     imageUrl = outputFileUri;
                     ImageC = true;
                     final PackageManager pManager = getPackageManager();
-                    Intent cropIntent=performCrop(imageUrl,pManager);
-                    if(cropIntent!=null){
+                    //Intent cropIntent=performCrop(imageUrl,pManager);
+                    /*if(cropIntent!=null){
                         final Intent cIntent = Intent.createChooser(cropIntent, "Tha image should be cropped,select a source");
                         startActivityForResult(cIntent , 2);
                     }
                     else{
                         Toast toast = Toast.makeText(this, "This device doesn't support the crop action!", Toast.LENGTH_SHORT);
                         toast.show();
-                    }
+                    }*/
                 } else {
                     if (data != null) {
                         ImageC = true;
                         selectedImageUri = data.getData();
                         imageUrl= selectedImageUri;
                         final PackageManager pManager = getPackageManager();
-                        Intent cropIntent=performCrop(imageUrl,pManager);
-                        if(cropIntent!=null){
+                        //Intent cropIntent=performCrop(imageUrl,pManager);
+                        /*if(cropIntent!=null){
                             startActivityForResult(cropIntent , 2);
                         }
                         else{
                             Toast toast = Toast.makeText(this, "This device doesn't support the crop action!", Toast.LENGTH_SHORT);
                             toast.show();
-                        }
+                        }*/
 
                     }
 
@@ -462,9 +420,7 @@ public class InsertExActivity extends AppCompatActivity {
                 } else if(category.equals("Select category")) {
                     Toast.makeText(InsertExActivity.this, "Please insert category.", Toast.LENGTH_LONG).show();
                 } else {
-
                     value = Double.valueOf(Tvalue.getText().toString());
-
                     System.out.println("valuebuggggggggggggggggggg " + value);
                     if (algorithm.equals("equally")) {
                         v = value / users.size();
@@ -539,7 +495,6 @@ public class InsertExActivity extends AppCompatActivity {
                         myRef.child("contested").setValue("no");
                         ii = 0;
 
-                        final float cambio = Cambi.get(currency);
                         for(final UserData k:users){
                             myRef = database.getReference("/Users/" + k.getuId() + "/Groups/" + Gname + "/lastOperation/");
                             myRef.setValue(myname + " added an expense.");
@@ -547,6 +502,7 @@ public class InsertExActivity extends AppCompatActivity {
                             myRef.setValue(Long.toString(System.currentTimeMillis()).toString());
                         }
 
+                        final float cambio = Cambi.get(currency);
                         final FirebaseDatabase database3 = FirebaseDatabase.getInstance();
                         DatabaseReference myRef3 = database3.getReference("Balance").child(Gname);
                         System.out.println("Path "+myRef3);
@@ -557,85 +513,31 @@ public class InsertExActivity extends AppCompatActivity {
                                 balancemap = (Map<String, Map<String, Map<String, Object>>>) dataSnapshot.getValue();
                                 if(balancemap!=null) {
 
-                                        for (UserData u : users) {
-                                            final FirebaseDatabase database5 = FirebaseDatabase.getInstance();
-                                            DatabaseReference myRef5 = database5.getReference("Balance").child(Gname);
-                                            float value1, value2, value3, value4;
-                                            if (!u.getuId().equals(mAuth.getCurrentUser().getUid()) && balancemap != null) {
-                                                value1 = Float.parseFloat((String) balancemap.get(mAuth.getCurrentUser().getUid()).get(u.getuId()).get("value"));
-                                                value2 = Float.parseFloat((String) balancemap.get(u.getuId()).get(mAuth.getCurrentUser().getUid()).get("value"));
-                                                System.out.println("buttonnnnnnn1 " + value1);
-                                                System.out.println("buttonnnnnnn2 " + value2);
+                                    for (UserData u : users) {
 
-                                                value3 = values.get(u.getuId()).floatValue();
-                                                value1 = value1 + value3;
-                                                value2 = value2 - value3;
-                                                myRef5.child(mAuth.getCurrentUser().getUid()).child(u.getuId()).child("value").setValue(String.format(Locale.US, "%.2f", value1));
-                                                myRef5.child(u.getuId()).child(mAuth.getCurrentUser().getUid()).child("value").setValue(String.format(Locale.US, "%.2f", value2));
+                                        final FirebaseDatabase database5 = FirebaseDatabase.getInstance();
+                                        DatabaseReference myRef5 = database5.getReference("Balance").child(Gname);
+                                        float value1, value2, value3;
+                                        if (!u.getuId().equals(mAuth.getCurrentUser().getUid()) && balancemap != null) {
+                                            value1 = Float.parseFloat((String) balancemap.get(mAuth.getCurrentUser().getUid()).get(u.getuId()).get("value"));
+                                            value2 = Float.parseFloat((String) balancemap.get(u.getuId()).get(mAuth.getCurrentUser().getUid()).get("value"));
+                                            System.out.println("buttonnnnnnn1 " + value1);
+                                            System.out.println("buttonnnnnnn2 " + value2);
+                                            value3 = values.get(u.getuId()).floatValue();
 
-                                        if(!key.getuId().equals(mAuth.getCurrentUser().getUid())) {
-                                            Float value = mutableData.child("value").getValue(Float.class);
-																					
-                                            System.out.println("1+++valueeeeeeeeeeeeeeeeeeeeee " + value);
                                             if (cambio != 0) {
-                                                if (value == null) {
-                                                    mutableData.child("name").setValue(key.getName() + " " + key.getSurname());
-                                                    mutableData.child("value").setValue(String.valueOf(values.get(key.getuId()) * cambio));
-                                                } else {
-                                                    mutableData.child("value").setValue(String.valueOf((value + values.get(key.getuId())) * cambio));
-                                                    mutableData.child("name").setValue(key.getName() + " " + key.getSurname());
-                                                }
-                                            } else {
-                                                if (value == null) {
-                                                    mutableData.child("name").setValue(key.getName() + " " + key.getSurname());
-                                                    mutableData.child("value").setValue(String.valueOf(values.get(key.getuId())));
-                                                } else {
-                                                    mutableData.child("value").setValue(String.valueOf(value + values.get(key.getuId())));
-                                                    mutableData.child("name").setValue(key.getName() + " " + key.getSurname());
-                                                }
+                                                value3 *= cambio;
                                             }
+
+                                            value1 = value1 + value3;
+                                            value2 = value2 - value3;
+                                            myRef5.child(mAuth.getCurrentUser().getUid()).child(u.getuId()).child("value").setValue(String.format(Locale.US, "%.2f", value1));
+                                            myRef5.child(u.getuId()).child(mAuth.getCurrentUser().getUid()).child("value").setValue(String.format(Locale.US, "%.2f", value2));
+
 
                                         }
 
-                                        return Transaction.success(mutableData);
                                     }
-
-                                    @Override
-                                    public void onComplete(DatabaseError databaseError, boolean b,
-                                                           DataSnapshot dataSnapshot) {
-                                       //Log.d(TAG, "transaction:onComplete:" + databaseError);
-                                    }
-                                });
-
-
-
-                                final DatabaseReference myRef5 = database.getReference("Balance").child(Gname).child(key.getuId()).child(mAuth.getCurrentUser().getUid());
-                                myRef5.runTransaction(new Transaction.Handler() {
-                                    @Override
-                                    public Transaction.Result doTransaction(MutableData mutableData) {
-                                        if(!key.getuId().equals(mAuth.getCurrentUser().getUid())) {
-                                            Float value = mutableData.child("value").getValue(Float.class);
-																					System.out.println("+++valueeeeeeeeeeeeeeeeeeeeee " + value);
-                                            if (cambio != 0) {
-                                                if (value == null) {
-                                                    mutableData.child("value").setValue(String.valueOf(-values.get(key.getuId()) * cambio));
-                                                    mutableData.child("name").setValue(myname + " " + mysurname);
-                                                } else {
-                                                    mutableData.child("value").setValue(String.valueOf((value - values.get(key.getuId())) * cambio));
-                                                    mutableData.child("name").setValue(myname + " " + mysurname);
-                                                }
-                                            } else {
-                                                if (value == null) {
-                                                    mutableData.child("value").setValue(String.valueOf(-(values.get(key.getuId()))));
-                                                    mutableData.child("name").setValue(myname + " " + mysurname);
-                                                } else {
-                                                    mutableData.child("value").setValue(String.valueOf(value - values.get(key.getuId())));
-                                                    mutableData.child("name").setValue(myname + " " + mysurname);
-                                                }
-                                            }
-
-
-                                        }
                                     System.out.println("balancemapppppppppppppppp " + balancemap);
                                 }
 
@@ -679,7 +581,7 @@ public class InsertExActivity extends AppCompatActivity {
                                 e.printStackTrace();
                             }
                         }
-                            //final DatabaseReference myRef3 = database.getReference("Balance").child(Gname);
+                        //final DatabaseReference myRef3 = database.getReference("Balance").child(Gname);
                                 /*
                                 myRef3.runTransaction(new Transaction.Handler() {
                                     @Override
@@ -721,22 +623,22 @@ public class InsertExActivity extends AppCompatActivity {
                         }
                         }
                         else{*/
-                            Intent i2 = new Intent(InsertExActivity.this, GroupActivity.class);
-                            System.out.println("+++++++++++++++++" + Gname + groupName);
-                            i2.putExtra("groupId", Gname);
-                            i2.putExtra("groupName", groupName);
+                        Intent i2 = new Intent(InsertExActivity.this, GroupActivity.class);
+                        System.out.println("+++++++++++++++++" + Gname + groupName);
+                        i2.putExtra("groupId", Gname);
+                        i2.putExtra("groupName", groupName);
 
-                            setResult(RESULT_OK, i2);
-                            finish();
-                            Log.d("myStorage", "success!");
-                            //}
-                            //return true;
-                        } else{
-                            String p = String.format("problems... flagok: %d, values.size: %d, users.size: %d", flagok, values.size(), users.size());
-                            Toast.makeText(InsertExActivity.this, p, Toast.LENGTH_LONG).show();
-                            return super.onOptionsItemSelected(item);
-                        }
+                        setResult(RESULT_OK, i2);
+                        finish();
+                        Log.d("myStorage", "success!");
+                        //}
+                        //return true;
+                    } else {
+                        String p = String.format("problems... flagok: %d, values.size: %d, users.size: %d", flagok, values.size(), users.size());
+                        Toast.makeText(InsertExActivity.this, p, Toast.LENGTH_LONG).show();
+                        return super.onOptionsItemSelected(item);
                     }
+                }
             default:
                 return super.onOptionsItemSelected(item);
         }
