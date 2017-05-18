@@ -1,7 +1,6 @@
 package it.polito.mad.mad_app.model;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -24,7 +23,8 @@ public class Group {
     public Group(String n, String d, String c) {
         this.name = n;
         this.description = d;
-        defaultCurrency = "EUR";
+        defaultCurrency = c;
+        currencies.put(c, new Float(0));
     }
 
     public String getName(){
@@ -55,7 +55,20 @@ public class Group {
 
     public Map<String, Boolean> getMembers() {return members; }
 
-    public Map<String, Float> getCurrencies() {return currencies; }
+    public List<String> getMemberList() {
+
+        List<String> m = new ArrayList<>();
+
+        for (String key : members.keySet()) {
+
+            if (members.get(key) == true) {
+                m.add(key);
+            }
+
+        }
+
+        return m;
+    }
 
     public Map<String, Boolean> getExpenses(){return expenses; }
 
@@ -63,9 +76,30 @@ public class Group {
         members.put(s, true);
     }
 
-    public void addCurrencies(Map<String, Float> currencies) {this.currencies = currencies; }
+    public void addCurrencies(Map<String, Float> currencies) {
+        this.currencies = currencies;
+    }
+
+    public void addCurrency(String s, Float v) {
+        currencies.put(s, v);
+    }
+
+    public Map<String, Float> getCurrencies() {
+        return currencies;
+    }
+
+    public Float getCurrencyValue(String s) {
+        if (currencies.containsKey(s)) {
+            return currencies.get(s);
+        } else {
+            return new Float(-1);
+        }
+    }
+
+    //public void addCurrencies(Map<String, Float> currencies) {this.currencies = currencies; }
 
     public void addLastOperation(String s) {this.lastOperation = s;}
 
     public void addDataLastOperation(Long l) {this.dataLastOperation = l;}
+	
 }

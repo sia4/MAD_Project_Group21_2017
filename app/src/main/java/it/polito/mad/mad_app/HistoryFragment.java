@@ -3,7 +3,6 @@ package it.polito.mad.mad_app;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -13,28 +12,21 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.GenericTypeIndicator;
 import com.google.firebase.database.ValueEventListener;
 
-import java.sql.Date;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
-
 import it.polito.mad.mad_app.model.ExpenseData;
-import it.polito.mad.mad_app.model.MainData;
 import it.polito.mad.mad_app.model.RecyclerTouchListener;
 
 public class    HistoryFragment extends Fragment {
@@ -123,6 +115,7 @@ public class    HistoryFragment extends Fragment {
                             public void onDataChange(DataSnapshot dataSnapshot) {
                                 Map<String, Object> map3 = (Map<String, Object>) dataSnapshot.getValue();
                                 if(map3!=null) {
+
                                     //Float tmp = new Float(map3.get("value").toString());
                                     //Float tmp1 = new Float(map3.get("myvalue").toString());
                                         final ExpenseData e = new ExpenseData((String) map3.get("name"), (String) map3.get("description"), (String) map3.get("category"), (String) map3.get("currency"), map3.get("value").toString(), map3.get("myvalue").toString(), (String) map3.get("algorithm"));

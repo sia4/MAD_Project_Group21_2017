@@ -54,7 +54,8 @@ public class ExpenseData implements Comparable<ExpenseData>{
     }
 
     public String getCurrency(){
-        return this.currency;
+        Currencies c = new Currencies();
+        return c.getCurrencyString(this.currency);
     }
 
     public String getValue(){
