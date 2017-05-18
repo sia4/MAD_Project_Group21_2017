@@ -134,7 +134,7 @@ public class ExpenseInfoActivity extends AppCompatActivity {
                     s_ex.setText("Your quote:");
                     algorithm_ex.setText(algorithm);
 
-                    SimpleDateFormat sdf = new SimpleDateFormat("MMM dd,yyyy HH:mm");
+                    SimpleDateFormat sdf = new SimpleDateFormat("MMM dd, yyyy HH:mm");
                     Date resultdate = new Date(new Long(date));
 
                     date_ex.setText(sdf.format(resultdate));
@@ -231,6 +231,7 @@ public class ExpenseInfoActivity extends AppCompatActivity {
 
                 myRef2.setValue(new ExpenseData(name + "(retrieve)", "expense retrieved", category, currency, value, "0.00", algorithm));
                 myRef2.child("creator").setValue(creator);
+                myRef2.child("missing").setValue("yes");
                 //myRef2.child("value").setValue(value);
                 myRef2.child("contested").setValue("no");
                 myRef2.child("users").setValue(usermapTemp);

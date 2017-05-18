@@ -491,6 +491,7 @@ public class InsertExActivity extends AppCompatActivity {
                         final DatabaseReference myRef2 = myRef;
                         myRef.child("creator").setValue(myname + " " + mysurname);
                         myRef.child("creatorId").setValue(mAuth.getCurrentUser().getUid());
+                        myRef.child("missing").setValue("no");
                         System.out.println(String.format("%.2f", value));
                         for (Map.Entry<String, Double> e : values.entrySet())
                             myRef.child("users").child(e.getKey()).setValue(String.format(Locale.US, "%.2f", e.getValue()));
