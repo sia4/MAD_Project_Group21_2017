@@ -11,6 +11,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -33,6 +34,7 @@ public class GroupsAdapter extends RecyclerView.Adapter<GroupsAdapter.MyViewHold
         public ImageView im;
         public TextView date;
         public TextView operation;
+        public CheckBox favourite;
 
         public MyViewHolder(View view) {
             super(view);
@@ -40,6 +42,8 @@ public class GroupsAdapter extends RecyclerView.Adapter<GroupsAdapter.MyViewHold
             im=(ImageView) view.findViewById(R.id.im);
             date = (TextView) view.findViewById(R.id.date);
             operation = (TextView) view.findViewById(R.id.operation);
+            favourite = (CheckBox) view.findViewById(R.id.favourite);
+
         }
     }
 
@@ -63,6 +67,10 @@ public class GroupsAdapter extends RecyclerView.Adapter<GroupsAdapter.MyViewHold
         holder.name.setText(g.getGroupName());
         holder.date.setText(g.getDateLastOperationWellFormed());
         holder.operation.setText(g.getLastOperation());
+        if(g.getFavourite()!=null && g.getFavourite().equals("yes"))
+            holder.favourite.setChecked(true);
+        else
+            holder.favourite.setChecked(false);
 
         Log.d("Groups Adapter", "dati: "+g.getGroupId()+" "+g.dateLastOperation+" "+g.lastOperation);
 
