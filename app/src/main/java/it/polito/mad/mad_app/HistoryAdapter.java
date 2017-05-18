@@ -59,17 +59,8 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.MyViewHo
         Date resultdate = new Date(new Long(expense.getDate()));
 
         holder.data_ex.setText(sdf.format(resultdate));
-        holder.money_ex.setText(expense.getMyvalue());
+        holder.money_ex.setText(expense.getValue());
         holder.creator_ex.setText(expense.getCreator());
-        if(expense.getCreatorId().equals(FirebaseAuth.getInstance().getCurrentUser().getUid())) {
-            holder.impact_ex.setTextColor(Color.parseColor("#27B011"));
-            holder.money_ex.setTextColor(Color.parseColor("#27B011"));
-        }
-        else
-        {
-            holder.impact_ex.setTextColor(Color.parseColor("#D51111"));
-            holder.money_ex.setTextColor(Color.parseColor("#D51111"));
-        }
 
         if(expense.getContested() != null && expense.getContested().equals("yes"))
             holder.contested_ex.setVisibility(View.VISIBLE);
