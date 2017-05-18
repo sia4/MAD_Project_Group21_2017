@@ -68,9 +68,9 @@ public class GroupsAdapter extends RecyclerView.Adapter<GroupsAdapter.MyViewHold
         holder.date.setText(g.getDateLastOperationWellFormed());
         holder.operation.setText(g.getLastOperation());
         if(g.getFavourite()!=null && g.getFavourite().equals("yes"))
-            holder.favourite.setChecked(true);
+            holder.favourite.setVisibility(View.VISIBLE);
         else
-            holder.favourite.setChecked(false);
+            holder.favourite.setVisibility(View.INVISIBLE);
 
         Log.d("Groups Adapter", "dati: "+g.getGroupId()+" "+g.dateLastOperation+" "+g.lastOperation);
 
