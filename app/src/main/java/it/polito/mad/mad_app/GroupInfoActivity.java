@@ -21,6 +21,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -66,6 +67,7 @@ public class GroupInfoActivity extends AppCompatActivity {
     private boolean flag_name_edited = false, flag_desc_edited = false, ImageC= false;
     private String nametmp, desctmp, gId, gName,  image, myname, mysurname;
     private EditText nameted, desced;
+    private CheckBox favourite;
     private ImageView im;
     private Uri outputFileUri;
     private Uri imageUrl;
@@ -100,7 +102,7 @@ public class GroupInfoActivity extends AppCompatActivity {
         gImage = i.getStringExtra("imagePath");
         System.out.println("---->intent info"+i.getExtras());
         System.out.println(gId);
-
+        final FirebaseDatabase database = FirebaseDatabase.getInstance();
         if (getSupportActionBar() != null)
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle("Group Information");
@@ -134,11 +136,35 @@ public class GroupInfoActivity extends AppCompatActivity {
 
             }
         });
+        favourite = (CheckBox) findViewById(R.id.favourite);
+
+
+
+
+        favourite.setOnClickListener(new View.OnClickListener(){
+
+
+            @Override
+            public void onClick(View v) {
+                DatabaseReference favRef = database.getReference("Users").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("Groups").child(gId).child("favourite");
+
+                if(favourite.isChecked()){
+                    favRef.setValue("yes");
+                }
+                else{
+                    favRef.setValue("no");
+                }
+
+
+            }
+        });
+
+
 
         Button button = (Button) findViewById(R.id.addUserInExistingGroup);
         Button buttonDelete = (Button) findViewById(R.id.DeleteGroup);
         Button buttonLeave = (Button) findViewById(R.id.LeaveGroup);
-        final FirebaseDatabase database = FirebaseDatabase.getInstance();
+
         buttonDelete.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 Toast.makeText(GroupInfoActivity.this, "A notification has been sent to all the group's member", Toast.LENGTH_LONG).show();
@@ -342,51 +368,27 @@ public class GroupInfoActivity extends AppCompatActivity {
                                 if (map3 != null) {
 
                                     String s = map3.get("name") + " " + map3.get("surname");
+                                    String fav = ((Map<String, String>)((Map<String, Object>)map3.get("Groups")).get(gId)).get("favourite");
+                                    if(fav!=null && fav.equals("yes") && k.equals(FirebaseAuth.getInstance().getCurrentUser().getUid())){
+                                        favourite.setChecked(true);
+                                    }
+                                    String p = null;
+
+                                    if (map3.get("imagePath") == null) {
+                                        p = "https://firebasestorage.googleapis.com/v0/b/allaromana-3f98e.appspot.com/o/group_default.png?alt=media&token=40bc93f4-6b97-466e-b130-e140f57c5895";
+                                    } else {
+                                        p = map3.get("imagePath").toString();
+                                    }
+
                                     users.add(s);
+                                    user_l.add(new User(null, null, map3.get("name").toString(), map3.get("surname").toString(), p));
+                                    usersId.add(k);
                                     uAdapter.notifyDataSetChanged();
 
                                 } else {
 
                                     Toast.makeText(GroupInfoActivity.this, "no user key found!", Toast.LENGTH_LONG).show();
 
-                                }
-
-                                Map<String, Object> map2 = (Map<String, Object>) dataSnapshot.getValue();
-
-                                if (map2 != null) {
-
-                                    for (final String k : map2.keySet()) {
-
-                                        FirebaseDatabase database3 = FirebaseDatabase.getInstance();
-                                        DatabaseReference myRef3 = database3.getReference("Users").child(k);
-                                        myRef3.addValueEventListener(new ValueEventListener() {
-                                            @Override
-                                            public void onDataChange(DataSnapshot dataSnapshot) {
-                                                Map<String, Object> map3 = (Map<String, Object>) dataSnapshot.getValue();
-                                                if (map3 != null) {
-                                                    String p = null;
-                                                    if (map3.get("imagePath") == null) {
-                                                        p = "https://firebasestorage.googleapis.com/v0/b/allaromana-3f98e.appspot.com/o/group_default.png?alt=media&token=40bc93f4-6b97-466e-b130-e140f57c5895";
-                                                    } else {
-                                                        p = map3.get("imagePath").toString();
-                                                    }
-                                                    String s = map3.get("name") + " " + map3.get("surname");
-                                                    users.add(s);
-                                                    user_l.add(new User(null, null, map3.get("name").toString(), map3.get("surname").toString(), p));
-                                                    usersId.add(k);
-                                                    uAdapter.notifyDataSetChanged();
-                                                }
-                                            }
-
-                                            @Override
-                                            public void onCancelled(DatabaseError databaseError) {
-
-                                            }
-                                        });
-                                    }
-
-                                } else {
-                                    Toast.makeText(GroupInfoActivity.this, "No users found!", Toast.LENGTH_LONG).show();
                                 }
 
                             }
