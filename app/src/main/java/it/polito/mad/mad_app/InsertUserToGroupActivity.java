@@ -14,6 +14,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.google.android.gms.appinvite.AppInviteInvitation;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -21,8 +22,14 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
+import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
 import it.polito.mad.mad_app.model.Invite;
 import it.polito.mad.mad_app.model.User;
+import it.polito.mad.mad_app.model.UserData;
 
 /**
  * Created by Silvia Vitali on 27/04/2017.
@@ -37,7 +44,9 @@ public class InsertUserToGroupActivity extends AppCompatActivity {
     public String gName;
     public String gPath;
     public String email;
-
+    private String name, surname;
+    private List<UserData> users = new ArrayList<>();
+    private FirebaseDatabase database2 = FirebaseDatabase.getInstance();
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_done, menu);
@@ -62,6 +71,66 @@ public class InsertUserToGroupActivity extends AppCompatActivity {
         if (getSupportActionBar() != null)
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle("Add user");
+
+        key = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        FirebaseDatabase database2 = FirebaseDatabase.getInstance();
+        DatabaseReference myRef2 = database2.getReference("Groups").child(gId).child("members");
+
+        myRef2.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                Map<String, Object> map2 = (Map<String, Object>) dataSnapshot.getValue();
+                if(map2!=null) {
+                    map2.put(key, key); //aggiungo user corrente
+                    for (final String k : map2.keySet()){
+                        FirebaseDatabase database3 = FirebaseDatabase.getInstance();
+                        DatabaseReference myRef3 = database3.getReference("Users").child(k);
+                        myRef3.addValueEventListener(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(DataSnapshot dataSnapshot) {
+                                Map<String, Object> map3 = (Map<String, Object>) dataSnapshot.getValue();
+                                if(map3!=null) {
+                                    String s = String.format("user %s added\n", (String)map3.get("name"));
+                                    System.out.println(s);
+                                    UserData u = new UserData("aaaa", (String)map3.get("name"), (String)map3.get("surname"), 5555);
+                                    u.setuId(k);
+                                    users.add(u);
+
+                                }
+                                else{
+                                    Toast.makeText(InsertUserToGroupActivity.this, "no user key found!", Toast.LENGTH_LONG).show();
+                                }
+                            }
+
+                            @Override
+                            public void onCancelled(DatabaseError databaseError) {
+
+                            }
+                        });
+
+
+                    }
+
+                }
+                else{
+                    Toast.makeText(InsertUserToGroupActivity.this, "no users found!", Toast.LENGTH_LONG).show();
+
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError error) {
+                // Failed to read value
+                //log.w(TAG, "Failed to read value.", error.toException());
+            }
+        });
+
+
+
+
+
+
 
     }
 
@@ -89,8 +158,11 @@ public class InsertUserToGroupActivity extends AppCompatActivity {
                         public void onDataChange(DataSnapshot dataSnapshot) {
                             for (DataSnapshot userSnapshot: dataSnapshot.getChildren()) {
                                 ud = userSnapshot.getValue(User.class);
+                                name = ud.getName();
+                                surname = ud.getSurname();
                                 key=userSnapshot.getKey(); //ritorna la chive dell'utente che quindi
                                 // poi va inserito nell'oggetto gruppo come chiave:true
+
                                 Toast.makeText(InsertUserToGroupActivity.this, key, Toast.LENGTH_LONG).show();
                             }
                             if(key == null) {
@@ -114,6 +186,23 @@ public class InsertUserToGroupActivity extends AppCompatActivity {
                                 myRef.setValue(gPath);
                                 myRef = database.getReference("/Groups/"+gId+"/members/"+key);
                                 myRef.setValue(true);
+                                DecimalFormat df = new DecimalFormat("0.00");
+                                float f = 0;
+
+
+                                for(UserData u : users){
+                                    database.getReference("/Balance/" + gId + "/" + key + "/" + u.getuId() +"/" + "name").setValue(u.getName()+" "+u.getSurname());;
+                                    database.getReference("/Balance/" + gId + "/" + key + "/" + u.getuId() + "/" + "value").setValue("0.00");
+
+                                    database.getReference("/Balance/" + gId + "/" + u.getuId()+ "/" + key  + "/" + "name").setValue(name+" "+surname);
+                                    database.getReference("/Balance/" + gId + "/" + u.getuId()+ "/" + key  + "/" + "value").setValue("0.00");
+
+                                }
+
+
+
+
+
 
                                 finish();
                             }

@@ -243,11 +243,12 @@ public class PolActivity extends AppCompatActivity {
             public void onClick(View v) {
                 final FirebaseDatabase database = FirebaseDatabase.getInstance();
                 DatabaseReference getMyName = database.getReference("Users").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
-                getMyName.addValueEventListener(new ValueEventListener() {
+                getMyName.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         Map <String, Object> mapname = (Map<String, Object>) dataSnapshot.getValue();
                         if(mapname!=null) {
+                            usersid.add(FirebaseAuth.getInstance().getCurrentUser().getUid());
                             myname = (String)mapname.get("name");
                             mysurname = (String)mapname.get("surname");
                             DatabaseReference PolRef = database.getReference("Pols").child(GroupId).child(PolId);
@@ -257,7 +258,7 @@ public class PolActivity extends AppCompatActivity {
                             if(type.equals("leavegroup")) {
 
                                 ActRef.setValue(new ActivityData(myname + " " + mysurname, myname + " " + mysurname + " accepted the propose to leave group " + GroupName, Long.toString(System.currentTimeMillis()), "acceptleavegroup", PolId, GroupId));
-                                if(users.size()==Integer.parseInt(totu)){
+                                if(users.size()==(Integer.parseInt(totu)-1)){
 
                                     ActRef.push().setValue(new ActivityData(myname + " " + mysurname, myname + " " + mysurname + " has been successful deleted from group " + GroupName, Long.toString(System.currentTimeMillis()), "acceptleavegroup", PolId, GroupId));
                                     database.getReference("Groups").child(GroupId).child("members").child(creator).removeValue();
@@ -272,7 +273,7 @@ public class PolActivity extends AppCompatActivity {
                             if(type.equals("deletegroup")){
 
                                 ActRef.setValue(new ActivityData(myname + " " + mysurname, myname + " " + mysurname + " accepted the propose to delete group " + GroupName, Long.toString(System.currentTimeMillis()), "acceptdeletegroup", PolId, GroupId));
-                                if(users.size()==Integer.parseInt(totu)){
+                                if(users.size()==(Integer.parseInt(totu)-1)){
 
                                     ActRef.push().setValue(new ActivityData(myname + " " + mysurname, "Group "+GroupName+ " has been successful deleted", Long.toString(System.currentTimeMillis()), "acceptdeletegroup", PolId, GroupId));
                                     database.getReference("Groups").child(GroupId).removeValue();

@@ -1,8 +1,6 @@
 package it.polito.mad.mad_app;
 
 import android.Manifest;
-import android.content.ActivityNotFoundException;
-import android.content.ComponentName;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
@@ -16,8 +14,6 @@ import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
-import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
-import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -34,8 +30,6 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
@@ -48,23 +42,24 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-
 import it.polito.mad.mad_app.model.ActivityData;
 import it.polito.mad.mad_app.model.Currencies;
 import it.polito.mad.mad_app.model.PolData;
 import it.polito.mad.mad_app.model.RecyclerTouchListener;
 import it.polito.mad.mad_app.model.User;
+
+import static it.polito.mad.mad_app.model.ImageMethod.circle_image;
+import static it.polito.mad.mad_app.model.ImageMethod.create_image;
+import static it.polito.mad.mad_app.model.ImageMethod.performCrop;
+import static it.polito.mad.mad_app.model.ImageMethod.require_image;
 
 public class GroupInfoActivity extends AppCompatActivity {
     //private GroupData GD;
@@ -116,43 +111,28 @@ public class GroupInfoActivity extends AppCompatActivity {
         changePhoto.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View arg0) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && checkSelfPermission(android.Manifest.permission.READ_EXTERNAL_STORAGE)
+                        != PackageManager.PERMISSION_GRANTED) {
+                    if (shouldShowRequestPermissionRationale(
+                            android.Manifest.permission.READ_EXTERNAL_STORAGE)) {
+                    }
+
+                    requestPermissions(new String[]{android.Manifest.permission.READ_EXTERNAL_STORAGE},
+                            MY_PERMISSIONS_REQUEST_READ_CONTACTS);
+                    return;
+                }
                 final File root = new File(Environment.getExternalStorageDirectory() + File.separator + "MyDir" + File.separator);
                 root.mkdirs();
-                final String fname = "img_" + System.currentTimeMillis() + ".jpg";
+                final String fname = "img_"+ System.currentTimeMillis() + ".jpg";
                 final File sdImageMainDirectory = new File(root, fname);
                 outputFileUri = Uri.fromFile(sdImageMainDirectory);
-                System.out.println("------>outputFileUri" + outputFileUri);
-                final List<Intent> cameraIntents = new ArrayList<Intent>();
-                Intent pickIntent = new Intent(Intent.ACTION_PICK,
-                        android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
                 final PackageManager pManager = getPackageManager();
-                final List<ResolveInfo> Im = pManager.queryIntentActivities(pickIntent, 0);
-                for (ResolveInfo res : Im) {
-                    final String packageName = res.activityInfo.packageName;
-                    final Intent intent = new Intent(pickIntent);
-                    intent.setComponent(new ComponentName(packageName, res.activityInfo.name));
-                    intent.setPackage(packageName);
-                    intent.putExtra(MediaStore.EXTRA_OUTPUT, outputFileUri);
-                    System.out.println(".........image intent " + intent);
-                    cameraIntents.add(intent);
-                }
-                final Intent captureIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
-                final PackageManager packageManager = getPackageManager();
-                final List<ResolveInfo> Cam = packageManager.queryIntentActivities(captureIntent, 0);
-                for (ResolveInfo res : Cam) {
-                    final String packageName = res.activityInfo.packageName;
-                    final Intent intent = new Intent(captureIntent);
-                    intent.setComponent(new ComponentName(packageName, res.activityInfo.name));
-                    intent.setPackage(packageName);
-                    intent.putExtra(MediaStore.EXTRA_OUTPUT, outputFileUri);
-                    System.out.println(".........camera intent " + intent);
-                    cameraIntents.add(intent);
-                }
-                final Intent chooserIntent = Intent.createChooser(cameraIntents.get(cameraIntents.size() - 1), "Select Source");
-                cameraIntents.remove(cameraIntents.size() - 1);
+                List<Intent> cameraIntents=require_image(outputFileUri,pManager);
+                final Intent chooserIntent = Intent.createChooser(cameraIntents.get(cameraIntents.size()-1), "Select Source");
+                cameraIntents.remove(cameraIntents.size()-1);
                 chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, cameraIntents.toArray(new Parcelable[cameraIntents.size()]));
-
                 startActivityForResult(chooserIntent, 1);
+
             }
         });
 
@@ -164,7 +144,7 @@ public class GroupInfoActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Toast.makeText(GroupInfoActivity.this, "A notification has been sent to all the group's member", Toast.LENGTH_LONG).show();
                 DatabaseReference getMyName = database.getReference("Users").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
-                getMyName.addValueEventListener(new ValueEventListener() {
+                getMyName.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         Map <String, Object> mapname = (Map<String, Object>) dataSnapshot.getValue();
@@ -181,13 +161,17 @@ public class GroupInfoActivity extends AppCompatActivity {
                             PolRef.child("acceptsUsers").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).setValue(myname+" "+mysurname);
 
                             ActRef.setValue(new ActivityData(myname+" "+mysurname, myname+" "+mysurname +" proposed to delete group " + gName, Long.toString(System.currentTimeMillis()), "deletegroup", PolKey, gId));
-                            if(users.size()==1){
 
+                            if(users.size()==1){
+                                findViewById(R.id.DeleteGroup).setVisibility(View.GONE);
+                                findViewById(R.id.LeaveGroup).setVisibility(View.GONE);
+                                findViewById(R.id.okdeleted).setVisibility(View.VISIBLE);
                                 ActRef.push().setValue(new ActivityData(myname + " " + mysurname, "Group "+gName+ " has been successful deleted", Long.toString(System.currentTimeMillis()), "acceptdeletegroup", PolKey, gId));
                                 database.getReference("Groups").child(gId).removeValue();
                                 database.getReference("Expenses").child(gId).removeValue();
                                 database.getReference("Balance").child(gId).removeValue();
                                 database.getReference("Users").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("Groups").child(gId).removeValue();
+
                             }
                             //database.getReference("Groups").child(gId).removeValue();
 
@@ -209,7 +193,7 @@ public class GroupInfoActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Toast.makeText(GroupInfoActivity.this, "A notification has been sent to all the group's member", Toast.LENGTH_LONG).show();
                 DatabaseReference getMyName = database.getReference("Users").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
-                getMyName.addValueEventListener(new ValueEventListener() {
+                getMyName.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         Map <String, Object> mapname = (Map<String, Object>) dataSnapshot.getValue();
@@ -228,15 +212,16 @@ public class GroupInfoActivity extends AppCompatActivity {
 
                             ActRef.setValue(new ActivityData(myname+" "+mysurname, myname+" "+mysurname +" proposed to leave group " + gName, Long.toString(System.currentTimeMillis()), "leavegroup", PolKey, gId));
                             if(users.size()==1){
-
+                                findViewById(R.id.DeleteGroup).setVisibility(View.GONE);
+                                findViewById(R.id.LeaveGroup).setVisibility(View.GONE);
+                                findViewById(R.id.okdeleted).setVisibility(View.VISIBLE);
                                 ActRef.push().setValue(new ActivityData(myname + " " + mysurname, myname + " " + mysurname + " has been successful deleted from group " + gName, Long.toString(System.currentTimeMillis()), "acceptleavegroup", PolKey, gId));
-                                database.getReference("Groups").child(gId).child("members").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).removeValue();
+                                database.getReference("Groups").child(gId).removeValue();
+                                database.getReference("Expenses").child(gId).removeValue();
+                                database.getReference("Balance").child(gId).removeValue();
                                 database.getReference("Users").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("Groups").child(gId).removeValue();
-                                database.getReference("Balance").child(gId).child(FirebaseAuth.getInstance().getCurrentUser().getUid()).removeValue();
-                                for(String k:usersId){
-                                    database.getReference("Balance").child(gId).child(k).child(FirebaseAuth.getInstance().getCurrentUser().getUid()).removeValue();
 
-                                }
+
                             }
                         }
 
@@ -294,14 +279,7 @@ public class GroupInfoActivity extends AppCompatActivity {
         desced = (EditText) findViewById(R.id.de_g_ed);
 
         DatabaseReference myRef = database.getReference("Groups").child(gId);
-        myRef.addValueEventListener(new ValueEventListener() {
-
-            @Override
-            public void onCancelled(DatabaseError error) {
-                // Failed to read value
-                //log.w(TAG, "Failed to read value.", error.toException());
-            }
-
+        myRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
 
@@ -312,26 +290,17 @@ public class GroupInfoActivity extends AppCompatActivity {
                     desctmp = (String) map.get("description");
                     namet.setText(nametmp);
                     desc.setText(desctmp);
-
-                    if (map.get("imagePath") == null) {
-                        im.setImageResource(R.drawable.group_default);
-                    } else {
-
+                    if(map.get("imagePath")==null){
+                        circle_image(getApplicationContext(),im,R.drawable.group_default);
+                    }
+                    else{
                         String p = (String) map.get("imagePath");
                         image = p;
 
                         if (p == null) {
 
                         } else {
-                            Glide.with(getApplicationContext()).load(p).asBitmap().centerCrop().into(new BitmapImageViewTarget(im) {
-                                @Override
-                                protected void setResource(Bitmap resource) {
-                                    RoundedBitmapDrawable circularBitmapDrawable =
-                                            RoundedBitmapDrawableFactory.create(getApplicationContext().getResources(), resource);
-                                    circularBitmapDrawable.setCircular(true);
-                                    im.setImageDrawable(circularBitmapDrawable);
-                                }
-                            });
+                            circle_image(getApplicationContext(),im,p);
                         }
                     }
                 }
@@ -368,10 +337,10 @@ public class GroupInfoActivity extends AppCompatActivity {
 
                     for (final String k : g.getMemberList()) {
 
+
                         FirebaseDatabase database3 = FirebaseDatabase.getInstance();
                         DatabaseReference myRef3 = database3.getReference("Users").child(k);
-
-                        myRef3.addValueEventListener(new ValueEventListener() {
+                        myRef3.addListenerForSingleValueEvent(new ValueEventListener() {
                             @Override
                             public void onDataChange(DataSnapshot dataSnapshot) {
 
@@ -531,7 +500,6 @@ public class GroupInfoActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        final int CAMERA_CAPTURE = 1;
         final int CROP_PIC = 2;
         if (resultCode == RESULT_OK) {
             Uri selectedImageUri = null;
@@ -548,84 +516,42 @@ public class GroupInfoActivity extends AppCompatActivity {
                     }
                 }
 
-                if (isCamera) {
-                    selectedImageUri = outputFileUri;
-                    imageUrl = selectedImageUri;
+                if (isCamera) {imageUrl = outputFileUri;
                     ImageC = true;
-                    performCrop();
+                    final PackageManager pManager = getPackageManager();
+                    Intent cropIntent=performCrop(imageUrl,pManager);
+                    if(cropIntent!=null){
+                        final Intent cIntent = Intent.createChooser(cropIntent, "Tha image should be cropped,select a source");
+                        startActivityForResult(cIntent , 2);
+                    }
+                    else{
+                        Toast toast = Toast.makeText(this, "This device doesn't support the crop action!", Toast.LENGTH_SHORT);
+                        toast.show();
+                    }
                 } else {
                     if (data != null) {
                         ImageC = true;
                         selectedImageUri = data.getData();
                         imageUrl= selectedImageUri;
-                        performCrop();
-                        System.out.println("++++++++---->" + selectedImageUri.toString());
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && checkSelfPermission(android.Manifest.permission.READ_EXTERNAL_STORAGE)
-                                != PackageManager.PERMISSION_GRANTED) {
-
-                            // Should we show an explanation?
-                            if (shouldShowRequestPermissionRationale(
-                                    android.Manifest.permission.READ_EXTERNAL_STORAGE)) {
-                                // Explain to the user why we need to read the contacts
-                            }
-
-                            requestPermissions(new String[]{android.Manifest.permission.READ_EXTERNAL_STORAGE},
-                                    MY_PERMISSIONS_REQUEST_READ_CONTACTS);
-
-                            // MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE is an
-                            // app-defined int constant that should be quite unique
-
-                            return;
+                        final PackageManager pManager = getPackageManager();
+                        Intent cropIntent=performCrop(imageUrl,pManager);
+                        if(cropIntent!=null){
+                            startActivityForResult(cropIntent , 2);
                         }
-                        Bitmap photo = null;
-                        try {
-                            photo = MediaStore.Images.Media.getBitmap(this.getContentResolver(), selectedImageUri);
-                        } catch (IOException e) {
-                            e.printStackTrace();
+                        else{
+                            Toast toast = Toast.makeText(this, "This device doesn't support the crop action!", Toast.LENGTH_SHORT);
+                            toast.show();
                         }
-                        System.out.println("................. galleria photo" + photo);
-                        ImageView imageG = (ImageView) findViewById(R.id.im_g);
-                        imageG.setImageBitmap(photo);
                     }
 
                 }
             }else if(requestCode==CROP_PIC){
                 Bundle extras = data.getExtras();
-                System.out.println("......bundle"+extras);
                 Bitmap thePic = extras.getParcelable("data");
-                System.out.println("...bitmap"+thePic);
-                ImageView picView = (ImageView) findViewById(R.id.im_g);
-                picView.setImageBitmap(thePic);
-                System.out.println(".........Url image"+imageUrl);
-                System.out.println(".........Url image"+outputFileUri);
-                File f = new File(outputFileUri.getPath());
-                if (f.exists()) {
-                    f.delete();
-                }
-
-                f = new File(outputFileUri.getPath());
-                try {
-                    f.createNewFile();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                //Convert bitmap to byte array
-                ByteArrayOutputStream bos = new ByteArrayOutputStream();
-                thePic.compress(Bitmap.CompressFormat.PNG, 0 , bos);
-                byte[] bitmapdata = bos.toByteArray();
-                FileOutputStream fos = null;
-                try {
-                    fos = new FileOutputStream(f);
-                } catch (FileNotFoundException e) {
-                    e.printStackTrace();
-                }
-                try {
-                    fos.write(bitmapdata);
-                    fos.flush();
-                    fos.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+                final ImageView picView = (ImageView) findViewById(R.id.im_g);
+                //picView.setImageBitmap(thePic);
+                create_image(outputFileUri,thePic);
+                circle_image(getApplicationContext(),picView,outputFileUri);
             }
         }
     }
@@ -758,24 +684,5 @@ public class GroupInfoActivity extends AppCompatActivity {
         }
 
 
-    }
-    private void performCrop() {
-        try {
-            Intent cropIntent = new Intent("com.android.camera.action.CROP");
-            cropIntent.setDataAndType(imageUrl, "image/*");
-            cropIntent.putExtra("crop", "true");
-            cropIntent.putExtra("aspectX", 1);
-            cropIntent.putExtra("aspectY", 1);
-            cropIntent.putExtra("outputX", 200);
-            cropIntent.putExtra("outputY", 200);
-            cropIntent.putExtra("return-data", true);
-            final Intent cIntent = Intent.createChooser(cropIntent, "Tha image should be cropped,select a source");
-            startActivityForResult(cIntent , 2);
-        }
-        catch (ActivityNotFoundException anfe) {
-            Toast toast = Toast
-                    .makeText(this, "This device doesn't support the crop action!", Toast.LENGTH_SHORT);
-            toast.show();
-        }
     }
 }

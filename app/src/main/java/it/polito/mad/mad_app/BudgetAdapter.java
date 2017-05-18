@@ -13,6 +13,7 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import it.polito.mad.mad_app.model.Balance;
 import it.polito.mad.mad_app.model.BalanceData;
@@ -63,7 +64,7 @@ public class BudgetAdapter extends RecyclerView.Adapter<BudgetAdapter.MyViewHold
     public void onBindViewHolder(MyViewHolder holder, final int position) {
          final Balance budget = budgetData.get(position);
         float n=budget.getValue();
-        holder.value_cred_deb.setText(String.format("%.2f", budget.getValue()) + " " /* budget.getCurrency()*/);
+        holder.value_cred_deb.setText(String.format(Locale.US, "%.2f", budget.getValue()) + " " /* budget.getCurrency()*/);
         if(n>0){
             //System.out.println(budget.getEmail() + "-->" + MainData.getInstance().findUserByMail(budget.getEmail()));
             //holder.name_cred_deb.setText(MainData.getInstance().findUserByMail(budget.getEmail()).getName() + " owns you:");

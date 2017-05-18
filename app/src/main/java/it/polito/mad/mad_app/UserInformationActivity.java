@@ -1,21 +1,16 @@
 package it.polito.mad.mad_app;
 
-import android.content.ActivityNotFoundException;
-import android.content.ComponentName;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.content.pm.ResolveInfo;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Parcelable;
-import android.provider.MediaStore;
 import android.support.annotation.NonNull;
-import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
-import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -30,14 +25,8 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.target.BitmapImageViewTarget;
-import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -47,24 +36,21 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
-import it.polito.mad.mad_app.model.Group;
+import static it.polito.mad.mad_app.model.ImageMethod.circle_image;
+import static it.polito.mad.mad_app.model.ImageMethod.create_image;
+import static it.polito.mad.mad_app.model.ImageMethod.performCrop;
+import static it.polito.mad.mad_app.model.ImageMethod.require_image;
 
 public class UserInformationActivity extends AppCompatActivity {
 
-    private TextView name, surname, email, username;
+    private TextView name, surname, email;
     private int MY_PERMISSIONS_REQUEST_READ_CONTACTS=1;
     private Button changePhoto;
     private EditText nameed, surnameed;
@@ -125,37 +111,15 @@ public class UserInformationActivity extends AppCompatActivity {
                     name.setText((String)map.get("name"));
                     surname.setText((String)map.get("surname"));
                     email.setText((String)map.get("email"));
-                    //username.setText((String)map.get("username"));
                     if(map.get("imagePath")!=null) {
                         String p = (String) map.get("imagePath");
                         if (p != null) {
-                            Glide.with(getApplicationContext()).load(p).asBitmap().centerCrop().into(new BitmapImageViewTarget(im) {
-                                @Override
-                                protected void setResource(Bitmap resource) {
-                                    RoundedBitmapDrawable circularBitmapDrawable =
-                                            RoundedBitmapDrawableFactory.create(getApplicationContext().getResources(), resource);
-                                    circularBitmapDrawable.setCircular(true);
-                                    im.setImageDrawable(circularBitmapDrawable);
-                                }
-                            });
+                            circle_image(getApplicationContext(),im,p);
                         }
                     }else {
-                            //holder.im.setImageResource(R.drawable.group_default);
-                            Glide.with(getApplicationContext()).load(R.drawable.group_default).asBitmap().centerCrop().into(new BitmapImageViewTarget(im) {
-                                @Override
-                                protected void setResource(Bitmap resource) {
-                                    RoundedBitmapDrawable circularBitmapDrawable =
-                                            RoundedBitmapDrawableFactory.create(getApplicationContext().getResources(), resource);
-                                    circularBitmapDrawable.setCircular(true);
-                                    im.setImageDrawable(circularBitmapDrawable);
-                                }
-                            });
-                        }
+                        circle_image(getApplicationContext(),im,R.drawable.group_default);
+                            }
                     }
-                    //if(progressBar.isActivated())
-                    //progressBar.setVisibility(View.INVISIBLE);
-                    //gAdapter.notifyDataSetChanged();
-
                 }
 
             @Override
@@ -185,68 +149,26 @@ public class UserInformationActivity extends AppCompatActivity {
         changePhoto.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View arg0) {
-                //todo this works well
-                /*Intent i = new Intent(
-                        Intent.ACTION_PICK,
-                        android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && checkSelfPermission(android.Manifest.permission.READ_EXTERNAL_STORAGE)
+                        != PackageManager.PERMISSION_GRANTED) {
+                    if (shouldShowRequestPermissionRationale(
+                            android.Manifest.permission.READ_EXTERNAL_STORAGE)) {
+                    }
 
-                startActivityForResult(i, 1);*/
-
-                // Determine Uri of camera image to save.
+                    requestPermissions(new String[]{android.Manifest.permission.READ_EXTERNAL_STORAGE},
+                            MY_PERMISSIONS_REQUEST_READ_CONTACTS);
+                    return;
+                }
                 final File root = new File(Environment.getExternalStorageDirectory() + File.separator + "MyDir" + File.separator);
                 root.mkdirs();
-                final String fname = "img_" + System.currentTimeMillis() + ".jpg";
+                final String fname = "img_"+ System.currentTimeMillis() + ".jpg";
                 final File sdImageMainDirectory = new File(root, fname);
                 outputFileUri = Uri.fromFile(sdImageMainDirectory);
-                System.out.println("------>outputFileUri" + outputFileUri);
-                final List<Intent> cameraIntents = new ArrayList<Intent>();
-                Intent pickIntent = new Intent(Intent.ACTION_PICK,
-                        android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
                 final PackageManager pManager = getPackageManager();
-                final List<ResolveInfo> Im = pManager.queryIntentActivities(pickIntent, 0);
-                for (ResolveInfo res : Im) {
-                    final String packageName = res.activityInfo.packageName;
-                    final Intent intent = new Intent(pickIntent);
-                    intent.setComponent(new ComponentName(packageName, res.activityInfo.name));
-                    intent.setPackage(packageName);
-                    intent.putExtra(MediaStore.EXTRA_OUTPUT, outputFileUri);
-                    System.out.println(".........image intent " + intent);
-                    cameraIntents.add(intent);
-                }
-                final Intent captureIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
-                final PackageManager packageManager = getPackageManager();
-                final List<ResolveInfo> Cam = packageManager.queryIntentActivities(captureIntent, 0);
-                for (ResolveInfo res : Cam) {
-                    final String packageName = res.activityInfo.packageName;
-                    final Intent intent = new Intent(captureIntent);
-                    intent.setComponent(new ComponentName(packageName, res.activityInfo.name));
-                    intent.setPackage(packageName);
-                    intent.putExtra(MediaStore.EXTRA_OUTPUT, outputFileUri);
-                    System.out.println(".........camera intent " + intent);
-                    cameraIntents.add(intent);
-                }
-                /*final Intent captureIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
-                captureIntent.putExtra(MediaStore.EXTRA_OUTPUT, outputFileUri);
-                captureIntent.putExtra("crop", "true");
-                captureIntent.putExtra("outputX", 200);
-                captureIntent.putExtra("outputY", 200);
-                captureIntent.putExtra("aspectX", 1);
-                captureIntent.putExtra("aspectY", 1);
-                captureIntent.putExtra("scale", true);*/
-                /*// Filesystem. if we want also include Documenti.
-                final Intent galleryIntent = new Intent();
-                galleryIntent.setType("image/*");
-                galleryIntent.setAction(Intent.ACTION_GET_CONTENT);
-                //cameraIntents.add(captureIntent );
-
-                // Chooser of filesystem options.
-                final Intent chooserIntent = Intent.createChooser(galleryIntent, "Select Source");*/
-                // Chooser of filesystem options.
-                final Intent chooserIntent = Intent.createChooser(cameraIntents.get(cameraIntents.size() - 1), "Select Source");
-                cameraIntents.remove(cameraIntents.size() - 1);
-                // Add the camera options.
+                List<Intent> cameraIntents=require_image(outputFileUri,pManager);
+                final Intent chooserIntent = Intent.createChooser(cameraIntents.get(cameraIntents.size()-1), "Select Source");
+                cameraIntents.remove(cameraIntents.size()-1);
                 chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, cameraIntents.toArray(new Parcelable[cameraIntents.size()]));
-
                 startActivityForResult(chooserIntent, 1);
             }
             });
@@ -298,84 +220,43 @@ public class UserInformationActivity extends AppCompatActivity {
                 }
 
                 if (isCamera) {
-                    selectedImageUri = outputFileUri;
-                    imageUrl = selectedImageUri;
+                    imageUrl = outputFileUri;
                     ImageC = true;
-                    performCrop();
+                    final PackageManager pManager = getPackageManager();
+                    Intent cropIntent=performCrop(imageUrl,pManager);
+                    if(cropIntent!=null){
+                        final Intent cIntent = Intent.createChooser(cropIntent, "Tha image should be cropped,select a source");
+                        startActivityForResult(cIntent , 2);
+                    }
+                    else{
+                        Toast toast = Toast.makeText(this, "This device doesn't support the crop action!", Toast.LENGTH_SHORT);
+                        toast.show();
+                    }
                 } else {
                     if (data != null) {
                         ImageC = true;
                         selectedImageUri = data.getData();
                         imageUrl= selectedImageUri;
-                        performCrop();
-                        System.out.println("++++++++---->" + selectedImageUri.toString());
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && checkSelfPermission(android.Manifest.permission.READ_EXTERNAL_STORAGE)
-                                != PackageManager.PERMISSION_GRANTED) {
-
-                            // Should we show an explanation?
-                            if (shouldShowRequestPermissionRationale(
-                                    android.Manifest.permission.READ_EXTERNAL_STORAGE)) {
-                                // Explain to the user why we need to read the contacts
-                            }
-
-                            requestPermissions(new String[]{android.Manifest.permission.READ_EXTERNAL_STORAGE},
-                                    MY_PERMISSIONS_REQUEST_READ_CONTACTS);
-
-                            // MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE is an
-                            // app-defined int constant that should be quite unique
-
-                            return;
+                        final PackageManager pManager = getPackageManager();
+                        Intent cropIntent=performCrop(imageUrl,pManager);
+                        if(cropIntent!=null){
+                            startActivityForResult(cropIntent , 2);
                         }
-                        Bitmap photo = null;
-                        try {
-                            photo = MediaStore.Images.Media.getBitmap(this.getContentResolver(), selectedImageUri);
-                        } catch (IOException e) {
-                            e.printStackTrace();
+                        else{
+                            Toast toast = Toast.makeText(this, "This device doesn't support the crop action!", Toast.LENGTH_SHORT);
+                            toast.show();
                         }
-                        System.out.println("................. galleria photo" + photo);
-                        ImageView imageG = (ImageView) findViewById(R.id.im_u);
-                        imageG.setImageBitmap(photo);
-
                     }
 
                 }
             }else if(requestCode==CROP_PIC){
                 Bundle extras = data.getExtras();
-                System.out.println("......bundle"+extras);
                 Bitmap thePic = extras.getParcelable("data");
-                System.out.println("...bitmap"+thePic);
                 ImageView picView = (ImageView) findViewById(R.id.im_u);
-                picView.setImageBitmap(thePic);
-                System.out.println(".........Url image"+imageUrl);
-                System.out.println(".........Url image"+outputFileUri);
-                File f = new File(outputFileUri.getPath());
-                if (f.exists()) {
-                    f.delete();
-                }
-
-                f = new File(outputFileUri.getPath());
-                try {
-                    f.createNewFile();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                //Convert bitmap to byte array
-                ByteArrayOutputStream bos = new ByteArrayOutputStream();
-                thePic.compress(Bitmap.CompressFormat.PNG, 0 , bos);
-                byte[] bitmapdata = bos.toByteArray();
-                FileOutputStream fos = null;
-                try {
-                    fos = new FileOutputStream(f);
-                } catch (FileNotFoundException e) {
-                    e.printStackTrace();
-                }
-                try {
-                    fos.write(bitmapdata);
-                    fos.flush();
-                    fos.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+                Drawable d=new BitmapDrawable(getResources(),thePic);
+                create_image(outputFileUri,thePic);
+                circle_image(getApplicationContext(),picView,outputFileUri);
+                //picView.setImageBitmap(thePic);
             }
         }
     }
@@ -475,25 +356,6 @@ public class UserInformationActivity extends AppCompatActivity {
         }
 
 
-    }
-    private void performCrop() {
-        try {
-            Intent cropIntent = new Intent("com.android.camera.action.CROP");
-            cropIntent.setDataAndType(imageUrl, "image/*");
-            cropIntent.putExtra("crop", "true");
-            cropIntent.putExtra("aspectX", 1);
-            cropIntent.putExtra("aspectY", 1);
-            cropIntent.putExtra("outputX", 200);
-            cropIntent.putExtra("outputY", 200);
-            cropIntent.putExtra("return-data", true);
-            final Intent cIntent = Intent.createChooser(cropIntent, "Tha image should be cropped,select a source");
-            startActivityForResult(cIntent , 2);
-        }
-        catch (ActivityNotFoundException anfe) {
-            Toast toast = Toast
-                    .makeText(this, "This device doesn't support the crop action!", Toast.LENGTH_SHORT);
-            toast.show();
-        }
     }
 
 }

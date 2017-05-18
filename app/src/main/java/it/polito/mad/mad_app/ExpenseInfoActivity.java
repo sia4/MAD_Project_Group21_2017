@@ -31,6 +31,7 @@ import com.google.firebase.database.ValueEventListener;
 import java.sql.Date;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Locale;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -47,8 +48,9 @@ public class ExpenseInfoActivity extends AppCompatActivity {
     private String myname, mysurname, name, value, creator, description, category, currency, myvalue, algorithm, date, exid, groupName;
     private Map<String, Float> usermap = new TreeMap<>();
     private ImageView image_info;
-    private Map<String, Map<String, Map<String, Object>>> balancemap = new TreeMap<>();
+    private Map<String, Map<String, Map<String, Object>>> balancemap;
     private FirebaseAuth mAuth = FirebaseAuth.getInstance();
+    private Map<String, String> usermapTemp;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -160,14 +162,14 @@ public class ExpenseInfoActivity extends AppCompatActivity {
         myRef2.child("users").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                Map<String, String> usermapTemp;
+
                 usermapTemp = (Map<String, String>) dataSnapshot.getValue();
 
                 if(usermapTemp !=null) {
                     for(Map.Entry<String, String> e : usermapTemp.entrySet()) {
                         usermap.put(e.getKey(), Float.parseFloat(e.getValue()));
                     }
-                    myvalue_ex.setText(String.valueOf(usermap.get(mAuth.getCurrentUser().getUid())));
+                    myvalue_ex.setText(String.format(Locale.US, "%.2f",usermap.get(mAuth.getCurrentUser().getUid())));
 
                     if(usermap.get(mAuth.getCurrentUser().getUid())>0){
                         s_ex.setTextColor(Color.parseColor("#27B011"));
@@ -231,7 +233,7 @@ public class ExpenseInfoActivity extends AppCompatActivity {
                 myRef2.child("creator").setValue(creator);
                 //myRef2.child("value").setValue(value);
                 myRef2.child("contested").setValue("no");
-                myRef2.child("users").setValue(usermap);
+                myRef2.child("users").setValue(usermapTemp);
 
 
                 DatabaseReference getMyName = database.getReference("Users").child(mAuth.getCurrentUser().getUid());
@@ -266,20 +268,22 @@ public class ExpenseInfoActivity extends AppCompatActivity {
                 DatabaseReference myRef5 = database5.getReference("Balance").child(GroupId);
                 float value1, value2, value3, value4;
                 for( Map.Entry<String, Float> e : usermap.entrySet()) {
-                    if(!e.getKey().equals(mAuth.getCurrentUser().getUid())) {
-                        value1 = new Float (balancemap.get(mAuth.getCurrentUser().getUid()).get(e.getKey()).get("value").toString());
-                        value2 = new Float (balancemap.get(e.getKey()).get(mAuth.getCurrentUser().getUid()).get("value").toString());
+                    if(!e.getKey().equals(mAuth.getCurrentUser().getUid())&&balancemap!=null) {
+
+                        value1 = Float.parseFloat((String)balancemap.get(mAuth.getCurrentUser().getUid()).get(e.getKey()).get("value"));
+                        value2 = Float.parseFloat((String)balancemap.get(e.getKey()).get(mAuth.getCurrentUser().getUid()).get("value"));
                         //value3 = new Float (Float.parseFloat(usermap.get(k).toString()));
                         System.out.println("buttonnnnnnn1 "+value1);
                         System.out.println("buttonnnnnnn2 "+value2);
                         //System.out.println("buttonnnnnnn3 "+value3);
                         System.out.println("USERMAPPPPPPP" + e.getValue());
-                        //TODO QUI HO IL PROBLEMA, NON RIESCO A SOMMARE VALUE1 (VALORE DI BILANCIO PRECEDENTE) A USERMAP.GET(K) (VALORE DELLA SPESA CONTESTATA DA TOGLIERE)
                         value3 = e.getValue();
-                        value1 = value1 + value3;
-                        value2 = value2 - e.getValue();
-                        myRef5.child(mAuth.getCurrentUser().getUid()).child(e.getKey()).child("value").setValue(value1 /*- usermap.get(k)*/);
-                        myRef5.child(e.getKey()).child(mAuth.getCurrentUser().getUid()).child("value").setValue(value2 /*+ usermap.get(k)*/);
+                        value1 = value1 - value3;
+                        value2 = value2 + e.getValue();
+                        myRef5.child(mAuth.getCurrentUser().getUid()).child(e.getKey()).child("value").setValue(String.format(Locale.US, "%.2f",value1));
+                        myRef5.child(e.getKey()).child(mAuth.getCurrentUser().getUid()).child("value").setValue(String.format(Locale.US, "%.2f",value2));
+
+
                     }
 
                 }

@@ -183,6 +183,15 @@
                         android:text="Leave Group"/>
                 </LinearLayout>
                 <TextView
+                    android:id="@+id/okdeleted"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="group deleted successfully"
+                    android:visibility="gone"
+                    android:textAlignment="gravity"
+                    android:textSize="30sp" />
+                <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="16sp"

@@ -25,13 +25,11 @@ import it.polito.mad.mad_app.model.GroupData;
 
 public class GroupsAdapter extends RecyclerView.Adapter<GroupsAdapter.MyViewHolder> {
 
-    private List<GroupsFragment.GroupModel> GData;
+    private List<GroupsFragment.GroupModel> gData;
     private Context context;
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
         public TextView name;
-        //public TextView impact_pos;
-        //public TextView impact_neg;
         public ImageView im;
         public TextView date;
         public TextView operation;
@@ -39,8 +37,6 @@ public class GroupsAdapter extends RecyclerView.Adapter<GroupsAdapter.MyViewHold
         public MyViewHolder(View view) {
             super(view);
             name= (TextView) view.findViewById(R.id.name_tv);
-            //impact_pos= (TextView) view.findViewById(R.id.impact_pos_ex);
-            //impact_neg= (TextView) view.findViewById(R.id.impact_neg_ex);
             im=(ImageView) view.findViewById(R.id.im);
             date = (TextView) view.findViewById(R.id.date);
             operation = (TextView) view.findViewById(R.id.operation);
@@ -50,7 +46,7 @@ public class GroupsAdapter extends RecyclerView.Adapter<GroupsAdapter.MyViewHold
 
     public GroupsAdapter(Context c, List<GroupsFragment.GroupModel> expensiveData) {
         context = c;
-        this.GData = expensiveData;
+        this.gData = expensiveData;
     }
 
     @Override
@@ -63,16 +59,17 @@ public class GroupsAdapter extends RecyclerView.Adapter<GroupsAdapter.MyViewHold
 
     @Override
     public void onBindViewHolder(final GroupsAdapter.MyViewHolder holder, int position) {
-        final GroupsFragment.GroupModel g = GData.get(position);
+        final GroupsFragment.GroupModel g = gData.get(position);
         holder.name.setText(g.getGroupName());
         holder.date.setText(g.getDateLastOperationWellFormed());
         holder.operation.setText(g.getLastOperation());
 
-        Log.d("GROUPSADAPTER", "dati: "+g.getGroupId()+" "+g.dateLastOperation+" "+g.lastOperation);
+        Log.d("Groups Adapter", "dati: "+g.getGroupId()+" "+g.dateLastOperation+" "+g.lastOperation);
 
         String p = g.getGroupUrl();
         if(p!=null) {
-            //Glide.with(context).load(p).into(holder.im);
+
+            Log.d("Groups Adapter", "Retrive dell'Immagine");
             Glide.with(context).load(p).asBitmap().centerCrop().into(new BitmapImageViewTarget(holder.im) {
                 @Override
                 protected void setResource(Bitmap resource) {
@@ -84,7 +81,8 @@ public class GroupsAdapter extends RecyclerView.Adapter<GroupsAdapter.MyViewHold
             });
         }
         else{
-            //holder.im.setImageResource(R.drawable.group_default);
+            Log.d("Groups Adapter", "Set immagine di default");
+
             Glide.with(context).load(R.drawable.group_default).asBitmap().centerCrop().into(new BitmapImageViewTarget(holder.im) {
                 @Override
                 protected void setResource(Bitmap resource) {
@@ -95,32 +93,10 @@ public class GroupsAdapter extends RecyclerView.Adapter<GroupsAdapter.MyViewHold
                 }
             });
         }
-
-        /*if (p == null) {
-            holder.im.setImageResource(R.drawable.group_default);
-        } else {
-            holder.im.setImageBitmap(BitmapFactory.decodeFile(p));
-        }*/
-
-        //holder.im.setImageResource(R.drawable.casa);
-        /*holder.name.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent().setClass(v.getContext(), GroupActivity.class);
-                String groupName = g.getName();
-                intent.putExtra("name",groupName);
-                v.getContext().startActivity(intent);
-            }
-        });
-        holder.impact_pos.setText("You owe:"+String.format("%.2f", 100.383838));//TODO insert the correct value g.getNegExpenses()
-        holder.impact_neg.setText("They owe you:"+String.format("%.2f",33.3333));//TODO insert the correct value g.getPosExpenses()
-        holder.impact_neg.setTextColor(Color.parseColor("#27B011"));
-        holder.impact_pos.setTextColor(Color.parseColor("#D51111"));
-        */
     }
 
     @Override
     public int getItemCount() {
-        return GData.size();
+        return gData.size();
     }
 }

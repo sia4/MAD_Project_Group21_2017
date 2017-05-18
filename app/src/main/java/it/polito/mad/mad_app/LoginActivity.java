@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -30,7 +31,7 @@ public class LoginActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
     private EditText inputEmail, inputPassword;
     private ProgressBar progressBar;
-    private Button btnSignup, btnLogin, btnReset;
+    private Button btnSignup, btnLogin;
     private FirebaseAuth.AuthStateListener mAuthListener;
     private DatabaseReference Firebase_DB;
     private boolean user_exists = false;
@@ -146,7 +147,7 @@ public class LoginActivity extends AppCompatActivity {
                                     }
 
                                 } else {
-                                            FirebaseUser user = mAuth.getInstance().getCurrentUser();
+                                            FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
                                             if (user != null) {
 
@@ -180,11 +181,10 @@ public class LoginActivity extends AppCompatActivity {
         // verifica che l'utente sia presente in DB
 
         final String uID = U.getUid();
-        final FirebaseUser User = U;
 
         if (!U.isEmailVerified()) {
             email_verified = false;
-            System.out.println("Email for User:" + U.toString() + " is not verified");
+            Log.d("Login Activity","Email for User:" + U.toString() + " is not verified");
         }
 
         ValueEventListener SingleEvent = new ValueEventListener() {
