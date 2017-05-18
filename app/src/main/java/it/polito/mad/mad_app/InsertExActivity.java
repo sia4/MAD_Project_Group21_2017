@@ -139,42 +139,44 @@ public class InsertExActivity extends AppCompatActivity {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
 
-                Map<String, Object> map2 = (Map<String, Object>) dataSnapshot.getValue();
+                Map<String, Boolean> map2 = (Map<String, Boolean>) dataSnapshot.getValue();
                 if(map2!=null) {
-                    map2.put(uid, uid); //aggiungo user corrente
-                    for (final String k : map2.keySet()){
-                        FirebaseDatabase database3 = FirebaseDatabase.getInstance();
-                        DatabaseReference myRef3 = database3.getReference("Users").child(k);
-                        myRef3.addValueEventListener(new ValueEventListener() {
-                            @Override
-                            public void onDataChange(DataSnapshot dataSnapshot) {
-                                Map<String, Object> map3 = (Map<String, Object>) dataSnapshot.getValue();
-                                if(map3!=null) {
-                                    String s = String.format("user %s added\n", (String)map3.get("name"));
-                                    System.out.println(s);
-                                    UserData u = new UserData("aaaa", (String)map3.get("name"), (String)map3.get("surname"), 5555);
-                                    u.setuId(k);
-                                    m_users.put(k,u);
-                                    users=new ArrayList<>(m_users.values());
-                                    System.out.println("lista utenti: "+users);
-                                    System.out.println("lista utenti: "+users.size());
-                                    System.out.println("+++++++utente trovato"+k);
-                                    if(k.equals(mAuth.getCurrentUser().getUid())){
-                                        myname = (String)map3.get("name");
-                                        mysurname = (String)map3.get("surname");
+                    map2.put(uid, true); //aggiungo user corrente
+                    for (final String k : map2.keySet()) {
+                        if (map2.get(k) == true) {
+                            FirebaseDatabase database3 = FirebaseDatabase.getInstance();
+                            DatabaseReference myRef3 = database3.getReference("Users").child(k);
+                            myRef3.addValueEventListener(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(DataSnapshot dataSnapshot) {
+                                    Map<String, Object> map3 = (Map<String, Object>) dataSnapshot.getValue();
+                                    if (map3 != null) {
+                                        String s = String.format("user %s added\n", (String) map3.get("name"));
+                                        System.out.println(s);
+                                        UserData u = new UserData("aaaa", (String) map3.get("name"), (String) map3.get("surname"), 5555);
+                                        u.setuId(k);
+                                        m_users.put(k, u);
+                                        users = new ArrayList<>(m_users.values());
+                                        System.out.println("lista utenti: " + users);
+                                        System.out.println("lista utenti: " + users.size());
+                                        System.out.println("+++++++utente trovato" + k);
+                                        if (k.equals(mAuth.getCurrentUser().getUid())) {
+                                            myname = (String) map3.get("name");
+                                            mysurname = (String) map3.get("surname");
+                                        }
+                                        //uAdapter.notifyDataSetChanged();
                                     }
-                                    //uAdapter.notifyDataSetChanged();
+
                                 }
 
-                            }
+                                @Override
+                                public void onCancelled(DatabaseError databaseError) {
 
-                            @Override
-                            public void onCancelled(DatabaseError databaseError) {
+                                }
+                            });
+                            i++;
 
-                            }
-                        });
-                        i++;
-
+                        }
                     }
                 }
 

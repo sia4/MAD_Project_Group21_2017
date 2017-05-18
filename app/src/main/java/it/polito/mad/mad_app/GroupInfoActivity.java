@@ -162,10 +162,7 @@ public class GroupInfoActivity extends AppCompatActivity {
                                 findViewById(R.id.LeaveGroup).setVisibility(View.GONE);
                                 findViewById(R.id.okdeleted).setVisibility(View.VISIBLE);
                                 ActRef.push().setValue(new ActivityData(myname + " " + mysurname, "Group "+gName+ " has been successful deleted", Long.toString(System.currentTimeMillis()), "acceptdeletegroup", PolKey, gId));
-                                database.getReference("Groups").child(gId).removeValue();
-                                database.getReference("Expenses").child(gId).removeValue();
-                                database.getReference("Balance").child(gId).removeValue();
-                                database.getReference("Users").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("Groups").child(gId).removeValue();
+                                database.getReference("Users").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("Groups").child(gId).child("missing").setValue("yes");
 
                             }
                             //database.getReference("Groups").child(gId).removeValue();
@@ -211,10 +208,7 @@ public class GroupInfoActivity extends AppCompatActivity {
                                 findViewById(R.id.LeaveGroup).setVisibility(View.GONE);
                                 findViewById(R.id.okdeleted).setVisibility(View.VISIBLE);
                                 ActRef.push().setValue(new ActivityData(myname + " " + mysurname, myname + " " + mysurname + " has been successful deleted from group " + gName, Long.toString(System.currentTimeMillis()), "acceptleavegroup", PolKey, gId));
-                                database.getReference("Groups").child(gId).removeValue();
-                                database.getReference("Expenses").child(gId).removeValue();
-                                database.getReference("Balance").child(gId).removeValue();
-                                database.getReference("Users").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("Groups").child(gId).removeValue();
+                                database.getReference("Users").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("Groups").child(gId).child("missing").setValue("yes");
 
 
                             }
@@ -313,40 +307,40 @@ public class GroupInfoActivity extends AppCompatActivity {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
 
-                Map<String, Object> map2 = (Map<String, Object>) dataSnapshot.getValue();
+                Map<String, Boolean> map2 = (Map<String, Boolean>) dataSnapshot.getValue();
                 if(map2!=null) {
                     for (final String k : map2.keySet()){
-                        FirebaseDatabase database3 = FirebaseDatabase.getInstance();
-                        DatabaseReference myRef3 = database3.getReference("Users").child(k);
-                        myRef3.addListenerForSingleValueEvent(new ValueEventListener() {
-                            @Override
-                            public void onDataChange(DataSnapshot dataSnapshot) {
-                                Map<String, Object> map3 = (Map<String, Object>) dataSnapshot.getValue();
-                                if(map3!=null) {
-                                    String p=null;
-                                    if(map3.get("imagePath")==null){
-                                        p="https://firebasestorage.googleapis.com/v0/b/allaromana-3f98e.appspot.com/o/group_default.png?alt=media&token=40bc93f4-6b97-466e-b130-e140f57c5895";
-                                    }else{
-                                        p= map3.get("imagePath").toString();
+                        if(map2.get(k)!=false) {
+                            FirebaseDatabase database3 = FirebaseDatabase.getInstance();
+                            DatabaseReference myRef3 = database3.getReference("Users").child(k);
+                            myRef3.addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(DataSnapshot dataSnapshot) {
+                                    Map<String, Object> map3 = (Map<String, Object>) dataSnapshot.getValue();
+                                    if (map3 != null) {
+                                        String p = null;
+                                        if (map3.get("imagePath") == null) {
+                                            p = "https://firebasestorage.googleapis.com/v0/b/allaromana-3f98e.appspot.com/o/group_default.png?alt=media&token=40bc93f4-6b97-466e-b130-e140f57c5895";
+                                        } else {
+                                            p = map3.get("imagePath").toString();
+                                        }
+                                        String s = map3.get("name") + " " + map3.get("surname");
+                                        users.add(s);
+                                        user_l.add(new User(null, null, map3.get("name").toString(), map3.get("surname").toString(), p));
+                                        usersId.add(k);
+                                        uAdapter.notifyDataSetChanged();
+                                    } else {
+                                        Toast.makeText(GroupInfoActivity.this, "no user key found!", Toast.LENGTH_LONG).show();
                                     }
-                                    String s = map3.get("name")+" "+map3.get("surname");
-                                    users.add(s);
-                                    user_l.add(new User(null,null,map3.get("name").toString(),map3.get("surname").toString(),p));
-                                    usersId.add(k);
-                                    uAdapter.notifyDataSetChanged();
                                 }
-                                else{
-                                    Toast.makeText(GroupInfoActivity.this, "no user key found!", Toast.LENGTH_LONG).show();
+
+                                @Override
+                                public void onCancelled(DatabaseError databaseError) {
+
                                 }
-                            }
+                            });
 
-                            @Override
-                            public void onCancelled(DatabaseError databaseError) {
-
-                            }
-                        });
-
-
+                        }
                     }
 
 

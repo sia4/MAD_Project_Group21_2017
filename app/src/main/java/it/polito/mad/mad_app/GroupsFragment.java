@@ -151,12 +151,18 @@ public class GroupsFragment extends Fragment {
                         String imagePath = (String) ((Map<String, Object>) k.getValue()).get("imagePath");
                         String lastOperation = (String) ((Map<String, Object>) k.getValue()).get("lastOperation");
                         String dateLastOperation = (String) ((Map<String, Object>) k.getValue()).get("dateLastOperation");
+                        String missing = (String) ((Map<String, Object>) k.getValue()).get("missing");
                         if(lastOperation == null)
                             lastOperation = "";
                         if(dateLastOperation == null)
                             dateLastOperation = "";
                         Log.d("Groups Fragment", "dati: "+name+ " "+lastOperation+" "+dateLastOperation);
-                        groups.add(new GroupModel(k.getKey(), name, imagePath, lastOperation, dateLastOperation));
+                        if(missing==null)
+                            groups.add(new GroupModel(k.getKey(), name, imagePath, lastOperation, dateLastOperation));
+                        else{
+                            if(missing.equals("no"))
+                                groups.add(new GroupModel(k.getKey(), name, imagePath, lastOperation, dateLastOperation));
+                        }
                         Collections.sort(groups);
                         Log.d("Groups Fragment", "Notify Data Set Changed sull'adapter");
                         gAdapter.notifyDataSetChanged();
