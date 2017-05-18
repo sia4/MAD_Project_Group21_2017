@@ -1,6 +1,11 @@
 package it.polito.mad.mad_app;
 
-
+import android.content.ActivityNotFoundException;
+import android.content.ComponentName;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -10,6 +15,8 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Parcelable;
+import android.provider.MediaStore;
+
 import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -45,6 +52,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
+
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -53,8 +61,10 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 
+import it.polito.mad.mad_app.model.Currencies;
 import it.polito.mad.mad_app.model.Group;
 import it.polito.mad.mad_app.model.User;
+
 
 import static it.polito.mad.mad_app.model.ImageMethod.circle_image;
 import static it.polito.mad.mad_app.model.ImageMethod.create_image;
@@ -322,6 +332,7 @@ public class InsertGroupActivity extends AppCompatActivity {
                 EditText Gdescription = (EditText) findViewById(R.id.GroupDescription);
                 final Spinner Tcurrency = (Spinner) findViewById(R.id.GroupCurrency);
 
+
                 groupName = Gname.getText().toString();
                 groupDescription = Gdescription.getText().toString();
 
@@ -345,6 +356,55 @@ public class InsertGroupActivity extends AppCompatActivity {
                     myRef = database.getReference("Groups");
 
                     final String groupId = myRef.push().getKey();
+                   /* mStorageRef = FirebaseStorage.getInstance().getReference();
+                    try {
+                        //try uploading it
+                        //InputStream stream = new FileInputStream(new File(downloadUrl.toString().substring(7)));
+                        System.out.println(".......carica in"+outputFileUri.toString().substring(7));
+                        //InputStream stream = new FileInputStream(new File(downloadUrl.toString().substring(7)));
+                        InputStream stream = new FileInputStream(new File(outputFileUri.toString().substring(7)));
+                        StorageReference imageStorage = mStorageRef.child(groupId);
+                        UploadTask uploadTask = imageStorage.putStream(stream);
+                        uploadTask.addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                Log.d("myStorage", "failure :(");
+                            }
+                        }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                            @Override
+                            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                                downloadUrl = taskSnapshot.getDownloadUrl();
+																Currencies c = new Currencies();
+                    						String code = c.getCurrencyCode(Tcurrency.getSelectedItem().toString());
+                                Group G = new Group(GroupName, GroupDescription, code);
+                                G.addMembers(m);
+                                G.addMember(uKey);
+                                G.setImagePath(downloadUrl.toString());
+                                my.put(uKey, uName);
+                                myRef.child(groupId).setValue(G);
+                                Set keys = m.keySet();
+                                Set others = m.keySet();
+                                database = FirebaseDatabase.getInstance();
+                                for (Iterator i = keys.iterator(); i.hasNext(); ) {
+                                    String key = (String) i.next();
+                                    myRef = database.getReference("/Users/" + key + "/Groups/" + groupId + "/name/");
+                                    myRef.setValue(G.getName());
+                                    myRef = database.getReference("/Users/" + key + "/Groups/" + groupId + "/imagePath/");
+                                    myRef.setValue(G.getImagePath());
+                                    myRef = database.getReference("/Users/" + key + "/Groups/" + groupId + "/lastOperation/");
+                                    myRef.setValue(uName + " has created the group.");
+                                    myRef = database.getReference("/Users/" + key + "/Groups/" + groupId + "/dateLastOperation/");
+                                    myRef.setValue(Long.toString(System.currentTimeMillis()));
+
+                                    for (Iterator n = others.iterator(); n.hasNext(); ) {
+                                        String k = (String) n.next();
+                                        if (k != key) {
+                                            myRef = database.getReference("/Balance/" + groupId + "/" + key + "/" + k + "/" + "name");
+                                            myRef.setValue(my.get(k));
+                                            myRef = database.getReference("/Balance/" + groupId + "/" + key + "/" + k + "/" + "value");
+                                            myRef.setValue(0.00);
+                                        }
+                                    } */
                     StorageReference mStorageRef = FirebaseStorage.getInstance().getReference();
                     if(imageC) {
                         try {
@@ -365,7 +425,7 @@ public class InsertGroupActivity extends AppCompatActivity {
                                     downloadUrl = taskSnapshot.getDownloadUrl();
 
                                     uploadGroup(groupName, groupDescription, Tcurrency.getSelectedItem().toString(), downloadUrl.toString(), groupId);
-
+                                      //TODO: aggiungere le cose di currencies alla uploadGroup
                                     Log.d("Insert Group Activity", "insertion success!");
                                     setResult(RESULT_OK, null);
                                     finish();

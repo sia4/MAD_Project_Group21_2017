@@ -2,6 +2,7 @@ package it.polito.mad.mad_app;
 
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Build;
@@ -90,11 +91,14 @@ public class InsertExActivity extends AppCompatActivity {
     static final int REQUEST_TAKE_PHOTO = 1;
     private Uri outputFileUri;
     private String tmp;
+    String mCurrentPhotoPath;
+    private Map<String, Float> Cambi = new TreeMap<>();
     private Uri downloadUrl;
     private String groupImage;
     private Boolean ImageC=false;
     private Uri imageUrl;
     private Button load;
+	
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -189,7 +193,14 @@ public class InsertExActivity extends AppCompatActivity {
 
         System.out.println("2");
 
+
         Spinner spinner = (Spinner) findViewById(R.id.Currency);
+
+        final List<String> Currencies = new ArrayList<>();
+        Currencies.add("Select currency");
+        //Currencies.add("EUR €");
+
+        //Currencies.add(defaultcurrency);
         // Create an ArrayAdapter using the string array and a default spinner layout
         FirebaseDatabase database4 = FirebaseDatabase.getInstance();
         DatabaseReference myRef4 = database4.getReference("Groups").child(Gname);
@@ -197,8 +208,19 @@ public class InsertExActivity extends AppCompatActivity {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 Map<String, Object> map = (Map<String, Object>) dataSnapshot.getValue();
+                it.polito.mad.mad_app.model.Group g = dataSnapshot.getValue(it.polito.mad.mad_app.model.Group.class);
+
                 if(map!=null) {
-                    defaultcurrency = (String)map.get("defaultcurrency");
+                  
+                  defaultcurrency = (String)map.get("defaultcurrency");
+                  
+                } else {
+                    Toast.makeText(InsertExActivity.this, "no user key found!", Toast.LENGTH_LONG).show();
+                }
+
+                if (g != null) {
+                    Currencies.addAll(g.getCurrencies().keySet());
+                    Cambi.putAll(g.getCurrencies());
 
                 }
             }
@@ -211,12 +233,6 @@ public class InsertExActivity extends AppCompatActivity {
 
 
         System.out.println("3");
-
-        List<String> Currencies = new ArrayList<>();
-        Currencies.add("Select currency");
-        Currencies.add("EUR €");
-        //Currencies.add(defaultcurrency);
-        //TODO AGGIUNGERE TUTTE LE CURRENCIES ALLO SPINNER
 
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, R.layout.currency_item, Currencies);
         // Specify the layout to use when the list of choices appears
@@ -446,7 +462,9 @@ public class InsertExActivity extends AppCompatActivity {
                 } else if(category.equals("Select category")) {
                     Toast.makeText(InsertExActivity.this, "Please insert category.", Toast.LENGTH_LONG).show();
                 } else {
+
                     value = Double.valueOf(Tvalue.getText().toString());
+
                     System.out.println("valuebuggggggggggggggggggg " + value);
                     if (algorithm.equals("equally")) {
                         v = value / users.size();
@@ -520,6 +538,8 @@ public class InsertExActivity extends AppCompatActivity {
                             myRef.child("users").child(e.getKey()).setValue(String.format(Locale.US, "%.2f", e.getValue()));
                         myRef.child("contested").setValue("no");
                         ii = 0;
+
+                        final float cambio = Cambi.get(currency);
                         for(final UserData k:users){
                             myRef = database.getReference("/Users/" + k.getuId() + "/Groups/" + Gname + "/lastOperation/");
                             myRef.setValue(myname + " added an expense.");
@@ -553,8 +573,67 @@ public class InsertExActivity extends AppCompatActivity {
                                                 myRef5.child(mAuth.getCurrentUser().getUid()).child(u.getuId()).child("value").setValue(String.format(Locale.US, "%.2f", value1));
                                                 myRef5.child(u.getuId()).child(mAuth.getCurrentUser().getUid()).child("value").setValue(String.format(Locale.US, "%.2f", value2));
 
-
+                                        if(!key.getuId().equals(mAuth.getCurrentUser().getUid())) {
+                                            Float value = mutableData.child("value").getValue(Float.class);
+																					
+                                            System.out.println("1+++valueeeeeeeeeeeeeeeeeeeeee " + value);
+                                            if (cambio != 0) {
+                                                if (value == null) {
+                                                    mutableData.child("name").setValue(key.getName() + " " + key.getSurname());
+                                                    mutableData.child("value").setValue(String.valueOf(values.get(key.getuId()) * cambio));
+                                                } else {
+                                                    mutableData.child("value").setValue(String.valueOf((value + values.get(key.getuId())) * cambio));
+                                                    mutableData.child("name").setValue(key.getName() + " " + key.getSurname());
+                                                }
+                                            } else {
+                                                if (value == null) {
+                                                    mutableData.child("name").setValue(key.getName() + " " + key.getSurname());
+                                                    mutableData.child("value").setValue(String.valueOf(values.get(key.getuId())));
+                                                } else {
+                                                    mutableData.child("value").setValue(String.valueOf(value + values.get(key.getuId())));
+                                                    mutableData.child("name").setValue(key.getName() + " " + key.getSurname());
+                                                }
                                             }
+
+                                        }
+
+                                        return Transaction.success(mutableData);
+                                    }
+
+                                    @Override
+                                    public void onComplete(DatabaseError databaseError, boolean b,
+                                                           DataSnapshot dataSnapshot) {
+                                       //Log.d(TAG, "transaction:onComplete:" + databaseError);
+                                    }
+                                });
+
+
+
+                                final DatabaseReference myRef5 = database.getReference("Balance").child(Gname).child(key.getuId()).child(mAuth.getCurrentUser().getUid());
+                                myRef5.runTransaction(new Transaction.Handler() {
+                                    @Override
+                                    public Transaction.Result doTransaction(MutableData mutableData) {
+                                        if(!key.getuId().equals(mAuth.getCurrentUser().getUid())) {
+                                            Float value = mutableData.child("value").getValue(Float.class);
+																					System.out.println("+++valueeeeeeeeeeeeeeeeeeeeee " + value);
+                                            if (cambio != 0) {
+                                                if (value == null) {
+                                                    mutableData.child("value").setValue(String.valueOf(-values.get(key.getuId()) * cambio));
+                                                    mutableData.child("name").setValue(myname + " " + mysurname);
+                                                } else {
+                                                    mutableData.child("value").setValue(String.valueOf((value - values.get(key.getuId())) * cambio));
+                                                    mutableData.child("name").setValue(myname + " " + mysurname);
+                                                }
+                                            } else {
+                                                if (value == null) {
+                                                    mutableData.child("value").setValue(String.valueOf(-(values.get(key.getuId()))));
+                                                    mutableData.child("name").setValue(myname + " " + mysurname);
+                                                } else {
+                                                    mutableData.child("value").setValue(String.valueOf(value - values.get(key.getuId())));
+                                                    mutableData.child("name").setValue(myname + " " + mysurname);
+                                                }
+                                            }
+
 
                                         }
                                     System.out.println("balancemapppppppppppppppp " + balancemap);
