@@ -139,7 +139,7 @@ public class GroupInfoActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Toast.makeText(GroupInfoActivity.this, "A notification has been sent to all the group's member", Toast.LENGTH_LONG).show();
                 DatabaseReference getMyName = database.getReference("Users").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
-                getMyName.addValueEventListener(new ValueEventListener() {
+                getMyName.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         Map <String, Object> mapname = (Map<String, Object>) dataSnapshot.getValue();
@@ -156,13 +156,17 @@ public class GroupInfoActivity extends AppCompatActivity {
                             PolRef.child("acceptsUsers").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).setValue(myname+" "+mysurname);
 
                             ActRef.setValue(new ActivityData(myname+" "+mysurname, myname+" "+mysurname +" proposed to delete group " + gName, Long.toString(System.currentTimeMillis()), "deletegroup", PolKey, gId));
-                            if(users.size()==1){
 
+                            if(users.size()==1){
+                                findViewById(R.id.DeleteGroup).setVisibility(View.GONE);
+                                findViewById(R.id.LeaveGroup).setVisibility(View.GONE);
+                                findViewById(R.id.okdeleted).setVisibility(View.VISIBLE);
                                 ActRef.push().setValue(new ActivityData(myname + " " + mysurname, "Group "+gName+ " has been successful deleted", Long.toString(System.currentTimeMillis()), "acceptdeletegroup", PolKey, gId));
                                 database.getReference("Groups").child(gId).removeValue();
                                 database.getReference("Expenses").child(gId).removeValue();
                                 database.getReference("Balance").child(gId).removeValue();
                                 database.getReference("Users").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("Groups").child(gId).removeValue();
+
                             }
                             //database.getReference("Groups").child(gId).removeValue();
 
@@ -184,7 +188,7 @@ public class GroupInfoActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Toast.makeText(GroupInfoActivity.this, "A notification has been sent to all the group's member", Toast.LENGTH_LONG).show();
                 DatabaseReference getMyName = database.getReference("Users").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
-                getMyName.addValueEventListener(new ValueEventListener() {
+                getMyName.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         Map <String, Object> mapname = (Map<String, Object>) dataSnapshot.getValue();
@@ -203,15 +207,16 @@ public class GroupInfoActivity extends AppCompatActivity {
 
                             ActRef.setValue(new ActivityData(myname+" "+mysurname, myname+" "+mysurname +" proposed to leave group " + gName, Long.toString(System.currentTimeMillis()), "leavegroup", PolKey, gId));
                             if(users.size()==1){
-
+                                findViewById(R.id.DeleteGroup).setVisibility(View.GONE);
+                                findViewById(R.id.LeaveGroup).setVisibility(View.GONE);
+                                findViewById(R.id.okdeleted).setVisibility(View.VISIBLE);
                                 ActRef.push().setValue(new ActivityData(myname + " " + mysurname, myname + " " + mysurname + " has been successful deleted from group " + gName, Long.toString(System.currentTimeMillis()), "acceptleavegroup", PolKey, gId));
-                                database.getReference("Groups").child(gId).child("members").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).removeValue();
+                                database.getReference("Groups").child(gId).removeValue();
+                                database.getReference("Expenses").child(gId).removeValue();
+                                database.getReference("Balance").child(gId).removeValue();
                                 database.getReference("Users").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("Groups").child(gId).removeValue();
-                                database.getReference("Balance").child(gId).child(FirebaseAuth.getInstance().getCurrentUser().getUid()).removeValue();
-                                for(String k:usersId){
-                                    database.getReference("Balance").child(gId).child(k).child(FirebaseAuth.getInstance().getCurrentUser().getUid()).removeValue();
 
-                                }
+
                             }
                         }
 
@@ -255,7 +260,7 @@ public class GroupInfoActivity extends AppCompatActivity {
         desced = (EditText) findViewById(R.id.de_g_ed);
 
         DatabaseReference myRef = database.getReference("Groups").child(gId);
-        myRef.addValueEventListener(new ValueEventListener() {
+        myRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 Map<String, Object> map = (Map<String, Object>) dataSnapshot.getValue();
@@ -304,7 +309,7 @@ public class GroupInfoActivity extends AppCompatActivity {
 
         FirebaseDatabase database2 = FirebaseDatabase.getInstance();
         DatabaseReference myRef2 = database2.getReference("Groups").child(gId).child("members");
-        myRef2.addValueEventListener(new ValueEventListener() {
+        myRef2.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
 
@@ -313,7 +318,7 @@ public class GroupInfoActivity extends AppCompatActivity {
                     for (final String k : map2.keySet()){
                         FirebaseDatabase database3 = FirebaseDatabase.getInstance();
                         DatabaseReference myRef3 = database3.getReference("Users").child(k);
-                        myRef3.addValueEventListener(new ValueEventListener() {
+                        myRef3.addListenerForSingleValueEvent(new ValueEventListener() {
                             @Override
                             public void onDataChange(DataSnapshot dataSnapshot) {
                                 Map<String, Object> map3 = (Map<String, Object>) dataSnapshot.getValue();

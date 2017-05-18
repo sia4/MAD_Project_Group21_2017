@@ -165,9 +165,7 @@ public class InsertExActivity extends AppCompatActivity {
                                     }
                                     //uAdapter.notifyDataSetChanged();
                                 }
-                                else{
-                                    Toast.makeText(InsertExActivity.this, "no user key found!", Toast.LENGTH_LONG).show();
-                                }
+
                             }
 
                             @Override
@@ -178,14 +176,8 @@ public class InsertExActivity extends AppCompatActivity {
                         i++;
 
                     }
-                    String sss = String.format("%d user founds", i);
-                    Toast.makeText(InsertExActivity.this, sss, Toast.LENGTH_LONG).show();
-                    //uAdapter.notifyDataSetChanged();
                 }
-                else{
-                    Toast.makeText(InsertExActivity.this, "no users found!", Toast.LENGTH_LONG).show();
 
-                }
             }
 
             @Override
@@ -208,9 +200,6 @@ public class InsertExActivity extends AppCompatActivity {
                 if(map!=null) {
                     defaultcurrency = (String)map.get("defaultcurrency");
 
-                }
-                else{
-                    Toast.makeText(InsertExActivity.this, "no user key found!", Toast.LENGTH_LONG).show();
                 }
             }
 
@@ -546,10 +535,8 @@ public class InsertExActivity extends AppCompatActivity {
                             @Override
                             public void onDataChange(DataSnapshot dataSnapshot) {
                                 balancemap = (Map<String, Map<String, Map<String, Object>>>) dataSnapshot.getValue();
-                                if(balancemap==null) {
-                                    Toast.makeText(InsertExActivity.this, "no balance found!", Toast.LENGTH_LONG).show();
-                                }
-                                else{
+                                if(balancemap!=null) {
+
                                         for (UserData u : users) {
                                             final FirebaseDatabase database5 = FirebaseDatabase.getInstance();
                                             DatabaseReference myRef5 = database5.getReference("Balance").child(Gname);

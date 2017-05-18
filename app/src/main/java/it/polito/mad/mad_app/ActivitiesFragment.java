@@ -29,6 +29,7 @@ import static android.view.View.VISIBLE;
 public class ActivitiesFragment extends Fragment {
 
     private List<ActivityData> activities = new ArrayList<>();
+    private Map<String, ActivityData> m_activities = new TreeMap<>();
     private String groupName;
     private Map<String, Map<String, Object>> userGroups = new TreeMap<>();
     @Override
@@ -102,10 +103,15 @@ public class ActivitiesFragment extends Fragment {
 
                                         ActivityData a = new ActivityData(tmpc, tmpt, tmpd, tmpty, tmpid, tmpgid);
                                         a.setGroupName(groupName);
-                                        activities.add(a);
+                                        m_activities.put(j, a);
+
+
                                     }
+                                    activities.clear();
+                                    activities.addAll(m_activities.values());
                                     Collections.sort(activities);
                                     aAdapter.notifyDataSetChanged();
+
                                 } else{
 
                                     if(getView() != null) {

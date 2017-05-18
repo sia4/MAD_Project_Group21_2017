@@ -35,6 +35,7 @@
             android:layout_margin="@dimen/activity_margin"
             android:layout_weight="0.5"
             android:hint="Insert user email..."
+            android:inputType="textEmailAddress"
             android:ems="10"
             android:textSize="20sp" />
     </LinearLayout>

@@ -98,6 +98,7 @@
                         android:layout_weight="10"
                         android:hint="Insert User Email..."
                         android:layout_toLeftOf="@+id/Adduser1"
+                        android:inputType="textEmailAddress"
                         android:layout_alignParentLeft="true"
                         android:layout_alignParentStart="true" />
 

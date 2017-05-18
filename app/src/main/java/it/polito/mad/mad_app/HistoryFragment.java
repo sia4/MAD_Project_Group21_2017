@@ -44,6 +44,7 @@ public class    HistoryFragment extends Fragment {
     static private List<ExpenseData> lex = new ArrayList<>();
     private Map<String, ExpenseData> m_lex = new TreeMap<>();
     private Context context;
+    private HistoryAdapter hAdapter = new HistoryAdapter(lex);
     private String GroupName, myvalue;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -51,18 +52,16 @@ public class    HistoryFragment extends Fragment {
         final View view = inflater.inflate(R.layout.fragment_history, container, false);
 
         context = view.getContext();
-
+        lex.clear();
 
         final RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.expenses);
-        final HistoryAdapter hAdapter = new HistoryAdapter(lex);
-        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(context);
+
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setAdapter(hAdapter);
-
+        hAdapter.notifyDataSetChanged();
 
         recyclerView.setLayoutManager(new LinearLayoutManager(context));
-        //recyclerView.addItemDecoration(new DividerItemDecoration(getActivity(),
-         //       DividerItemDecoration.VERTICAL));
+
         recyclerView.addItemDecoration(new it.polito.mad.mad_app.DividerItemDecoration(context, LinearLayoutManager.VERTICAL));
         recyclerView.addOnItemTouchListener(new RecyclerTouchListener(context, recyclerView, new RecyclerTouchListener.ClickListener() {
             @Override
@@ -105,7 +104,7 @@ public class    HistoryFragment extends Fragment {
         myRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-
+                hAdapter.notifyDataSetChanged();
                 Map<String, Object> map2 = (Map<String, Object>) dataSnapshot.getValue();
                 if(map2!=null) {
 
@@ -147,12 +146,11 @@ public class    HistoryFragment extends Fragment {
                                                         if(h.equals(FirebaseAuth.getInstance().getCurrentUser().getUid())) {
                                                             myvalue = usermapTemp.get(h);
                                                             e.setMyvalue(myvalue);
-                                                            //lex.add(e);
                                                             m_lex.put(k, e);
-                                                            lex = new ArrayList<ExpenseData>(m_lex.values());
+                                                            lex.clear();
+                                                            lex.addAll(m_lex.values());
                                                             Collections.sort(lex);
-                                                            final HistoryAdapter hAdapter = new HistoryAdapter(lex);
-                                                            recyclerView.setAdapter(hAdapter);
+                                                            hAdapter.notifyDataSetChanged();
 
                                                         }
                                                     }
