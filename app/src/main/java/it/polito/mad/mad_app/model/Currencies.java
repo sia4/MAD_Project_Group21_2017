@@ -1,6 +1,10 @@
 package it.polito.mad.mad_app.model;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
 import java.util.TreeMap;
 
 /**
@@ -48,6 +52,21 @@ public class Currencies {
         return "null";
 
 
+    }
+
+    public Set<String> getCurrenciesCodes() {
+        return Currencies.keySet();
+    }
+
+    public List<String> getCurrenciesStrings() {
+
+        List<String> l = new ArrayList<String>();
+
+        for (Entry<String, String> e : Currencies.entrySet()) {
+            l.add(e.getValue());
+        }
+
+        return l;
     }
 
 }

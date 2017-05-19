@@ -2,9 +2,8 @@
 <resources>
 
     <string-array name="currencies">
-        <item>Select currency</item>
-        <item>US Dollars USD $</item>
         <item>Euro EUR €</item>
+        <item>US Dollars USD $</item>
         <item>Pounds GBP £</item>
         <item>Yen JPY ¥</item>
 

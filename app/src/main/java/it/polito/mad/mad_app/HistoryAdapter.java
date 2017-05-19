@@ -1,6 +1,5 @@
 package it.polito.mad.mad_app;
 
-import android.content.Intent;
 import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -8,16 +7,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.google.firebase.auth.FirebaseAuth;
-
 import java.sql.Date;
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.List;
 
 import it.polito.mad.mad_app.model.ExpenseData;
-import it.polito.mad.mad_app.model.MainData;
 
 public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.MyViewHolder> {
 
@@ -60,13 +54,16 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.MyViewHo
 
         holder.data_ex.setText(sdf.format(resultdate));
         String tmp = expense.getCurrencyRow();
-        holder.money_ex.setText(expense.getValue()+ " " + tmp.substring(tmp.length()-1));
+        if (tmp.length() != 0) {
+            holder.money_ex.setText(expense.getValue() + " " + tmp.substring(tmp.length() - 1));
+        } else {
+            holder.money_ex.setText(expense.getValue());
+        }
         holder.creator_ex.setText(expense.getCreator());
 
         if(expense.getContested() != null && expense.getContested().equals("yes")) {
             holder.itemView.setBackgroundColor(Color.parseColor("#E8D1D1"));
-        }
-        else{
+        } else {
             holder.itemView.setBackgroundColor(Color.WHITE);
         }
 
