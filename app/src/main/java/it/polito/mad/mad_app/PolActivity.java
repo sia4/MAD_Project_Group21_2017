@@ -254,13 +254,19 @@ public class PolActivity extends AppCompatActivity {
                             DatabaseReference PolRef = database.getReference("Pols").child(GroupId).child(PolId);
                             PolRef.child("acceptsUsers").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).setValue(myname+" "+mysurname);
 
-                            DatabaseReference ActRef = database.getReference("Activities").child(GroupId).push();
+                            DatabaseReference ActRef = database.getReference("Activities");
                             if(type.equals("leavegroup")) {
+                                for(String k : usersid) {
+                                    if(!k.equals(FirebaseAuth.getInstance().getCurrentUser().getUid()))
+                                      ActRef.child(k).push().setValue(new ActivityData(myname + " " + mysurname, myname + " " + mysurname + " accepted the propose to leave group " + GroupName, Long.toString(System.currentTimeMillis()), "acceptleavegroup", PolId, GroupId));
 
-                                ActRef.setValue(new ActivityData(myname + " " + mysurname, myname + " " + mysurname + " accepted the propose to leave group " + GroupName, Long.toString(System.currentTimeMillis()), "acceptleavegroup", PolId, GroupId));
+                                }
+
                                 if(users.size()==(Integer.parseInt(totu)-1)){
-
-                                    ActRef.push().setValue(new ActivityData(myname + " " + mysurname, myname + " " + mysurname + " has been successful deleted from group " + GroupName, Long.toString(System.currentTimeMillis()), "acceptleavegroup", PolId, GroupId));
+                                    for(String k : usersid) {
+                                        if (!k.equals(FirebaseAuth.getInstance().getCurrentUser().getUid()))
+                                            ActRef.child(k).push().setValue(new ActivityData(myname + " " + mysurname, myname + " " + mysurname + " has been successful deleted from group " + GroupName, Long.toString(System.currentTimeMillis()), "acceptleavegroup", PolId, GroupId));
+                                    }
                                     database.getReference("Groups").child(GroupId).child("members").child(creator).setValue(false);
                                     database.getReference("Users").child(creator).child("Groups").child(GroupId).child("missing").setValue("yes");
                                     database.getReference("Balance").child(GroupId).child(creator).removeValue();
@@ -271,11 +277,15 @@ public class PolActivity extends AppCompatActivity {
                                 }
                             }
                             if(type.equals("deletegroup")){
-
-                                ActRef.setValue(new ActivityData(myname + " " + mysurname, myname + " " + mysurname + " accepted the propose to delete group " + GroupName, Long.toString(System.currentTimeMillis()), "acceptdeletegroup", PolId, GroupId));
+                                for(String k : usersid) {
+                                    if (!k.equals(FirebaseAuth.getInstance().getCurrentUser().getUid()))
+                                        ActRef.child(k).push().setValue(new ActivityData(myname + " " + mysurname, myname + " " + mysurname + " accepted the propose to delete group " + GroupName, Long.toString(System.currentTimeMillis()), "acceptdeletegroup", PolId, GroupId));
+                                }
                                 if(users.size()==(Integer.parseInt(totu)-1)){
-
-                                    ActRef.push().setValue(new ActivityData(myname + " " + mysurname, "Group "+GroupName+ " has been successful deleted", Long.toString(System.currentTimeMillis()), "acceptdeletegroup", PolId, GroupId));
+                                    for(String k : usersid) {
+                                        if (!k.equals(FirebaseAuth.getInstance().getCurrentUser().getUid()))
+                                            ActRef.child(k).push().setValue(new ActivityData(myname + " " + mysurname, "Group " + GroupName + " has been successful deleted", Long.toString(System.currentTimeMillis()), "acceptdeletegroup", PolId, GroupId));
+                                    }
                                     for(String k:usersid){
                                         database.getReference("Users").child(k).child("Groups").child(GroupId).child("missing").setValue("yes");
                                     }

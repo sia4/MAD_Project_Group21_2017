@@ -53,33 +53,13 @@ public class ActivitiesFragment extends Fragment {
         recyclerView.setAdapter(aAdapter);
 
         final String uId = FirebaseAuth.getInstance().getCurrentUser().getUid();
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference myRef = database.getReference("Users").child(uId).child("Groups");
 
-        //Retrive activities
-        myRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-
-                Log.d("Activities Fragment", "Dentro il listener - leggo le activities");
-                Log.d("Activities Fragment", "Dentro il listener - Pulisco array");
-                activities.clear();
-                userGroups = (Map<String, Map<String, Object>>) dataSnapshot.getValue();
-                Log.d("Activities Fragment", "Dentro il listener - Lista dei gruppi: "+ userGroups);
-
-                if(userGroups != null) {
-
-                    for (final String k : userGroups.keySet()){
-
-                        Log.d("Activities Fragment", "Dentro il listener - Lista dei gruppi: "+ userGroups);
-                        FirebaseDatabase database3 = FirebaseDatabase.getInstance();
-                        DatabaseReference myRef3 = database3.getReference("Activities").child(k);
+                        final FirebaseDatabase database3 = FirebaseDatabase.getInstance();
+                        DatabaseReference myRef3 = database3.getReference("Activities").child(uId);
                         myRef3.addValueEventListener(new ValueEventListener() {
                             @Override
                             public void onDataChange(DataSnapshot dataSnapshot) {
                                 Map<String, Map<String, String>> activitiesMap = (Map<String, Map<String, String>>) dataSnapshot.getValue();
-                                groupName = (String)userGroups.get(k).get("name");
-
                                 Log.d("Activities Fragment", "Dentro il listener - groupName: "+ groupName);
 
                                 if(activitiesMap != null) {
@@ -92,7 +72,8 @@ public class ActivitiesFragment extends Fragment {
 
                                     Log.d("Activities Fragment", "Dentro il listener - activities: "+ activitiesMap);
 
-                                    String tmpc, tmpt, tmpd, tmpty, tmpid, tmpgid;
+                                    String tmpc, tmpt, tmpd, tmpty, tmpid, tmpgid, read;
+
                                     for(String j : activitiesMap.keySet()){
                                         tmpc = activitiesMap.get(j).get("creator");
                                         tmpt = activitiesMap.get(j).get("text");
@@ -100,9 +81,16 @@ public class ActivitiesFragment extends Fragment {
                                         tmpty = activitiesMap.get(j).get("type");
                                         tmpid = activitiesMap.get(j).get("itemId");
                                         tmpgid = activitiesMap.get(j).get("groupId");
-
+                                        read = activitiesMap.get(j).get("read");
                                         ActivityData a = new ActivityData(tmpc, tmpt, tmpd, tmpty, tmpid, tmpgid);
                                         a.setGroupName(groupName);
+                                        if(read!=null)
+                                            a.setRead(read);
+                                        else
+                                            a.setRead("no");
+
+                                        database3.getReference("Activities").child(uId).child(j).child("read").setValue("yes");
+
                                         m_activities.put(j, a);
 
 
@@ -130,27 +118,6 @@ public class ActivitiesFragment extends Fragment {
                             }
                         });
 
-
-                    }
-
-                   aAdapter.notifyDataSetChanged();
-                } else {
-
-                    if(getView() != null) {
-                        TextView tv = (TextView) getView().findViewById(R.id.noActivities);
-                        tv.setVisibility(VISIBLE);
-                    }
-
-                    Log.d("Activities Fragment", "No group list found");
-                }
-
-            }
-
-            @Override
-            public void onCancelled(DatabaseError error) {
-                Log.d("Activities Fragment", "Failed to read value.", error.toException());
-            }
-        });
 
         recyclerView.addOnItemTouchListener(new RecyclerTouchListener(context, recyclerView, new RecyclerTouchListener.ClickListener() {
             @Override

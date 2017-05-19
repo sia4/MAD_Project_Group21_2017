@@ -85,10 +85,11 @@ public class GroupsFragment extends Fragment {
         @Override
         public int compareTo(@NonNull GroupModel o) {
 
+            long weight = 100;
             String date = o.getDateLastOperation();
             String fav = o.getFavourite();
             long o1, o2;
-            if(date.equals("") || (fav!=null && fav.equals("yes")))
+            if(date.equals(""))
                 o1 = 0;
             else
                 o1 = Long.valueOf(date);
@@ -98,11 +99,14 @@ public class GroupsFragment extends Fragment {
             else
                 o2 = Long.valueOf(dateLastOperation);
 
-            return (int)(o1 - o2);
+            System.out.println("normal time: "+(o1-o2));
+            return (int) (o1 - o2);
         }
     }
 
     private List<GroupModel> groups = new ArrayList<>();
+    private List<GroupModel> fav_groups = new ArrayList<>();
+    private List<GroupModel> no_fav_groups = new ArrayList<>();
 
     String uKey = null;
 
@@ -148,6 +152,8 @@ public class GroupsFragment extends Fragment {
                     }
 
                     groups.clear();
+                    no_fav_groups.clear();
+                    fav_groups.clear();
 
                     Log.d("Groups Fragment", "Svuoto vettore gruppi");
                     for (Map.Entry<String, Object> k : map.entrySet()) {
@@ -164,16 +170,26 @@ public class GroupsFragment extends Fragment {
 
                             Log.d("Groups Fragment", "dati: " + name + " " + lastOperation + " " + dateLastOperation);
                             if (missing == null) {
-                                    groups.add(new GroupModel(k.getKey(), name, imagePath, lastOperation, dateLastOperation, favourite));
+                                    if(favourite!=null && favourite.equals("yes"))
+                                        fav_groups.add(new GroupModel(k.getKey(), name, imagePath, lastOperation, dateLastOperation, favourite));
+
+                                    else
+                                        no_fav_groups.add(new GroupModel(k.getKey(), name, imagePath, lastOperation, dateLastOperation, favourite));
                             }
                             else {
                                 if (missing.equals("no")){
-                                        groups.add(new GroupModel(k.getKey(), name, imagePath, lastOperation, dateLastOperation, favourite));
+                                    if(favourite!=null && favourite.equals("yes"))
+                                        fav_groups.add(new GroupModel(k.getKey(), name, imagePath, lastOperation, dateLastOperation, favourite));
+                                    else
+                                        no_fav_groups.add(new GroupModel(k.getKey(), name, imagePath, lastOperation, dateLastOperation, favourite));
 
                                 }
                           }
-                        Collections.sort(groups);
-
+                        Collections.sort(no_fav_groups);
+                        Collections.sort(fav_groups);
+                        groups.clear();
+                        groups.addAll(fav_groups);
+                        groups.addAll(no_fav_groups);
 
                         Log.d("Groups Fragment", "Notify Data Set Changed sull'adapter");
                         gAdapter.notifyDataSetChanged();

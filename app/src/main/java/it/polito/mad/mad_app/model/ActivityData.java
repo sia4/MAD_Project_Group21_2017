@@ -19,6 +19,7 @@ public class ActivityData implements Comparable<ActivityData>{
     private String itemId;
     private String groupId;
     private String groupName;
+    private String read;
     public ActivityData(String creator1, String text1, String date1, String type1, String id, String gId) {
         this.creator = creator1;
         this.text = text1;
@@ -29,7 +30,8 @@ public class ActivityData implements Comparable<ActivityData>{
         this.itemId = id;
         this.groupId = gId;
     }
-
+    public void setRead(String s){read = s;}
+    public String getRead(){return read;}
     public String getCreator(){
         return this.creator;
     }

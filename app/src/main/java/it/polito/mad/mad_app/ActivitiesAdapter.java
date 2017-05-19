@@ -1,5 +1,6 @@
 package it.polito.mad.mad_app;
 
+import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -59,6 +60,11 @@ public class ActivitiesAdapter extends RecyclerView.Adapter<ActivitiesAdapter.My
         else{
             holder.viewMore.setVisibility(View.GONE);
         }
+        if(activity.getRead().equals("no")){
+            holder.itemView.setBackgroundColor(Color.parseColor("#D6D5D5"));
+        }
+        else
+            holder.itemView.setBackgroundColor(Color.WHITE);
     }
 
     @Override
