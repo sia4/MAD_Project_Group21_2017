@@ -45,13 +45,15 @@ public class GroupsFragment extends Fragment {
         String groupUrl;
         String lastOperation;
         String dateLastOperation;
+        String favourite;
 
-        public GroupModel(String groupId, String groupName, String groupUrl, String lastOperation, String dateLastOperation) {
+        public GroupModel(String groupId, String groupName, String groupUrl, String lastOperation, String dateLastOperation, String favourite) {
             this.groupId = groupId;
             this.groupName = groupName;
             this.groupUrl = groupUrl;
             this.lastOperation = lastOperation;
             this.dateLastOperation = dateLastOperation;
+            this.favourite = favourite;
         }
 
         public String getGroupId() {
@@ -63,7 +65,7 @@ public class GroupsFragment extends Fragment {
         }
 
         public String getGroupUrl() { return groupUrl; }
-
+        public String getFavourite(){return favourite;}
         public String getLastOperation() {return lastOperation; }
 
         public String getDateLastOperationWellFormed() {
@@ -84,13 +86,14 @@ public class GroupsFragment extends Fragment {
         public int compareTo(@NonNull GroupModel o) {
 
             String date = o.getDateLastOperation();
+            String fav = o.getFavourite();
             long o1, o2;
-            if(date.equals(""))
+            if(date.equals("") || (fav!=null && fav.equals("yes")))
                 o1 = 0;
             else
                 o1 = Long.valueOf(date);
 
-            if(dateLastOperation.equals(""))
+            if(dateLastOperation.equals("")|| (fav!=null && fav.equals("yes")))
                 o2 = 0;
             else
                 o2 = Long.valueOf(dateLastOperation);
@@ -145,19 +148,33 @@ public class GroupsFragment extends Fragment {
                     }
 
                     groups.clear();
+
                     Log.d("Groups Fragment", "Svuoto vettore gruppi");
                     for (Map.Entry<String, Object> k : map.entrySet()) {
                         String name = (String) ((Map<String, Object>) k.getValue()).get("name");
                         String imagePath = (String) ((Map<String, Object>) k.getValue()).get("imagePath");
                         String lastOperation = (String) ((Map<String, Object>) k.getValue()).get("lastOperation");
                         String dateLastOperation = (String) ((Map<String, Object>) k.getValue()).get("dateLastOperation");
+                        String missing = (String) ((Map<String, Object>) k.getValue()).get("missing");
+                        String favourite = (String) ((Map<String, Object>) k.getValue()).get("favourite");
                         if(lastOperation == null)
                             lastOperation = "";
                         if(dateLastOperation == null)
                             dateLastOperation = "";
-                        Log.d("Groups Fragment", "dati: "+name+ " "+lastOperation+" "+dateLastOperation);
-                        groups.add(new GroupModel(k.getKey(), name, imagePath, lastOperation, dateLastOperation));
+
+                            Log.d("Groups Fragment", "dati: " + name + " " + lastOperation + " " + dateLastOperation);
+                            if (missing == null) {
+                                    groups.add(new GroupModel(k.getKey(), name, imagePath, lastOperation, dateLastOperation, favourite));
+                            }
+                            else {
+                                if (missing.equals("no")){
+                                        groups.add(new GroupModel(k.getKey(), name, imagePath, lastOperation, dateLastOperation, favourite));
+
+                                }
+                          }
                         Collections.sort(groups);
+
+
                         Log.d("Groups Fragment", "Notify Data Set Changed sull'adapter");
                         gAdapter.notifyDataSetChanged();
                         progressBar.setVisibility(INVISIBLE);

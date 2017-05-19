@@ -71,7 +71,7 @@ public class ExpenseInfoActivity extends AppCompatActivity {
         creator_ex = (TextView) findViewById(R.id.exCreator);
         description_ex = (TextView) findViewById(R.id.exDescription);
         category_ex = (TextView) findViewById(R.id.exCategory);
-        currency_ex = (TextView) findViewById(R.id.exCurrency);
+        //currency_ex = (TextView) findViewById(R.id.exCurrency);
         myvalue_ex = (TextView) findViewById(R.id.exMyvalue);
         algorithm_ex = (TextView) findViewById(R.id.exAlgorithm);
         date_ex = (TextView) findViewById(R.id.exDate);
@@ -123,18 +123,20 @@ public class ExpenseInfoActivity extends AppCompatActivity {
                     date = (String)map.get("date");
                     groupName = (String)map.get("groupName");
                     name_ex.setText(name);
-                    value_ex.setText(value);
+                    String tmp = (String) map.get("currency");
+                    value_ex.setText(value + " "+tmp.substring(tmp.length()-1));
                     creator_ex.setText(creator);
                     if(description.equals(""))
                         description_ex.setText("  -");
                     else
                         description_ex.setText(description);
                     category_ex.setText(category);
-                    currency_ex.setText(currency);
+                    //currency_ex.setText(currency);
+
                     s_ex.setText("Your quote:");
                     algorithm_ex.setText(algorithm);
 
-                    SimpleDateFormat sdf = new SimpleDateFormat("MMM dd,yyyy HH:mm");
+                    SimpleDateFormat sdf = new SimpleDateFormat("MMM dd, yyyy HH:mm");
                     Date resultdate = new Date(new Long(date));
 
                     date_ex.setText(sdf.format(resultdate));
@@ -231,6 +233,7 @@ public class ExpenseInfoActivity extends AppCompatActivity {
 
                 myRef2.setValue(new ExpenseData(name + "(retrieve)", "expense retrieved", category, currency, value, "0.00", algorithm));
                 myRef2.child("creator").setValue(creator);
+                myRef2.child("missing").setValue("yes");
                 //myRef2.child("value").setValue(value);
                 myRef2.child("contested").setValue("no");
                 myRef2.child("users").setValue(usermapTemp);

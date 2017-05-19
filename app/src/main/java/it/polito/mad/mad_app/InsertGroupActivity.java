@@ -416,6 +416,8 @@ public class InsertGroupActivity extends AppCompatActivity {
             myRef.setValue(uName + " has created the group.");
             myRef = database.getReference("/Users/" + key + "/Groups/" + groupId + "/dateLastOperation/");
             myRef.setValue(Long.toString(System.currentTimeMillis()));
+            myRef = database.getReference("/Users/" + key + "/Groups/" + groupId + "/missing/");
+            myRef.setValue("no");
 
             for (Iterator n = others.iterator(); n.hasNext(); ) {
                 String k = (String) n.next();

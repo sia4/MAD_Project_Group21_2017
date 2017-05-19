@@ -19,7 +19,6 @@ public class Group {
 
     public Group() { }
 
-    // TODO: creare classe currency e passare un oggetto currency da cui prendo una stringa identificativa
     public Group(String n, String d, String c) {
         this.name = n;
         this.description = d;

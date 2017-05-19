@@ -24,14 +24,14 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.MyViewHo
     private List<ExpenseData> expenseData;
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
-        public TextView name_ex, data_ex,  money_ex, impact_ex,creator_ex, contested_ex;
+        public TextView name_ex, data_ex,  money_ex,creator_ex, contested_ex;
 
         public MyViewHolder(View view) {
             super(view);
             name_ex = (TextView) view.findViewById(R.id.name_ex);
             data_ex = (TextView) view.findViewById(R.id.data_ex);
             money_ex = (TextView) view.findViewById(R.id.money_ex);
-            impact_ex = (TextView) view.findViewById(R.id.impact_ex);
+
             creator_ex = (TextView) view.findViewById(R.id.creator_ex);
             contested_ex = (TextView) view.findViewById(R.id.contested_ex);
         }
@@ -55,24 +55,20 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.MyViewHo
         final ExpenseData expense = expenseData.get(position);
         holder.name_ex.setText(expense.getName());
 
-        SimpleDateFormat sdf = new SimpleDateFormat("MMM dd,yyyy HH:mm");
+        SimpleDateFormat sdf = new SimpleDateFormat("MMM dd, yyyy HH:mm");
         Date resultdate = new Date(new Long(expense.getDate()));
 
         holder.data_ex.setText(sdf.format(resultdate));
-        holder.money_ex.setText(expense.getMyvalue());
+        String tmp = expense.getCurrencyRow();
+        holder.money_ex.setText(expense.getValue()+ " " + tmp.substring(tmp.length()-1));
         holder.creator_ex.setText(expense.getCreator());
-        if(expense.getCreatorId().equals(FirebaseAuth.getInstance().getCurrentUser().getUid())) {
-            holder.impact_ex.setTextColor(Color.parseColor("#27B011"));
-            holder.money_ex.setTextColor(Color.parseColor("#27B011"));
-        }
-        else
-        {
-            holder.impact_ex.setTextColor(Color.parseColor("#D51111"));
-            holder.money_ex.setTextColor(Color.parseColor("#D51111"));
-        }
 
-        if(expense.getContested() != null && expense.getContested().equals("yes"))
-            holder.contested_ex.setVisibility(View.VISIBLE);
+        if(expense.getContested() != null && expense.getContested().equals("yes")) {
+            holder.itemView.setBackgroundColor(Color.parseColor("#E8D1D1"));
+        }
+        else{
+            holder.itemView.setBackgroundColor(Color.WHITE);
+        }
 
     }
 

@@ -261,8 +261,8 @@ public class PolActivity extends AppCompatActivity {
                                 if(users.size()==(Integer.parseInt(totu)-1)){
 
                                     ActRef.push().setValue(new ActivityData(myname + " " + mysurname, myname + " " + mysurname + " has been successful deleted from group " + GroupName, Long.toString(System.currentTimeMillis()), "acceptleavegroup", PolId, GroupId));
-                                    database.getReference("Groups").child(GroupId).child("members").child(creator).removeValue();
-                                    database.getReference("Users").child(creator).child("Groups").child(GroupId).removeValue();
+                                    database.getReference("Groups").child(GroupId).child("members").child(creator).setValue(false);
+                                    database.getReference("Users").child(creator).child("Groups").child(GroupId).child("missing").setValue("yes");
                                     database.getReference("Balance").child(GroupId).child(creator).removeValue();
                                     for(String k:usersid){
                                         database.getReference("Balance").child(GroupId).child(k).child(creator).removeValue();
@@ -276,11 +276,8 @@ public class PolActivity extends AppCompatActivity {
                                 if(users.size()==(Integer.parseInt(totu)-1)){
 
                                     ActRef.push().setValue(new ActivityData(myname + " " + mysurname, "Group "+GroupName+ " has been successful deleted", Long.toString(System.currentTimeMillis()), "acceptdeletegroup", PolId, GroupId));
-                                    database.getReference("Groups").child(GroupId).removeValue();
-                                    database.getReference("Expenses").child(GroupId).removeValue();
-                                    database.getReference("Balance").child(GroupId).removeValue();
                                     for(String k:usersid){
-                                        database.getReference("Users").child(k).child("Groups").child(GroupId).removeValue();
+                                        database.getReference("Users").child(k).child("Groups").child(GroupId).child("missing").setValue("yes");
                                     }
 
 
