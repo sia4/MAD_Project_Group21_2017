@@ -1,6 +1,5 @@
 package it.polito.mad.mad_app;
 
-
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -45,7 +44,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -53,6 +51,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 
+import it.polito.mad.mad_app.model.Currencies;
 import it.polito.mad.mad_app.model.Group;
 import it.polito.mad.mad_app.model.User;
 
@@ -322,6 +321,7 @@ public class InsertGroupActivity extends AppCompatActivity {
                 EditText Gdescription = (EditText) findViewById(R.id.GroupDescription);
                 final Spinner Tcurrency = (Spinner) findViewById(R.id.GroupCurrency);
 
+
                 groupName = Gname.getText().toString();
                 groupDescription = Gdescription.getText().toString();
 
@@ -365,7 +365,7 @@ public class InsertGroupActivity extends AppCompatActivity {
                                     downloadUrl = taskSnapshot.getDownloadUrl();
 
                                     uploadGroup(groupName, groupDescription, Tcurrency.getSelectedItem().toString(), downloadUrl.toString(), groupId);
-
+                                      //TODO: aggiungere le cose di currencies alla uploadGroup
                                     Log.d("Insert Group Activity", "insertion success!");
                                     setResult(RESULT_OK, null);
                                     finish();
@@ -392,7 +392,11 @@ public class InsertGroupActivity extends AppCompatActivity {
     }
 
     private void uploadGroup(String groupN, String groupD, String curr, String imagePath, String groupId) {
-        Group G = new Group(groupN, groupD, curr);
+
+        Currencies c = new Currencies();
+        String code = c.getCurrencyCode(curr);
+
+        Group G = new Group(groupN, groupD, code);
         G.addMembers(userKeys);
         G.addMember(uKey);
         G.setImagePath(imagePath);
@@ -412,6 +416,8 @@ public class InsertGroupActivity extends AppCompatActivity {
             myRef.setValue(uName + " has created the group.");
             myRef = database.getReference("/Users/" + key + "/Groups/" + groupId + "/dateLastOperation/");
             myRef.setValue(Long.toString(System.currentTimeMillis()));
+            myRef = database.getReference("/Users/" + key + "/Groups/" + groupId + "/missing/");
+            myRef.setValue("no");
 
             for (Iterator n = others.iterator(); n.hasNext(); ) {
                 String k = (String) n.next();

@@ -62,7 +62,7 @@ public class PagerAdapterGroup  extends FragmentStatePagerAdapter {
                 s="HISTORY";
                 break;
             case 1:
-                s="BUDGET";
+                s="BALANCE";
                 break;
             default:
                 s="HISTORY";

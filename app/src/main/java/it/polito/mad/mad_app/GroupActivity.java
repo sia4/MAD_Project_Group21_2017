@@ -2,15 +2,10 @@ package it.polito.mad.mad_app;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.support.v4.view.ViewPager;
@@ -27,7 +22,6 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.animation.GlideAnimation;
-import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -35,15 +29,12 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.concurrent.ExecutionException;
 
-import it.polito.mad.mad_app.model.PagerAdapter;
 import it.polito.mad.mad_app.model.PagerAdapterGroup;
 
 
@@ -79,6 +70,7 @@ public class GroupActivity extends AppCompatActivity {
         b.putString("imagePath", gImage);
 
         //System.out.println("CICCIOBOMBA" + datigruppo.getName());
+
 
 
 
@@ -359,4 +351,19 @@ public class GroupActivity extends AppCompatActivity {
                 return super.onOptionsItemSelected(item);
         }
     }
+    /*startActivity(new Intent(
+            getApplicationContext(),GroupOptionActivity.class
+                ));*/
 }
+/*Intent intent = new Intent().setClass(view.getContext(), ExpenseInfoActivity.class);
+                intent.putExtra("name", expense.getName());
+                intent.putExtra("category", expense.getCategory());
+                intent.putExtra("currency", expense.getCurrency());
+                intent.putExtra("algorithm", expense.getAlgorithm());
+                intent.putExtra("description", expense.getDescription());
+                //String.format("%.2f", expense.getMyvalue())
+                intent.putExtra("myvalue",String.format("%.2f", expense.getMyvalue()) );
+                intent.putExtra("value", String.format("%.2f", expense.getValue()));
+                intent.putExtra("creator", MainData.getInstance().getMyName());//TODO change with getCreator
+                intent.putExtra("date", expense.getDate());
+                view.getContext().startActivity(intent);*/

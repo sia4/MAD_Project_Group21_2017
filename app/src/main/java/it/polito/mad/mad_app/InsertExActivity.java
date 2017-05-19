@@ -54,10 +54,7 @@ import it.polito.mad.mad_app.model.Balance;
 import it.polito.mad.mad_app.model.ExpenseData;
 import it.polito.mad.mad_app.model.UserData;
 
-import static android.util.LayoutDirection.LOCALE;
-
 import static it.polito.mad.mad_app.model.ImageMethod.create_image;
-import static it.polito.mad.mad_app.model.ImageMethod.performCrop;
 import static it.polito.mad.mad_app.model.ImageMethod.require_image;
 
 
@@ -95,6 +92,8 @@ public class InsertExActivity extends AppCompatActivity {
     private Boolean ImageC=false;
     private Uri imageUrl;
     private Button load;
+    private Map<String, Float> Cambi = new TreeMap<>();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -139,42 +138,44 @@ public class InsertExActivity extends AppCompatActivity {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
 
-                Map<String, Object> map2 = (Map<String, Object>) dataSnapshot.getValue();
+                Map<String, Boolean> map2 = (Map<String, Boolean>) dataSnapshot.getValue();
                 if(map2!=null) {
-                    map2.put(uid, uid); //aggiungo user corrente
-                    for (final String k : map2.keySet()){
-                        FirebaseDatabase database3 = FirebaseDatabase.getInstance();
-                        DatabaseReference myRef3 = database3.getReference("Users").child(k);
-                        myRef3.addValueEventListener(new ValueEventListener() {
-                            @Override
-                            public void onDataChange(DataSnapshot dataSnapshot) {
-                                Map<String, Object> map3 = (Map<String, Object>) dataSnapshot.getValue();
-                                if(map3!=null) {
-                                    String s = String.format("user %s added\n", (String)map3.get("name"));
-                                    System.out.println(s);
-                                    UserData u = new UserData("aaaa", (String)map3.get("name"), (String)map3.get("surname"), 5555);
-                                    u.setuId(k);
-                                    m_users.put(k,u);
-                                    users=new ArrayList<>(m_users.values());
-                                    System.out.println("lista utenti: "+users);
-                                    System.out.println("lista utenti: "+users.size());
-                                    System.out.println("+++++++utente trovato"+k);
-                                    if(k.equals(mAuth.getCurrentUser().getUid())){
-                                        myname = (String)map3.get("name");
-                                        mysurname = (String)map3.get("surname");
+                    map2.put(uid, true); //aggiungo user corrente
+                    for (final String k : map2.keySet()) {
+                        if (map2.get(k) == true) {
+                            FirebaseDatabase database3 = FirebaseDatabase.getInstance();
+                            DatabaseReference myRef3 = database3.getReference("Users").child(k);
+                            myRef3.addValueEventListener(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(DataSnapshot dataSnapshot) {
+                                    Map<String, Object> map3 = (Map<String, Object>) dataSnapshot.getValue();
+                                    if (map3 != null) {
+                                        String s = String.format("user %s added\n", (String) map3.get("name"));
+                                        System.out.println(s);
+                                        UserData u = new UserData("aaaa", (String) map3.get("name"), (String) map3.get("surname"), 5555);
+                                        u.setuId(k);
+                                        m_users.put(k, u);
+                                        users = new ArrayList<>(m_users.values());
+                                        System.out.println("lista utenti: " + users);
+                                        System.out.println("lista utenti: " + users.size());
+                                        System.out.println("+++++++utente trovato" + k);
+                                        if (k.equals(mAuth.getCurrentUser().getUid())) {
+                                            myname = (String) map3.get("name");
+                                            mysurname = (String) map3.get("surname");
+                                        }
+                                        //uAdapter.notifyDataSetChanged();
                                     }
-                                    //uAdapter.notifyDataSetChanged();
+
                                 }
 
-                            }
+                                @Override
+                                public void onCancelled(DatabaseError databaseError) {
 
-                            @Override
-                            public void onCancelled(DatabaseError databaseError) {
+                                }
+                            });
+                            i++;
 
-                            }
-                        });
-                        i++;
-
+                        }
                     }
                 }
 
@@ -190,6 +191,9 @@ public class InsertExActivity extends AppCompatActivity {
         System.out.println("2");
 
         Spinner spinner = (Spinner) findViewById(R.id.Currency);
+        final List<String> Currencies = new ArrayList<>();
+        Currencies.add("Select currency");
+
         // Create an ArrayAdapter using the string array and a default spinner layout
         FirebaseDatabase database4 = FirebaseDatabase.getInstance();
         DatabaseReference myRef4 = database4.getReference("Groups").child(Gname);
@@ -197,8 +201,17 @@ public class InsertExActivity extends AppCompatActivity {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 Map<String, Object> map = (Map<String, Object>) dataSnapshot.getValue();
+                it.polito.mad.mad_app.model.Group g = dataSnapshot.getValue(it.polito.mad.mad_app.model.Group.class);
+
                 if(map!=null) {
-                    defaultcurrency = (String)map.get("defaultcurrency");
+                    defaultcurrency = (String) map.get("defaultcurrency");
+                } else {
+                    System.out.println("Errore InsertExActivity: Non riesco a prendere la Mappa");
+                }
+
+                if (g != null) {
+                    Currencies.addAll(g.getCurrencies().keySet());
+                    Cambi.putAll(g.getCurrencies());
 
                 }
             }
@@ -212,21 +225,11 @@ public class InsertExActivity extends AppCompatActivity {
 
         System.out.println("3");
 
-        List<String> Currencies = new ArrayList<>();
-        Currencies.add("Select currency");
-        Currencies.add("EUR €");
-        //Currencies.add(defaultcurrency);
-        //TODO AGGIUNGERE TUTTE LE CURRENCIES ALLO SPINNER
-
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, R.layout.currency_item, Currencies);
-        // Specify the layout to use when the list of choices appears
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        // Apply the adapter to the spinner
         spinner.setAdapter(adapter);
 
-        //users.add(0, new UserData("null", "Me", "", 000));
         final Spinner Talgorithm = (Spinner)findViewById(R.id.ChooseAlgorithm);
-        //final EditText Tvalue = (EditText) findViewById(R.id.value);
         final Spinner Tcurrency = (Spinner) findViewById(R.id.Currency);
         final TextView algInfo = (TextView) findViewById(R.id.alg_info);
         final TextView algInfoSmall = (TextView) findViewById(R.id.alg_info_small);
@@ -271,34 +274,7 @@ public class InsertExActivity extends AppCompatActivity {
         } );
 
         System.out.println("4");
-        /*
-       Tvalue.addTextChangedListener(new TextWatcher() {
-           int p;
-           @Override
-           public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
-           }
-
-           @Override
-           public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-           }
-
-           @Override
-           public void afterTextChanged(Editable s) {
-               if(Talgorithm.getSelectedItem().toString().equals("by import") && !Tcurrency.getSelectedItem().toString().equals("Select currency")) {
-                   if(!Tvalue.getText().toString().isEmpty()) {
-                       uAdapter = new AlgorithmParametersAdapter(users, 2, Float.parseFloat(Tvalue.getText().toString()), Tcurrency.getSelectedItem().toString(), algInfo, algInfoSmall);
-                       userRecyclerView.setAdapter(uAdapter);
-                   }
-                   else{
-                       uAdapter = new AlgorithmParametersAdapter(users, 2, 0, Tcurrency.getSelectedItem().toString(), algInfo, algInfoSmall);
-                       userRecyclerView.setAdapter(uAdapter);
-                   }
-               }
-           }
-       });
-        */
         String s = "";
         load=(Button) findViewById(R.id.load_ex);
         load.setOnClickListener(new View.OnClickListener() {
@@ -437,6 +413,8 @@ public class InsertExActivity extends AppCompatActivity {
                 category = Tcategory.getSelectedItem().toString();
                 currency = Tcurrency.getSelectedItem().toString();
                 algorithm = Talgorithm.getSelectedItem().toString();
+                final float cambio = Cambi.get(currency);
+
                 if(name.equals("")) {
                     Toast.makeText(InsertExActivity.this, "Please insert name.", Toast.LENGTH_LONG).show();
                 } else if(currency.equals("Select currency")) {
@@ -448,8 +426,14 @@ public class InsertExActivity extends AppCompatActivity {
                 } else {
                     value = Double.valueOf(Tvalue.getText().toString());
                     System.out.println("valuebuggggggggggggggggggg " + value);
+
                     if (algorithm.equals("equally")) {
                         v = value / users.size();
+
+                        if (cambio != 0) {
+                            v *= cambio;
+                        }
+
                         for (UserData k : users) {
                             values.put(k.getuId(), v);
                         }
@@ -462,23 +446,35 @@ public class InsertExActivity extends AppCompatActivity {
                             View view = userRecyclerView.getChildAt(i);
                             EditText EditValue = (EditText) view.findViewById(R.id.alg_value);
                             if (EditValue.getText().toString().equals("")) {
+
                                 algValue = 0;
                                 myvalue = 0;
-                                if (algorithm.equals("by percentuage"))
-                                    values.put(users.get(i).getuId(), algValue);
-                                else
-                                    values.put(users.get(i).getuId(), algValue);
+                                values.put(users.get(i).getuId(), algValue);
+
                             } else {
+
                                 algValue = Float.parseFloat(EditValue.getText().toString());
 
                                 if (algorithm.equals("by percentuage")) {
-                                    values.put(users.get(i).getuId(), value * algValue / 100);
+                                    double tmp = value * algValue / 100;
+                                    if (cambio != 0) {
+                                        tmp *= cambio;
+                                    }
+                                    values.put(users.get(i).getuId(), tmp);
                                     if (users.get(i).getuId().equals(mAuth.getCurrentUser().getUid()))
-                                        myvalue = value * algValue / 100;
+                                        myvalue = tmp;
                                 } else {
+                                    if (cambio != 0) {
+                                        algValue *= cambio;
+                                    }
                                     values.put(users.get(i).getuId(), algValue);
-                                    if (users.get(i).getuId().equals(mAuth.getCurrentUser().getUid()))
+                                    if (users.get(i).getuId().equals(mAuth.getCurrentUser().getUid())) {
                                         myvalue = value;
+                                        if (cambio != 0) {
+                                            myvalue *= cambio;
+                                        }
+                                    }
+
                                 }
                             }
                             algSum += algValue;
@@ -515,11 +511,13 @@ public class InsertExActivity extends AppCompatActivity {
                         final DatabaseReference myRef2 = myRef;
                         myRef.child("creator").setValue(myname + " " + mysurname);
                         myRef.child("creatorId").setValue(mAuth.getCurrentUser().getUid());
+                        myRef.child("missing").setValue("no");
                         System.out.println(String.format("%.2f", value));
                         for (Map.Entry<String, Double> e : values.entrySet())
                             myRef.child("users").child(e.getKey()).setValue(String.format(Locale.US, "%.2f", e.getValue()));
                         myRef.child("contested").setValue("no");
                         ii = 0;
+
                         for(final UserData k:users){
                             myRef = database.getReference("/Users/" + k.getuId() + "/Groups/" + Gname + "/lastOperation/");
                             myRef.setValue(myname + " added an expense.");
@@ -527,6 +525,7 @@ public class InsertExActivity extends AppCompatActivity {
                             myRef.setValue(Long.toString(System.currentTimeMillis()).toString());
                         }
 
+                        //final float cambio = Cambi.get(currency);
                         final FirebaseDatabase database3 = FirebaseDatabase.getInstance();
                         DatabaseReference myRef3 = database3.getReference("Balance").child(Gname);
                         System.out.println("Path "+myRef3);
@@ -537,26 +536,27 @@ public class InsertExActivity extends AppCompatActivity {
                                 balancemap = (Map<String, Map<String, Map<String, Object>>>) dataSnapshot.getValue();
                                 if(balancemap!=null) {
 
-                                        for (UserData u : users) {
-                                            final FirebaseDatabase database5 = FirebaseDatabase.getInstance();
-                                            DatabaseReference myRef5 = database5.getReference("Balance").child(Gname);
-                                            float value1, value2, value3, value4;
-                                            if (!u.getuId().equals(mAuth.getCurrentUser().getUid()) && balancemap != null) {
-                                                value1 = Float.parseFloat((String) balancemap.get(mAuth.getCurrentUser().getUid()).get(u.getuId()).get("value"));
-                                                value2 = Float.parseFloat((String) balancemap.get(u.getuId()).get(mAuth.getCurrentUser().getUid()).get("value"));
-                                                System.out.println("buttonnnnnnn1 " + value1);
-                                                System.out.println("buttonnnnnnn2 " + value2);
+                                    for (UserData u : users) {
 
-                                                value3 = values.get(u.getuId()).floatValue();
-                                                value1 = value1 + value3;
-                                                value2 = value2 - value3;
-                                                myRef5.child(mAuth.getCurrentUser().getUid()).child(u.getuId()).child("value").setValue(String.format(Locale.US, "%.2f", value1));
-                                                myRef5.child(u.getuId()).child(mAuth.getCurrentUser().getUid()).child("value").setValue(String.format(Locale.US, "%.2f", value2));
+                                        final FirebaseDatabase database5 = FirebaseDatabase.getInstance();
+                                        DatabaseReference myRef5 = database5.getReference("Balance").child(Gname);
+                                        float value1, value2, value3;
+                                        if (!u.getuId().equals(mAuth.getCurrentUser().getUid()) && balancemap != null) {
+                                            value1 = Float.parseFloat((String) balancemap.get(mAuth.getCurrentUser().getUid()).get(u.getuId()).get("value"));
+                                            value2 = Float.parseFloat((String) balancemap.get(u.getuId()).get(mAuth.getCurrentUser().getUid()).get("value"));
+                                            System.out.println("buttonnnnnnn1 " + value1);
+                                            System.out.println("buttonnnnnnn2 " + value2);
+                                            value3 = values.get(u.getuId()).floatValue();
 
+                                            value1 = value1 + value3;
+                                            value2 = value2 - value3;
+                                            myRef5.child(mAuth.getCurrentUser().getUid()).child(u.getuId()).child("value").setValue(String.format(Locale.US, "%.2f", value1));
+                                            myRef5.child(u.getuId()).child(mAuth.getCurrentUser().getUid()).child("value").setValue(String.format(Locale.US, "%.2f", value2));
 
-                                            }
 
                                         }
+
+                                    }
                                     System.out.println("balancemapppppppppppppppp " + balancemap);
                                 }
 
@@ -600,7 +600,7 @@ public class InsertExActivity extends AppCompatActivity {
                                 e.printStackTrace();
                             }
                         }
-                            //final DatabaseReference myRef3 = database.getReference("Balance").child(Gname);
+                        //final DatabaseReference myRef3 = database.getReference("Balance").child(Gname);
                                 /*
                                 myRef3.runTransaction(new Transaction.Handler() {
                                     @Override
@@ -642,22 +642,22 @@ public class InsertExActivity extends AppCompatActivity {
                         }
                         }
                         else{*/
-                            Intent i2 = new Intent(InsertExActivity.this, GroupActivity.class);
-                            System.out.println("+++++++++++++++++" + Gname + groupName);
-                            i2.putExtra("groupId", Gname);
-                            i2.putExtra("groupName", groupName);
+                        Intent i2 = new Intent(InsertExActivity.this, GroupActivity.class);
+                        System.out.println("+++++++++++++++++" + Gname + groupName);
+                        i2.putExtra("groupId", Gname);
+                        i2.putExtra("groupName", groupName);
 
-                            setResult(RESULT_OK, i2);
-                            finish();
-                            Log.d("myStorage", "success!");
-                            //}
-                            //return true;
-                        } else{
-                            String p = String.format("problems... flagok: %d, values.size: %d, users.size: %d", flagok, values.size(), users.size());
-                            Toast.makeText(InsertExActivity.this, p, Toast.LENGTH_LONG).show();
-                            return super.onOptionsItemSelected(item);
-                        }
+                        setResult(RESULT_OK, i2);
+                        finish();
+                        Log.d("myStorage", "success!");
+                        //}
+                        //return true;
+                    } else {
+                        String p = String.format("problems... flagok: %d, values.size: %d, users.size: %d", flagok, values.size(), users.size());
+                        Toast.makeText(InsertExActivity.this, p, Toast.LENGTH_LONG).show();
+                        return super.onOptionsItemSelected(item);
                     }
+                }
             default:
                 return super.onOptionsItemSelected(item);
         }

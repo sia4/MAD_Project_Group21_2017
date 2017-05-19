@@ -22,6 +22,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -49,8 +50,10 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import it.polito.mad.mad_app.model.ActivityData;
+import it.polito.mad.mad_app.model.Currencies;
 import it.polito.mad.mad_app.model.PolData;
 import it.polito.mad.mad_app.model.RecyclerTouchListener;
 import it.polito.mad.mad_app.model.User;
@@ -66,6 +69,7 @@ public class GroupInfoActivity extends AppCompatActivity {
     private boolean flag_name_edited = false, flag_desc_edited = false, ImageC= false;
     private String nametmp, desctmp, gId, gName,  image, myname, mysurname;
     private EditText nameted, desced;
+    private CheckBox favourite;
     private ImageView im;
     private Uri outputFileUri;
     private Uri imageUrl;
@@ -73,6 +77,7 @@ public class GroupInfoActivity extends AppCompatActivity {
     private List<String> users = new ArrayList();
     private List<String> usersId = new ArrayList<>();
     private List<String> currencies = new ArrayList();
+    private Currencies c = new Currencies();
     private int MY_PERMISSIONS_REQUEST_READ_CONTACTS=1;
     private Uri downloadUrl;
     private String gImage;
@@ -99,7 +104,7 @@ public class GroupInfoActivity extends AppCompatActivity {
         gImage = i.getStringExtra("imagePath");
         System.out.println("---->intent info"+i.getExtras());
         System.out.println(gId);
-
+        final FirebaseDatabase database = FirebaseDatabase.getInstance();
         if (getSupportActionBar() != null)
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle("Group Information");
@@ -133,10 +138,35 @@ public class GroupInfoActivity extends AppCompatActivity {
 
             }
         });
+        favourite = (CheckBox) findViewById(R.id.favourite);
+
+
+
+
+        favourite.setOnClickListener(new View.OnClickListener(){
+
+
+            @Override
+            public void onClick(View v) {
+                DatabaseReference favRef = database.getReference("Users").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("Groups").child(gId).child("favourite");
+
+                if(favourite.isChecked()){
+                    favRef.setValue("yes");
+                }
+                else{
+                    favRef.setValue("no");
+                }
+
+
+            }
+        });
+
+
+
         Button button = (Button) findViewById(R.id.addUserInExistingGroup);
         Button buttonDelete = (Button) findViewById(R.id.DeleteGroup);
         Button buttonLeave = (Button) findViewById(R.id.LeaveGroup);
-        final FirebaseDatabase database = FirebaseDatabase.getInstance();
+
         buttonDelete.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 Toast.makeText(GroupInfoActivity.this, "A notification has been sent to all the group's member", Toast.LENGTH_LONG).show();
@@ -164,10 +194,7 @@ public class GroupInfoActivity extends AppCompatActivity {
                                 findViewById(R.id.LeaveGroup).setVisibility(View.GONE);
                                 findViewById(R.id.okdeleted).setVisibility(View.VISIBLE);
                                 ActRef.push().setValue(new ActivityData(myname + " " + mysurname, "Group "+gName+ " has been successful deleted", Long.toString(System.currentTimeMillis()), "acceptdeletegroup", PolKey, gId));
-                                database.getReference("Groups").child(gId).removeValue();
-                                database.getReference("Expenses").child(gId).removeValue();
-                                database.getReference("Balance").child(gId).removeValue();
-                                database.getReference("Users").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("Groups").child(gId).removeValue();
+                                database.getReference("Users").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("Groups").child(gId).child("missing").setValue("yes");
 
                             }
                             //database.getReference("Groups").child(gId).removeValue();
@@ -213,10 +240,7 @@ public class GroupInfoActivity extends AppCompatActivity {
                                 findViewById(R.id.LeaveGroup).setVisibility(View.GONE);
                                 findViewById(R.id.okdeleted).setVisibility(View.VISIBLE);
                                 ActRef.push().setValue(new ActivityData(myname + " " + mysurname, myname + " " + mysurname + " has been successful deleted from group " + gName, Long.toString(System.currentTimeMillis()), "acceptleavegroup", PolKey, gId));
-                                database.getReference("Groups").child(gId).removeValue();
-                                database.getReference("Expenses").child(gId).removeValue();
-                                database.getReference("Balance").child(gId).removeValue();
-                                database.getReference("Users").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("Groups").child(gId).removeValue();
+                                database.getReference("Users").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("Groups").child(gId).child("missing").setValue("yes");
 
 
                             }
@@ -256,6 +280,20 @@ public class GroupInfoActivity extends AppCompatActivity {
 
         });*/
 
+        /*RecyclerView userRecyclerView = (RecyclerView) findViewById(R.id.users);
+        userRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        final UsersAdapter uAdapter = new UsersAdapter(users);
+        userRecyclerView.setAdapter(uAdapter);*/
+
+        final RecyclerView CurrenciesRecyclerView = (RecyclerView) findViewById(R.id.currencies);
+        CurrenciesRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+
+        RecyclerView userRecyclerView = (RecyclerView) findViewById(R.id.users);
+        userRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        final UserAdapterIm uAdapter = new UserAdapterIm(user_l);
+        userRecyclerView.setAdapter(uAdapter);
+
+
         namet=(TextView) findViewById(R.id.name_g);
         nameted = (EditText) findViewById(R.id.name_g_ed);
         desc = (TextView) findViewById(R.id.de_g);
@@ -265,8 +303,10 @@ public class GroupInfoActivity extends AppCompatActivity {
         myRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
+
+                it.polito.mad.mad_app.model.Group g = dataSnapshot.getValue(it.polito.mad.mad_app.model.Group.class);
                 Map<String, Object> map = (Map<String, Object>) dataSnapshot.getValue();
-                if(map!=null) {
+                if (map != null) {
                     nametmp = (String) map.get("name");
                     desctmp = (String) map.get("description");
                     namet.setText(nametmp);
@@ -284,6 +324,118 @@ public class GroupInfoActivity extends AppCompatActivity {
                             circle_image(getApplicationContext(),im,p);
                         }
                     }
+                }
+
+                //Group g = new Group((String)map.get("gId"),(String) map.get("surname"), (String)map.get("defaultCurrency"));
+
+                if (g.getCurrencies().size() != 0) {
+
+                    System.out.println(g.getCurrencies().toString());
+
+                    for (Entry<String, Float> e : g.getCurrencies().entrySet()) {
+                        if (e.getValue() == 0.0) {
+
+                            String s = "Primary Currency: " + c.getCurrencyString(e.getKey());
+                            currencies.add(s);
+                        } else {
+
+                            String s = c.getCurrencyString(e.getKey());
+                            currencies.add(s + " " + e.getValue());
+                        }
+
+                    }
+                    CurrenciesAdapter cAdapter = new CurrenciesAdapter(currencies);
+                    CurrenciesRecyclerView.setAdapter(cAdapter);
+                    cAdapter.notifyDataSetChanged();
+
+                } else {
+
+                    Toast.makeText(GroupInfoActivity.this, "No Currencies found!", Toast.LENGTH_LONG).show();
+
+                }
+
+                if (g.getMemberList().size() != 0) {
+
+                    for (final String k : g.getMemberList()) {
+
+
+                        FirebaseDatabase database3 = FirebaseDatabase.getInstance();
+                        DatabaseReference myRef3 = database3.getReference("Users").child(k);
+                        myRef3.addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                                Map<String, Object> map3 = (Map<String, Object>) dataSnapshot.getValue();
+
+                                if (map3 != null) {
+
+                                    String s = map3.get("name") + " " + map3.get("surname");
+                                    String fav = ((Map<String, String>)((Map<String, Object>)map3.get("Groups")).get(gId)).get("favourite");
+                                    if(fav!=null && fav.equals("yes") && k.equals(FirebaseAuth.getInstance().getCurrentUser().getUid())){
+                                        favourite.setChecked(true);
+                                    }
+                                    String p = null;
+
+                                    if (map3.get("imagePath") == null) {
+                                        p = "https://firebasestorage.googleapis.com/v0/b/allaromana-3f98e.appspot.com/o/group_default.png?alt=media&token=40bc93f4-6b97-466e-b130-e140f57c5895";
+                                    } else {
+                                        p = map3.get("imagePath").toString();
+                                    }
+
+                                    users.add(s);
+                                    user_l.add(new User(null, null, map3.get("name").toString(), map3.get("surname").toString(), p));
+                                    usersId.add(k);
+                                    uAdapter.notifyDataSetChanged();
+
+                                } else {
+
+                                    Toast.makeText(GroupInfoActivity.this, "no user key found!", Toast.LENGTH_LONG).show();
+
+                                }
+
+                            }
+
+                            @Override
+                            public void onCancelled(DatabaseError error) {
+                                // Failed to read value
+                                //log.w(TAG, "Failed to read value.", error.toException());
+                            }
+                        });
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError error) {
+                // Failed to read value
+                //log.w(TAG, "Failed to read value.", error.toException());
+            }
+        });
+
+
+
+                /*Map<String, Object> map = (Map<String, Object>) dataSnapshot.getValue();
+
+                if(map!=null) {
+
+                    System.out.println(map.toString());
+
+                    nametmp = (String) map.get("name");
+                    desctmp = (String) map.get("description");
+                    namet.setText(nametmp);
+                    desc.setText(desctmp);
+
+                    String p = (String) map.get("imagePath");
+                    image = p;
+
+                    if (p == null) {
+                        im.setImageResource(R.drawable.group_default);
+                    } else {
+                        Glide
+                                .with(getApplicationContext())
+                                .load(p)
+                                .into(im);
+                    }
 
 
                     //Group g = new Group((String)map.get("gId"),(String) map.get("surname"), (String)map.get("defaultCurrency"));
@@ -291,90 +443,8 @@ public class GroupInfoActivity extends AppCompatActivity {
                     //if(progressBar.isActivated())
                     //progressBar.setVisibility(View.INVISIBLE);
                     //gAdapter.notifyDataSetChanged();
-                }
-            }
+                }*/
 
-            @Override
-            public void onCancelled(DatabaseError error) {
-                // Failed to read value
-                //log.w(TAG, "Failed to read value.", error.toException());
-            }
-        });
-
-
-
-
-        RecyclerView userRecyclerView = (RecyclerView) findViewById(R.id.users);
-        userRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-        final UserAdapterIm uAdapter = new UserAdapterIm(user_l);
-        userRecyclerView.setAdapter(uAdapter);
-
-        FirebaseDatabase database2 = FirebaseDatabase.getInstance();
-        DatabaseReference myRef2 = database2.getReference("Groups").child(gId).child("members");
-        myRef2.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-
-                Map<String, Object> map2 = (Map<String, Object>) dataSnapshot.getValue();
-                if(map2!=null) {
-                    for (final String k : map2.keySet()){
-                        FirebaseDatabase database3 = FirebaseDatabase.getInstance();
-                        DatabaseReference myRef3 = database3.getReference("Users").child(k);
-                        myRef3.addListenerForSingleValueEvent(new ValueEventListener() {
-                            @Override
-                            public void onDataChange(DataSnapshot dataSnapshot) {
-                                Map<String, Object> map3 = (Map<String, Object>) dataSnapshot.getValue();
-                                if(map3!=null) {
-                                    String p=null;
-                                    if(map3.get("imagePath")==null){
-                                        p="https://firebasestorage.googleapis.com/v0/b/allaromana-3f98e.appspot.com/o/group_default.png?alt=media&token=40bc93f4-6b97-466e-b130-e140f57c5895";
-                                    }else{
-                                        p= map3.get("imagePath").toString();
-                                    }
-                                    String s = map3.get("name")+" "+map3.get("surname");
-                                    users.add(s);
-                                    user_l.add(new User(null,null,map3.get("name").toString(),map3.get("surname").toString(),p));
-                                    usersId.add(k);
-                                    uAdapter.notifyDataSetChanged();
-                                }
-                                else{
-                                    Toast.makeText(GroupInfoActivity.this, "no user key found!", Toast.LENGTH_LONG).show();
-                                }
-                            }
-
-                            @Override
-                            public void onCancelled(DatabaseError databaseError) {
-
-                            }
-                        });
-
-
-                    }
-
-
-                    uAdapter.notifyDataSetChanged();
-                }
-                else{
-                    Toast.makeText(GroupInfoActivity.this, "no users found!", Toast.LENGTH_LONG).show();
-
-                }
-            }
-
-            @Override
-            public void onCancelled(DatabaseError error) {
-                // Failed to read value
-                //log.w(TAG, "Failed to read value.", error.toException());
-            }
-        });
-
-
-        //TODO ADAPTER CURRENCIES QUANDO SARANNO GESTITE
-        /*
-        RecyclerView CurrenciesRecyclerView = (RecyclerView) findViewById(R.id.currencies);
-        CurrenciesRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-        final CurrenciesAdapter cAdapter = new CurrenciesAdapter(currencies);
-        CurrenciesRecyclerView.setAdapter(cAdapter);
-        */
 
         //TODO CLICKLISTENER DEL RECYCLERVIEW PER APRIRE LA USERINFORMATIONACTIVITY
         namet.setOnClickListener(new View.OnClickListener() {
@@ -417,7 +487,6 @@ public class GroupInfoActivity extends AppCompatActivity {
 
             }
         }));
-
     }
 
     private void checkPermission() {
@@ -561,6 +630,7 @@ public class GroupInfoActivity extends AppCompatActivity {
                         myRef3.setValue(newname);
                         myRef3 = database3.getReference("Users").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("Groups").child(gId).child("name");
                         myRef3.setValue(newname);
+
                         //GD.setName(newname);
                         //MainData.getInstance().changeGroupName(GroupName, newname);
                         gName = newname;

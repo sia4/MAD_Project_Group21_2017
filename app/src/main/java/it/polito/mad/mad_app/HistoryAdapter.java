@@ -1,6 +1,5 @@
 package it.polito.mad.mad_app;
 
-import android.content.Intent;
 import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -8,30 +7,25 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.google.firebase.auth.FirebaseAuth;
-
 import java.sql.Date;
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.List;
 
 import it.polito.mad.mad_app.model.ExpenseData;
-import it.polito.mad.mad_app.model.MainData;
 
 public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.MyViewHolder> {
 
     private List<ExpenseData> expenseData;
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
-        public TextView name_ex, data_ex,  money_ex, impact_ex,creator_ex, contested_ex;
+        public TextView name_ex, data_ex,  money_ex,creator_ex, contested_ex;
 
         public MyViewHolder(View view) {
             super(view);
             name_ex = (TextView) view.findViewById(R.id.name_ex);
             data_ex = (TextView) view.findViewById(R.id.data_ex);
             money_ex = (TextView) view.findViewById(R.id.money_ex);
-            impact_ex = (TextView) view.findViewById(R.id.impact_ex);
+
             creator_ex = (TextView) view.findViewById(R.id.creator_ex);
             contested_ex = (TextView) view.findViewById(R.id.contested_ex);
         }
@@ -55,24 +49,23 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.MyViewHo
         final ExpenseData expense = expenseData.get(position);
         holder.name_ex.setText(expense.getName());
 
-        SimpleDateFormat sdf = new SimpleDateFormat("MMM dd,yyyy HH:mm");
+        SimpleDateFormat sdf = new SimpleDateFormat("MMM dd, yyyy HH:mm");
         Date resultdate = new Date(new Long(expense.getDate()));
 
         holder.data_ex.setText(sdf.format(resultdate));
-        holder.money_ex.setText(expense.getMyvalue());
+        String tmp = expense.getCurrencyRow();
+        if (tmp.length() != 0) {
+            holder.money_ex.setText(expense.getValue() + " " + tmp.substring(tmp.length() - 1));
+        } else {
+            holder.money_ex.setText(expense.getValue());
+        }
         holder.creator_ex.setText(expense.getCreator());
-        if(expense.getCreatorId().equals(FirebaseAuth.getInstance().getCurrentUser().getUid())) {
-            holder.impact_ex.setTextColor(Color.parseColor("#27B011"));
-            holder.money_ex.setTextColor(Color.parseColor("#27B011"));
-        }
-        else
-        {
-            holder.impact_ex.setTextColor(Color.parseColor("#D51111"));
-            holder.money_ex.setTextColor(Color.parseColor("#D51111"));
-        }
 
-        if(expense.getContested() != null && expense.getContested().equals("yes"))
-            holder.contested_ex.setVisibility(View.VISIBLE);
+        if(expense.getContested() != null && expense.getContested().equals("yes")) {
+            holder.itemView.setBackgroundColor(Color.parseColor("#E8D1D1"));
+        } else {
+            holder.itemView.setBackgroundColor(Color.WHITE);
+        }
 
     }
 
