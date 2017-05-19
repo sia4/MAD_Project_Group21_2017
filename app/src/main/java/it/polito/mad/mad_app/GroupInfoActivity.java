@@ -9,6 +9,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Parcelable;
+import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -43,6 +44,7 @@ import com.google.firebase.storage.UploadTask;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
@@ -108,12 +110,12 @@ public class GroupInfoActivity extends AppCompatActivity {
             @Override
             public void onClick(View arg0) {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && checkSelfPermission(android.Manifest.permission.READ_EXTERNAL_STORAGE)
-                        != PackageManager.PERMISSION_GRANTED) {
+                        != PackageManager.PERMISSION_GRANTED &&  checkSelfPermission(android.Manifest.permission.WRITE_EXTERNAL_STORAGE) !=PackageManager.PERMISSION_GRANTED ) {
                     if (shouldShowRequestPermissionRationale(
                             android.Manifest.permission.READ_EXTERNAL_STORAGE)) {
                     }
 
-                    requestPermissions(new String[]{android.Manifest.permission.READ_EXTERNAL_STORAGE},
+                    requestPermissions(new String[]{android.Manifest.permission.READ_EXTERNAL_STORAGE,android.Manifest.permission.WRITE_EXTERNAL_STORAGE},
                             MY_PERMISSIONS_REQUEST_READ_CONTACTS);
                     return;
                 }
@@ -450,10 +452,12 @@ public class GroupInfoActivity extends AppCompatActivity {
                 if (isCamera) {imageUrl = outputFileUri;
                     ImageC = true;
                     final PackageManager pManager = getPackageManager();
-                    Intent cropIntent=performCrop(imageUrl,pManager);
+                    List<Intent> cropIntent=performCrop(imageUrl,pManager);
                     if(cropIntent!=null){
-                        final Intent cIntent = Intent.createChooser(cropIntent, "Tha image should be cropped,select a source");
-                        startActivityForResult(cIntent , 2);
+                        final Intent chooserIntent = Intent.createChooser(cropIntent.get(cropIntent.size()-1), "La foto va ritagliata");
+                        cropIntent.remove(cropIntent.size()-1);
+                        chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, cropIntent.toArray(new Parcelable[cropIntent.size()]));
+                        startActivityForResult(chooserIntent , 2);
                     }
                     else{
                         Toast toast = Toast.makeText(this, "This device doesn't support the crop action!", Toast.LENGTH_SHORT);
@@ -465,9 +469,12 @@ public class GroupInfoActivity extends AppCompatActivity {
                         selectedImageUri = data.getData();
                         imageUrl= selectedImageUri;
                         final PackageManager pManager = getPackageManager();
-                        Intent cropIntent=performCrop(imageUrl,pManager);
+                        List<Intent> cropIntent=performCrop(imageUrl,pManager);
                         if(cropIntent!=null){
-                            startActivityForResult(cropIntent , 2);
+                            final Intent chooserIntent = Intent.createChooser(cropIntent.get(cropIntent.size()-1), "La foto va ritagliata");
+                            cropIntent.remove(cropIntent.size()-1);
+                            chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, cropIntent.toArray(new Parcelable[cropIntent.size()]));
+                            startActivityForResult(chooserIntent , 2);
                         }
                         else{
                             Toast toast = Toast.makeText(this, "This device doesn't support the crop action!", Toast.LENGTH_SHORT);
@@ -478,11 +485,25 @@ public class GroupInfoActivity extends AppCompatActivity {
                 }
             }else if(requestCode==CROP_PIC){
                 Bundle extras = data.getExtras();
-                Bitmap thePic = extras.getParcelable("data");
-                final ImageView picView = (ImageView) findViewById(R.id.im_g);
-                //picView.setImageBitmap(thePic);
-                create_image(outputFileUri,thePic);
-                circle_image(getApplicationContext(),picView,outputFileUri);
+                if(extras==null){
+                    selectedImageUri = data.getData();
+                    Bitmap photo = null;
+                    try {
+                        photo = MediaStore.Images.Media.getBitmap(this.getContentResolver(), selectedImageUri);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    System.out.println("................." + photo);
+                    ImageView imageG = (ImageView) findViewById(R.id.ImageG);
+                    imageG.setImageBitmap(photo);
+
+                }else{
+                    Bitmap thePic = extras.getParcelable("data");
+                    final ImageView picView = (ImageView) findViewById(R.id.im_g);
+                    //picView.setImageBitmap(thePic);
+                    create_image(outputFileUri,thePic);
+                    circle_image(getApplicationContext(),picView,outputFileUri);
+                }
             }
         }
     }
@@ -493,7 +514,7 @@ public class GroupInfoActivity extends AppCompatActivity {
             case 1: {
                 // If request is cancelled, the result arrays are empty.
                 if (grantResults.length > 0
-                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED && grantResults[1]==PackageManager.PERMISSION_GRANTED) {
 
                     // permission was granted, yay! Do the
                     // contacts-related task you need to do.
@@ -585,8 +606,10 @@ public class GroupInfoActivity extends AppCompatActivity {
                                 myRef.setValue(downloadUrl.toString());
                                 System.out.println("------------>GroupPAth"+"Groups/"+ gId + "/imagePath"+ downloadUrl);
                                 System.out.println("------------>UserPAth"+"Users/"+ FirebaseAuth.getInstance().getCurrentUser().getUid()+"/"+gId + "/imagePath"+ downloadUrl);
-                                DatabaseReference myRef2 = database.getReference("Users/"+ FirebaseAuth.getInstance().getCurrentUser().getUid()+"/Groups/"+gId + "/imagePath");
-                                myRef2.setValue(downloadUrl.toString());
+                                for(String u:usersId){
+                                    DatabaseReference myRef2 = database.getReference("Users/"+ u+"/Groups/"+gId + "/imagePath");
+                                    myRef2.setValue(downloadUrl.toString());
+                                }
                                 Intent in = new Intent(GroupInfoActivity.this, GroupActivity.class);
                                 in.putExtra("groupId", gId);
                                 in.putExtra("groupName", gName);

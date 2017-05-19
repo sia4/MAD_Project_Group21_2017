@@ -258,7 +258,7 @@ public class InsertGroupActivity extends AppCompatActivity {
                     imageC = true;
                     imageUrl = outputFileUri;
                     final PackageManager pManager = getPackageManager();
-                    Intent cropIntent=performCrop(imageUrl,pManager);
+                    /*Intent cropIntent=performCrop(imageUrl,pManager);
                     if(cropIntent!=null){
                         final Intent cIntent = Intent.createChooser(cropIntent, "Tha image should be cropped,select a source");
                         startActivityForResult(cIntent , 2);
@@ -266,20 +266,20 @@ public class InsertGroupActivity extends AppCompatActivity {
                     else{
                         Toast toast = Toast.makeText(this, "This device doesn't support the crop action!", Toast.LENGTH_SHORT);
                         toast.show();
-                    }
+                    }*/
                 } else {
                     imageC = true;
                     selectedImageUri = data.getData();
                     imageUrl= selectedImageUri;
                     final PackageManager pManager = getPackageManager();
-                    Intent cropIntent=performCrop(imageUrl,pManager);
+                    /*Intent cropIntent=performCrop(imageUrl,pManager);
                     if(cropIntent!=null){
                         startActivityForResult(cropIntent , 2);
                     }
                     else{
                         Toast toast = Toast.makeText(this, "This device doesn't support the crop action!", Toast.LENGTH_SHORT);
                         toast.show();
-                    }
+                    }*/
 
                 }
             }else if(requestCode == CROP_PIC){
