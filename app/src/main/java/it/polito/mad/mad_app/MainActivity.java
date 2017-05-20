@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
@@ -25,7 +26,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -309,20 +312,43 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
-
+        EditText search_text = (EditText) findViewById(R.id.search_text);
+        Button back_search = (Button) findViewById(R.id.back_search);
+        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+        FloatingActionButton addGroup = (FloatingActionButton)findViewById(R.id.addGroup);
         if (id == R.id.action_settings) {
             return true;
         }
 
         switch (id) {
+            case R.id.back_search:
+                search_text.setVisibility(View.GONE);
+                back_search.setVisibility(View.GONE);
+                addGroup.setVisibility(View.VISIBLE);
+                imm.hideSoftInputFromWindow(search_text.getWindowToken(), 0);
+
+                return true;
+
             case R.id.action_search:
-                EditText search_text = (EditText) findViewById(R.id.search_text);
-                search_text.setVisibility(View.VISIBLE);
-                FloatingActionButton addGroup = (FloatingActionButton)findViewById(R.id.addGroup);
-                addGroup.setVisibility(View.GONE);
-                search_text.requestFocus();
-                InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-                imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_IMPLICIT_ONLY);
+                if(search_text.getVisibility()==View.GONE) {
+                    search_text.setVisibility(View.VISIBLE);
+                    addGroup.setVisibility(View.GONE);
+                    search_text.requestFocus();
+                    imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_IMPLICIT_ONLY);
+                    back_search.setVisibility(View.VISIBLE);//TODO ho problemi a rendere back_search cliccabile
+                }
+                else{
+                    if(search_text.getText().toString().equals("")) {
+                        search_text.setVisibility(View.GONE);
+                        back_search.setVisibility(View.GONE);
+                        addGroup.setVisibility(View.VISIBLE);
+                        imm.hideSoftInputFromWindow(search_text.getWindowToken(), 0);
+                    }
+                    else{
+                        //TODO FARE QUERY SU DB DELLA RICERCA EFFETTUATA E AGGIORNARE ADAPTER
+                    }
+                }
+
                 return true;
 
             default:
