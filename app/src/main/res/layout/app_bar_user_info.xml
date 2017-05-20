@@ -41,6 +41,7 @@
                 android:gravity="left"
                 android:textAlignment="gravity"
                 android:textSize="20sp"
+                android:inputType="text"
                 android:textColor="#FFFFFF"
                 android:visibility="gone"
                 android:hint="Search..."
