@@ -8,6 +8,9 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.FirebaseDatabase;
+
 import java.sql.Date;
 import java.text.SimpleDateFormat;
 import java.util.List;
@@ -60,11 +63,12 @@ public class ActivitiesAdapter extends RecyclerView.Adapter<ActivitiesAdapter.My
         else{
             holder.viewMore.setVisibility(View.GONE);
         }
+
         if(activity.getRead().equals("no")){
-            holder.itemView.setBackgroundColor(Color.parseColor("#D6D5D5"));
+
+            holder.itemView.setBackgroundColor(Color.parseColor("#FCF4F4"));
         }
-        else
-            holder.itemView.setBackgroundColor(Color.WHITE);
+
     }
 
     @Override

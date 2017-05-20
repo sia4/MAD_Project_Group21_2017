@@ -32,6 +32,7 @@ public class ActivitiesFragment extends Fragment {
     private Map<String, ActivityData> m_activities = new TreeMap<>();
     private String groupName;
     private Map<String, Map<String, Object>> userGroups = new TreeMap<>();
+    private  Map<String, Map<String, String>> activitiesMap;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -59,7 +60,7 @@ public class ActivitiesFragment extends Fragment {
                         myRef3.addValueEventListener(new ValueEventListener() {
                             @Override
                             public void onDataChange(DataSnapshot dataSnapshot) {
-                                Map<String, Map<String, String>> activitiesMap = (Map<String, Map<String, String>>) dataSnapshot.getValue();
+                                activitiesMap = (Map<String, Map<String, String>>) dataSnapshot.getValue();
                                 Log.d("Activities Fragment", "Dentro il listener - groupName: "+ groupName);
 
                                 if(activitiesMap != null) {
@@ -84,12 +85,12 @@ public class ActivitiesFragment extends Fragment {
                                         read = activitiesMap.get(j).get("read");
                                         ActivityData a = new ActivityData(tmpc, tmpt, tmpd, tmpty, tmpid, tmpgid);
                                         a.setGroupName(groupName);
+                                        a.setActivityId(j);
+
                                         if(read!=null)
                                             a.setRead(read);
                                         else
                                             a.setRead("no");
-
-                                        database3.getReference("Activities").child(uId).child(j).child("read").setValue("yes");
 
                                         m_activities.put(j, a);
 
@@ -122,6 +123,7 @@ public class ActivitiesFragment extends Fragment {
         recyclerView.addOnItemTouchListener(new RecyclerTouchListener(context, recyclerView, new RecyclerTouchListener.ClickListener() {
             @Override
             public void onClick(View view, int position) {
+                FirebaseDatabase.getInstance().getReference("Activities").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child(activities.get(position).getActivityId()).child("read").setValue("yes");
 
                 String type = activities.get(position).getType();
                 if(type.equals("expense")||type.equals("contest")) {

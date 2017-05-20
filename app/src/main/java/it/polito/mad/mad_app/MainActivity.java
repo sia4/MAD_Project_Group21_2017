@@ -242,6 +242,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                 fab.setVisibility(View.VISIBLE);
                                 break;
                             case 1:
+
                                 fab.setVisibility(View.INVISIBLE);
                                 break;
                             default:
