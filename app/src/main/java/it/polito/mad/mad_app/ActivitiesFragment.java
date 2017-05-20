@@ -10,6 +10,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -74,7 +76,7 @@ public class ActivitiesFragment extends Fragment {
                                     Log.d("Activities Fragment", "Dentro il listener - activities: "+ activitiesMap);
 
                                     String tmpc, tmpt, tmpd, tmpty, tmpid, tmpgid, read;
-
+                                    int toRead = 0;
                                     for(String j : activitiesMap.keySet()){
                                         tmpc = activitiesMap.get(j).get("creator");
                                         tmpt = activitiesMap.get(j).get("text");
@@ -87,15 +89,22 @@ public class ActivitiesFragment extends Fragment {
                                         a.setGroupName(groupName);
                                         a.setActivityId(j);
 
-                                        if(read!=null)
+                                        if(read!=null) {
                                             a.setRead(read);
-                                        else
+                                            if(read.equals("no")) toRead++;
+                                        }
+                                        else {
                                             a.setRead("no");
+                                            toRead++;
+                                        }
 
                                         m_activities.put(j, a);
 
 
                                     }
+                                    String ss = String.format("activities to read: %d", toRead);
+                                    System.out.println(ss);
+
                                     activities.clear();
                                     activities.addAll(m_activities.values());
                                     Collections.sort(activities);
