@@ -4,6 +4,7 @@
     android:layout_height="match_parent"
     xmlns:tools="http://schemas.android.com/tools"
     tools:context=".MainActivity">
+
     <!--<android.support.design.widget.AppBarLayout
         android:id="@+id/appbar"
         android:layout_below="@+id/my_toolbar"
@@ -50,6 +51,7 @@
         android:id="@+id/pager"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
+
 
     <!--<android.support.v4.widget.NestedScrollView
         android:layout_width="match_parent"

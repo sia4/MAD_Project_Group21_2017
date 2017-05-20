@@ -1,6 +1,7 @@
 package it.polito.mad.mad_app;
 
 import android.app.SearchManager;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
@@ -22,6 +23,9 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -310,7 +314,20 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             return true;
         }
 
-        return super.onOptionsItemSelected(item);
+        switch (id) {
+            case R.id.action_search:
+                EditText search_text = (EditText) findViewById(R.id.search_text);
+                search_text.setVisibility(View.VISIBLE);
+                FloatingActionButton addGroup = (FloatingActionButton)findViewById(R.id.addGroup);
+                addGroup.setVisibility(View.GONE);
+                search_text.requestFocus();
+                InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_IMPLICIT_ONLY);
+                return true;
+
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
     @Override
