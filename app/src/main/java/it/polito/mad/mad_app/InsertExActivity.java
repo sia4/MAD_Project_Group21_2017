@@ -413,6 +413,8 @@ public class InsertExActivity extends AppCompatActivity {
                 category = Tcategory.getSelectedItem().toString();
                 currency = Tcurrency.getSelectedItem().toString();
                 algorithm = Talgorithm.getSelectedItem().toString();
+                final float cambio = Cambi.get(currency);
+
                 if(name.equals("")) {
                     Toast.makeText(InsertExActivity.this, "Please insert name.", Toast.LENGTH_LONG).show();
                 } else if(currency.equals("Select currency")) {
@@ -424,8 +426,14 @@ public class InsertExActivity extends AppCompatActivity {
                 } else {
                     value = Double.valueOf(Tvalue.getText().toString());
                     System.out.println("valuebuggggggggggggggggggg " + value);
+
                     if (algorithm.equals("equally")) {
                         v = value / users.size();
+
+                        if (cambio != 0) {
+                            v *= cambio;
+                        }
+
                         for (UserData k : users) {
                             values.put(k.getuId(), v);
                         }
@@ -438,23 +446,35 @@ public class InsertExActivity extends AppCompatActivity {
                             View view = userRecyclerView.getChildAt(i);
                             EditText EditValue = (EditText) view.findViewById(R.id.alg_value);
                             if (EditValue.getText().toString().equals("")) {
+
                                 algValue = 0;
                                 myvalue = 0;
-                                if (algorithm.equals("by percentuage"))
-                                    values.put(users.get(i).getuId(), algValue);
-                                else
-                                    values.put(users.get(i).getuId(), algValue);
+                                values.put(users.get(i).getuId(), algValue);
+
                             } else {
+
                                 algValue = Float.parseFloat(EditValue.getText().toString());
 
                                 if (algorithm.equals("by percentuage")) {
-                                    values.put(users.get(i).getuId(), value * algValue / 100);
+                                    double tmp = value * algValue / 100;
+                                    if (cambio != 0) {
+                                        tmp *= cambio;
+                                    }
+                                    values.put(users.get(i).getuId(), tmp);
                                     if (users.get(i).getuId().equals(mAuth.getCurrentUser().getUid()))
-                                        myvalue = value * algValue / 100;
+                                        myvalue = tmp;
                                 } else {
+                                    if (cambio != 0) {
+                                        algValue *= cambio;
+                                    }
                                     values.put(users.get(i).getuId(), algValue);
-                                    if (users.get(i).getuId().equals(mAuth.getCurrentUser().getUid()))
+                                    if (users.get(i).getuId().equals(mAuth.getCurrentUser().getUid())) {
                                         myvalue = value;
+                                        if (cambio != 0) {
+                                            myvalue *= cambio;
+                                        }
+                                    }
+
                                 }
                             }
                             algSum += algValue;
@@ -508,7 +528,7 @@ public class InsertExActivity extends AppCompatActivity {
                             myRef.setValue(Long.toString(System.currentTimeMillis()).toString());
                         }
 
-                        final float cambio = Cambi.get(currency);
+                        //final float cambio = Cambi.get(currency);
                         final FirebaseDatabase database3 = FirebaseDatabase.getInstance();
                         DatabaseReference myRef3 = database3.getReference("Balance").child(Gname);
                         System.out.println("Path "+myRef3);
@@ -530,10 +550,6 @@ public class InsertExActivity extends AppCompatActivity {
                                             System.out.println("buttonnnnnnn1 " + value1);
                                             System.out.println("buttonnnnnnn2 " + value2);
                                             value3 = values.get(u.getuId()).floatValue();
-
-                                            if (cambio != 0) {
-                                                value3 *= cambio;
-                                            }
 
                                             value1 = value1 + value3;
                                             value2 = value2 - value3;

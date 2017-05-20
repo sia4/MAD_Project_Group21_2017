@@ -62,7 +62,7 @@ public class ImageMethod {
         return cameraIntents;
     }
 
-    public static Intent performCrop(Uri imageUrl,PackageManager p) {
+    public static List<Intent> performCrop(Uri imageUrl,PackageManager p) {
         try {
             List<Intent> photoIntents=new ArrayList<>();
             Intent cropIntent = new Intent("com.android.camera.action.CROP");
@@ -80,11 +80,12 @@ public class ImageMethod {
                 intent.setComponent(new ComponentName(packageName, res.activityInfo.name));
                 photoIntents.add(intent);
             }//
-            if(photoIntents.size()>1){
+            /*if(photoIntents.size()>1){
                 return photoIntents.get(0);
             }else{
                 return cropIntent;
-            }
+            }*/
+            return photoIntents;
         }
         catch (ActivityNotFoundException anfe) {
             return null;

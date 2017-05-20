@@ -36,6 +36,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import it.polito.mad.mad_app.model.PagerAdapter;
+import it.polito.mad.mad_app.model.ServiceManager;
 import it.polito.mad.mad_app.model.User;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener{
@@ -54,7 +55,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         //FirebaseDatabase.getInstance().setPersistenceEnabled(true);
         Firebase_DB = FirebaseDatabase.getInstance().getReference();
         mAuth = FirebaseAuth.getInstance();
-
         CheckLoggedUser();
 
         //TODO correzione: serve un listener qui?
@@ -79,6 +79,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             }
         };
         super.onCreate(savedInstanceState);
+        String key=mAuth.getCurrentUser().getUid();
+        System.out.println("----->"+key);
+        Intent intent = new Intent(MainActivity.this, ServiceManager.class);
+        startService(intent);
         setContentView(R.layout.activity_user_info);
 
         //set toolbar
