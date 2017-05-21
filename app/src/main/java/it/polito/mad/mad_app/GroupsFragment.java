@@ -8,12 +8,17 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -30,6 +35,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import it.polito.mad.mad_app.model.MainData;
 import it.polito.mad.mad_app.model.RecyclerTouchListener;
 
 import static android.view.View.GONE;
@@ -38,7 +44,7 @@ import static android.view.View.VISIBLE;
 
 
 public class GroupsFragment extends Fragment {
-
+    static private EditText search_text;
     public class GroupModel implements Comparable<GroupModel> {
         String groupId;
         String groupName;
@@ -117,7 +123,8 @@ public class GroupsFragment extends Fragment {
 
         Context context;
         final View view = inflater.inflate(R.layout.fragment_groups, container, false);
-
+        final View viewMain = inflater.inflate(R.layout.app_bar_user_info, container, false);
+        search_text = (EditText) viewMain.findViewById(R.id.search_text);
         progressBar = (ProgressBar) view.findViewById(R.id.progress_bar_groups);
 
         final FirebaseUser currentFUser = FirebaseAuth.getInstance().getCurrentUser();
@@ -125,6 +132,9 @@ public class GroupsFragment extends Fragment {
             uKey = currentFUser.getUid();
 
         context = view.getContext();
+
+
+
         final RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.Groups);
         recyclerView.setLayoutManager(new LinearLayoutManager(context));
         recyclerView.addItemDecoration(new DividerItemDecoration(context, LinearLayoutManager.VERTICAL));
@@ -136,7 +146,9 @@ public class GroupsFragment extends Fragment {
         recyclerView.setAdapter(gAdapter);
 
         FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference myRef = database.getReference("Users").child(uKey).child("Groups");
+        final DatabaseReference myRef = database.getReference("Users").child(uKey).child("Groups");
+
+        System.out.println("search_text: "+ MainData.getInstance().getGroupsFragmentData());
 
         myRef.addValueEventListener(new ValueEventListener() {
             @Override
@@ -155,6 +167,8 @@ public class GroupsFragment extends Fragment {
                     no_fav_groups.clear();
                     fav_groups.clear();
 
+
+
                     Log.d("Groups Fragment", "Svuoto vettore gruppi");
                     for (Map.Entry<String, Object> k : map.entrySet()) {
                         String name = (String) ((Map<String, Object>) k.getValue()).get("name");
@@ -168,23 +182,26 @@ public class GroupsFragment extends Fragment {
                         if(dateLastOperation == null)
                             dateLastOperation = "";
 
-                            Log.d("Groups Fragment", "dati: " + name + " " + lastOperation + " " + dateLastOperation);
-                            if (missing == null) {
-                                    if(favourite!=null && favourite.equals("yes"))
-                                        fav_groups.add(new GroupModel(k.getKey(), name, imagePath, lastOperation, dateLastOperation, favourite));
+                        Log.d("Groups Fragment", "dati: " + name + " " + lastOperation + " " + dateLastOperation);
 
-                                    else
-                                        no_fav_groups.add(new GroupModel(k.getKey(), name, imagePath, lastOperation, dateLastOperation, favourite));
-                            }
-                            else {
-                                if (missing.equals("no")){
-                                    if(favourite!=null && favourite.equals("yes"))
+                        if(name.contains(MainData.getInstance().getGroupsFragmentData())) {
+                            if (missing == null) {
+                                if (favourite != null && favourite.equals("yes"))
+                                    fav_groups.add(new GroupModel(k.getKey(), name, imagePath, lastOperation, dateLastOperation, favourite));
+
+                                else
+                                    no_fav_groups.add(new GroupModel(k.getKey(), name, imagePath, lastOperation, dateLastOperation, favourite));
+                            } else {
+                                if (missing.equals("no")) {
+                                    if (favourite != null && favourite.equals("yes"))
                                         fav_groups.add(new GroupModel(k.getKey(), name, imagePath, lastOperation, dateLastOperation, favourite));
                                     else
                                         no_fav_groups.add(new GroupModel(k.getKey(), name, imagePath, lastOperation, dateLastOperation, favourite));
 
                                 }
-                          }
+                            }
+                        }
+
                         Collections.sort(no_fav_groups);
                         Collections.sort(fav_groups);
                         groups.clear();

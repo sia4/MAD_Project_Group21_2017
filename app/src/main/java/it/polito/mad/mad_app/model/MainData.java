@@ -17,7 +17,7 @@ public class MainData {
     private Map<String, GroupData> lGroups = new TreeMap<>();
     private Map<String, UserData> lUser = new TreeMap<>();
     private List<ActivityData> lActivities = new ArrayList<>();
-
+    private String GroupsFragmentData ="";
     public static MainData getInstance() {
         return ourInstance;
     }
@@ -113,7 +113,8 @@ public class MainData {
 
     //public void addActivity(String email, String text, String date){this.lActivities.add(new ActivityData(email, text, date));    }
     public List<ActivityData> getActivitiesList(){return lActivities;}
-
+    public void setGroupsFragmentData(String search_text){this.GroupsFragmentData=search_text;}
+    public String getGroupsFragmentData(){return  this.GroupsFragmentData;}
     public List<GroupData> getGroupList(){
         return new ArrayList<GroupData>(lGroups.values());
     }

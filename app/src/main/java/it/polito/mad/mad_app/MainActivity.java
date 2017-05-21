@@ -10,6 +10,9 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.support.v4.view.GravityCompat;
@@ -45,6 +48,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import it.polito.mad.mad_app.model.MainData;
 import it.polito.mad.mad_app.model.PagerAdapter;
 import it.polito.mad.mad_app.model.ServiceManager;
 import it.polito.mad.mad_app.model.User;
@@ -313,7 +317,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         EditText search_text = (EditText) findViewById(R.id.search_text);
-        Button back_search = (Button) findViewById(R.id.back_search);
+
         InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
         FloatingActionButton addGroup = (FloatingActionButton)findViewById(R.id.addGroup);
         if (id == R.id.action_settings) {
@@ -322,8 +326,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         switch (id) {
             case R.id.back_search:
+                search_text.setText("");
+                MainData.getInstance().setGroupsFragmentData("");
                 search_text.setVisibility(View.GONE);
-                back_search.setVisibility(View.GONE);
+                item.setVisible(false);
                 addGroup.setVisibility(View.VISIBLE);
                 imm.hideSoftInputFromWindow(search_text.getWindowToken(), 0);
 
@@ -331,22 +337,67 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
             case R.id.action_search:
                 if(search_text.getVisibility()==View.GONE) {
+                   MenuItem i = (MenuItem)findViewById(R.id.back_search);
+                   // i.setVisible(true);
+
                     search_text.setVisibility(View.VISIBLE);
                     addGroup.setVisibility(View.GONE);
                     search_text.requestFocus();
                     imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_IMPLICIT_ONLY);
-                    back_search.setVisibility(View.VISIBLE);//TODO ho problemi a rendere back_search cliccabile
-                }
+
+
+
+        }
                 else{
-                    if(search_text.getText().toString().equals("")) {
-                        search_text.setVisibility(View.GONE);
-                        back_search.setVisibility(View.GONE);
+
+
                         addGroup.setVisibility(View.VISIBLE);
                         imm.hideSoftInputFromWindow(search_text.getWindowToken(), 0);
-                    }
-                    else{
-                        //TODO FARE QUERY SU DB DELLA RICERCA EFFETTUATA E AGGIORNARE ADAPTER
-                    }
+
+                        System.out.println("search_text value: "+search_text.getText().toString());
+                        MainData.getInstance().setGroupsFragmentData(search_text.getText().toString());
+                        PagerAdapter mPagerAdapter = new PagerAdapter(getSupportFragmentManager());
+                        final TabLayout tabL = (TabLayout) findViewById(R.id.tabs);
+                        final TabLayout.OnTabSelectedListener OnT=new TabLayout.OnTabSelectedListener(){
+                            @Override
+                            public void onTabSelected(TabLayout.Tab tab) {
+                                mViewPager.setCurrentItem(tab.getPosition());
+
+                            }
+
+                            @Override
+                            public void onTabUnselected(TabLayout.Tab tab) {
+
+                            }
+
+                            @Override
+                            public void onTabReselected(TabLayout.Tab tab) {
+
+                            }
+                        };
+                        mViewPager = (ViewPager) findViewById(R.id.pager);
+                        mViewPager.setAdapter(mPagerAdapter);
+                        tabL.setupWithViewPager(mViewPager);
+                        mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+                            @Override
+                            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+                                tabL.addOnTabSelectedListener(OnT);
+                            }
+
+                            @Override
+                            public void onPageSelected(int position) {
+
+                            }
+
+                            @Override
+                            public void onPageScrollStateChanged(int state) {
+
+                            }
+                        });
+
+
+
+
                 }
 
                 return true;

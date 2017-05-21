@@ -20,17 +20,7 @@
             android:background="?attr/colorPrimary"
             app:popupTheme="@style/PopupTheme">
 
-            <Button
-                android:id="@+id/back_search"
-                android:layout_height="24dp"
-                android:layout_width="24dp"
-                android:title="search"
-                android:clickable="true"
-                android:importantForAccessibility="yes"
-                android:forceHasOverlappingRendering="true"
-                android:background="@drawable/back64"
-                android:visibility="gone"
-                app:showAsAction="always" />
+
 
             <EditText
                 android:id="@+id/search_text"
