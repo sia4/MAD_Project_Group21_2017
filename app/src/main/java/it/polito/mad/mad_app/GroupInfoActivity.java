@@ -328,8 +328,6 @@ public class GroupInfoActivity extends AppCompatActivity {
                     }
                 }
 
-                //Group g = new Group((String)map.get("gId"),(String) map.get("surname"), (String)map.get("defaultCurrency"));
-
                 if (g.getCurrencies().size() != 0) {
 
                     System.out.println(g.getCurrencies().toString());

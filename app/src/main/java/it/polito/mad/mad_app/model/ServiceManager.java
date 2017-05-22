@@ -6,9 +6,6 @@ import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.drawable.BitmapDrawable;
 import android.os.IBinder;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
@@ -22,16 +19,12 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Set;
 import java.util.TreeMap;
 
 import it.polito.mad.mad_app.MainActivity;
 import it.polito.mad.mad_app.R;
-
-import static android.R.attr.level;
 
 /**
  * Created by Lucia on 18/05/2017.
@@ -112,7 +105,7 @@ public class ServiceManager extends Service {
                                     .setContentTitle("AllaRomana")
                                     .setContentText(printText)
                                     //.setLargeIcon(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_stat_ac_unit))
-                                    .setSmallIcon(R.drawable.logo_white) //TODO qui è sostanzialmento dove specifico l'icona da impostare.
+                                    .setSmallIcon(R.drawable.ic_notifica_yourslice) //TODO qui è sostanzialmento dove specifico l'icona da impostare.
                                     .setDefaults(Notification.DEFAULT_ALL)
                                     .setAutoCancel(true)
                                     .setPriority(Notification.PRIORITY_MAX);
