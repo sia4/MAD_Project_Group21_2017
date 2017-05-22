@@ -12,6 +12,9 @@ public class StartFirebaseAtBoot extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        context.startService(new Intent(context, ServiceManager.class));
+        Intent i=new Intent(context, ServiceManager.class);
+        i.putExtra("class","broadcast");
+        context.startService(i);
+        //context.startService(new Intent(context, ServiceManager.class));
     }
 }

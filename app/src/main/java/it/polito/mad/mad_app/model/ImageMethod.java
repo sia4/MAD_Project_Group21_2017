@@ -15,6 +15,7 @@ import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
+import android.text.TextUtils;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -62,7 +63,7 @@ public class ImageMethod {
         return cameraIntents;
     }
 
-    public static List<Intent> performCrop(Uri imageUrl,PackageManager p) {
+    public static Intent performCrop(Uri imageUrl,PackageManager p) {
         try {
             List<Intent> photoIntents=new ArrayList<>();
             Intent cropIntent = new Intent("com.android.camera.action.CROP");
@@ -73,19 +74,7 @@ public class ImageMethod {
             cropIntent.putExtra("outputX", 200);
             cropIntent.putExtra("outputY", 200);
             cropIntent.putExtra("return-data", true);
-            final List<ResolveInfo> Cam =p.queryIntentActivities(cropIntent, 0);
-            for(ResolveInfo res : Cam) {
-                final String packageName = res.activityInfo.packageName;
-                final Intent intent = new Intent(cropIntent);
-                intent.setComponent(new ComponentName(packageName, res.activityInfo.name));
-                photoIntents.add(intent);
-            }//
-            /*if(photoIntents.size()>1){
-                return photoIntents.get(0);
-            }else{
-                return cropIntent;
-            }*/
-            return photoIntents;
+            return cropIntent;
         }
         catch (ActivityNotFoundException anfe) {
             return null;

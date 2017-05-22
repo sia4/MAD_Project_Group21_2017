@@ -157,7 +157,6 @@ public class InsertGroupActivity extends AppCompatActivity {
                             MY_PERMISSIONS_REQUEST_READ_CONTACTS);
                     return;
                 }
-
                 getImageFromDevice();
 
             }
@@ -208,12 +207,30 @@ public class InsertGroupActivity extends AppCompatActivity {
                         } else {
                             Uemail.setText("");
 
-                            userKeys.put(key, true);
-                            userNames.put(key, ud.getName() + " " + ud.getSurname());
+                            if(uKey.equals(key)) {
+                                new AlertDialog.Builder(InsertGroupActivity.this)
+                                        .setTitle("Warning!")
+                                        .setMessage("You are already present in this group.")
+                                        .setIcon(android.R.drawable.ic_dialog_alert)
+                                        .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                                            public void onClick(DialogInterface dialog, int whichButton) {                                      }
+                                        }).show();
+                            } else if(userKeys.containsKey(key)){
+                                new AlertDialog.Builder(InsertGroupActivity.this)
+                                        .setTitle("Warning!")
+                                        .setMessage("The user is already present.")
+                                        .setIcon(android.R.drawable.ic_dialog_alert)
+                                        .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                                            public void onClick(DialogInterface dialog, int whichButton) {                                      }
+                                        }).show();
+                            } else {
+                                userKeys.put(key, true);
+                                userNames.put(key, ud.getName() + " " + ud.getSurname());
 
-                            usersList.add(ud);
+                                usersList.add(ud);
 
-                            uAdapter.notifyDataSetChanged();
+                                uAdapter.notifyDataSetChanged();
+                            }
                             key = null;
                         }
 
@@ -257,7 +274,7 @@ public class InsertGroupActivity extends AppCompatActivity {
                     imageC = true;
                     imageUrl = outputFileUri;
                     final PackageManager pManager = getPackageManager();
-                    /*Intent cropIntent=performCrop(imageUrl,pManager);
+                    Intent cropIntent=performCrop(imageUrl,pManager);
                     if(cropIntent!=null){
                         final Intent cIntent = Intent.createChooser(cropIntent, "Tha image should be cropped,select a source");
                         startActivityForResult(cIntent , 2);
@@ -265,7 +282,7 @@ public class InsertGroupActivity extends AppCompatActivity {
                     else{
                         Toast toast = Toast.makeText(this, "This device doesn't support the crop action!", Toast.LENGTH_SHORT);
                         toast.show();
-                    }*/
+                    }
                 } else {
                     imageC = true;
                     selectedImageUri = data.getData();
@@ -298,7 +315,6 @@ public class InsertGroupActivity extends AppCompatActivity {
             case 1: {
                 if (grantResults.length > 0
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-
                     getImageFromDevice();
                 }
                 return;

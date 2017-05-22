@@ -1,5 +1,6 @@
 package it.polito.mad.mad_app;
 
+import android.app.ActivityManager;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
@@ -79,10 +80,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             }
         };
         super.onCreate(savedInstanceState);
-        String key=mAuth.getCurrentUser().getUid();
-        System.out.println("----->"+key);
-        Intent intent = new Intent(MainActivity.this, ServiceManager.class);
-        startService(intent);
+        if(!isMyServiceRunning(ServiceManager.class)){
+            if(FirebaseAuth.getInstance().getCurrentUser()!=null){
+                Intent intent = new Intent(MainActivity.this, ServiceManager.class);
+                //intent.putExtra("class","main");
+                startService(intent);
+            }
+        }
         setContentView(R.layout.activity_user_info);
 
         //set toolbar
@@ -416,5 +420,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         }
 
+    }
+    private boolean isMyServiceRunning(Class<?> serviceClass) {
+        ActivityManager manager = (ActivityManager) getSystemService(getApplicationContext().ACTIVITY_SERVICE);
+        for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
+            if (serviceClass.getName().equals(service.service.getClassName())) {
+                return true;
+            }
+        }
+        return false;
     }
 }

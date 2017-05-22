@@ -179,34 +179,52 @@ public class InsertUserToGroupActivity extends AppCompatActivity {
                                     .setNegativeButton(android.R.string.no, null).show();
 
                             } else {
-                                FirebaseDatabase database = FirebaseDatabase.getInstance();
-                                DatabaseReference myRef = database.getReference("/Users/"+key+"/Groups/"+gId+"/name/");
-                                myRef.setValue(gName);
-                                myRef = database.getReference("/Users/"+key+"/Groups/"+gId+"/imagePath/");
-                                myRef.setValue(gPath);
-                                myRef = database.getReference("/Groups/"+gId+"/members/"+key);
-                                myRef.setValue(true);
-                                DecimalFormat df = new DecimalFormat("0.00");
-                                float f = 0;
+
+                                /*if(uKey.equals(key)) {
+                                    new AlertDialog.Builder(InsertUserToGroupActivity.this)
+                                            .setTitle("Warning!")
+                                            .setMessage("You are already present in this group.")
+                                            .setIcon(android.R.drawable.ic_dialog_alert)
+                                            .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                                                public void onClick(DialogInterface dialog, int whichButton) {                                      }
+                                            }).show();
+                                } else if(userKeys.containsKey(key)){
+                                    new AlertDialog.Builder(InsertUserToGroupActivity.this)
+                                            .setTitle("Warning!")
+                                            .setMessage("The user is already present.")
+                                            .setIcon(android.R.drawable.ic_dialog_alert)
+                                            .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                                                public void onClick(DialogInterface dialog, int whichButton) {                                      }
+                                            }).show();
+                                } else {*/
+
+                                    FirebaseDatabase database = FirebaseDatabase.getInstance();
+                                    DatabaseReference myRef = database.getReference("/Users/" + key + "/Groups/" + gId + "/name/");
+                                    myRef.setValue(gName);
+                                    myRef = database.getReference("/Users/" + key + "/Groups/" + gId + "/imagePath/");
+                                    myRef.setValue(gPath);
+                                    myRef = database.getReference("/Groups/" + gId + "/members/" + key);
+                                    myRef.setValue(true);
+                                    DecimalFormat df = new DecimalFormat("0.00");
+                                    float f = 0;
 
 
-                                for(UserData u : users){
-                                    database.getReference("/Balance/" + gId + "/" + key + "/" + u.getuId() +"/" + "name").setValue(u.getName()+" "+u.getSurname());;
-                                    database.getReference("/Balance/" + gId + "/" + key + "/" + u.getuId() + "/" + "value").setValue("0.00");
+                                    for (UserData u : users) {
+                                        database.getReference("/Balance/" + gId + "/" + key + "/" + u.getuId() + "/" + "name").setValue(u.getName() + " " + u.getSurname());
+                                        ;
+                                        database.getReference("/Balance/" + gId + "/" + key + "/" + u.getuId() + "/" + "value").setValue("0.00");
 
-                                    database.getReference("/Balance/" + gId + "/" + u.getuId()+ "/" + key  + "/" + "name").setValue(name+" "+surname);
-                                    database.getReference("/Balance/" + gId + "/" + u.getuId()+ "/" + key  + "/" + "value").setValue("0.00");
+                                        database.getReference("/Balance/" + gId + "/" + u.getuId() + "/" + key + "/" + "name").setValue(name + " " + surname);
+                                        database.getReference("/Balance/" + gId + "/" + u.getuId() + "/" + key + "/" + "value").setValue("0.00");
+
+                                    }
+
 
                                 }
 
-
-
-
-
-
                                 finish();
                             }
-                        }
+                        //}
 
                         @Override
                         public void onCancelled(DatabaseError eError) {

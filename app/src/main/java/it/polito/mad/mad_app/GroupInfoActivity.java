@@ -124,18 +124,7 @@ public class GroupInfoActivity extends AppCompatActivity {
                             MY_PERMISSIONS_REQUEST_READ_CONTACTS);
                     return;
                 }
-                final File root = new File(Environment.getExternalStorageDirectory() + File.separator + "MyDir" + File.separator);
-                root.mkdirs();
-                final String fname = "img_"+ System.currentTimeMillis() + ".jpg";
-                final File sdImageMainDirectory = new File(root, fname);
-                outputFileUri = Uri.fromFile(sdImageMainDirectory);
-                final PackageManager pManager = getPackageManager();
-                List<Intent> cameraIntents=require_image(outputFileUri,pManager);
-                final Intent chooserIntent = Intent.createChooser(cameraIntents.get(cameraIntents.size()-1), "Select Source");
-                cameraIntents.remove(cameraIntents.size()-1);
-                chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, cameraIntents.toArray(new Parcelable[cameraIntents.size()]));
-                startActivityForResult(chooserIntent, 1);
-
+                LoadImage();
             }
         });
         favourite = (CheckBox) findViewById(R.id.favourite);
@@ -521,29 +510,26 @@ public class GroupInfoActivity extends AppCompatActivity {
                 if (isCamera) {imageUrl = outputFileUri;
                     ImageC = true;
                     final PackageManager pManager = getPackageManager();
-                    List<Intent> cropIntent=performCrop(imageUrl,pManager);
+                    Intent cropIntent=performCrop(imageUrl,pManager);
                     if(cropIntent!=null){
-                        final Intent chooserIntent = Intent.createChooser(cropIntent.get(cropIntent.size()-1), "La foto va ritagliata");
-                        cropIntent.remove(cropIntent.size()-1);
-                        chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, cropIntent.toArray(new Parcelable[cropIntent.size()]));
-                        startActivityForResult(chooserIntent , 2);
+                        final Intent cIntent = Intent.createChooser(cropIntent, "Tha image should be cropped,select a source");
+                        startActivityForResult(cIntent , 2);
                     }
                     else{
                         Toast toast = Toast.makeText(this, "This device doesn't support the crop action!", Toast.LENGTH_SHORT);
                         toast.show();
                     }
+
                 } else {
                     if (data != null) {
                         ImageC = true;
                         selectedImageUri = data.getData();
                         imageUrl= selectedImageUri;
                         final PackageManager pManager = getPackageManager();
-                        List<Intent> cropIntent=performCrop(imageUrl,pManager);
+                        Intent cropIntent=performCrop(imageUrl,pManager);
                         if(cropIntent!=null){
-                            final Intent chooserIntent = Intent.createChooser(cropIntent.get(cropIntent.size()-1), "La foto va ritagliata");
-                            cropIntent.remove(cropIntent.size()-1);
-                            chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, cropIntent.toArray(new Parcelable[cropIntent.size()]));
-                            startActivityForResult(chooserIntent , 2);
+                            final Intent cIntent = Intent.createChooser(cropIntent, "Tha image should be cropped,select a source");
+                            startActivityForResult(cIntent , 2);
                         }
                         else{
                             Toast toast = Toast.makeText(this, "This device doesn't support the crop action!", Toast.LENGTH_SHORT);
@@ -584,7 +570,7 @@ public class GroupInfoActivity extends AppCompatActivity {
                 // If request is cancelled, the result arrays are empty.
                 if (grantResults.length > 0
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED && grantResults[1]==PackageManager.PERMISSION_GRANTED) {
-
+                        LoadImage();
                     // permission was granted, yay! Do the
                     // contacts-related task you need to do.
 
@@ -602,9 +588,9 @@ public class GroupInfoActivity extends AppCompatActivity {
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item){
+    public boolean onOptionsItemSelected(MenuItem item) {
 
-        switch(item.getItemId()){
+        switch (item.getItemId()) {
             case android.R.id.home:
 
                 Intent intent = new Intent(this, GroupActivity.class);
@@ -654,12 +640,12 @@ public class GroupInfoActivity extends AppCompatActivity {
                 if (ImageC) {
                     ProgressBar progressBar = (ProgressBar) findViewById(R.id.progress_bar_group_info);
                     progressBar.setVisibility(View.VISIBLE);
-                    LinearLayout ll=(LinearLayout) findViewById(R.id.llgourpinfo);
+                    LinearLayout ll = (LinearLayout) findViewById(R.id.llgourpinfo);
                     ll.setVisibility(View.INVISIBLE);
                     final FirebaseDatabase database = FirebaseDatabase.getInstance();
                     StorageReference mStorageRef = FirebaseStorage.getInstance().getReference();
                     try {
-                        System.out.println(".......carica in"+outputFileUri.toString().substring(7));
+                        System.out.println(".......carica in" + outputFileUri.toString().substring(7));
                         InputStream stream = new FileInputStream(new File(outputFileUri.toString().substring(7)));
                         StorageReference imageStorage = mStorageRef.child(gId);
                         UploadTask uploadTask = imageStorage.putStream(stream);
@@ -672,12 +658,12 @@ public class GroupInfoActivity extends AppCompatActivity {
                             @Override
                             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                                 downloadUrl = taskSnapshot.getDownloadUrl();
-                                DatabaseReference myRef = database.getReference("Groups/"+ gId + "/imagePath");
+                                DatabaseReference myRef = database.getReference("Groups/" + gId + "/imagePath");
                                 myRef.setValue(downloadUrl.toString());
-                                System.out.println("------------>GroupPAth"+"Groups/"+ gId + "/imagePath"+ downloadUrl);
-                                System.out.println("------------>UserPAth"+"Users/"+ FirebaseAuth.getInstance().getCurrentUser().getUid()+"/"+gId + "/imagePath"+ downloadUrl);
-                                for(String u:usersId){
-                                    DatabaseReference myRef2 = database.getReference("Users/"+ u+"/Groups/"+gId + "/imagePath");
+                                System.out.println("------------>GroupPAth" + "Groups/" + gId + "/imagePath" + downloadUrl);
+                                System.out.println("------------>UserPAth" + "Users/" + FirebaseAuth.getInstance().getCurrentUser().getUid() + "/" + gId + "/imagePath" + downloadUrl);
+                                for (String u : usersId) {
+                                    DatabaseReference myRef2 = database.getReference("Users/" + u + "/Groups/" + gId + "/imagePath");
                                     myRef2.setValue(downloadUrl.toString());
                                 }
                                 Intent in = new Intent(GroupInfoActivity.this, GroupActivity.class);
@@ -689,7 +675,7 @@ public class GroupInfoActivity extends AppCompatActivity {
                                 Log.d("myStorage", "success!");
                             }
                         });
-                    }catch (FileNotFoundException e) {
+                    } catch (FileNotFoundException e) {
                         e.printStackTrace();
                     }
                 }
@@ -697,7 +683,7 @@ public class GroupInfoActivity extends AppCompatActivity {
                 in.putExtra("imagePath", gImage);
                 in.putExtra("groupId", gId);
                 in.putExtra("groupName", gName);
-                System.out.println("Devo capire"+in.getExtras());
+                System.out.println("Devo capire" + in.getExtras());
                 setResult(RESULT_OK, in);
                 finish();
                 return true;
@@ -705,7 +691,19 @@ public class GroupInfoActivity extends AppCompatActivity {
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
 
-
+    public void LoadImage(){
+        final File root = new File(Environment.getExternalStorageDirectory() + File.separator + "MyDir" + File.separator);
+        root.mkdirs();
+        final String fname = "img_"+ System.currentTimeMillis() + ".jpg";
+        final File sdImageMainDirectory = new File(root, fname);
+        outputFileUri = Uri.fromFile(sdImageMainDirectory);
+        final PackageManager pManager = getPackageManager();
+        List<Intent> cameraIntents=require_image(outputFileUri,pManager);
+        final Intent chooserIntent = Intent.createChooser(cameraIntents.get(cameraIntents.size()-1), "Select Source");
+        cameraIntents.remove(cameraIntents.size()-1);
+        chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, cameraIntents.toArray(new Parcelable[cameraIntents.size()]));
+        startActivityForResult(chooserIntent, 1);
     }
 }

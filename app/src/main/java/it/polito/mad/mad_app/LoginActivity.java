@@ -23,6 +23,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import it.polito.mad.mad_app.model.ServiceManager;
+
 import static android.view.View.VISIBLE;
 
 
@@ -159,7 +161,10 @@ public class LoginActivity extends AppCompatActivity {
                                                     //mAuth.signOut();
 
                                                 } else {
-
+                                                    //TODO start here the service
+                                                    Intent i = new Intent(LoginActivity.this, ServiceManager.class);
+                                                    i.putExtra("class","main");
+                                                    startService(i);
                                                     Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                                                     startActivity(intent);
                                                     finish();
@@ -203,7 +208,10 @@ public class LoginActivity extends AppCompatActivity {
                 if (user_exists) {
 
                     if (email_verified) {
-
+                        //TODO start here the service
+                        Intent i = new Intent(LoginActivity.this, ServiceManager.class);
+                        i.putExtra("class","main");
+                        startService(i);
                         startActivity(new Intent(LoginActivity.this, MainActivity.class)); //ok
                         finish();
 

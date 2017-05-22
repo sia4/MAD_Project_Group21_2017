@@ -62,6 +62,7 @@ public class UserAdapterIm  extends RecyclerView.Adapter<UserAdapterIm.MyViewHol
                 RoundedBitmapDrawable circularBitmapDrawable =
                         RoundedBitmapDrawableFactory.create(context.getResources(), resource);
                 circularBitmapDrawable.setCircular(true);
+
                 holder.im.setImageDrawable(circularBitmapDrawable);
             }
         });
