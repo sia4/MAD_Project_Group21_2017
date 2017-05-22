@@ -29,12 +29,12 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+
 import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import it.polito.mad.mad_app.model.Group;
 import it.polito.mad.mad_app.model.PagerAdapterGroup;
 
 
@@ -47,6 +47,7 @@ public class GroupActivity extends AppCompatActivity {
     Float pos = (float)10.2;//datigruppo.getPosExpenses();
     Float neg = (float)10.2;//datigruppo.getNegExpenses();
     private Map<String, Map<String, Object>> balancemap;
+    private Group g;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -69,13 +70,40 @@ public class GroupActivity extends AppCompatActivity {
         b.putString("GroupName", gName);
         b.putString("imagePath", gImage);
 
-        //System.out.println("CICCIOBOMBA" + datigruppo.getName());
+        final FirebaseDatabase database3 = FirebaseDatabase.getInstance();
 
+        DatabaseReference myRef = database3.getReference("Groups").child(gKey);
+        myRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                g = dataSnapshot.getValue(it.polito.mad.mad_app.model.Group.class);
+            }
 
-
+            @Override
+            public void onCancelled(DatabaseError error) {
+            }
+        });
 
         if(gImage==null){
-            final FirebaseDatabase database3 = FirebaseDatabase.getInstance();
+
+            /*gImage=g.getImagePath();
+
+            Glide
+                    .with(getApplicationContext())
+                    .load(gImage)
+                    .asBitmap()
+                    .into(new SimpleTarget<Bitmap>(60,60) {
+                              @Override
+                              public void onResourceReady(Bitmap resource, GlideAnimation glideAnimation) {
+                                  RoundedBitmapDrawable circularBitmapDrawable =
+                                          RoundedBitmapDrawableFactory.create(getResources(), resource);
+                                  circularBitmapDrawable.setCircular(true);
+                                  getSupportActionBar().setLogo(circularBitmapDrawable);
+                              }
+                          });
+
+            */
+
             DatabaseReference Ref_imagePath = database3.getReference("Groups").child(gKey).child("imagePath");
             Ref_imagePath.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
@@ -103,7 +131,7 @@ public class GroupActivity extends AppCompatActivity {
             });
         }
 
-        final FirebaseDatabase database3 = FirebaseDatabase.getInstance();
+        //final FirebaseDatabase database3 = FirebaseDatabase.getInstance();
         DatabaseReference myRef3 = database3.getReference("Balance").child(gKey).child(FirebaseAuth.getInstance().getCurrentUser().getUid());
 
         myRef3.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -344,6 +372,7 @@ public class GroupActivity extends AppCompatActivity {
                 Intent i2 = new Intent(getApplicationContext(), InsertCurrencyActivity.class);
                 i2.putExtra("groupId", gKey);
                 i2.putExtra("groupName", gName);
+                i2.putExtra("defaultcurrency", g.getPrimaryCurrency());
                 startActivity(i2);
                 return true;
 

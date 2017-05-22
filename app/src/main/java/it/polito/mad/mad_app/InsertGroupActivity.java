@@ -51,6 +51,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 
+import it.polito.mad.mad_app.model.ActivityData;
 import it.polito.mad.mad_app.model.Currencies;
 import it.polito.mad.mad_app.model.Group;
 import it.polito.mad.mad_app.model.User;
@@ -421,9 +422,17 @@ public class InsertGroupActivity extends AppCompatActivity {
         Set keys = userKeys.keySet();
         Set others = userNames.keySet();
 
+        String myname = userNames.get(FirebaseAuth.getInstance().getCurrentUser().getUid());
+
         database = FirebaseDatabase.getInstance();
+
         for (Iterator i = keys.iterator(); i.hasNext(); ) {
+
             String key = (String) i.next();
+            if (!key.equals(FirebaseAuth.getInstance().getCurrentUser().getUid())) {
+                myRef = database.getReference("/Activities/" + key).push();
+                myRef.setValue(new ActivityData( myname, myname + " added you in group " + groupN, Long.toString(System.currentTimeMillis()), "addgroup", groupId, groupId));
+            }
             myRef = database.getReference("/Users/" + key + "/Groups/" + groupId + "/name/");
             myRef.setValue(G.getName());
             myRef = database.getReference("/Users/" + key + "/Groups/" + groupId + "/imagePath/");

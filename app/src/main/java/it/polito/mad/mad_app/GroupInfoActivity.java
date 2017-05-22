@@ -168,7 +168,7 @@ public class GroupInfoActivity extends AppCompatActivity {
                         if(mapname!=null) {
                             myname = (String)mapname.get("name");
                             mysurname = (String)mapname.get("surname");
-                            DatabaseReference ActRef = database.getReference("Activities").child(gId).push();
+                            DatabaseReference ActRef = database.getReference("Activities");
                             DatabaseReference PolRef = database.getReference("Pols").child(gId).push();
                             String PolKey = PolRef.getKey();
                             PolData p = new PolData(String.format("%d", users.size()), "1");
@@ -176,13 +176,14 @@ public class GroupInfoActivity extends AppCompatActivity {
                             PolRef.child("creator").setValue(FirebaseAuth.getInstance().getCurrentUser().getUid());
                             PolRef.child("acceptsUsers").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).setValue(myname+" "+mysurname);
 
-                            ActRef.setValue(new ActivityData(myname+" "+mysurname, myname+" "+mysurname +" proposed to delete group " + gName, Long.toString(System.currentTimeMillis()), "deletegroup", PolKey, gId));
-
+                            for(String k: usersId) {
+                                if(!k.equals(FirebaseAuth.getInstance().getCurrentUser().getUid()))
+                                    ActRef.child(k).push().setValue(new ActivityData(myname + " " + mysurname, myname + " " + mysurname + " proposed to delete group " + gName, Long.toString(System.currentTimeMillis()), "deletegroup", PolKey, gId));
+                            }
                             if(users.size()==1){
                                 findViewById(R.id.DeleteGroup).setVisibility(View.GONE);
                                 findViewById(R.id.LeaveGroup).setVisibility(View.GONE);
                                 findViewById(R.id.okdeleted).setVisibility(View.VISIBLE);
-                                ActRef.push().setValue(new ActivityData(myname + " " + mysurname, "Group "+gName+ " has been successful deleted", Long.toString(System.currentTimeMillis()), "acceptdeletegroup", PolKey, gId));
                                 database.getReference("Users").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("Groups").child(gId).child("missing").setValue("yes");
 
                             }
@@ -222,13 +223,14 @@ public class GroupInfoActivity extends AppCompatActivity {
                             PolRef.child("creator").setValue(FirebaseAuth.getInstance().getCurrentUser().getUid());
 
                             DatabaseReference ActRef = database.getReference("Activities").child(gId).push();
-
-                            ActRef.setValue(new ActivityData(myname+" "+mysurname, myname+" "+mysurname +" proposed to leave group " + gName, Long.toString(System.currentTimeMillis()), "leavegroup", PolKey, gId));
-                            if(users.size()==1){
+                            for(String k: usersId) {
+                                if (!k.equals(FirebaseAuth.getInstance().getCurrentUser().getUid()))
+                                    ActRef.setValue(new ActivityData(myname + " " + mysurname, myname + " " + mysurname + " proposed to leave group " + gName, Long.toString(System.currentTimeMillis()), "leavegroup", PolKey, gId));
+                                }
+                                if(users.size()==1){
                                 findViewById(R.id.DeleteGroup).setVisibility(View.GONE);
                                 findViewById(R.id.LeaveGroup).setVisibility(View.GONE);
                                 findViewById(R.id.okdeleted).setVisibility(View.VISIBLE);
-                                ActRef.push().setValue(new ActivityData(myname + " " + mysurname, myname + " " + mysurname + " has been successful deleted from group " + gName, Long.toString(System.currentTimeMillis()), "acceptleavegroup", PolKey, gId));
                                 database.getReference("Users").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("Groups").child(gId).child("missing").setValue("yes");
 
 
@@ -314,8 +316,6 @@ public class GroupInfoActivity extends AppCompatActivity {
                         }
                     }
                 }
-
-                //Group g = new Group((String)map.get("gId"),(String) map.get("surname"), (String)map.get("defaultCurrency"));
 
                 if (g.getCurrencies().size() != 0) {
 

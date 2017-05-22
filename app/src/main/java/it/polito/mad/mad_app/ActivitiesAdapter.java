@@ -1,11 +1,15 @@
 package it.polito.mad.mad_app;
 
+import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
+
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.sql.Date;
 import java.text.SimpleDateFormat;
@@ -59,6 +63,12 @@ public class ActivitiesAdapter extends RecyclerView.Adapter<ActivitiesAdapter.My
         else{
             holder.viewMore.setVisibility(View.GONE);
         }
+
+        if(activity.getRead().equals("no")){
+
+            holder.itemView.setBackgroundColor(Color.parseColor("#FCF4F4"));
+        }
+
     }
 
     @Override

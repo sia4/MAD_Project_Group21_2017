@@ -1,5 +1,6 @@
 package it.polito.mad.mad_app;
 
+import android.content.Context;
 import android.app.ActivityManager;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -20,6 +21,8 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -36,6 +39,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import it.polito.mad.mad_app.model.MainData;
 import it.polito.mad.mad_app.model.PagerAdapter;
 import it.polito.mad.mad_app.model.ServiceManager;
 import it.polito.mad.mad_app.model.User;
@@ -293,18 +297,104 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
+
+        getMenuInflater().inflate(R.menu.menu_search, menu);
+
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
+        EditText search_text = (EditText) findViewById(R.id.search_text);
 
+        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+        FloatingActionButton addGroup = (FloatingActionButton)findViewById(R.id.addGroup);
         if (id == R.id.action_settings) {
             return true;
         }
 
-        return super.onOptionsItemSelected(item);
+        switch (id) {
+            case R.id.back_search:
+                search_text.setText("");
+                MainData.getInstance().setGroupsFragmentData("");
+                search_text.setVisibility(View.GONE);
+                item.setVisible(false);
+                addGroup.setVisibility(View.VISIBLE);
+                imm.hideSoftInputFromWindow(search_text.getWindowToken(), 0);
+
+                return true;
+
+            case R.id.action_search:
+                if(search_text.getVisibility()==View.GONE) {
+                   MenuItem i = (MenuItem)findViewById(R.id.back_search);
+                   // i.setVisible(true);
+
+                    search_text.setVisibility(View.VISIBLE);
+                    addGroup.setVisibility(View.GONE);
+                    search_text.requestFocus();
+                    imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_IMPLICIT_ONLY);
+
+
+
+        }
+                else{
+
+
+                        addGroup.setVisibility(View.VISIBLE);
+                        imm.hideSoftInputFromWindow(search_text.getWindowToken(), 0);
+
+                        System.out.println("search_text value: "+search_text.getText().toString());
+                        MainData.getInstance().setGroupsFragmentData(search_text.getText().toString());
+                        PagerAdapter mPagerAdapter = new PagerAdapter(getSupportFragmentManager());
+                        final TabLayout tabL = (TabLayout) findViewById(R.id.tabs);
+                        final TabLayout.OnTabSelectedListener OnT=new TabLayout.OnTabSelectedListener(){
+                            @Override
+                            public void onTabSelected(TabLayout.Tab tab) {
+                                mViewPager.setCurrentItem(tab.getPosition());
+
+                            }
+
+                            @Override
+                            public void onTabUnselected(TabLayout.Tab tab) {
+
+                            }
+
+                            @Override
+                            public void onTabReselected(TabLayout.Tab tab) {
+
+                            }
+                        };
+                        mViewPager = (ViewPager) findViewById(R.id.pager);
+                        mViewPager.setAdapter(mPagerAdapter);
+                        tabL.setupWithViewPager(mViewPager);
+                        mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+                            @Override
+                            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+                                tabL.addOnTabSelectedListener(OnT);
+                            }
+
+                            @Override
+                            public void onPageSelected(int position) {
+
+                            }
+
+                            @Override
+                            public void onPageScrollStateChanged(int state) {
+
+                            }
+                        });
+
+
+
+
+                }
+
+                return true;
+
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
     @Override
@@ -316,7 +406,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             Log.d("Main Activity", "Logout");
             mAuth.signOut();
 
-            //TODO a cosa serve questo controllo sull'user @edo?
             FirebaseUser user = mAuth.getCurrentUser();
 
             if (user != null) {

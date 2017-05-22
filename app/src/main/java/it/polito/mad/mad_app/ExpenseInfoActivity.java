@@ -133,7 +133,7 @@ public class ExpenseInfoActivity extends AppCompatActivity {
                     category_ex.setText(category);
                     //currency_ex.setText(currency);
 
-                    s_ex.setText("Your quote:");
+                    s_ex.setText("Your part:");
                     algorithm_ex.setText(algorithm);
 
                     SimpleDateFormat sdf = new SimpleDateFormat("MMM dd, yyyy HH:mm");
@@ -248,9 +248,11 @@ public class ExpenseInfoActivity extends AppCompatActivity {
                         if(mapname!=null) {
                             myname = (String)mapname.get("name");
                             mysurname = (String)mapname.get("surname");
-                            DatabaseReference ActRef = database.getReference("Activities").child(GroupId).push();
-                            ActRef.setValue(new ActivityData(myname+" "+mysurname, myname+" "+mysurname +" contested expense "+ name+" in group "+ groupName, Long.toString(System.currentTimeMillis()), "contest", exid, GroupId));
-
+                            DatabaseReference ActRef = database.getReference("Activities");
+                            for(String k : usermap.keySet()) {
+                                if(!k.equals(FirebaseAuth.getInstance().getCurrentUser().getUid()))
+                                   ActRef.child(k).push().setValue(new ActivityData(myname + " " + mysurname, myname + " " + mysurname + " contested expense " + name + " in group " + groupName, Long.toString(System.currentTimeMillis()), "contest", exid, GroupId));
+                            }
                         }
                         else{
                             Log.d("ExpenseInfo", "balancemapppppppppppppppp " + balancemap);

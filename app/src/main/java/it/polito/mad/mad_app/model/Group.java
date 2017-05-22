@@ -95,6 +95,21 @@ public class Group {
         }
     }
 
+    public String getPrimaryCurrency() {
+
+        if (this.currencies.size() != 0) {
+            for (Map.Entry<String, Float> e : this.currencies.entrySet()) {
+                if (e.getValue() == 0.0) {
+                    return e.getKey();
+                }
+            }
+            return "EUR";
+        } else {
+            return "EUR";
+        }
+
+    }
+
     //public void addCurrencies(Map<String, Float> currencies) {this.currencies = currencies; }
 
     public void addLastOperation(String s) {this.lastOperation = s;}

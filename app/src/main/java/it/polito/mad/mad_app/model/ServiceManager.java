@@ -25,12 +25,10 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.TreeMap;
 
-import it.polito.mad.mad_app.GroupActivity;
 import it.polito.mad.mad_app.MainActivity;
 import it.polito.mad.mad_app.R;
 
 import static android.R.attr.level;
-import static android.R.attr.strokeAlpha;
 
 /**
  * Created by Lucia on 18/05/2017.
