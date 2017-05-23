@@ -67,7 +67,7 @@ public class GroupInfoActivity extends AppCompatActivity {
     //private GroupData GD;
     private TextView namet, desc;
     private boolean flag_name_edited = false, flag_desc_edited = false, ImageC= false;
-    private String nametmp, desctmp, gId, gName,  image, myname, mysurname;
+    private String nametmp, desctmp, gId, gName,  image, myname, mysurname, deletePolId, leavePolId, PolKey;
     private EditText nameted, desced;
     private CheckBox favourite;
     private ImageView im;
@@ -153,8 +153,10 @@ public class GroupInfoActivity extends AppCompatActivity {
 
 
         Button button = (Button) findViewById(R.id.addUserInExistingGroup);
-        Button buttonDelete = (Button) findViewById(R.id.DeleteGroup);
-        Button buttonLeave = (Button) findViewById(R.id.LeaveGroup);
+        final Button buttonDelete = (Button) findViewById(R.id.DeleteGroup);
+        final Button buttonLeave = (Button) findViewById(R.id.LeaveGroup);
+        final Button buttonPoldel = (Button) findViewById(R.id.DeletePol);
+        final Button buttonPolleave = (Button) findViewById(R.id.LeavePol);
 
         buttonDelete.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
@@ -166,11 +168,15 @@ public class GroupInfoActivity extends AppCompatActivity {
                         Map <String, Object> mapname = (Map<String, Object>) dataSnapshot.getValue();
                         System.out.println("mapnameeeeeeeeeeeeeeeeeeee"+mapname);
                         if(mapname!=null) {
+                            buttonDelete.setVisibility(View.GONE);
+                            buttonPoldel.setVisibility(View.VISIBLE);
                             myname = (String)mapname.get("name");
                             mysurname = (String)mapname.get("surname");
                             DatabaseReference ActRef = database.getReference("Activities");
                             DatabaseReference PolRef = database.getReference("Pols").child(gId).push();
-                            String PolKey = PolRef.getKey();
+                            PolKey = PolRef.getKey();
+                            DatabaseReference PolGroup = database.getReference("Groups").child(gId).child("deletePolId");
+                            PolGroup.setValue(PolKey);
                             PolData p = new PolData(String.format("%d", users.size()), "1");
                             PolRef.setValue(p);
                             PolRef.child("creator").setValue(FirebaseAuth.getInstance().getCurrentUser().getUid());
@@ -213,10 +219,15 @@ public class GroupInfoActivity extends AppCompatActivity {
                         Map <String, Object> mapname = (Map<String, Object>) dataSnapshot.getValue();
                         System.out.println("mapnameeeeeeeeeeeeeeeeeeee"+mapname);
                         if(mapname!=null) {
+                            buttonLeave.setVisibility(View.GONE);
+                            buttonPolleave.setVisibility(View.VISIBLE);
                             myname = (String)mapname.get("name");
                             mysurname = (String)mapname.get("surname");
                             DatabaseReference PolRef = database.getReference("Pols").child(gId).push();
-                            String PolKey = PolRef.getKey();
+                            PolKey = PolRef.getKey();
+                            DatabaseReference PolGroup = database.getReference("Groups").child(gId).child("leavePolId");
+                            PolGroup.setValue(PolKey);
+
                             PolData p = new PolData(String.format("%d", users.size()), "1");
                             PolRef.setValue(p);
                             PolRef.child("acceptsUsers").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).setValue(myname+" "+mysurname);
@@ -248,6 +259,35 @@ public class GroupInfoActivity extends AppCompatActivity {
             }
         });
 
+        buttonPoldel.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent( getApplicationContext(), PolActivity.class);
+                intent.putExtra("polId", PolKey);
+                intent.putExtra("groupId", gId);
+                intent.putExtra("groupName", gName);
+                intent.putExtra("text", "Delete Group");
+                intent.putExtra("type", "deletegroup");
+                startActivity(intent);
+            }
+
+        });
+
+        buttonPolleave.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent( getApplicationContext(), PolActivity.class);
+                intent.putExtra("polId", PolKey);
+                intent.putExtra("groupId", gId);
+                intent.putExtra("groupName", gName);
+                intent.putExtra("text", "Leave Group");
+                intent.putExtra("type", "leavegroup");
+                startActivity(intent);
+            }
+
+        });
 
 
         button.setOnClickListener(new View.OnClickListener() {
@@ -299,6 +339,18 @@ public class GroupInfoActivity extends AppCompatActivity {
                 if (map != null) {
                     nametmp = (String) map.get("name");
                     desctmp = (String) map.get("description");
+                    deletePolId = (String) map.get("deletePolId");
+                    leavePolId = (String) map.get("leavePolId");
+                    System.out.println("pol delete id: "+deletePolId);
+                    System.out.println("pol leave id: "+leavePolId);
+                    if(deletePolId!=null){
+                        buttonDelete.setVisibility(View.GONE);
+                        buttonPoldel.setVisibility(View.VISIBLE);
+                    }
+                    if(leavePolId!=null){
+                        buttonLeave.setVisibility(View.GONE);
+                        buttonPolleave.setVisibility(View.VISIBLE);
+                    }
                     namet.setText(nametmp);
                     desc.setText(desctmp);
                     if(map.get("imagePath")==null){
