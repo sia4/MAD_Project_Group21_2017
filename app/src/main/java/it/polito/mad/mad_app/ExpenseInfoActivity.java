@@ -318,9 +318,6 @@ public class ExpenseInfoActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item){
         Intent i = getIntent();
-
-        String GroupName = i.getStringExtra("groupName");
-        String GroupId = i.getStringExtra("groupId");
         switch(item.getItemId()){
             case android.R.id.home:
 

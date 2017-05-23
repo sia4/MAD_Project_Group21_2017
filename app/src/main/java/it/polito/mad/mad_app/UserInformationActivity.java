@@ -351,6 +351,8 @@ public class UserInformationActivity extends AppCompatActivity {
                         e.printStackTrace();
                     }
                 }
+                finish();
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
