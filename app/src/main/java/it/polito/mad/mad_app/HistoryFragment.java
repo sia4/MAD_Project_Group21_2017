@@ -69,7 +69,7 @@ public class    HistoryFragment extends Fragment {
                 intent.putExtra("groupId", GroupId);
                 intent.putExtra("ExpenseId", expense.getIdEx());
                 view.getContext().startActivity(intent);
-                getActivity().finish();
+                //getActivity().finish();
 
             }
 

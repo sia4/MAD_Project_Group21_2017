@@ -323,11 +323,7 @@ public class ExpenseInfoActivity extends AppCompatActivity {
         String GroupId = i.getStringExtra("groupId");
         switch(item.getItemId()){
             case android.R.id.home:
-                Intent intent = new Intent(this, GroupActivity.class);
-                intent.putExtra("groupName", GroupName);
-                intent.putExtra("groupId", GroupId);
-                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                startActivity(intent);
+
                 finish();
                 return true;
             default:
