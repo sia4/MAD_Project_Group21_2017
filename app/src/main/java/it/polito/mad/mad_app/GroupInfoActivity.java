@@ -264,7 +264,7 @@ public class GroupInfoActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent( getApplicationContext(), PolActivity.class);
-                intent.putExtra("polId", PolKey);
+                intent.putExtra("polId", deletePolId);
                 intent.putExtra("groupId", gId);
                 intent.putExtra("groupName", gName);
                 intent.putExtra("text", "Delete Group");
@@ -279,7 +279,7 @@ public class GroupInfoActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent( getApplicationContext(), PolActivity.class);
-                intent.putExtra("polId", PolKey);
+                intent.putExtra("polId", leavePolId);
                 intent.putExtra("groupId", gId);
                 intent.putExtra("groupName", gName);
                 intent.putExtra("text", "Leave Group");
