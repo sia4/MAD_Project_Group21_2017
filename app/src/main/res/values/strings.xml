@@ -21,7 +21,7 @@
     <string name="hint_name">Fullname</string>
     <string name="btn_login">LOGIN</string>
     <string name="btn_link_to_register">Not a member? Get registered in Firebase now!</string>
-    <string name="btn_link_to_login">Already registered. Login Me!</string>
+    <string name="btn_link_to_login">I am already registered, Login.</string>
     <string name="title_activity_reset_password">ResetPasswordActivity</string>
     <string name="btn_forgot_password">Forgot your password?</string>
     <string name="btn_reset_password">Reset Password</string>
@@ -44,5 +44,13 @@
     <string name="invitation_cta">Download AllaRomana</string>
     <string name="title_activity_user_information">UserInformationActivity</string>
     <string name="title_activity_pol">PolActivity</string>
+    <string name="insert_email">Insert email</string>
+    <string name="insert_password">Insert password</string>
+    <string name="login">LOGIN</string>
+    <string name="send_again_verification_email">Send Again Verification Email</string>
+    <string name="register">REGISTER</string>
+    <string name="name">Name</string>
+    <string name="sign_in">SIGN IN</string>
+    <string name="surname">Surname</string>
 
 </resources>
