@@ -132,7 +132,7 @@ public class ActivitiesFragment extends Fragment {
         recyclerView.addOnItemTouchListener(new RecyclerTouchListener(context, recyclerView, new RecyclerTouchListener.ClickListener() {
             @Override
             public void onClick(View view, int position) {
-                FirebaseDatabase.getInstance().getReference("Activities").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child(activities.get(position).getActivityId()).child("read").setValue("yes");
+                FirebaseDatabase.getInstance().getReference("ActivitiesRead").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child(activities.get(position).getGroupId()).child(activities.get(position).getActivityId()).child("read").setValue("yes");
 
                 String type = activities.get(position).getType();
                 if(type.equals("expense")||type.equals("contest")) {

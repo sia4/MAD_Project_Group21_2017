@@ -3,17 +3,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context=".MainActivity">
 
-    <item
-        android:id="@+id/back_search"
-        android:icon="@drawable/back64"
-        android:title="back"
-        android:visible="false"
-        app:showAsAction="always" />
 
     <item
         android:id="@+id/action_search"
         android:icon="@drawable/search24"
         android:title="search"
+
         android:visible="true"
         app:showAsAction="always" />
 
