@@ -394,9 +394,9 @@ public class GroupInfoActivity extends AppCompatActivity {
 
                 }
 
-                if (g.getMemberList().size() != 0) {
+                if (g.showMemberList().size() != 0) {
 
-                    for (final String k : g.getMemberList()) {
+                    for (final String k : g.showMemberList()) {
 
 
                         FirebaseDatabase database3 = FirebaseDatabase.getInstance();

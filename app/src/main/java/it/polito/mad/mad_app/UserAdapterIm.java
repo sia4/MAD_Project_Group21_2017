@@ -55,17 +55,22 @@ public class UserAdapterIm  extends RecyclerView.Adapter<UserAdapterIm.MyViewHol
         String s=usersData.get(position).getName()+ " "+usersData.get(position).getSurname();
         holder.name.setText(s);
         String p=usersData.get(position).getImagePath();
-        final Context context=holder.name.getContext();
-        Glide.with(context).load(p).asBitmap().centerCrop().into(new BitmapImageViewTarget(holder.im) {
-            @Override
-            protected void setResource(Bitmap resource) {
-                RoundedBitmapDrawable circularBitmapDrawable =
-                        RoundedBitmapDrawableFactory.create(context.getResources(), resource);
-                circularBitmapDrawable.setCircular(true);
 
-                holder.im.setImageDrawable(circularBitmapDrawable);
-            }
-        });
+        if(p==null)
+            holder.im.setImageResource(R.drawable.group_default);
+        else {
+            final Context context = holder.name.getContext();
+            Glide.with(context).load(p).asBitmap().centerCrop().into(new BitmapImageViewTarget(holder.im) {
+                @Override
+                protected void setResource(Bitmap resource) {
+                    RoundedBitmapDrawable circularBitmapDrawable =
+                            RoundedBitmapDrawableFactory.create(context.getResources(), resource);
+                    circularBitmapDrawable.setCircular(true);
+
+                    holder.im.setImageDrawable(circularBitmapDrawable);
+                }
+            });
+        }
     }
 
     @Override
