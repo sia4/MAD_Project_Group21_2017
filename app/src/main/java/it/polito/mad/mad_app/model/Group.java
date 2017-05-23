@@ -54,7 +54,7 @@ public class Group {
 
     public Map<String, Boolean> getMembers() {return members; }
 
-    public List<String> getMemberList() {
+    public List<String> showMemberList() {
 
         List<String> m = new ArrayList<>();
 

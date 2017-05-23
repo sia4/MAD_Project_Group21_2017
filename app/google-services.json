@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "352728554058",
+    "firebase_url": "https://allaromana-3f98e.firebaseio.com",
+    "project_id": "allaromana-3f98e",
+    "storage_bucket": "allaromana-3f98e.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:352728554058:android:220362117004871b",
+        "android_client_info": {
+          "package_name": "it.polito.mad.mad_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "352728554058-cd6ci1cr6cn02edeq51s6u1i3hipsupv.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "it.polito.mad.mad_app",
+            "certificate_hash": "f5e9ab7bf1de999eb1b179ba2000962a6ad2b4bf"
+          }
+        },
+        {
+          "client_id": "352728554058-a92srorlkngfbv2o4262f5qb6ueblc54.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCfHvtdrLA-ljcfB3wq68lmGTSLW1JEs1s"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "352728554058-a92srorlkngfbv2o4262f5qb6ueblc54.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
