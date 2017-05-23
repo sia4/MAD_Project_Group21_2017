@@ -85,6 +85,10 @@ public class ActivitiesFragment extends Fragment {
                                         tmpid = activitiesMap.get(j).get("itemId");
                                         tmpgid = activitiesMap.get(j).get("groupId");
                                         read = activitiesMap.get(j).get("read");
+
+                                        //TODO LEGGERE DALLA NUOVA STRUTTURA ACTIVITIESREAD IL VALORE READ
+
+
                                         ActivityData a = new ActivityData(tmpc, tmpt, tmpd, tmpty, tmpid, tmpgid);
                                         a.setGroupName(groupName);
                                         a.setActivityId(j);
