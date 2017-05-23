@@ -64,11 +64,12 @@ public class    HistoryFragment extends Fragment {
 
                 String GroupId = getArguments().getString("GroupId");
                 String GroupName = getArguments().getString("GroupName");
+                System.out.println("groupName HistoryFragment: "+ GroupName);
                 intent.putExtra("groupName", GroupName);
                 intent.putExtra("groupId", GroupId);
                 intent.putExtra("ExpenseId", expense.getIdEx());
                 view.getContext().startActivity(intent);
-                getActivity().finish();
+                //getActivity().finish();
 
             }
 

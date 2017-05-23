@@ -63,6 +63,7 @@ public class ExpenseInfoActivity extends AppCompatActivity {
         getSupportActionBar().setTitle("Expense Information");
 
         exid = i.getStringExtra("ExpenseId");
+        groupName = i.getStringExtra("groupName");
         final String GroupId = i.getStringExtra("groupId");
         image_info=(ImageView) findViewById(R.id.im_ex_info);
         s_ex=(TextView) findViewById(R.id.iMyvalue);
@@ -121,7 +122,7 @@ public class ExpenseInfoActivity extends AppCompatActivity {
 
                     algorithm = (String)map.get("algorithm");
                     date = (String)map.get("date");
-                    groupName = (String)map.get("groupName");
+                    System.out.println("groupName Expenseinfo: "+ groupName);
                     name_ex.setText(name);
                     String tmp = (String) map.get("currency");
                     value_ex.setText(value + " "+tmp.substring(tmp.length()-1));
@@ -322,11 +323,7 @@ public class ExpenseInfoActivity extends AppCompatActivity {
         String GroupId = i.getStringExtra("groupId");
         switch(item.getItemId()){
             case android.R.id.home:
-                Intent intent = new Intent(this, GroupActivity.class);
-                intent.putExtra("groupName", GroupName);
-                intent.putExtra("groupId", GroupId);
-                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                startActivity(intent);
+
                 finish();
                 return true;
             default:
