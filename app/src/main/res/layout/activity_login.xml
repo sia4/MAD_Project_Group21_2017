@@ -1,68 +1,86 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-<android.support.design.widget.CoordinatorLayout
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:fitsSystemWindows="true">
 
-    <LinearLayout
-        android:layout_width="fill_parent"
-        android:layout_height="794dp"
-        android:background="@color/colorPrimary"
+    <android.support.design.widget.CoordinatorLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fitsSystemWindows="true">
 
-        android:orientation="vertical"
-        android:padding="@dimen/activity_horizontal_margin">
+        <ProgressBar
+            android:id="@+id/progressBar"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_gravity="center|bottom"
+            android:layout_marginBottom="20dp"
+            android:visibility="gone" />
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="794dp"
+            android:layout_gravity="top"
+            android:background="@color/colorPrimaryLight"
+            android:orientation="vertical"
+            android:padding="@dimen/activity_horizontal_margin">
 
 
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginBottom="30dp"
-            android:src="@mipmap/logo_big" />
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="250dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginBottom="20dp"
+                android:clickable="false"
+                android:src="@drawable/prova_logo"
+                tools:ignore="ContentDescription" />
 
-        <android.support.design.widget.TextInputLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <EditText
-                android:id="@+id/email"
+            <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="10dp"
-                android:hint="Insert email"
-                android:inputType="textEmailAddress"
-                android:textColorHint="@android:color/white" />
-        </android.support.design.widget.TextInputLayout>
+                android:layout_height="wrap_content">
 
-        <android.support.design.widget.TextInputLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+                <EditText
+                    android:id="@+id/email"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="10dp"
+                    android:hint="@string/insert_email"
+                    android:inputType="textEmailAddress"
+                    android:shadowColor="@android:color/white"
+                    android:textColor="@android:color/white"
+                    android:textColorHint="@android:color/white" />
+            </android.support.design.widget.TextInputLayout>
 
-            <EditText
-                android:id="@+id/password"
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <EditText
+                    android:id="@+id/password"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="10dp"
+                    android:hint="@string/insert_password"
+                    android:inputType="textPassword"
+
+                    android:shadowColor="@android:color/white"
+                    android:textColor="@android:color/white"
+                    android:textColorHint="@android:color/white" />
+            </android.support.design.widget.TextInputLayout>
+
+            <!-- Login Button -->
+
+            <Button
+                android:id="@+id/btn_login"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="10dp"
-                android:hint="Insert password"
-                android:inputType="textPassword"
-                android:textColorHint="@android:color/white" />
-        </android.support.design.widget.TextInputLayout>
+                android:layout_marginTop="20dip"
+                android:background="@color/colorAccent"
+                android:elevation="10dp"
+                android:text="@string/login"
+                android:textColor="@android:color/white" />
 
-        <!-- Login Button -->
-
-        <Button
-            android:id="@+id/btn_login"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dip"
-            android:background="@color/colorAccent"
-            android:text="LOGIN"
-            android:textColor="@android:color/black" />
-
-        <!--<Button
+            <!--<Button
             android:id="@+id/btn_reset_password"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
@@ -72,37 +90,27 @@
             android:textAllCaps="false"
             android:textColor="@color/colorAccent" />-->
 
-        <!-- Link to Login Screen -->
+            <Button
+                android:id="@+id/btn_signup"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dip"
+                android:background="@color/colorPrimary"
+                android:elevation="10dp"
+                android:text="@string/register"
+                android:textColor="@android:color/white" />
 
-        <Button
-            android:id="@+id/btn_signup"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dip"
-            android:background="@null"
-            android:text="Not a member? Get register in AllaRomana now!"
-            android:textAllCaps="false"
-            android:textSize="15dp" />
 
-        <Button
-            android:id="@+id/sendVerificationEmail"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:text="Send Again Verification Email"
-            android:layout_marginTop="20dip"
-            android:textSize="15dp"
-            android:visibility="gone"
-            />
-    </LinearLayout>
-
-    <ProgressBar
-        android:id="@+id/progressBar"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
-        android:layout_gravity="center|bottom"
-        android:layout_marginBottom="20dp"
-        android:visibility="gone" />
-</android.support.design.widget.CoordinatorLayout>
+            <Button
+                android:id="@+id/sendVerificationEmail"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="20dip"
+                android:text="@string/send_again_verification_email"
+                android:textSize="15sp"
+                android:visibility="gone" />
+        </LinearLayout>
+    </android.support.design.widget.CoordinatorLayout>
 
 </ScrollView>

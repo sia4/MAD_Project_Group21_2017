@@ -161,7 +161,7 @@ public class LoginActivity extends AppCompatActivity {
                                                     //mAuth.signOut();
 
                                                 } else {
-                                                    //TODO start here the service
+
                                                     Intent i = new Intent(LoginActivity.this, ServiceManager.class);
                                                     i.putExtra("class","main");
                                                     startService(i);
