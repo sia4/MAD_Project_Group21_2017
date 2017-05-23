@@ -222,10 +222,10 @@ public class GroupInfoActivity extends AppCompatActivity {
                             PolRef.child("acceptsUsers").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).setValue(myname+" "+mysurname);
                             PolRef.child("creator").setValue(FirebaseAuth.getInstance().getCurrentUser().getUid());
 
-                            DatabaseReference ActRef = database.getReference("Activities").child(gId).push();
+                            DatabaseReference ActRef = database.getReference("Activities");
                             for(String k: usersId) {
                                 if (!k.equals(FirebaseAuth.getInstance().getCurrentUser().getUid()))
-                                    ActRef.setValue(new ActivityData(myname + " " + mysurname, myname + " " + mysurname + " proposed to leave group " + gName, Long.toString(System.currentTimeMillis()), "leavegroup", PolKey, gId));
+                                    ActRef.child(k).push().setValue(new ActivityData(myname + " " + mysurname, myname + " " + mysurname + " proposed to leave group " + gName, Long.toString(System.currentTimeMillis()), "leavegroup", PolKey, gId));
                                 }
                                 if(users.size()==1){
                                 findViewById(R.id.DeleteGroup).setVisibility(View.GONE);
@@ -257,7 +257,6 @@ public class GroupInfoActivity extends AppCompatActivity {
                 i.putExtra("groupName", nametmp);
                 i.putExtra("groupPath", image);
                 startActivity(i);
-                finish();
             }
         });
 
