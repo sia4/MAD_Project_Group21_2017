@@ -186,12 +186,28 @@
                         android:layout_weight="0.5"
                         android:text="Delete Group"/>
                     <Button
+                        android:id="@+id/DeletePol"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="left"
+                        android:visibility="gone"
+                        android:layout_weight="0.5"
+                        android:text="Delete Pol"/>
+                    <Button
                         android:id="@+id/LeaveGroup"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:layout_weight="0.5"
                         android:layout_gravity="right"
                         android:text="Leave Group"/>
+                    <Button
+                        android:id="@+id/LeavePol"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="left"
+                        android:visibility="gone"
+                        android:layout_weight="0.5"
+                        android:text="Leave Pol"/>
                 </LinearLayout>
                 <TextView
                     android:id="@+id/okdeleted"

@@ -5,24 +5,36 @@ import android.app.ActivityManager;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.provider.ContactsContract;
+import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.support.v4.view.GravityCompat;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowManager;
+import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -50,6 +62,16 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private boolean user_exists = false;
     private FirebaseAuth mAuth;
     private ViewPager mViewPager;
+    private Menu menu;
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+
+        getMenuInflater().inflate(R.menu.menu_search, menu);
+        this.menu = menu;
+        return true;
+    }
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -168,26 +190,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     @Override
                     public void onTabSelected(TabLayout.Tab tab) {
                         mViewPager.setCurrentItem(tab.getPosition());
-                        /*
-                        switch (tab.getPosition()) {
-                            case 0:
-                                frag = new GroupsFragment();
-                                fab.setVisibility(View.VISIBLE);
-                                break;
-                            case 1:
-                                frag = new ActivitiesFragment();
-
-                                fab.setVisibility(View.INVISIBLE);
-                                break;
-                            default:
-                                frag = new GroupsFragment();
-                                fab.setVisibility(View.VISIBLE);
-                                break;
-                        }
-                        FragmentManager f = getSupportFragmentManager();
-                        FragmentTransaction transaction = f.beginTransaction();
-                        transaction.replace(R.id.main_framelayout, frag);
-                        transaction.commit();*/
 
                     }
 
@@ -221,21 +223,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
                     }
                 });
-
-                        /*addOnPageChangeListener(
-                        new ViewPager.SimpleOnPageChangeListener() {
-                            @Override
-                            public void onPageSelected(int position) {
-                                // When swiping between pages, select the
-                                // corresponding tab.
-                                tabL.addOnTabSelectedListener(OnT);
-                            }
-                        });*/
-
-                /*FragmentManager f = getSupportFragmentManager();
-                FragmentTransaction transaction = f.beginTransaction();
-                transaction.replace(R.id.main_framelayout, new GroupsFragment());
-                transaction.commit();*/
 
 
                 //floating button
@@ -279,73 +266,85 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         startActivityForResult(intent, 1);
                     }
                 });
-            }
-        }
-    }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 
-        super.onActivityResult(requestCode, resultCode, data);
+                EditText search_text = (EditText) findViewById(R.id.search_text);
+                final InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                search_text.setOnEditorActionListener(new TextView.OnEditorActionListener() {
 
-        if (resultCode == RESULT_OK) {
-            Intent refresh = new Intent(this, MainActivity.class);
-            startActivity(refresh);
-            this.finish();
-        }
+                    FloatingActionButton addGroup = (FloatingActionButton)findViewById(R.id.addGroup);
+                    @Override
+                    public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                        if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+                            addGroup.setVisibility(View.VISIBLE);
+                            imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
+                            System.out.println("search_text value: "+v.getText().toString());
+                            MainData.getInstance().setGroupsFragmentData(v.getText().toString());
+                            PagerAdapter mPagerAdapter = new PagerAdapter(getSupportFragmentManager());
+                            final TabLayout tabL = (TabLayout) findViewById(R.id.tabs);
+                            final TabLayout.OnTabSelectedListener OnT=new TabLayout.OnTabSelectedListener(){
+                                @Override
+                                public void onTabSelected(TabLayout.Tab tab) {
+                                    mViewPager.setCurrentItem(tab.getPosition());
 
-    }
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
+                                }
 
-        getMenuInflater().inflate(R.menu.menu_search, menu);
+                                @Override
+                                public void onTabUnselected(TabLayout.Tab tab) {
 
-        return true;
-    }
+                                }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-        EditText search_text = (EditText) findViewById(R.id.search_text);
+                                @Override
+                                public void onTabReselected(TabLayout.Tab tab) {
 
-        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-        FloatingActionButton addGroup = (FloatingActionButton)findViewById(R.id.addGroup);
-        if (id == R.id.action_settings) {
-            return true;
-        }
+                                }
+                            };
+                            mViewPager = (ViewPager) findViewById(R.id.pager);
+                            mViewPager.setAdapter(mPagerAdapter);
+                            tabL.setupWithViewPager(mViewPager);
+                            mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+                                @Override
+                                public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+                                    tabL.addOnTabSelectedListener(OnT);
+                                }
 
-        switch (id) {
-            case R.id.back_search:
-                search_text.setText("");
-                MainData.getInstance().setGroupsFragmentData("");
-                search_text.setVisibility(View.GONE);
-                item.setVisible(false);
-                addGroup.setVisibility(View.VISIBLE);
-                imm.hideSoftInputFromWindow(search_text.getWindowToken(), 0);
+                                @Override
+                                public void onPageSelected(int position) {
 
-                return true;
+                                }
 
-            case R.id.action_search:
-                if(search_text.getVisibility()==View.GONE) {
-                   MenuItem i = (MenuItem)findViewById(R.id.back_search);
-                   // i.setVisible(true);
+                                @Override
+                                public void onPageScrollStateChanged(int state) {
 
-                    search_text.setVisibility(View.VISIBLE);
-                    addGroup.setVisibility(View.GONE);
-                    search_text.requestFocus();
-                    imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_IMPLICIT_ONLY);
+                                }
+                            });
 
 
 
-        }
-                else{
+
+                            return true;
+                        }
+                        return false;
+                    }
+                });
+                final Button back_search = (Button) findViewById(R.id.back_search);
+                back_search.setOnClickListener(new View.OnClickListener(){
 
 
+                    @Override
+                    public void onClick(View v) {
+                        EditText search_text = (EditText) findViewById(R.id.search_text);
+                        FloatingActionButton addGroup = (FloatingActionButton)findViewById(R.id.addGroup);
+                        search_text.setText("");
+                        MainData.getInstance().setGroupsFragmentData("");
+                        search_text.setVisibility(View.GONE);
+                        back_search.setVisibility(View.GONE);
                         addGroup.setVisibility(View.VISIBLE);
                         imm.hideSoftInputFromWindow(search_text.getWindowToken(), 0);
 
-                        System.out.println("search_text value: "+search_text.getText().toString());
-                        MainData.getInstance().setGroupsFragmentData(search_text.getText().toString());
+                        MenuItem item = menu.findItem(R.id.action_search);
+                        item.setIcon(getResources().getDrawable(R.drawable.search24));
+
                         PagerAdapter mPagerAdapter = new PagerAdapter(getSupportFragmentManager());
                         final TabLayout tabL = (TabLayout) findViewById(R.id.tabs);
                         final TabLayout.OnTabSelectedListener OnT=new TabLayout.OnTabSelectedListener(){
@@ -385,8 +384,59 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                             }
                         });
 
+                    }
+                });
+            }
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (resultCode == RESULT_OK) {
+            Intent refresh = new Intent(this, MainActivity.class);
+            startActivity(refresh);
+            this.finish();
+        }
+
+    }
 
 
+
+
+
+
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        EditText search_text = (EditText) findViewById(R.id.search_text);
+        Button back_search = (Button) findViewById(R.id.back_search);
+        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+        FloatingActionButton addGroup = (FloatingActionButton)findViewById(R.id.addGroup);
+        if (id == R.id.action_settings) {
+            return true;
+        }
+
+        switch (id) {
+
+            case R.id.action_search:
+                if(search_text.getVisibility()==View.GONE) {
+                    back_search.setVisibility(View.VISIBLE);
+                    search_text.setVisibility(View.VISIBLE);
+                    addGroup.setVisibility(View.GONE);
+                    search_text.requestFocus();
+                    imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_IMPLICIT_ONLY);
+                    item.setIcon(getResources().getDrawable(R.drawable.multiply20));
+
+
+        }
+                else{
+
+                    search_text.setText("");
+                    MainData.getInstance().setGroupsFragmentData("");
 
                 }
 

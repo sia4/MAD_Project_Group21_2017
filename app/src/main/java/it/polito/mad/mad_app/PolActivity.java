@@ -284,7 +284,7 @@ public class PolActivity extends AppCompatActivity {
                                 if(users.size()==(Integer.parseInt(totu)-1)){
                                     for(String k : usersid) {
                                         if (!k.equals(FirebaseAuth.getInstance().getCurrentUser().getUid()))
-                                            ActRef.child(k).push().setValue(new ActivityData(myname + " " + mysurname, "Group " + GroupName + " has been successful deleted", Long.toString(System.currentTimeMillis()), "acceptdeletegroup", PolId, GroupId));
+                                                ActRef.child(k).push().setValue(new ActivityData(myname + " " + mysurname, "Group " + GroupName + " has been successful deleted", Long.toString(System.currentTimeMillis()), "acceptdeletegroup", PolId, GroupId));
                                     }
                                     for(String k:usersid){
                                         database.getReference("Users").child(k).child("Groups").child(GroupId).child("missing").setValue("yes");
