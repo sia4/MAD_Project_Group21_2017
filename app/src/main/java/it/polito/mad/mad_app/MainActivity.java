@@ -37,6 +37,7 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
@@ -105,6 +106,25 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 }
             }
         };
+
+        DatabaseReference connectedRef = FirebaseDatabase.getInstance().getReference(".info/connected");
+        connectedRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot snapshot) {
+                boolean connected = snapshot.getValue(Boolean.class);
+                if (connected) {
+                    Log.d("Connection listener", "connected");
+                } else {
+                    Toast.makeText(MainActivity.this, "Connection error! Some functions will not be available!", Toast.LENGTH_LONG).show();
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError error) {
+
+            }
+        });
+
         super.onCreate(savedInstanceState);
         if(!isMyServiceRunning(ServiceManager.class)){
             if(FirebaseAuth.getInstance().getCurrentUser()!=null){

@@ -84,7 +84,7 @@ public class GroupActivity extends AppCompatActivity {
             }
         });
 
-        if(gImage==null){
+        if(gImage==null) {
 
             /*gImage=g.getImagePath();
 
@@ -105,30 +105,35 @@ public class GroupActivity extends AppCompatActivity {
             */
 
             DatabaseReference Ref_imagePath = database3.getReference("Groups").child(gKey).child("imagePath");
-            Ref_imagePath.addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
-                    gImage=dataSnapshot.getValue(String.class);
-                    Glide
-                            .with(getApplicationContext())
-                            .load(gImage)
-                            .asBitmap()
-                            .into(new SimpleTarget<Bitmap>(60,60) {
-                                @Override
-                                public void onResourceReady(Bitmap resource, GlideAnimation glideAnimation) {
-                                    RoundedBitmapDrawable circularBitmapDrawable =
-                                            RoundedBitmapDrawableFactory.create(getResources(), resource);
-                                    circularBitmapDrawable.setCircular(true);
-                                    getSupportActionBar().setLogo(circularBitmapDrawable);
-                                }
-                            });
-                }
 
-                @Override
-                public void onCancelled(DatabaseError databaseError) {
+            if (Ref_imagePath == null) {
+                getSupportActionBar().setLogo(R.drawable.group_default);
+            } else {
+                Ref_imagePath.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        gImage = dataSnapshot.getValue(String.class);
+                        Glide
+                                .with(getApplicationContext())
+                                .load(gImage)
+                                .asBitmap()
+                                .into(new SimpleTarget<Bitmap>(60, 60) {
+                                    @Override
+                                    public void onResourceReady(Bitmap resource, GlideAnimation glideAnimation) {
+                                        RoundedBitmapDrawable circularBitmapDrawable =
+                                                RoundedBitmapDrawableFactory.create(getResources(), resource);
+                                        circularBitmapDrawable.setCircular(true);
+                                        getSupportActionBar().setLogo(circularBitmapDrawable);
+                                    }
+                                });
+                    }
 
-                }
-            });
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
+            }
         }
 
         //final FirebaseDatabase database3 = FirebaseDatabase.getInstance();
