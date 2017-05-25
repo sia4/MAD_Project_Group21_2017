@@ -51,6 +51,7 @@ import java.util.TreeMap;
 
 import it.polito.mad.mad_app.model.ActivityData;
 import it.polito.mad.mad_app.model.Balance;
+import it.polito.mad.mad_app.model.Currencies;
 import it.polito.mad.mad_app.model.ExpenseData;
 import it.polito.mad.mad_app.model.UserData;
 
@@ -414,7 +415,6 @@ public class InsertExActivity extends AppCompatActivity {
                 category = Tcategory.getSelectedItem().toString();
                 currency = Tcurrency.getSelectedItem().toString();
                 algorithm = Talgorithm.getSelectedItem().toString();
-                cambio = Cambi.get(currency);
 
                 if(name.equals("")) {
                     Toast.makeText(InsertExActivity.this, "Please insert name.", Toast.LENGTH_LONG).show();
@@ -425,6 +425,11 @@ public class InsertExActivity extends AppCompatActivity {
                 } else if(category.equals("Select category")) {
                     Toast.makeText(InsertExActivity.this, "Please insert category.", Toast.LENGTH_LONG).show();
                 } else {
+
+                    cambio = Cambi.get(currency);
+                    Currencies c = new Currencies();
+                    currency = c.getCurrencyCode(currency);
+
                     value = Double.valueOf(Tvalue.getText().toString());
                     System.out.println("valuebuggggggggggggggggggg " + value);
 
@@ -493,7 +498,7 @@ public class InsertExActivity extends AppCompatActivity {
 
                         if ((algorithm.equals("by percentuage") && algSum != 100)) {
                             flagok = 0;
-                            String text = String.format("Percentuage sum values must be equal to 100!", algSum, i);
+                            String text = String.format("Percentage sum values must be equal to 100!", algSum, i);
                             Toast.makeText(InsertExActivity.this, text, Toast.LENGTH_LONG).show();
                         }
                         if ((algorithm.equals("by import") && algSum != value)) {

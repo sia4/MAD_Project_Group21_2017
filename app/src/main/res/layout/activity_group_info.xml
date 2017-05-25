@@ -47,90 +47,110 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
+
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_margin="@dimen/activity_margin"
-                    android:orientation="horizontal">
+                    android:orientation="vertical">
+
                     <LinearLayout
                         android:layout_width="wrap_content"
-                        android:orientation="vertical"
-                        android:layout_height="wrap_content">
-                        <ImageView
-                            android:id="@+id/im_g"
-                            android:layout_width="100dp"
-                            android:layout_height="100dp" />
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:orientation="vertical">
+
+                        <RelativeLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content">
+
+                            <ImageView
+                                android:id="@+id/im_g"
+                                android:layout_width="100dp"
+                                android:layout_height="100dp" />
+
+                            <CheckBox
+                                android:id="@+id/favourite"
+                                style="?android:attr/starStyle"
+                                android:layout_width="40dp"
+                                android:layout_height="40dp"
+                                android:layout_marginLeft="60dp"
+                                android:layout_marginTop="60dp"
+                                android:gravity="bottom|right" />
+
+                        </RelativeLayout>
+
                         <Button
                             android:id="@+id/m_image_g"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
                             android:background="@null"
-                            android:layout_width="wrap_content"
-                            android:text="Modify"
-                            android:layout_height="wrap_content" />
+                            android:text="Modify" />
                     </LinearLayout>
+
                     <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:orientation="vertical"
-                        android:layout_marginLeft="10dp"
-                        android:layout_height="wrap_content">
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:orientation="vertical">
+
                         <TextView
                             android:id="@+id/name_g"
-                            android:layout_width="wrap_content"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:gravity="center"
+                            android:gravity="center_horizontal"
                             android:textAlignment="gravity"
                             android:textSize="30sp" />
 
                         <EditText
                             android:id="@+id/name_g_ed"
-                            android:layout_width="wrap_content"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_weight="0.2"
-                            android:gravity="center"
+                            android:gravity="center_horizontal"
                             android:textAlignment="gravity"
                             android:textSize="30sp"
                             android:visibility="gone" />
-                        <CheckBox
-                            android:id="@+id/favourite"
-                            android:layout_width="wrap_content"
+
+                        <TextView
+                            android:id="@+id/textView"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            style="?android:attr/starStyle"
-                            />
+                            android:layout_marginTop="5dp"
+                            android:gravity="center_horizontal"
+                            android:text="Description:"
+                            android:textSize="13sp" />
+
+                        <TextView
+                            android:id="@+id/de_g"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="5dp"
+                            android:layout_marginLeft="16sp"
+                            android:layout_marginRight="16sp"
+                            android:layout_marginTop="5dp"
+                            android:textSize="20sp" />
+
+                        <EditText
+                            android:id="@+id/de_g_ed"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="5dp"
+                            android:layout_marginLeft="16sp"
+                            android:layout_marginRight="16sp"
+                            android:layout_marginTop="5dp"
+                            android:textSize="20sp"
+                            android:visibility="gone" />
+
                     </LinearLayout>
                 </LinearLayout>
 
                 <View style="@style/Divider" />
 
-                <TextView
-                    android:layout_width="match_parent"
+                <ImageView
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="16sp"
-                    android:layout_marginRight="16sp"
-                    android:layout_marginTop="5dp"
-                    android:text="Description:"
-                    android:textSize="13sp" />
-
-                <EditText
-                    android:id="@+id/de_g_ed"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="5dp"
-                    android:layout_marginLeft="16sp"
-                    android:layout_marginRight="16sp"
-                    android:layout_marginTop="5dp"
-                    android:textSize="20sp"
-                    android:visibility="gone" />
-
-                <TextView
-                    android:id="@+id/de_g"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="5dp"
-                    android:layout_marginLeft="16sp"
-                    android:layout_marginRight="16sp"
-                    android:layout_marginTop="5dp"
-                    android:textSize="20sp" />
-
-                <View style="@style/Divider" />
+                    android:src="@drawable/ic_group_members" />
 
                 <TextView
                     android:layout_width="match_parent"
