@@ -334,8 +334,8 @@ public class LoginActivity extends AppCompatActivity {
                                                         }
                                                     });
 
-                                                    Intent i = new Intent(LoginActivity.this, ServiceManager.class);
-                                                    startService(i);
+                                                    //Intent i = new Intent(LoginActivity.this, ServiceManager.class);
+                                                    //startService(i);
                                                     Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                                                     startActivity(intent);
                                                     finish();
@@ -380,9 +380,9 @@ public class LoginActivity extends AppCompatActivity {
 
                     if (email_verified) {
                         //TODO start here the service
-                        Intent i = new Intent(LoginActivity.this, ServiceManager.class);
-                        i.putExtra("class","main");
-                        startService(i);
+                        //Intent i = new Intent(LoginActivity.this, ServiceManager.class);
+                        //i.putExtra("class","main");
+                        //startService(i);
                         startActivity(new Intent(LoginActivity.this, MainActivity.class)); //ok
                         finish();
 

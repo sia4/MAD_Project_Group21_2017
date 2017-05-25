@@ -120,7 +120,7 @@ public class GroupsAdapter extends RecyclerView.Adapter<GroupsAdapter.MyViewHold
         Log.d("Groups Adapter", "dati: "+g.getGroupId()+" "+g.dateLastOperation+" "+g.lastOperation);
 
         String p = g.getGroupUrl();
-        if(!p.equals("")) {
+        if(p!=null && !p.equals("")) {
 
             Log.d("Groups Adapter", "Retrive dell'Immagine");
             Glide.with(context).load(p).asBitmap().centerCrop().into(new BitmapImageViewTarget(holder.im) {
