@@ -38,12 +38,12 @@
             android:inputType="textEmailAddress"
             android:ems="10"
             android:textSize="20sp" />
-        <Button
+        <!--<Button
             android:id="@+id/temp"
             android:background="@null"
             android:layout_width="wrap_content"
             android:text="Add"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content" />-->
     </LinearLayout>
 
 

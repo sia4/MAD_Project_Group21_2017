@@ -84,6 +84,7 @@ public class GroupsAdapter extends RecyclerView.Adapter<GroupsAdapter.MyViewHold
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     Map<String,Boolean> map_read=( Map<String,Boolean>) dataSnapshot.getValue();
+
                     if(map_read!=null){
                         Set<String> value=map_read.keySet();
                         int n=0;

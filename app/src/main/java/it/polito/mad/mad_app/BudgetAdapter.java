@@ -68,6 +68,9 @@ public class BudgetAdapter extends RecyclerView.Adapter<BudgetAdapter.MyViewHold
         if(n>0){
             //System.out.println(budget.getEmail() + "-->" + MainData.getInstance().findUserByMail(budget.getEmail()));
             //holder.name_cred_deb.setText(MainData.getInstance().findUserByMail(budget.getEmail()).getName() + " owns you:");
+
+
+
             holder.name_cred_deb.setText(budget.getName()+ " owns you:");
             holder.value_cred_deb.setTextColor(Color.parseColor("#27B011"));
             if(holder.button==null) {

@@ -141,7 +141,7 @@ public class InsertUserToGroupActivity extends AppCompatActivity {
 
 
 
-        button = (Button) findViewById(R.id.temp);
+        /*button = (Button) findViewById(R.id.temp);
         button.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View arg0) {
@@ -264,7 +264,7 @@ public class InsertUserToGroupActivity extends AppCompatActivity {
 
 
             }
-        });
+        });*/
 
 
 
@@ -364,7 +364,7 @@ public class InsertUserToGroupActivity extends AppCompatActivity {
                                             database.getReference("/Balance/" + gId + "/" + u.getuId() + "/" + key + "/" + "value").setValue("0.00");
 
                                         }
-                                        //finish();
+                                        finish();
                                     }
 
                                 }
