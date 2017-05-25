@@ -68,9 +68,17 @@
         <com.github.mikephil.charting.charts.BarChart
             android:layout_width="match_parent"
             android:layout_height="300dp"
-            android:layout_marginTop="30dp"
+
             android:id="@+id/barGroupDate">
         </com.github.mikephil.charting.charts.BarChart>
+        <TextView
+            android:id="@+id/DataSpecs"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:layout_marginTop="22dp"
+            android:layout_marginBottom="60dp"
+            android:textSize="15sp" />
     </LinearLayout>
     </android.support.v4.widget.NestedScrollView>
 </android.support.design.widget.CoordinatorLayout>

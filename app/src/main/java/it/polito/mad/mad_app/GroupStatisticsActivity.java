@@ -15,6 +15,7 @@ import android.widget.Toast;
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.charts.PieChart;
 import com.github.mikephil.charting.components.Legend;
+import com.github.mikephil.charting.utils.ColorTemplate;
 import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
@@ -49,7 +50,8 @@ public class GroupStatisticsActivity extends AppCompatActivity {
     Map<String, Float> exSumbyDate = new TreeMap();
     //TODO OTTENERE LISTA CATEGORIES DA CATEGORIES.XML IN MODO AUTOMATICO
     String[] categories = { "Entertainment", "Food and Drinks", "House and Utilities","Clothing","Present","Medical Expenses","Transport","Hotel","Cleaning","General", "Other"};
-
+    String[] xEntrysArray;
+    ArrayList<Integer> dates = new ArrayList<>();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -98,7 +100,9 @@ public class GroupStatisticsActivity extends AppCompatActivity {
                         category = (String) exItem.get("category");
                         datemilliseconds = Long.parseLong((String)exItem.get("date"));
                         SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
+                        SimpleDateFormat formatter2 = new SimpleDateFormat("dd");
                         String dateString = formatter.format(new Date(datemilliseconds));
+                        dates.add(Integer.parseInt(formatter2.format(new Date(datemilliseconds))));
                         System.out.println("date expense: "+dateString);
                         newValue = Float.parseFloat((String) exItem.get("myvalue"));
 
@@ -165,9 +169,11 @@ public class GroupStatisticsActivity extends AppCompatActivity {
                     i = 0;
                     xEntrys.clear();
                     yEntrysBar.clear();
+                    xEntrysArray = new String[exSumbyDate.size()];
                     for (String r : exSumbyDate.keySet()) {
-                        yEntrysBar.add( new BarEntry(exSumbyDate.get(r) , i)  );
+                        yEntrysBar.add( new BarEntry(dates.get(i), exSumbyDate.get(r))  );
                         xEntrys.add(r);
+                        xEntrysArray[i] = r;
                         i++;
                     }
 
@@ -177,14 +183,16 @@ public class GroupStatisticsActivity extends AppCompatActivity {
                     barDataSet.setValueTextSize(12);
 
 
+
                     barDataSet.setColor(Color.parseColor("#b0bec5"));
                     Legend legend2 = BarByDate.getLegend();
                     legend.setForm(Legend.LegendForm.CIRCLE);
                     legend.setPosition(Legend.LegendPosition.LEFT_OF_CHART);
 
                     BarData barData = new BarData(barDataSet);
-                    BarByDate.animateXY(2000,2000);
+                    //BarByDate.animateXY(2000,2000);
                     BarByDate.setData(barData);
+
                     BarByDate.invalidate();
 
 
@@ -223,6 +231,35 @@ public class GroupStatisticsActivity extends AppCompatActivity {
             }
 
         });
+        final TextView DateSpec = (TextView) findViewById(R.id.DataSpecs);
+        BarByDate.setOnChartValueSelectedListener(new OnChartValueSelectedListener() {
+            @Override
+
+            public void onValueSelected(Entry e, Highlight h) {
+                String r = "";
+                int pos1 = e.toString().indexOf("y: ");
+                String ss = e.toString().substring(pos1 + 2);
+                int i=0;
+                for(String rtmp : exSumbyDate.keySet()){
+                    r = rtmp;
+                    i++;
+                    if(exSumbyDate.get(r)==Float.parseFloat(ss)){
+                        pos1 = i;
+                        break;
+                    }
+                }
+                String sss = r;
+                String bau ="Date "+sss+"\n"+"Total spent: "+ss;
+                DateSpec.setText(bau);
+            }
+
+            @Override
+            public void onNothingSelected() {
+                DateSpec.setText("");
+            }
+        });
+
+
     }
 
     public boolean onOptionsItemSelected(MenuItem item){
