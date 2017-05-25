@@ -19,6 +19,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
@@ -32,12 +34,17 @@ import it.polito.mad.mad_app.R;
 
 public class ServiceManager extends Service {
     private int i=0;
+    private String print;
+    private String text;
+    private String polId;
     private Intent resultIntent;
     private String gname;
     private String gId;
     private String imagePath;
     private String exname;
     private String printText;
+    private String aId;
+    private Map<String,Object> Id_read=new TreeMap<>();
     private Map<String, Map<String,Object>> activities=new TreeMap<>();
     private Map<String, Map<String,Object>> old_activities=new TreeMap<>();
     private Map<String, Map<String,Object>> not_read=new TreeMap<>();
@@ -47,7 +54,7 @@ public class ServiceManager extends Service {
         final FirebaseDatabase database = FirebaseDatabase.getInstance();
         FirebaseUser currentFirebaseUser = FirebaseAuth.getInstance().getCurrentUser();
         if (currentFirebaseUser != null) {
-            String key = currentFirebaseUser.getUid();
+            final String key = currentFirebaseUser.getUid();
             if (key != null) {
                 DatabaseReference db = database.getReference().child("Activities").child(key);
                 db.addValueEventListener(new ValueEventListener() {
@@ -55,89 +62,159 @@ public class ServiceManager extends Service {
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         if (i == 0) {
                             i += 1;
+                            //old_activities=(Map<String, Map<String, Object>>) dataSnapshot.getValue();
                         } else {
                             activities = (Map<String, Map<String, Object>>) dataSnapshot.getValue();
-                            Set<String> activId = activities.keySet();
-                            for (String str : activId) {
-                                if (activities.get(str) != old_activities.get(str)) {
-                                    not_read.put(str, activities.get(str));
-                                }
-                            }
-                            if (not_read.size() > 1) {
-                                printText = not_read.size() + " new notifications";
-                            } else {
-                                Set<String> k_act = not_read.keySet();
-                                final String print = (String) not_read.get(k_act).get("type");
-                                gId = (String) not_read.get(k_act).get("groupId");
-                                DatabaseReference forName = database.getReference().child("Groups").child(gId);
-                                forName.addListenerForSingleValueEvent(new ValueEventListener() {
-                                    @Override
-                                    public void onDataChange(DataSnapshot dataSnapshot) {
-                                        dataSnapshot.getValue();
-                                        Group g = dataSnapshot.getValue(Group.class);
-                                        gname = g.getName();
-                                        imagePath = g.getImagePath();
-                                        switch (print) {
-                                            case ("expense"):
-                                                printText = "In " + gname + " there's a new expense";
-                                                resultIntent = new Intent(c, MainActivity.class);
-                                                break;
-                                            case ("contest"):
-                                                printText = "In " + gname + " an expense has been contested";
-                                                resultIntent = new Intent(c, MainActivity.class);
-                                            /*resultIntent.putExtra("groupId", gId);
-                                            resultIntent.putExtra("groupName", gname);
-                                            resultIntent.putExtra("imagePath", imagePath);*/
-                                                break;
-                                            case ("leavegroup"):
-                                                printText = "Someaone leave the group" + gname;
-                                                resultIntent = new Intent(c, MainActivity.class);
-                                                break;
-                                            case ("deletegroup"):
-                                                printText = "Propose to leave group" + gname;
-                                                resultIntent = new Intent(c, MainActivity.class);
-                                                break;
-                                            case ("addgroup"):
-                                                printText = "You have a new expense";
-                                                resultIntent = new Intent(c, MainActivity.class);
-                                                break;
-                                            default:
-                                                printText = "You have a new notification";
-                                                resultIntent = new Intent(c, MainActivity.class);
-                                                break;
+                            FirebaseDatabase db_read=FirebaseDatabase.getInstance();
+                            DatabaseReference read=db_read.getReference().child("ActivitiesRead").child(key);
+                            read.addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(DataSnapshot dataSnapshot) {
+                                    Map<String,Map<String,Map<String,Object>>>old_a=(Map<String,Map<String,Map<String,Object>>>)dataSnapshot.getValue();
+                                    Set<String> grId=old_a.keySet();
+                                    for(String id:grId){
+                                        Id_read.putAll(old_a.get(id));
+                                    }
+                                    Set<String> activId = activities.keySet();
+                                    for (String str : activId) {
+                                        /*if (Id_read!=null && (boolean)Id_read.get(str)==false) {
+                                            not_read.put(str, activities.get(str));
+                                        }*/
+                                    }
+                                    if (not_read.size() > 1) {
+                                        printText = "You have "+not_read.size() + " new notifications";
+                                        resultIntent = new Intent(c, MainActivity.class);
+                                        NotificationCompat.Builder mBuilder =
+                                                new NotificationCompat.Builder(c)
+                                                        .setContentTitle("AllaRomana")
+                                                        .setContentText(printText)
+                                                        //.setLargeIcon(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_stat_ac_unit))
+                                                        .setSmallIcon(R.drawable.logo_white) //TODO qui è sostanzialmento dove specifico l'icona da impostare.
+                                                        .setDefaults(Notification.DEFAULT_ALL)
+                                                        .setAutoCancel(true)
+                                                        .setPriority(Notification.PRIORITY_MAX);
+                                        TaskStackBuilder stackBuilder = TaskStackBuilder.create(c);
+                                        stackBuilder.addParentStack(MainActivity.class);
+                                        stackBuilder.addNextIntent(resultIntent);
+                                        PendingIntent resultPendingIntent =
+                                                stackBuilder.getPendingIntent(
+                                                        0,
+                                                        PendingIntent.FLAG_UPDATE_CURRENT
+                                                );
+                                        mBuilder.setContentIntent(resultPendingIntent);
+                                        NotificationManager mNotificationManager =
+                                                (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+                                        mNotificationManager.notify(0, mBuilder.build());
+                                        old_activities.putAll(activities);
+                                        not_read.clear();
+                                    } else {
+                                        Set<String> k_act = not_read.keySet();
+                                        for(String k_ac:k_act){
+                                            print = (String) not_read.get(k_ac).get("type");
+                                            gId = (String) not_read.get(k_ac).get("groupId");
+                                            polId=(String) not_read.get(k_ac).get("itemId");
+                                            text=(String) not_read.get(k_ac).get("text");
+                                            aId=k_ac;
                                         }
+                                        DatabaseReference forName = database.getReference().child("Groups").child(gId);
+                                        forName.addListenerForSingleValueEvent(new ValueEventListener() {
+                                            @Override
+                                            public void onDataChange(DataSnapshot dataSnapshot) {
+                                                dataSnapshot.getValue();
+                                                Group g = dataSnapshot.getValue(Group.class);
+                                                gname = g.getName();
+                                                imagePath = g.getImagePath();
+                                                switch (print) {
+                                                    case ("expense"):
+                                                        printText = "In " + gname + " there's a new expense";
+                                                        resultIntent = new Intent(c, MainActivity.class);
+                                                        resultIntent.putExtra("groupId", gId);
+                                                        resultIntent.putExtra("groupName", gname);
+                                                        resultIntent.putExtra("imagePath", imagePath);
+                                                        resultIntent.putExtra("notification","new");
+                                                        break;
+                                                    case ("contest"):
+                                                        printText = "In " + gname + " an expense has been contested";
+                                                        resultIntent = new Intent(c, MainActivity.class);
+                                                        resultIntent.putExtra("groupId", gId);
+                                                        resultIntent.putExtra("groupName", gname);
+                                                        resultIntent.putExtra("imagePath", imagePath);
+                                                        resultIntent.putExtra("notification","new");
+                                                        break;
+                                                    case ("leavegroup"):
+                                                        printText = "Someone leaves the group " + gname;
+                                                        resultIntent = new Intent(c, MainActivity.class);
+                                                        resultIntent.putExtra("groupId", gId);
+                                                        resultIntent.putExtra("groupName", gname);
+                                                        resultIntent.putExtra("polId", polId);
+                                                        resultIntent.putExtra("text", text);
+                                                        resultIntent.putExtra("type", print);
+                                                        resultIntent.putExtra("activId",aId);
+                                                        resultIntent.putExtra("notification","pol");
+                                                        break;
+                                                    case ("deletegroup"):
+                                                        printText = "Someone proposes to leave group " + gname;
+                                                        resultIntent = new Intent(c, MainActivity.class);
+                                                        resultIntent.putExtra("groupId", gId);
+                                                        resultIntent.putExtra("groupName", gname);
+                                                        resultIntent.putExtra("polId", polId);
+                                                        resultIntent.putExtra("text", text);
+                                                        resultIntent.putExtra("type", print);
+                                                        resultIntent.putExtra("activId",aId);
+                                                        resultIntent.putExtra("notification","pol");
+                                                        break;
+                                                    case ("addgroup"):
+                                                        printText = "You are added in a new group";
+                                                        resultIntent = new Intent(c, MainActivity.class);
+                                                        resultIntent.putExtra("groupId", gId);
+                                                        resultIntent.putExtra("groupName", gname);
+                                                        resultIntent.putExtra("imagePath", imagePath);
+                                                        resultIntent.putExtra("notification","new");
+                                                        break;
+                                                    default:
+                                                        printText = "You have a new notification";
+                                                        resultIntent = new Intent(c, MainActivity.class);
+                                                        break;
+                                                }
+                                                NotificationCompat.Builder mBuilder =
+                                                        new NotificationCompat.Builder(c)
+                                                                .setContentTitle("AllaRomana")
+                                                                .setContentText(printText)
+                                                                //.setLargeIcon(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_stat_ac_unit))
+                                                                .setSmallIcon(R.drawable.logo_white) //TODO qui è sostanzialmento dove specifico l'icona da impostare.
+                                                                .setDefaults(Notification.DEFAULT_ALL)
+                                                                .setAutoCancel(true)
+                                                                .setPriority(Notification.PRIORITY_MAX);
+                                                TaskStackBuilder stackBuilder = TaskStackBuilder.create(c);
+                                                stackBuilder.addParentStack(MainActivity.class);
+                                                stackBuilder.addNextIntent(resultIntent);
+                                                PendingIntent resultPendingIntent =
+                                                        stackBuilder.getPendingIntent(
+                                                                0,
+                                                                PendingIntent.FLAG_UPDATE_CURRENT
+                                                        );
+                                                mBuilder.setContentIntent(resultPendingIntent);
+                                                NotificationManager mNotificationManager =
+                                                        (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+                                                mNotificationManager.notify(0, mBuilder.build());
+                                                old_activities.putAll(activities);
+                                                not_read.clear();
+                                            }
+
+                                            @Override
+                                            public void onCancelled(DatabaseError databaseError) {
+
+                                            }
+                                        });
                                     }
 
-                                    @Override
-                                    public void onCancelled(DatabaseError databaseError) {
+                                }
 
-                                    }
-                                });
-                            }
+                                @Override
+                                public void onCancelled(DatabaseError databaseError) {
 
-                            NotificationCompat.Builder mBuilder =
-                                    new NotificationCompat.Builder(c)
-                                            .setContentTitle("AllaRomana")
-                                            .setContentText(printText)
-                                            //.setLargeIcon(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_stat_ac_unit))
-                                            .setSmallIcon(R.drawable.logo_white) //TODO qui è sostanzialmento dove specifico l'icona da impostare.
-                                            .setDefaults(Notification.DEFAULT_ALL)
-                                            .setAutoCancel(true)
-                                            .setPriority(Notification.PRIORITY_MAX);
-                            TaskStackBuilder stackBuilder = TaskStackBuilder.create(c);
-                            stackBuilder.addParentStack(MainActivity.class);
-                            stackBuilder.addNextIntent(resultIntent);
-                            PendingIntent resultPendingIntent =
-                                    stackBuilder.getPendingIntent(
-                                            0,
-                                            PendingIntent.FLAG_UPDATE_CURRENT
-                                    );
-                            mBuilder.setContentIntent(resultPendingIntent);
-                            NotificationManager mNotificationManager =
-                                    (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-                            mNotificationManager.notify(0, mBuilder.build());
-                            old_activities.putAll(activities);
-
+                                }
+                            });
                         }
                     }
 

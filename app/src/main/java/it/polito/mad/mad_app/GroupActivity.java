@@ -1,5 +1,7 @@
 package it.polito.mad.mad_app;
 
+import android.app.NotificationManager;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
@@ -12,6 +14,7 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -28,11 +31,14 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import java.lang.reflect.Field;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
+import java.util.TreeMap;
 
 import it.polito.mad.mad_app.model.Group;
 import it.polito.mad.mad_app.model.PagerAdapterGroup;
@@ -44,6 +50,7 @@ public class GroupActivity extends AppCompatActivity {
     private ListView lv;
     private float tmppos=0;
     private float tmpneg=0;
+    private Map<String,Map<String,Object>> notification=new TreeMap<>();
     Float pos = (float)10.2;//datigruppo.getPosExpenses();
     Float neg = (float)10.2;//datigruppo.getNegExpenses();
     private Map<String, Map<String, Object>> balancemap;
@@ -70,8 +77,29 @@ public class GroupActivity extends AppCompatActivity {
         b.putString("GroupName", gName);
         b.putString("imagePath", gImage);
 
+        final String user=FirebaseAuth.getInstance().getCurrentUser().getUid();
         final FirebaseDatabase database3 = FirebaseDatabase.getInstance();
+        final Query notRead=database3.getReference("Activities").child(user).orderByChild("groupId");
+        notRead.equalTo(gKey).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                notification=(Map<String, Map<String,Object>>) dataSnapshot.getValue();
+                if(notification!=null){
+                    Log.d("GroupActivity","lista di notifiche"+notification);
+                    Set<String> ActiveID=notification.keySet();
+                    FirebaseDatabase read = FirebaseDatabase.getInstance();
+                    DatabaseReference readRef=read.getReference("ActivitiesRead").child(user).child(gKey);
+                    for(String id:ActiveID){
+                        readRef.child(id).setValue(true);
+                    }
+                }
+            }
 
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
         DatabaseReference myRef = database3.getReference("Groups").child(gKey);
         myRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -330,6 +358,13 @@ public class GroupActivity extends AppCompatActivity {
             }
         });
         System.out.println("------>GroupActivity arrivata alla fine");
+    }
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        NotificationManager notificationManager = (NotificationManager)getSystemService(Context.NOTIFICATION_SERVICE);
+        notificationManager.cancelAll();
     }
 
     @Override

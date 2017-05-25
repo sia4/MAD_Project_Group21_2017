@@ -1,5 +1,7 @@
 package it.polito.mad.mad_app;
 
+import android.app.NotificationManager;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -9,6 +11,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -28,6 +31,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import java.text.SimpleDateFormat;
@@ -35,6 +39,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import it.polito.mad.mad_app.model.ActivityData;
 import it.polito.mad.mad_app.model.PolData;
@@ -51,6 +56,7 @@ public class PolActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pol);
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.pol_toolbar);
         setSupportActionBar(toolbar);
         if (getSupportActionBar() != null) {
@@ -63,6 +69,13 @@ public class PolActivity extends AppCompatActivity {
         final String PolId = i.getStringExtra("polId");
         String text = i.getStringExtra("text");
         final String type = i.getStringExtra("type");
+        if(i.getStringExtra("activId")!=null){
+            String activId=i.getStringExtra("activId");
+            String user=FirebaseAuth.getInstance().getCurrentUser().getUid();
+            FirebaseDatabase database3 = FirebaseDatabase.getInstance();
+            DatabaseReference notRead=database3.getReference("ActivitiesRead").child(user).child(GroupId);
+            notRead.child(activId).setValue(true);
+        }
         System.out.println("INTENTTTTTTTTTTTTTT "+GroupName+" "+PolId+" "+GroupId);
         TextView poltext = (TextView) findViewById(R.id.polText);
         final TextView totusers = (TextView) findViewById(R.id.unvalue);
@@ -70,8 +83,6 @@ public class PolActivity extends AppCompatActivity {
         final TextView acceptedusers = (TextView) findViewById(R.id.totvalue);
         final Button button = (Button) findViewById(R.id.AcceptPropose);
         poltext.setText(text);
-
-
 
         RecyclerView userRecyclerView = (RecyclerView) findViewById(R.id.polUsersList);
         userRecyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -255,17 +266,28 @@ public class PolActivity extends AppCompatActivity {
                             PolRef.child("acceptsUsers").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).setValue(myname+" "+mysurname);
 
                             DatabaseReference ActRef = database.getReference("Activities");
+                            DatabaseReference ActRead=database.getReference("ActivitiesRead");
                             if(type.equals("leavegroup")) {
                                 for(String k : usersid) {
                                     if(!k.equals(FirebaseAuth.getInstance().getCurrentUser().getUid()))
-                                      ActRef.child(k).push().setValue(new ActivityData(myname + " " + mysurname, myname + " " + mysurname + " accepted the propose to leave group " + GroupName, Long.toString(System.currentTimeMillis()), "acceptleavegroup", PolId, GroupId));
+                                    {
+                                        ActRef.child(k).push();
+                                        String actId=ActRef.getKey();
+                                        ActRef.child(k).child(actId).setValue(new ActivityData(myname + " " + mysurname, myname + " " + mysurname + " accepted the propose to leave group " + GroupName, Long.toString(System.currentTimeMillis()), "acceptleavegroup", PolId, GroupId));
+                                        ActRead.child(k).child(GroupId).child(actId).setValue(false);
+                                    }
 
                                 }
 
                                 if(users.size()==(Integer.parseInt(totu)-1)){
                                     for(String k : usersid) {
                                         if (!k.equals(FirebaseAuth.getInstance().getCurrentUser().getUid()))
-                                            ActRef.child(k).push().setValue(new ActivityData(myname + " " + mysurname, myname + " " + mysurname + " has been successful deleted from group " + GroupName, Long.toString(System.currentTimeMillis()), "acceptleavegroup", PolId, GroupId));
+                                        {
+                                            ActRef.child(k).push();
+                                            String actId=ActRef.getKey();
+                                            ActRef.child(k).child(actId).setValue(new ActivityData(myname + " " + mysurname, myname + " " + mysurname + " has been successful deleted from group " + GroupName, Long.toString(System.currentTimeMillis()), "acceptleavegroup", PolId, GroupId));
+                                            ActRead.child(k).child(GroupId).child(actId).setValue(false);
+                                        }
                                     }
                                     database.getReference("Groups").child(GroupId).child("members").child(creator).setValue(false);
                                     database.getReference("Users").child(creator).child("Groups").child(GroupId).child("missing").setValue("yes");
@@ -279,12 +301,23 @@ public class PolActivity extends AppCompatActivity {
                             if(type.equals("deletegroup")){
                                 for(String k : usersid) {
                                     if (!k.equals(FirebaseAuth.getInstance().getCurrentUser().getUid()))
-                                        ActRef.child(k).push().setValue(new ActivityData(myname + " " + mysurname, myname + " " + mysurname + " accepted the propose to delete group " + GroupName, Long.toString(System.currentTimeMillis()), "acceptdeletegroup", PolId, GroupId));
+                                    {
+                                        ActRef.child(k).push();
+                                        String actId=ActRef.getKey();
+                                        ActRef.child(k).child(actId).setValue(new ActivityData(myname + " " + mysurname, myname + " " + mysurname + " accepted the propose to delete group " + GroupName, Long.toString(System.currentTimeMillis()), "acceptdeletegroup", PolId, GroupId));
+                                        ActRead.child(k).child(GroupId).child(actId).setValue(false);
+                                    }
                                 }
                                 if(users.size()==(Integer.parseInt(totu)-1)){
                                     for(String k : usersid) {
                                         if (!k.equals(FirebaseAuth.getInstance().getCurrentUser().getUid()))
-                                                ActRef.child(k).push().setValue(new ActivityData(myname + " " + mysurname, "Group " + GroupName + " has been successful deleted", Long.toString(System.currentTimeMillis()), "acceptdeletegroup", PolId, GroupId));
+                                        {
+                                            ActRef.child(k).push();
+                                            String actId=ActRef.getKey();
+                                            ActRef.child(k).child(actId).setValue(new ActivityData(myname + " " + mysurname, "Group " + GroupName + " has been successful deleted", Long.toString(System.currentTimeMillis()), "acceptdeletegroup", PolId, GroupId));
+                                            ActRead.child(k).child(GroupId).child(actId).setValue(false);
+                                        }
+
                                     }
                                     for(String k:usersid){
                                         database.getReference("Users").child(k).child("Groups").child(GroupId).child("missing").setValue("yes");
@@ -328,6 +361,13 @@ public class PolActivity extends AppCompatActivity {
             }
         }));
 
+    }
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        NotificationManager notificationManager = (NotificationManager)getSystemService(Context.NOTIFICATION_SERVICE);
+        notificationManager.cancelAll();
     }
 
     public boolean onOptionsItemSelected(MenuItem item){

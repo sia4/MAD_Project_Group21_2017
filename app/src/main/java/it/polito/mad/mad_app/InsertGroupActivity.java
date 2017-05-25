@@ -430,8 +430,11 @@ public class InsertGroupActivity extends AppCompatActivity {
 
             String key = (String) i.next();
             if (!key.equals(FirebaseAuth.getInstance().getCurrentUser().getUid())) {
-                myRef = database.getReference("/Activities/" + key).push();
+                myRef = database.getReference("/Activities/" + key);
+                DatabaseReference ActRead=database.getReference().child("ActivitiesRead").child(key).child(groupId);
+                String actId=myRef.push().getKey();
                 myRef.setValue(new ActivityData( myname, myname + " added you in group " + groupN, Long.toString(System.currentTimeMillis()), "addgroup", groupId, groupId));
+                ActRead.child(actId).setValue(false);
             }
             myRef = database.getReference("/Users/" + key + "/Groups/" + groupId + "/name/");
             myRef.setValue(G.getName());

@@ -142,8 +142,8 @@ public class SignInActivity extends AppCompatActivity {
                                                     }
                                                 }
                                             });
-
                                     final DatabaseReference database = FirebaseDatabase.getInstance().getReference();
+                                    //DatabaseReference database = FirebaseDatabase.getInstance().getReference();
                                     final Query quer=database.child("Invites").orderByChild("email");
 
                                     quer.equalTo(u.getEmail()).addListenerForSingleValueEvent(new ValueEventListener() {
@@ -199,7 +199,16 @@ public class SignInActivity extends AppCompatActivity {
         User user = new User(username, email, name, surname);
 
         Firebase_DB.child("Users").child(userId).setValue(user);
-
+        FirebaseDatabase notify=FirebaseDatabase.getInstance();
+        DatabaseReference notif=notify.getReference().child("Activities").child(userId).push();
+        notif.child("creator").setValue("system");
+        notif.child("text").setValue("Welcome on YourSlice!");
+        notif.child("type").setValue("welcome");
+        notif.child("date").setValue(Long.toString(System.currentTimeMillis()));
+        notif.child("groupId").setValue("");
+        notif.child("itemId").setValue("");
+        notif=notify.getReference().child("ActivitiesRead").child(userId);
+        notif.setValue("true");
     }
 
     @Override

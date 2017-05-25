@@ -46,26 +46,47 @@
                 style="?android:attr/starStyle"
                 />
             </LinearLayout>
-        <TextView
-            android:id="@+id/date"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="left"
-            android:textAlignment="gravity"
-            android:textColor="@color/secondaryTextColor"
-            android:textSize="15sp"
-            android:textStyle="bold" />
+            android:orientation="horizontal"
+            android:layout_height="match_parent">
+                <LinearLayout
+                    android:orientation="vertical"
+                    android:layout_width="match_parent"
+                    android:layout_weight="0.2"
+                    android:layout_height="match_parent">
+                <TextView
+                    android:id="@+id/date"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="left"
+                    android:textAlignment="gravity"
+                    android:textColor="@color/secondaryTextColor"
+                    android:textSize="15sp"
+                    android:textStyle="bold" />
 
-        <TextView
-            android:id="@+id/operation"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="left"
-            android:textAlignment="gravity"
-            android:textColor="@color/secondaryTextColor"
-            android:textSize="15sp"
-            android:textStyle="bold" />
-
+                    <TextView
+                        android:id="@+id/operation"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="left"
+                        android:textAlignment="gravity"
+                        android:textColor="@color/secondaryTextColor"
+                        android:textSize="15sp"
+                        android:textStyle="bold" />
+                </LinearLayout>
+            <TextView
+                android:layout_marginTop="15dp"
+                android:layout_marginRight="3dp"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:textSize="15sp"
+                android:gravity="center"
+                android:visibility="invisible"
+                android:background="@drawable/circle"
+                android:textColor="@android:color/white"
+                android:id="@+id/mark" />
+        </LinearLayout>
         <!--<LinearLayout
             android:layout_weight="0.5"
             android:layout_width="match_parent"

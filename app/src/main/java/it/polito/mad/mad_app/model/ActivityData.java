@@ -19,7 +19,7 @@ public class ActivityData implements Comparable<ActivityData>{
     private String itemId;
     private String groupId;
     private String groupName;
-    private String read = null;
+    private Boolean read = false;
     private String activityId;
     public ActivityData(String creator1, String text1, String date1, String type1, String id, String gId) {
         this.creator = creator1;
@@ -31,10 +31,21 @@ public class ActivityData implements Comparable<ActivityData>{
         this.itemId = id;
         this.groupId = gId;
     }
+    public ActivityData(String creator1, String text1, String date1, String type1, String id, String gId,boolean read) {
+        this.creator = creator1;
+        this.text = text1;
+        //SimpleDateFormat sdf = new SimpleDateFormat("MMM dd,yyyy HH:mm");
+        //Date resultdate = new Date(new Long(dateLastOperation));
+        this.date = date1;
+        this.type = type1;
+        this.itemId = id;
+        this.groupId = gId;
+        this.read=read;
+    }
     public void setActivityId(String s){this.activityId = s;}
     public String getActivityId(){return this.activityId;}
-    public void setRead(String s){read = s;}
-    public String getRead(){return read;}
+    public void setRead(boolean s){read = s;}
+    public boolean getRead(){return read;}
     public String getCreator(){
         return this.creator;
     }

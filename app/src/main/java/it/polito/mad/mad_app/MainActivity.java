@@ -1,5 +1,6 @@
 package it.polito.mad.mad_app;
 
+import android.app.NotificationManager;
 import android.content.Context;
 import android.app.ActivityManager;
 import android.content.Intent;
@@ -131,6 +132,44 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 Intent intent = new Intent(MainActivity.this, ServiceManager.class);
                 //intent.putExtra("class","main");
                 startService(intent);
+            }
+        }
+        Intent intent = getIntent();
+        if(intent.getExtras()!=null){
+            if(intent.getStringExtra("notification")!=null){
+                String not=intent.getStringExtra("notification");
+                switch (not){
+                    case "new":
+                        Intent newIntent=new Intent(getApplicationContext(),GroupActivity.class);
+                        String gKey = intent.getStringExtra("groupId");
+                        String gName = intent.getStringExtra("groupName");
+                        String gImage= intent.getStringExtra("imagePath");
+                        newIntent.putExtra("groupId",gKey);
+                        newIntent.putExtra("groupName",gName);
+                        newIntent.putExtra("imagePath",gImage);
+                        newIntent.putExtra("notification","notification");
+                        startActivity(newIntent);
+                        break;
+                    case "pol":
+                        Intent nIntent=new Intent(getApplicationContext(),PolActivity.class);
+                        gKey = intent.getStringExtra("groupId");
+                        gName = intent.getStringExtra("groupName");
+                        String type = intent.getStringExtra("type");
+                        String polId= intent.getStringExtra("polId");
+                        String text=intent.getStringExtra("text");
+                        String aId=intent.getStringExtra("activId");
+                        nIntent.putExtra("notification","notification");
+                        nIntent.putExtra("groupName",gName);
+                        nIntent.putExtra("groupId",gKey);
+                        nIntent.putExtra("polId",polId);
+                        nIntent.putExtra("text",text);
+                        nIntent.putExtra("activId",aId);
+                        nIntent.putExtra("type",type);
+                        startActivity(nIntent);
+                        break;
+                    default:
+                        break;
+                }
             }
         }
         setContentView(R.layout.activity_user_info);
@@ -495,7 +534,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
+    @Override
+    protected void onResume() {
+        super.onResume();
 
+        NotificationManager notificationManager = (NotificationManager)getSystemService(Context.NOTIFICATION_SERVICE);
+        notificationManager.cancelAll();
+    }
     protected void CheckUser(FirebaseUser U) {
 
         Log.d("Main Activity", "Check user");

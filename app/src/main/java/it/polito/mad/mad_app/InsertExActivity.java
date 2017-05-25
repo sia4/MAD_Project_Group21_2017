@@ -505,9 +505,15 @@ public class InsertExActivity extends AppCompatActivity {
                     if (flagok == 1 && values.size() == users.size()) {
                         //Quì inseriamo la nuova ttività relativa all'inserimento della spesa
                         DatabaseReference ActRef = database.getReference("Activities");
+                        DatabaseReference ActRead=database.getReference("ActivitiesRead");
                         for(final UserData k:users) {
                             if(!k.getuId().equals(FirebaseAuth.getInstance().getCurrentUser().getUid()))
-                                ActRef.child(k.getuId()).push().setValue(new ActivityData(myname + " " + mysurname, myname + " " + mysurname + " added a new expense in group " + groupName, Long.toString(System.currentTimeMillis()), "expense", refkey, Gname));
+                            {
+                                String actId=ActRef.child(k.getuId()).push().getKey();
+                                ActRef.child(k.getuId()).child(actId).setValue(new ActivityData(myname + " " + mysurname, myname + " " + mysurname + " added a new expense in group " + groupName, Long.toString(System.currentTimeMillis()), "expense", refkey, Gname));
+                                ActRead.child(k.getuId()).child(Gname).child(actId).setValue(false);
+                            }
+
                         }
                         //Quì inseriamo una nuova spesa con relative immagine, se è stata caricata
                         myRef.setValue(new ExpenseData(name, description, category, currency, String.format(Locale.US, "%.2f", value), "0.00", algorithm));

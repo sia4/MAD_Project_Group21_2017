@@ -33,6 +33,8 @@ public class ActivitiesFragment extends Fragment {
     private List<ActivityData> activities = new ArrayList<>();
     private Map<String, ActivityData> m_activities = new TreeMap<>();
     private String groupName;
+    private boolean read=false;
+    private Map<String,Map<String,Object>> act_read=new TreeMap<>();
     private Map<String, Map<String, Object>> userGroups = new TreeMap<>();
     private  Map<String, Map<String, String>> activitiesMap;
     @Override
@@ -74,46 +76,50 @@ public class ActivitiesFragment extends Fragment {
                                     }
 
                                     Log.d("Activities Fragment", "Dentro il listener - activities: "+ activitiesMap);
+                                    FirebaseDatabase db_read=FirebaseDatabase.getInstance();
+                                    DatabaseReference read_r=db_read.getReference().child("ActivitiesRead").child(uId);
+                                    read_r.addValueEventListener(new ValueEventListener() {
+                                        @Override
+                                        public void onDataChange(DataSnapshot dataSnapshot) {
+                                            act_read=(Map<String,Map<String,Object>>) dataSnapshot.getValue();
+                                            String tmpc, tmpt, tmpd, tmpty, tmpid, tmpgid;
+                                            int toRead = 0;
+                                            for(final String j : activitiesMap.keySet()){
+                                                tmpc = activitiesMap.get(j).get("creator");
+                                                tmpt = activitiesMap.get(j).get("text");
+                                                tmpd = activitiesMap.get(j).get("date");
+                                                tmpty = activitiesMap.get(j).get("type");
+                                                tmpid = activitiesMap.get(j).get("itemId");
+                                                tmpgid = activitiesMap.get(j).get("groupId");
+                                                final ActivityData a = new ActivityData(tmpc, tmpt, tmpd, tmpty, tmpid, tmpgid);
+                                                Log.d("ActivitiesFragment","cerco di capire"+act_read.toString());
+                                                if(act_read.get(tmpgid)!=null){
+                                                    if((boolean)act_read.get(tmpgid).get(j)==true){
+                                                        a.setRead(true);
+                                                    }else
+                                                    {
+                                                        a.setRead(false);
+                                                    }
+                                                }
+                                                a.setGroupName(groupName);
+                                                a.setActivityId(j);
+                                                m_activities.put(j, a);
+                                            }
+                                            String ss = String.format("activities to read: %d", toRead);
+                                            System.out.println(ss);
+                                            activities.clear();
+                                            act_read.clear();
+                                            activities.addAll(m_activities.values());
+                                            Collections.sort(activities);
+                                            aAdapter.notifyDataSetChanged();
 
-                                    String tmpc, tmpt, tmpd, tmpty, tmpid, tmpgid, read;
-                                    int toRead = 0;
-                                    for(String j : activitiesMap.keySet()){
-                                        tmpc = activitiesMap.get(j).get("creator");
-                                        tmpt = activitiesMap.get(j).get("text");
-                                        tmpd = activitiesMap.get(j).get("date");
-                                        tmpty = activitiesMap.get(j).get("type");
-                                        tmpid = activitiesMap.get(j).get("itemId");
-                                        tmpgid = activitiesMap.get(j).get("groupId");
-                                        read = activitiesMap.get(j).get("read");
-
-                                        //TODO LEGGERE DALLA NUOVA STRUTTURA ACTIVITIESREAD IL VALORE READ
-
-
-                                        ActivityData a = new ActivityData(tmpc, tmpt, tmpd, tmpty, tmpid, tmpgid);
-                                        a.setGroupName(groupName);
-                                        a.setActivityId(j);
-
-                                        if(read!=null) {
-                                            a.setRead(read);
-                                            if(read.equals("no")) toRead++;
                                         }
-                                        else {
-                                            a.setRead("no");
-                                            toRead++;
+
+                                        @Override
+                                        public void onCancelled(DatabaseError databaseError) {
+
                                         }
-
-                                        m_activities.put(j, a);
-
-
-                                    }
-                                    String ss = String.format("activities to read: %d", toRead);
-                                    System.out.println(ss);
-
-                                    activities.clear();
-                                    activities.addAll(m_activities.values());
-                                    Collections.sort(activities);
-                                    aAdapter.notifyDataSetChanged();
-
+                                    });
                                 } else{
 
                                     if(getView() != null) {
@@ -136,7 +142,7 @@ public class ActivitiesFragment extends Fragment {
         recyclerView.addOnItemTouchListener(new RecyclerTouchListener(context, recyclerView, new RecyclerTouchListener.ClickListener() {
             @Override
             public void onClick(View view, int position) {
-                FirebaseDatabase.getInstance().getReference("ActivitiesRead").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child(activities.get(position).getGroupId()).child(activities.get(position).getActivityId()).child("read").setValue("yes");
+                FirebaseDatabase.getInstance().getReference("ActivitiesRead").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child(activities.get(position).getGroupId()).child(activities.get(position).getActivityId()).setValue(true);
 
                 String type = activities.get(position).getType();
                 if(type.equals("expense")||type.equals("contest")) {

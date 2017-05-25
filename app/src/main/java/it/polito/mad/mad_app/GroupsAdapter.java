@@ -17,8 +17,16 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import it.polito.mad.mad_app.model.Group;
 import it.polito.mad.mad_app.model.GroupData;
@@ -35,6 +43,7 @@ public class GroupsAdapter extends RecyclerView.Adapter<GroupsAdapter.MyViewHold
         public TextView date;
         public TextView operation;
         public CheckBox favourite;
+        public TextView mark;
 
         public MyViewHolder(View view) {
             super(view);
@@ -43,7 +52,7 @@ public class GroupsAdapter extends RecyclerView.Adapter<GroupsAdapter.MyViewHold
             date = (TextView) view.findViewById(R.id.date);
             operation = (TextView) view.findViewById(R.id.operation);
             favourite = (CheckBox) view.findViewById(R.id.favourite);
-
+            mark=(TextView) view.findViewById(R.id.mark);
         }
     }
 
@@ -65,6 +74,39 @@ public class GroupsAdapter extends RecyclerView.Adapter<GroupsAdapter.MyViewHold
     public void onBindViewHolder(final GroupsAdapter.MyViewHolder holder, int position) {
         final GroupsFragment.GroupModel g = gData.get(position);
         holder.name.setText(g.getGroupName());
+        FirebaseDatabase db_read=FirebaseDatabase.getInstance();
+        String uKey= FirebaseAuth.getInstance().getCurrentUser().getUid();
+        holder.mark.setVisibility(View.GONE);
+        DatabaseReference not_read=db_read.getReference().child("ActivitiesRead").child(uKey).child(g.getGroupId());
+        Log.d("GroupAdapter","-----groupId"+g.getGroupId());
+        if(not_read!=null){
+            not_read.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    Map<String,Boolean> map_read=( Map<String,Boolean>) dataSnapshot.getValue();
+                    if(map_read!=null){
+                        Set<String> value=map_read.keySet();
+                        int n=0;
+                        for(String s:value){
+                            System.out.println("--->id"+s);
+                            if(map_read.get(s)==false){
+                                n++;
+                            }
+                        }
+                        if(n>0){
+                            Log.d("GoupsAdapter",String.valueOf(n));
+                            holder.mark.setText(String.valueOf(n));
+                            holder.mark.setVisibility(View.VISIBLE);
+                        }
+                    }
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+            });
+        }
         holder.date.setText(g.getDateLastOperationWellFormed());
         holder.operation.setText(g.getLastOperation());
         if(g.getFavourite()!=null && g.getFavourite().equals("yes"))
