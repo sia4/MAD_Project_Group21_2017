@@ -1,5 +1,6 @@
 package it.polito.mad.mad_app;
 
+import android.app.NotificationManager;
 import android.content.Context;
 import android.app.ActivityManager;
 import android.content.Context;
@@ -79,13 +80,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         FirebaseAuth.AuthStateListener mAuthListener;
         String uKey;
-        //TODO correzione: 1 sola istanza firebase e utente?
+
         //FirebaseDatabase.getInstance().setPersistenceEnabled(true);
         Firebase_DB = FirebaseDatabase.getInstance().getReference();
         mAuth = FirebaseAuth.getInstance();
         CheckLoggedUser();
 
-        //TODO correzione: serve un listener qui?
         mAuthListener = new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {

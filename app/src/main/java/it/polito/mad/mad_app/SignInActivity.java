@@ -142,42 +142,6 @@ public class SignInActivity extends AppCompatActivity {
                                                     }
                                                 }
                                             });
-                                    final DatabaseReference database = FirebaseDatabase.getInstance().getReference();
-                                    //DatabaseReference database = FirebaseDatabase.getInstance().getReference();
-                                    final Query quer=database.child("Invites").orderByChild("email");
-
-                                    quer.equalTo(u.getEmail()).addListenerForSingleValueEvent(new ValueEventListener() {
-
-                                      @Override
-                                      public void onDataChange(DataSnapshot dataSnapshot) {
-                                          for (DataSnapshot invitesSnapshot: dataSnapshot.getChildren()) {
-
-                                              Invite is = invitesSnapshot.getValue(Invite.class);
-                                              String keyInvite = invitesSnapshot.getKey();
-                                              String gId = is.getGroupId();
-                                              String gName = is.getGroupName();
-                                              String gPath = is.getGroupPath();
-                                              String key = u.getUid();
-                                              FirebaseDatabase database = FirebaseDatabase.getInstance();
-                                              DatabaseReference myRef = database.getReference("/Users/"+key+"/Groups/"+gId+"/name/");
-                                              myRef.setValue(gName);
-                                              myRef = database.getReference("/Users/"+key+"/Groups/"+gId+"/imagePath/");
-                                              myRef.setValue(gPath);
-                                              myRef = database.getReference("/Groups/"+gId+"/members/"+key);
-                                              myRef.setValue(true);
-
-                                              DatabaseReference myRef2 = database.getReference("/Invites/");
-                                              myRef2.child(keyInvite).removeValue();
-
-                                          }
-
-                                      }
-
-                                        @Override
-                                        public void onCancelled(DatabaseError eError) {
-
-                                        }
-                                     });
 
                                     System.out.println("Andiamo al Login");
                                     startActivity(new Intent(SignInActivity.this, LoginActivity.class));

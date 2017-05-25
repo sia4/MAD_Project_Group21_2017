@@ -77,10 +77,6 @@ public class UserInformationActivity extends AppCompatActivity {
         String UserInfo=i.getStringExtra("UserInfo");
         changePhoto=(Button) findViewById(R.id.changePhoto);
         System.out.println("+++++++++"+i.getComponent());
-        if(UserInfo!=null)
-        {
-            changePhoto.setVisibility(View.VISIBLE);
-        }
 
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -100,6 +96,64 @@ public class UserInformationActivity extends AppCompatActivity {
         surnameed = (EditText) findViewById(R.id.surname_u_ed);
 
         im = (ImageView) findViewById(R.id.im_u);
+
+        if(UserInfo!=null)
+        {
+            changePhoto.setVisibility(View.VISIBLE);
+
+            changePhoto.setOnClickListener(new View.OnClickListener(){
+                @Override
+                public void onClick(View arg0) {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && checkSelfPermission(android.Manifest.permission.READ_EXTERNAL_STORAGE)
+                            != PackageManager.PERMISSION_GRANTED) {
+                        if (shouldShowRequestPermissionRationale(
+                                android.Manifest.permission.READ_EXTERNAL_STORAGE)) {
+                        }
+
+                        requestPermissions(new String[]{android.Manifest.permission.READ_EXTERNAL_STORAGE},
+                                MY_PERMISSIONS_REQUEST_READ_CONTACTS);
+                        return;
+                    }
+                    final File root = new File(Environment.getExternalStorageDirectory() + File.separator + "MyDir" + File.separator);
+                    root.mkdirs();
+                    final String fname = "img_"+ System.currentTimeMillis() + ".jpg";
+                    final File sdImageMainDirectory = new File(root, fname);
+                    outputFileUri = Uri.fromFile(sdImageMainDirectory);
+                    final PackageManager pManager = getPackageManager();
+                    List<Intent> cameraIntents=require_image(outputFileUri,pManager);
+                    final Intent chooserIntent = Intent.createChooser(cameraIntents.get(cameraIntents.size()-1), "Select Source");
+                    cameraIntents.remove(cameraIntents.size()-1);
+                    chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, cameraIntents.toArray(new Parcelable[cameraIntents.size()]));
+                    startActivityForResult(chooserIntent, 1);
+                }
+            });
+            name.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                    String n = (String)name.getText();
+                    name.setVisibility(View.GONE);
+                    nameed.setVisibility(View.VISIBLE);
+                    nameed.setText(n);
+                    flag_name_edited = true;
+
+                }
+            });
+
+            surname.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                    String n = (String)surname.getText();
+                    surname.setVisibility(View.GONE);
+                    surnameed.setVisibility(View.VISIBLE);
+                    surnameed.setText(n);
+                    flag_surname_edited = true;
+
+                }
+            });
+
+        }
 
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference myRef = database.getReference("Users").child(uId);
@@ -124,77 +178,6 @@ public class UserInformationActivity extends AppCompatActivity {
 
             @Override
             public void onCancelled(DatabaseError error) {
-            }
-        });
-
-
-        /*Button button = (Button) findViewById(R.id.sendVerificationEmail);
-        button.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                FirebaseUser u = FirebaseAuth.getInstance().getCurrentUser();
-
-                u.sendEmailVerification()
-                        .addOnCompleteListener(new OnCompleteListener<Void>() {
-                            @Override
-                            public void onComplete(@NonNull Task<Void> task) {
-                                if (task.isSuccessful()) {
-                                    Toast.makeText(getApplicationContext(), "Email verification sent.", Toast.LENGTH_LONG).show();
-                                } else {
-                                    Toast.makeText(getApplicationContext(), "Error sending email verification.", Toast.LENGTH_LONG).show();
-                                }
-                            }
-                        });
-            }
-        });*/
-        changePhoto.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View arg0) {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && checkSelfPermission(android.Manifest.permission.READ_EXTERNAL_STORAGE)
-                        != PackageManager.PERMISSION_GRANTED) {
-                    if (shouldShowRequestPermissionRationale(
-                            android.Manifest.permission.READ_EXTERNAL_STORAGE)) {
-                    }
-
-                    requestPermissions(new String[]{android.Manifest.permission.READ_EXTERNAL_STORAGE},
-                            MY_PERMISSIONS_REQUEST_READ_CONTACTS);
-                    return;
-                }
-                final File root = new File(Environment.getExternalStorageDirectory() + File.separator + "MyDir" + File.separator);
-                root.mkdirs();
-                final String fname = "img_"+ System.currentTimeMillis() + ".jpg";
-                final File sdImageMainDirectory = new File(root, fname);
-                outputFileUri = Uri.fromFile(sdImageMainDirectory);
-                final PackageManager pManager = getPackageManager();
-                List<Intent> cameraIntents=require_image(outputFileUri,pManager);
-                final Intent chooserIntent = Intent.createChooser(cameraIntents.get(cameraIntents.size()-1), "Select Source");
-                cameraIntents.remove(cameraIntents.size()-1);
-                chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, cameraIntents.toArray(new Parcelable[cameraIntents.size()]));
-                startActivityForResult(chooserIntent, 1);
-            }
-            });
-        name.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                String n = (String)name.getText();
-                name.setVisibility(View.GONE);
-                nameed.setVisibility(View.VISIBLE);
-                nameed.setText(n);
-                flag_name_edited = true;
-
-            }
-        });
-
-        surname.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                String n = (String)surname.getText();
-                surname.setVisibility(View.GONE);
-                surnameed.setVisibility(View.VISIBLE);
-                surnameed.setText(n);
-                flag_surname_edited = true;
-
             }
         });
 

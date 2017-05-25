@@ -1,15 +1,19 @@
 package it.polito.mad.mad_app;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.text.InputType;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
+import android.widget.TableRow;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -21,9 +25,14 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.Map;
+
+import it.polito.mad.mad_app.model.Invite;
 import it.polito.mad.mad_app.model.ServiceManager;
+import it.polito.mad.mad_app.model.UserData;
 
 import static android.view.View.VISIBLE;
 
@@ -33,7 +42,7 @@ public class LoginActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
     private EditText inputEmail, inputPassword;
     private ProgressBar progressBar;
-    private Button btnSignup, btnLogin;
+    private Button btnSignup, btnLogin, btnResetPwd;
     private FirebaseAuth.AuthStateListener mAuthListener;
     private DatabaseReference Firebase_DB;
     private boolean user_exists = false;
@@ -94,11 +103,66 @@ public class LoginActivity extends AppCompatActivity {
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
         btnSignup = (Button) findViewById(R.id.btn_signup);
         btnLogin = (Button) findViewById(R.id.btn_login);
+        btnResetPwd= (Button) findViewById(R.id.btn_reset_password);
 
         btnSignup.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                startActivity(new Intent(LoginActivity.this, SignInActivity.class));
+            }
+        });
+
+        btnResetPwd.setOnClickListener(new View.OnClickListener() {
+
+
+            @Override
+            public void onClick(View view) {
+
+                final String email = inputEmail.getText().toString();
+
+                AlertDialog.Builder builder = new AlertDialog.Builder(LoginActivity.this);
+                builder.setTitle("Send Password Reset Email");
+
+                final EditText input = new EditText(LoginActivity.this);
+                input.setHint("Email");
+                input.setInputType(InputType.TYPE_CLASS_TEXT);
+                input.setPadding(50,50,50,50);
+                if(!email.equals(""))
+                    input.setText(email);
+                //TableRow.LayoutParams params = new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT);
+                //params.setMargins(50,50,50,50);
+                //input.setLayoutParams(params);
+                builder.setView(input);
+
+                builder.setPositiveButton("Send", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                        if(input.getText().toString().equals("")) {
+                            Toast.makeText(getApplicationContext(), "ok", Toast.LENGTH_LONG).show();
+                        } else {
+
+                            FirebaseAuth.getInstance().sendPasswordResetEmail(input.getText().toString())
+                                    .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<Void> task) {
+                                            if (task.isSuccessful()) {
+                                                Toast.makeText(getApplicationContext(), "Reset email sent to " + input.getText().toString(), Toast.LENGTH_LONG).show();
+                                                Log.d("Login Activity", "Email sent.");
+                                            }
+                                        }
+                                    });
+                        }
+                    }
+                });
+                builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                    }
+                });
+
+                builder.show();
             }
         });
 
@@ -149,7 +213,7 @@ public class LoginActivity extends AppCompatActivity {
                                     }
 
                                 } else {
-                                            FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                                            final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
                                             if (user != null) {
 
@@ -161,6 +225,114 @@ public class LoginActivity extends AppCompatActivity {
                                                     //mAuth.signOut();
 
                                                 } else {
+
+
+                                                    final DatabaseReference database = FirebaseDatabase.getInstance().getReference();
+                                                    final Query quer=database.child("Invites").orderByChild("email");
+                                                    Log.d("Login Activity", "Invites 1");
+                                                    Log.d("Login Acitivity", "User "+user.getEmail());
+                                                    quer.equalTo(user.getEmail()).addListenerForSingleValueEvent(new ValueEventListener() {
+
+                                                        @Override
+                                                        public void onDataChange(DataSnapshot dataSnapshot) {
+                                                            for (DataSnapshot invitesSnapshot: dataSnapshot.getChildren()) {
+
+                                                                Log.d("Login Activity", "Invites 2");
+
+                                                                Invite is = invitesSnapshot.getValue(Invite.class);
+                                                                String keyInvite = invitesSnapshot.getKey();
+                                                                final String gId = is.getGroupId();
+                                                                String gName = is.getGroupName();
+                                                                String gPath = is.getGroupPath();
+                                                                final String key = user.getUid();
+                                                                FirebaseDatabase database = FirebaseDatabase.getInstance();
+                                                                DatabaseReference myRef = database.getReference("/Users/"+key+"/Groups/"+gId+"/name/");
+                                                                myRef.setValue(gName);
+                                                                myRef = database.getReference("/Users/"+key+"/Groups/"+gId+"/imagePath/");
+                                                                myRef.setValue(gPath);
+                                                                myRef = database.getReference("/Users/" + key + "/Groups/" + gId + "/lastOperation/");
+                                                                myRef.setValue("You have been invited to join the group.");
+                                                                myRef = database.getReference("/Users/" + key + "/Groups/" + gId + "/dateLastOperation/");
+                                                                myRef.setValue(Long.toString(System.currentTimeMillis()));
+                                                                myRef = database.getReference("/Groups/"+gId+"/members/"+key);
+                                                                myRef.setValue(true);
+
+                                                                DatabaseReference myRef2 = database.getReference("/Invites/");
+                                                                myRef2.child(keyInvite).removeValue();
+
+
+                                                                FirebaseDatabase database2 = FirebaseDatabase.getInstance();
+                                                                DatabaseReference myRefUsers = database2.getReference("Groups").child(gId).child("members");
+
+                                                                myRefUsers.addValueEventListener(new ValueEventListener() {
+                                                                    @Override
+                                                                    public void onDataChange(DataSnapshot dataSnapshot) {
+
+                                                                        Map<String, Object> map2 = (Map<String, Object>) dataSnapshot.getValue();
+                                                                        if(map2!=null) {
+
+                                                                            //map2.put(key, key); //aggiungo user corrente
+                                                                            for (final String k : map2.keySet()){
+                                                                                FirebaseDatabase database3 = FirebaseDatabase.getInstance();
+                                                                                DatabaseReference myRef3 = database3.getReference("Users").child(k);
+                                                                                myRef3.addValueEventListener(new ValueEventListener() {
+                                                                                    @Override
+                                                                                    public void onDataChange(DataSnapshot dataSnapshot) {
+                                                                                        Map<String, Object> map3 = (Map<String, Object>) dataSnapshot.getValue();
+                                                                                        if(map3!=null) {
+                                                                                            String s = String.format("user %s added\n", (String)map3.get("name"));
+                                                                                            System.out.println(s);
+                                                                                            UserData u = new UserData("aaaa", (String)map3.get("name"), (String)map3.get("surname"), 5555);
+                                                                                            u.setuId(k);
+
+                                                                                            System.out.println("/Balance/" + gId + "/" + key + "/" + u.getuId() + "/" + "name");
+                                                                                            FirebaseDatabase database3 = FirebaseDatabase.getInstance();
+                                                                                            database3.getReference("/Balance/" + gId + "/" + key + "/" + u.getuId() + "/" + "name").setValue(u.getName() + " " + u.getSurname());
+
+                                                                                            database3.getReference("/Balance/" + gId + "/" + key + "/" + u.getuId() + "/" + "value").setValue("0.00");
+
+                                                                                            database3.getReference("/Balance/" + gId + "/" + u.getuId() + "/" + key + "/" + "name").setValue("");
+                                                                                            database3.getReference("/Balance/" + gId + "/" + u.getuId() + "/" + key + "/" + "value").setValue("0.00");
+
+
+                                                                                        }
+                                                                                        else{
+                                                                                            //Toast.makeText(InsertUserToGroupActivity.this, "no user key found!", Toast.LENGTH_LONG).show();
+                                                                                        }
+                                                                                    }
+
+                                                                                    @Override
+                                                                                    public void onCancelled(DatabaseError databaseError) {
+
+                                                                                    }
+                                                                                });
+
+
+                                                                            }
+
+                                                                        }
+                                                                        else{
+                                                                            //Toast.makeText(InsertUserToGroupActivity.this, "no users found!", Toast.LENGTH_LONG).show();
+
+                                                                        }
+                                                                    }
+
+                                                                    @Override
+                                                                    public void onCancelled(DatabaseError error) {
+                                                                        // Failed to read value
+                                                                        //log.w(TAG, "Failed to read value.", error.toException());
+                                                                    }
+                                                                });
+
+                                                            }
+
+                                                        }
+
+                                                        @Override
+                                                        public void onCancelled(DatabaseError eError) {
+
+                                                        }
+                                                    });
 
                                                     Intent i = new Intent(LoginActivity.this, ServiceManager.class);
                                                     i.putExtra("class","main");
