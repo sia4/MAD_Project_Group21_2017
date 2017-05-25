@@ -126,8 +126,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         });
 
         super.onCreate(savedInstanceState);
+        Log.d("MainActivity","sono poco prima del serice");
         if(!isMyServiceRunning(ServiceManager.class)){
             if(FirebaseAuth.getInstance().getCurrentUser()!=null){
+                Log.d("MainActivity","il service non c'è lo faccio partire");
                 Intent intent = new Intent(MainActivity.this, ServiceManager.class);
                 //intent.putExtra("class","main");
                 startService(intent);

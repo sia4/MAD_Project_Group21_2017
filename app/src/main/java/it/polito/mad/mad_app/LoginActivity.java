@@ -1,5 +1,6 @@
 package it.polito.mad.mad_app;
 
+import android.app.ActivityManager;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -333,7 +334,14 @@ public class LoginActivity extends AppCompatActivity {
 
                                                         }
                                                     });
-
+                                                    if(isMyServiceRunning(ServiceManager.class)){
+                                                        if(FirebaseAuth.getInstance().getCurrentUser()!=null){
+                                                            Intent intent = new Intent(LoginActivity.this, ServiceManager.class);
+                                                            stopService(intent);
+                                                            //intent.putExtra("class","main");
+                                                            //startService(intent);
+                                                        }
+                                                    }
                                                     //Intent i = new Intent(LoginActivity.this, ServiceManager.class);
                                                     //startService(i);
                                                     Intent intent = new Intent(LoginActivity.this, MainActivity.class);
@@ -380,6 +388,14 @@ public class LoginActivity extends AppCompatActivity {
 
                     if (email_verified) {
                         //TODO start here the service
+                        if(isMyServiceRunning(ServiceManager.class)){
+                            if(FirebaseAuth.getInstance().getCurrentUser()!=null){
+                                Intent intent = new Intent(LoginActivity.this, ServiceManager.class);
+                                stopService(intent);
+                                //intent.putExtra("class","main");
+                                //startService(intent);
+                            }
+                        }
                         //Intent i = new Intent(LoginActivity.this, ServiceManager.class);
                         //i.putExtra("class","main");
                         //startService(i);
@@ -434,6 +450,15 @@ public class LoginActivity extends AppCompatActivity {
         if (mAuthListener != null) {
             mAuth.removeAuthStateListener(mAuthListener);
         }
+    }
+    private boolean isMyServiceRunning(Class<?> serviceClass) {
+        ActivityManager manager = (ActivityManager) getSystemService(getApplicationContext().ACTIVITY_SERVICE);
+        for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
+            if (serviceClass.getName().equals(service.service.getClassName())) {
+                return true;
+            }
+        }
+        return false;
     }
 
 }

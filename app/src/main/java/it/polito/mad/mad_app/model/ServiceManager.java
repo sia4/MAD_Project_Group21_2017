@@ -55,7 +55,9 @@ public class ServiceManager extends Service {
         FirebaseUser currentFirebaseUser = FirebaseAuth.getInstance().getCurrentUser();
         if (currentFirebaseUser != null) {
             final String key = currentFirebaseUser.getUid();
+            Log.d("ServiceManager","almeno si attiva");
             if (key != null) {
+                Log.d("ServiceManager","sono dentro , quindi l'utente l'ha trovato");
                 DatabaseReference db = database.getReference().child("Activities").child(key);
                 db.addValueEventListener(new ValueEventListener() {
                     @Override
