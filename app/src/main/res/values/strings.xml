@@ -52,5 +52,7 @@
     <string name="name">Name</string>
     <string name="sign_in">SIGN IN</string>
     <string name="surname">Surname</string>
+    <string name="title_activity_group_statistics">GroupStatisticsActivity</string>
+    <string name="stat_group">Expenses by categories</string>
 
 </resources>

@@ -51,6 +51,7 @@ import java.util.TreeMap;
 
 import it.polito.mad.mad_app.model.ActivityData;
 import it.polito.mad.mad_app.model.Balance;
+import it.polito.mad.mad_app.model.Currencies;
 import it.polito.mad.mad_app.model.ExpenseData;
 import it.polito.mad.mad_app.model.UserData;
 
@@ -67,6 +68,7 @@ public class InsertExActivity extends AppCompatActivity {
     private String description;
     private String category;
     private String currency;
+    private float cambio;
     private double value, myvalue=0;
     private Boolean fish=false;
     private String algorithm;
@@ -413,7 +415,6 @@ public class InsertExActivity extends AppCompatActivity {
                 category = Tcategory.getSelectedItem().toString();
                 currency = Tcurrency.getSelectedItem().toString();
                 algorithm = Talgorithm.getSelectedItem().toString();
-                final float cambio = Cambi.get(currency);
 
                 if(name.equals("")) {
                     Toast.makeText(InsertExActivity.this, "Please insert name.", Toast.LENGTH_LONG).show();
@@ -424,6 +425,11 @@ public class InsertExActivity extends AppCompatActivity {
                 } else if(category.equals("Select category")) {
                     Toast.makeText(InsertExActivity.this, "Please insert category.", Toast.LENGTH_LONG).show();
                 } else {
+
+                    cambio = Cambi.get(currency);
+                    Currencies c = new Currencies();
+                    currency = c.getCurrencyCode(currency);
+
                     value = Double.valueOf(Tvalue.getText().toString());
                     System.out.println("valuebuggggggggggggggggggg " + value);
 
@@ -492,7 +498,7 @@ public class InsertExActivity extends AppCompatActivity {
 
                         if ((algorithm.equals("by percentuage") && algSum != 100)) {
                             flagok = 0;
-                            String text = String.format("Percentuage sum values must be equal to 100!", algSum, i);
+                            String text = String.format("Percentage sum values must be equal to 100!", algSum, i);
                             Toast.makeText(InsertExActivity.this, text, Toast.LENGTH_LONG).show();
                         }
                         if ((algorithm.equals("by import") && algSum != value)) {
@@ -521,6 +527,11 @@ public class InsertExActivity extends AppCompatActivity {
                         myRef.child("creator").setValue(myname + " " + mysurname);
                         myRef.child("creatorId").setValue(mAuth.getCurrentUser().getUid());
                         myRef.child("missing").setValue("no");
+                        if(cambio!=0)
+                            myRef.child("myvalue").setValue(String.format(Locale.US, "%.2f", value*cambio));
+                        else
+                            myRef.child("myvalue").setValue(String.format(Locale.US, "%.2f", value));
+
                         System.out.println(String.format("%.2f", value));
                         for (Map.Entry<String, Double> e : values.entrySet())
                             myRef.child("users").child(e.getKey()).setValue(String.format(Locale.US, "%.2f", e.getValue()));

@@ -416,6 +416,14 @@ public class GroupActivity extends AppCompatActivity {
                 startActivity(i2);
                 return true;
 
+            case R.id.GroupStatistics:
+                Intent i3 = new Intent(getApplicationContext(), GroupStatisticsActivity.class);
+                i3.putExtra("groupId", gKey);
+                i3.putExtra("groupName", gName);
+                i3.putExtra("defaultcurrency", g.getPrimaryCurrency());
+                startActivity(i3);
+                return true;
+
             default:
                 return super.onOptionsItemSelected(item);
         }

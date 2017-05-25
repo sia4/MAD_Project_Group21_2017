@@ -53,9 +53,9 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.MyViewHo
         Date resultdate = new Date(new Long(expense.getDate()));
 
         holder.data_ex.setText(sdf.format(resultdate));
-        String tmp = expense.getCurrencyRow();
+        String tmp = expense.getCurrencySymbol();
         if (tmp.length() != 0) {
-            holder.money_ex.setText(expense.getValue() + " " + tmp.substring(tmp.length() - 1));
+            holder.money_ex.setText(expense.getValue() + " " + tmp);
         } else {
             holder.money_ex.setText(expense.getValue());
         }

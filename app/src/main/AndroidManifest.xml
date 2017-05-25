@@ -35,10 +35,12 @@
         </provider>
         -->
 
-        <activity android:name=".MainActivity"
+        <activity
+            android:name=".MainActivity"
             android:screenOrientation="sensorPortrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -56,8 +58,8 @@
             android:name=".InsertExActivity"
             android:label="@string/title_activity_insert_ex"
             android:parentActivityName=".MainActivity"
-            android:theme="@style/AppTheme.NoActionBar"
-            android:screenOrientation="sensorPortrait" />
+            android:screenOrientation="sensorPortrait"
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".GroupOptionActivity"
             android:label="GroupOptionActivity"
@@ -73,21 +75,18 @@
             android:name=".InsertGroupActivity"
             android:label="Create Group"
             android:parentActivityName=".MainActivity"
-            android:theme="@style/AppTheme.NoActionBar"
-            android:screenOrientation="sensorPortrait" />
+            android:screenOrientation="sensorPortrait"
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".ExpenseInfoActivity"
             android:label="@string/title_activity_expense_info"
             android:parentActivityName=".GroupActivity"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
-            android:screenOrientation="sensorPortrait"/>
-
+            android:screenOrientation="sensorPortrait"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
         <activity
             android:name=".GroupInfoActivity"
             android:parentActivityName=".GroupActivity"
-            android:screenOrientation="sensorPortrait" >
-        </activity>
-
+            android:screenOrientation="sensorPortrait"></activity>
         <activity
             android:name=".InsertCurrencyActivity"
             android:parentActivityName=".MainActivity"
@@ -95,11 +94,13 @@
         <activity
             android:name=".BalanceActivity"
             android:label="@string/title_activity_balance"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
+            android:screenOrientation="sensorPortrait"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+        <activity
+            android:name=".SignInActivity"
             android:screenOrientation="sensorPortrait" />
-        <activity android:name=".SignInActivity"
-            android:screenOrientation="sensorPortrait" />
-        <activity android:name=".LoginActivity"
+        <activity
+            android:name=".LoginActivity"
             android:screenOrientation="sensorPortrait" />
         <activity
             android:name=".InsertUserToGroupActivity"
@@ -108,22 +109,29 @@
         <activity
             android:name=".UserInformationActivity"
             android:label="@string/title_activity_user_information"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
-            android:screenOrientation="sensorPortrait" />
+            android:screenOrientation="sensorPortrait"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
         <activity
             android:name=".PolActivity"
             android:label="@string/title_activity_pol"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
-            android:screenOrientation="sensorPortrait"/>
+            android:screenOrientation="sensorPortrait"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+
         <service
-            android:enabled="true" android:name=".model.ServiceManager"/>
-        <receiver android:name=".model.StartFirebaseAtBoot" >
+            android:name=".model.ServiceManager"
+            android:enabled="true" />
+
+        <receiver android:name=".model.StartFirebaseAtBoot">
             <intent-filter>
-                <action android:name="android.intent.action.BOOT_COMPLETED" >
-                </action>
+                <action android:name="android.intent.action.BOOT_COMPLETED"></action>
             </intent-filter>
         </receiver>
 
+        <activity
+            android:name=".GroupStatisticsActivity"
+            android:label="@string/title_activity_group_statistics"
+            android:screenOrientation="sensorPortrait"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"></activity>
     </application>
 
 </manifest>

@@ -12,4 +12,9 @@
         android:id="@+id/addcurrency"
         android:title="Add Currency"
         app:itemTextColor="@color/primaryTextColor"></item>
+    <item
+        android:id="@+id/GroupStatistics"
+        android:title="Statistics"
+        app:itemTextColor="@color/primaryTextColor"></item>
+
 </menu>

@@ -2,10 +2,6 @@ package it.polito.mad.mad_app.model;
 
 import android.support.annotation.NonNull;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-
 public class ExpenseData implements Comparable<ExpenseData>{
     private String idEx;
     private String name;
@@ -60,6 +56,16 @@ public class ExpenseData implements Comparable<ExpenseData>{
 
     public String getCurrencyRow() {
         return this.currency;
+    }
+
+    public String getCurrencySymbol() {
+        Currencies c = new Currencies();
+        String Symbol = c.getCurrencyString(this.currency);
+        if (Symbol.length() != 0) {
+            return Symbol.substring(Symbol.length() - 1);
+        } else {
+            return "";
+        }
     }
 
     public String getValue(){

@@ -1,8 +1,8 @@
 package it.polito.mad.mad_app;
 
-import android.app.NotificationManager;
 import android.content.Context;
 import android.app.ActivityManager;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
@@ -35,7 +35,6 @@ import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -206,8 +205,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         User myu = dataSnapshot.getValue(User.class);
-                        nav_surname.setText(myu.getSurname() + " " + myu.getName());
-                        nav_name.setText(myu.getEmail());
+                        nav_name.setText(myu.getSurname() + " " + myu.getName());
+                        nav_surname.setText(myu.getEmail());
                         String p = myu.getImagePath();
                         Log.d("Main Activity", "Image path: "+p);
                         if (p == null) {
