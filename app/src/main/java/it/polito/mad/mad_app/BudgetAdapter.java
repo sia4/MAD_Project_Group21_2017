@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,9 +12,16 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import it.polito.mad.mad_app.model.Balance;
 import it.polito.mad.mad_app.model.BalanceData;
@@ -61,17 +69,43 @@ public class BudgetAdapter extends RecyclerView.Adapter<BudgetAdapter.MyViewHold
     }
 
     @Override
-    public void onBindViewHolder(MyViewHolder holder, final int position) {
+    public void onBindViewHolder(final MyViewHolder holder, final int position) {
          final Balance budget = budgetData.get(position);
-        float n=budget.getValue();
+        final float n=budget.getValue();
         holder.value_cred_deb.setText(String.format(Locale.US, "%.2f", budget.getValue()) + " " /* budget.getCurrency()*/);
+
+
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference myRef = database.getReference("Users").child(budget.getKey());
+        myRef.addListenerForSingleValueEvent(new ValueEventListener() {
+
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                Map<String, Object> map = (Map<String, Object>) dataSnapshot.getValue();
+                if(map!=null) {
+                    String name = (String) map.get("name");
+                    String surname = (String) map.get("surname");
+
+                    if (n > 0)
+                        holder.name_cred_deb.setText(name + " " + surname +" owns you:");
+                    else
+                        holder.name_cred_deb.setText("You own to " + name + " " + surname + ":");
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+
         if(n>0){
             //System.out.println(budget.getEmail() + "-->" + MainData.getInstance().findUserByMail(budget.getEmail()));
             //holder.name_cred_deb.setText(MainData.getInstance().findUserByMail(budget.getEmail()).getName() + " owns you:");
 
-
-
-            holder.name_cred_deb.setText(budget.getName()+ " owns you:");
+            //holder.name_cred_deb.setText(budget.getName()+ " owns you:");
             holder.value_cred_deb.setTextColor(Color.parseColor("#27B011"));
             if(holder.button==null) {
                 holder.button = new Button(mContext);
@@ -119,7 +153,7 @@ public class BudgetAdapter extends RecyclerView.Adapter<BudgetAdapter.MyViewHold
                 holder.buttonContainer.removeView(holder.button);
             }
             holder.value_cred_deb.setTextColor(Color.parseColor("#D51111"));
-            holder.name_cred_deb.setText("You own to "+budget.getName()+":");
+
         }
 
     }

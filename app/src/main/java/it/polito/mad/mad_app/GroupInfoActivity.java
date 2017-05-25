@@ -173,6 +173,7 @@ public class GroupInfoActivity extends AppCompatActivity {
                             myname = (String)mapname.get("name");
                             mysurname = (String)mapname.get("surname");
                             DatabaseReference ActRef = database.getReference("Activities");
+                            DatabaseReference ActRead = database.getReference("ActivitiesRead");
                             DatabaseReference PolRef = database.getReference("Pols").child(gId).push();
                             PolKey = PolRef.getKey();
                             DatabaseReference PolGroup = database.getReference("Groups").child(gId).child("deletePolId");
@@ -182,9 +183,13 @@ public class GroupInfoActivity extends AppCompatActivity {
                             PolRef.child("creator").setValue(FirebaseAuth.getInstance().getCurrentUser().getUid());
                             PolRef.child("acceptsUsers").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).setValue(myname+" "+mysurname);
 
+
                             for(String k: usersId) {
-                                if(!k.equals(FirebaseAuth.getInstance().getCurrentUser().getUid()))
-                                    ActRef.child(k).push().setValue(new ActivityData(myname + " " + mysurname, myname + " " + mysurname + " proposed to delete group " + gName, Long.toString(System.currentTimeMillis()), "deletegroup", PolKey, gId));
+                                if(!k.equals(FirebaseAuth.getInstance().getCurrentUser().getUid())) {
+                                    String actId = ActRef.child(k).push().getKey();
+                                    ActRef.child(k).child(actId).setValue(new ActivityData(myname + " " + mysurname, myname + " " + mysurname + " proposed to delete group " + gName, Long.toString(System.currentTimeMillis()), "deletegroup", PolKey, gId));
+                                    ActRead.child(k).child(gId).child(actId).setValue(false);
+                                }
                             }
                             if(users.size()==1){
                                 findViewById(R.id.DeleteGroup).setVisibility(View.GONE);
@@ -193,6 +198,7 @@ public class GroupInfoActivity extends AppCompatActivity {
                                 database.getReference("Users").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("Groups").child(gId).child("missing").setValue("yes");
 
                             }
+
                             //database.getReference("Groups").child(gId).removeValue();
 
                         }
@@ -224,6 +230,7 @@ public class GroupInfoActivity extends AppCompatActivity {
                             myname = (String)mapname.get("name");
                             mysurname = (String)mapname.get("surname");
                             DatabaseReference PolRef = database.getReference("Pols").child(gId).push();
+                            DatabaseReference ActRead = database.getReference("ActivitiesRead");
                             PolKey = PolRef.getKey();
                             DatabaseReference PolGroup = database.getReference("Groups").child(gId).child("leavePolId");
                             PolGroup.setValue(PolKey);
@@ -235,15 +242,17 @@ public class GroupInfoActivity extends AppCompatActivity {
 
                             DatabaseReference ActRef = database.getReference("Activities");
                             for(String k: usersId) {
-                                if (!k.equals(FirebaseAuth.getInstance().getCurrentUser().getUid()))
-                                    ActRef.child(k).push().setValue(new ActivityData(myname + " " + mysurname, myname + " " + mysurname + " proposed to leave group " + gName, Long.toString(System.currentTimeMillis()), "leavegroup", PolKey, gId));
+                                if (!k.equals(FirebaseAuth.getInstance().getCurrentUser().getUid())) {
+                                    String actId = ActRef.child(k).push().getKey();
+                                    ActRef.child(k).child(actId).setValue(new ActivityData(myname + " " + mysurname, myname + " " + mysurname + " proposed to leave group " + gName, Long.toString(System.currentTimeMillis()), "leavegroup", PolKey, gId));
+                                    ActRead.child(k).child(gId).child(actId).setValue(false);
                                 }
-                                if(users.size()==1){
+                            }
+                            if(users.size()==1){
                                 findViewById(R.id.DeleteGroup).setVisibility(View.GONE);
                                 findViewById(R.id.LeaveGroup).setVisibility(View.GONE);
                                 findViewById(R.id.okdeleted).setVisibility(View.VISIBLE);
                                 database.getReference("Users").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("Groups").child(gId).child("missing").setValue("yes");
-
 
                             }
                         }
@@ -353,7 +362,7 @@ public class GroupInfoActivity extends AppCompatActivity {
                     }
                     namet.setText(nametmp);
                     desc.setText(desctmp);
-                    if(map.get("imagePath")==null){
+                    if(map.get("imagePath").equals("")){
                         circle_image(getApplicationContext(),im,R.drawable.group_default);
                     }
                     else{
@@ -613,6 +622,15 @@ public class GroupInfoActivity extends AppCompatActivity {
             }
         }
     }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+       // cAdapter.notifyDataSetChanged();
+
+    }
+
     @Override
     public void onRequestPermissionsResult(int requestCode,
                                            String permissions[], int[] grantResults) {

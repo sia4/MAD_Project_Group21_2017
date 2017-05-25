@@ -59,6 +59,7 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.MyViewHo
         } else {
             holder.money_ex.setText(expense.getValue());
         }
+        //if (expense.getCreator().equals())
         holder.creator_ex.setText(expense.getCreator());
 
         if(expense.getContested() != null && expense.getContested().equals("yes")) {

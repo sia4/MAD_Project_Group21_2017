@@ -364,6 +364,14 @@ public class InsertUserToGroupActivity extends AppCompatActivity {
                                             database.getReference("/Balance/" + gId + "/" + u.getuId() + "/" + key + "/" + "value").setValue("0.00");
 
                                         }
+
+                                        myRef = database.getReference("/Users/"+key+"/Groups/"+gId+"/imagePath/");
+                                        myRef.setValue(gPath);
+                                        myRef = database.getReference("/Users/" + key + "/Groups/" + gId + "/lastOperation/");
+                                        myRef.setValue("You have been invited to join the group.");
+                                        myRef = database.getReference("/Users/" + key + "/Groups/" + gId + "/dateLastOperation/");
+                                        myRef.setValue(Long.toString(System.currentTimeMillis()));
+
                                         finish();
                                     }
 

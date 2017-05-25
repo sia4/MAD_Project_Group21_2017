@@ -32,24 +32,7 @@ public class BudgetFragment extends Fragment {
     private Context context;
     private String uKey;
     BudgetAdapter bAdapter;
-    /*
-    class cred_deb {
-        private String name;
-        private String value;
 
-        public cred_deb(String name,String value) {
-            this.name = name;
-            this.value=value;
-        }
-        public String getName() {
-            return name;
-        }
-
-        public String getValue() {
-            return value;
-        }
-    }
-    */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
