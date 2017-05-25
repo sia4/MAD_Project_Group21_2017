@@ -70,19 +70,22 @@ public class ServiceManager extends Service {
                             read.addListenerForSingleValueEvent(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(DataSnapshot dataSnapshot) {
-                                    Map<String,Map<String,Map<String,Object>>>old_a=(Map<String,Map<String,Map<String,Object>>>)dataSnapshot.getValue();
-                                    Set<String> grId=old_a.keySet();
-                                    for(String id:grId){
+                                    Map<String, Map<String, Map<String, Object>>> old_a = (Map<String, Map<String, Map<String, Object>>>) dataSnapshot.getValue();
+                                    if(old_a!=null){
+                                    Set<String> grId = old_a.keySet();
+                                    for (String id : grId) {
                                         Id_read.putAll(old_a.get(id));
                                     }
                                     Set<String> activId = activities.keySet();
                                     for (String str : activId) {
-                                        if (Id_read.get(str)!=null && (boolean)Id_read.get(str)==false) {
+                                        if (Id_read.get(str) != null && (boolean) Id_read.get(str) == false) {
                                             not_read.put(str, activities.get(str));
                                         }
                                     }
+                                    Log.d("ServiceManager",Id_read.toString());
+                                        Log.d("ServiceManager",Id_read.toString());
                                     if (not_read.size() > 1) {
-                                        printText = "You have "+not_read.size() + " new notifications";
+                                        printText = "You have " + not_read.size() + " new notifications";
                                         resultIntent = new Intent(c, MainActivity.class);
                                         NotificationCompat.Builder mBuilder =
                                                 new NotificationCompat.Builder(c)
@@ -109,12 +112,16 @@ public class ServiceManager extends Service {
                                         not_read.clear();
                                     } else {
                                         Set<String> k_act = not_read.keySet();
-                                        for(String k_ac:k_act){
+                                        for (String k_ac : k_act) {
                                             print = (String) not_read.get(k_ac).get("type");
+                                            Log.d("ServiceManager","type"+print);
                                             gId = (String) not_read.get(k_ac).get("groupId");
-                                            polId=(String) not_read.get(k_ac).get("itemId");
-                                            text=(String) not_read.get(k_ac).get("text");
-                                            aId=k_ac;
+                                            Log.d("ServiceManager","gId"+gId);
+                                            polId = (String) not_read.get(k_ac).get("itemId");
+                                            Log.d("ServiceManager","itemId"+polId);
+                                            text = (String) not_read.get(k_ac).get("text");
+                                            Log.d("ServiceManager","text"+text);
+                                            aId = k_ac;
                                         }
                                         DatabaseReference forName = database.getReference().child("Groups").child(gId);
                                         forName.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -131,7 +138,7 @@ public class ServiceManager extends Service {
                                                         resultIntent.putExtra("groupId", gId);
                                                         resultIntent.putExtra("groupName", gname);
                                                         resultIntent.putExtra("imagePath", imagePath);
-                                                        resultIntent.putExtra("notification","new");
+                                                        resultIntent.putExtra("notification", "new");
                                                         break;
                                                     case ("contest"):
                                                         printText = "In " + gname + " an expense has been contested";
@@ -139,7 +146,7 @@ public class ServiceManager extends Service {
                                                         resultIntent.putExtra("groupId", gId);
                                                         resultIntent.putExtra("groupName", gname);
                                                         resultIntent.putExtra("imagePath", imagePath);
-                                                        resultIntent.putExtra("notification","new");
+                                                        resultIntent.putExtra("notification", "new");
                                                         break;
                                                     case ("leavegroup"):
                                                         printText = "Someone leaves the group " + gname;
@@ -149,8 +156,8 @@ public class ServiceManager extends Service {
                                                         resultIntent.putExtra("polId", polId);
                                                         resultIntent.putExtra("text", text);
                                                         resultIntent.putExtra("type", print);
-                                                        resultIntent.putExtra("activId",aId);
-                                                        resultIntent.putExtra("notification","pol");
+                                                        resultIntent.putExtra("activId", aId);
+                                                        resultIntent.putExtra("notification", "pol");
                                                         break;
                                                     case ("deletegroup"):
                                                         printText = "Someone proposes to leave group " + gname;
@@ -160,8 +167,8 @@ public class ServiceManager extends Service {
                                                         resultIntent.putExtra("polId", polId);
                                                         resultIntent.putExtra("text", text);
                                                         resultIntent.putExtra("type", print);
-                                                        resultIntent.putExtra("activId",aId);
-                                                        resultIntent.putExtra("notification","pol");
+                                                        resultIntent.putExtra("activId", aId);
+                                                        resultIntent.putExtra("notification", "pol");
                                                         break;
                                                     case ("addgroup"):
                                                         printText = "You are added in a new group";
@@ -169,7 +176,7 @@ public class ServiceManager extends Service {
                                                         resultIntent.putExtra("groupId", gId);
                                                         resultIntent.putExtra("groupName", gname);
                                                         resultIntent.putExtra("imagePath", imagePath);
-                                                        resultIntent.putExtra("notification","new");
+                                                        resultIntent.putExtra("notification", "new");
                                                         break;
                                                     default:
                                                         printText = "You have a new notification";
@@ -207,6 +214,7 @@ public class ServiceManager extends Service {
                                             }
                                         });
                                     }
+                                }
 
                                 }
 

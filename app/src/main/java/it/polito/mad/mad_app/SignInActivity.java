@@ -172,7 +172,7 @@ public class SignInActivity extends AppCompatActivity {
         notif.child("groupId").setValue("");
         notif.child("itemId").setValue("");
         notif=notify.getReference().child("ActivitiesRead").child(userId);
-        notif.setValue("true");
+        notif.push().push().setValue(true);
     }
 
     @Override

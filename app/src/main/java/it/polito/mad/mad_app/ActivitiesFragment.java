@@ -82,36 +82,39 @@ public class ActivitiesFragment extends Fragment {
                                         @Override
                                         public void onDataChange(DataSnapshot dataSnapshot) {
                                             act_read=(Map<String,Map<String,Object>>) dataSnapshot.getValue();
-                                            String tmpc, tmpt, tmpd, tmpty, tmpid, tmpgid;
-                                            int toRead = 0;
-                                            for(final String j : activitiesMap.keySet()){
-                                                tmpc = activitiesMap.get(j).get("creator");
-                                                tmpt = activitiesMap.get(j).get("text");
-                                                tmpd = activitiesMap.get(j).get("date");
-                                                tmpty = activitiesMap.get(j).get("type");
-                                                tmpid = activitiesMap.get(j).get("itemId");
-                                                tmpgid = activitiesMap.get(j).get("groupId");
-                                                final ActivityData a = new ActivityData(tmpc, tmpt, tmpd, tmpty, tmpid, tmpgid);
-                                                Log.d("ActivitiesFragment","cerco di capire"+act_read.toString());
-                                                if(act_read.get(tmpgid)!=null){
-                                                    if((boolean)act_read.get(tmpgid).get(j)==true){
-                                                        a.setRead(true);
-                                                    }else
-                                                    {
-                                                        a.setRead(false);
+                                            if(act_read!=null){
+
+                                                String tmpc, tmpt, tmpd, tmpty, tmpid, tmpgid;
+                                                int toRead = 0;
+                                                for(final String j : activitiesMap.keySet()){
+                                                    tmpc = activitiesMap.get(j).get("creator");
+                                                    tmpt = activitiesMap.get(j).get("text");
+                                                    tmpd = activitiesMap.get(j).get("date");
+                                                    tmpty = activitiesMap.get(j).get("type");
+                                                    tmpid = activitiesMap.get(j).get("itemId");
+                                                    tmpgid = activitiesMap.get(j).get("groupId");
+                                                    final ActivityData a = new ActivityData(tmpc, tmpt, tmpd, tmpty, tmpid, tmpgid);
+                                                    Log.d("ActivitiesFragment","cerco di capire"+act_read.toString());
+                                                    if(act_read.get(tmpgid)!=null){
+                                                        if(act_read.get(tmpgid).get(j)!=null&&(boolean)act_read.get(tmpgid).get(j)==true){
+                                                            a.setRead(true);
+                                                        }else
+                                                        {
+                                                            a.setRead(false);
+                                                        }
                                                     }
+                                                    a.setGroupName(groupName);
+                                                    a.setActivityId(j);
+                                                    m_activities.put(j, a);
                                                 }
-                                                a.setGroupName(groupName);
-                                                a.setActivityId(j);
-                                                m_activities.put(j, a);
+                                                String ss = String.format("activities to read: %d", toRead);
+                                                System.out.println(ss);
+                                                activities.clear();
+                                                act_read.clear();
+                                                activities.addAll(m_activities.values());
+                                                Collections.sort(activities);
+                                                aAdapter.notifyDataSetChanged();
                                             }
-                                            String ss = String.format("activities to read: %d", toRead);
-                                            System.out.println(ss);
-                                            activities.clear();
-                                            act_read.clear();
-                                            activities.addAll(m_activities.values());
-                                            Collections.sort(activities);
-                                            aAdapter.notifyDataSetChanged();
 
                                         }
 

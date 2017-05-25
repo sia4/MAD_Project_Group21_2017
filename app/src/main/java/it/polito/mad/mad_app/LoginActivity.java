@@ -335,7 +335,6 @@ public class LoginActivity extends AppCompatActivity {
                                                     });
 
                                                     Intent i = new Intent(LoginActivity.this, ServiceManager.class);
-                                                    i.putExtra("class","main");
                                                     startService(i);
                                                     Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                                                     startActivity(intent);
