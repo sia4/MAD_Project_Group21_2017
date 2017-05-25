@@ -44,6 +44,7 @@
             android:layout_height="wrap_content"
             android:visibility="gone"
             android:layout_gravity="center"
+
             android:text="Would you like to add a new one?"/>
         <LinearLayout
             android:layout_width="match_parent"
@@ -212,6 +213,11 @@
             android:layout_width="match_parent"
             android:layout_height="40sp"
             android:layout_gravity="center"
+
+            android:shadowColor="#94A8A0"
+            android:shadowDx="0"
+            android:shadowDy="0"
+            android:shadowRadius="0"
             android:text="Deny"/>
         <TextView
             android:id="@+id/denydescription"

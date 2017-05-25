@@ -67,6 +67,7 @@ public class InsertExActivity extends AppCompatActivity {
     private String description;
     private String category;
     private String currency;
+    private float cambio;
     private double value, myvalue=0;
     private Boolean fish=false;
     private String algorithm;
@@ -413,7 +414,7 @@ public class InsertExActivity extends AppCompatActivity {
                 category = Tcategory.getSelectedItem().toString();
                 currency = Tcurrency.getSelectedItem().toString();
                 algorithm = Talgorithm.getSelectedItem().toString();
-                final float cambio = Cambi.get(currency);
+                cambio = Cambi.get(currency);
 
                 if(name.equals("")) {
                     Toast.makeText(InsertExActivity.this, "Please insert name.", Toast.LENGTH_LONG).show();
@@ -515,6 +516,11 @@ public class InsertExActivity extends AppCompatActivity {
                         myRef.child("creator").setValue(myname + " " + mysurname);
                         myRef.child("creatorId").setValue(mAuth.getCurrentUser().getUid());
                         myRef.child("missing").setValue("no");
+                        if(cambio!=0)
+                            myRef.child("myvalue").setValue(String.format(Locale.US, "%.2f", value*cambio));
+                        else
+                            myRef.child("myvalue").setValue(String.format(Locale.US, "%.2f", value));
+
                         System.out.println(String.format("%.2f", value));
                         for (Map.Entry<String, Double> e : values.entrySet())
                             myRef.child("users").child(e.getKey()).setValue(String.format(Locale.US, "%.2f", e.getValue()));
