@@ -3,19 +3,14 @@ package it.polito.mad.mad_app;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.charts.PieChart;
 import com.github.mikephil.charting.components.Legend;
-import com.github.mikephil.charting.utils.ColorTemplate;
 import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
@@ -25,7 +20,6 @@ import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.data.PieEntry;
 import com.github.mikephil.charting.highlight.Highlight;
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -34,13 +28,9 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Date;
 import java.util.Map;
-import java.util.SortedMap;
 import java.util.TreeMap;
-
-import it.polito.mad.mad_app.model.ExpenseData;
 
 public class GroupStatisticsActivity extends AppCompatActivity {
     private String gId, gName, defaultcurrency;
@@ -144,17 +134,17 @@ public class GroupStatisticsActivity extends AppCompatActivity {
 
                     ArrayList<Integer> color = new ArrayList<>();
 
-                    color.add(Color.parseColor("#ef9a9a"));
-                    color.add(Color.parseColor("#f48fb1"));
-                    color.add(Color.parseColor("#ce93d8"));
-                    color.add(Color.parseColor("#81d4fa"));
-                    color.add(Color.parseColor("#80cbc4"));
-                    color.add(Color.parseColor("#a5d6a7"));
-                    color.add(Color.parseColor("#e6ee9c"));
-                    color.add(Color.parseColor("#ffcc80"));
-                    color.add(Color.parseColor("#bcaaa4"));
-                    color.add(Color.parseColor("#eeeeee"));
-                    color.add(Color.parseColor("#b0bec5"));
+                    color.add(Color.parseColor("#fff59d")); // Entertainment
+                    color.add(Color.parseColor("#ffab91")); // Food & Drinks
+                    color.add(Color.parseColor("#9fa8da")); // House and Utilities
+                    color.add(Color.parseColor("#a5d6a7")); // Clothing
+                    color.add(Color.parseColor("#f48fb1")); // Present
+                    color.add(Color.parseColor("#80cbc3")); // Medical Expenses
+                    color.add(Color.parseColor("#90caf9")); // Transport
+                    color.add(Color.parseColor("#b39ddb")); // Hotel
+                    color.add(Color.parseColor("#80deea")); // Cleaning
+                    color.add(Color.parseColor("#bcaaa4")); // General
+                    color.add(Color.parseColor("#eeeeee")); // Other
 
                     pieDataSet.setColors(color);
                     Legend legend = PieCategory.getLegend();
