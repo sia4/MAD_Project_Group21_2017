@@ -77,9 +77,9 @@ public class ServiceManager extends Service {
                                     }
                                     Set<String> activId = activities.keySet();
                                     for (String str : activId) {
-                                        /*if (Id_read!=null && (boolean)Id_read.get(str)==false) {
+                                        if (Id_read.get(str)!=null && (boolean)Id_read.get(str)==false) {
                                             not_read.put(str, activities.get(str));
-                                        }*/
+                                        }
                                     }
                                     if (not_read.size() > 1) {
                                         printText = "You have "+not_read.size() + " new notifications";

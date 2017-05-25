@@ -1,5 +1,6 @@
 package it.polito.mad.mad_app;
 
+import android.app.NotificationManager;
 import android.content.Context;
 import android.app.ActivityManager;
 import android.content.Context;

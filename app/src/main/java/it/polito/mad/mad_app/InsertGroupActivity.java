@@ -433,7 +433,7 @@ public class InsertGroupActivity extends AppCompatActivity {
                 myRef = database.getReference("/Activities/" + key);
                 DatabaseReference ActRead=database.getReference().child("ActivitiesRead").child(key).child(groupId);
                 String actId=myRef.push().getKey();
-                myRef.setValue(new ActivityData( myname, myname + " added you in group " + groupN, Long.toString(System.currentTimeMillis()), "addgroup", groupId, groupId));
+                myRef.child(actId).setValue(new ActivityData( myname, myname + " added you in group " + groupN, Long.toString(System.currentTimeMillis()), "addgroup", groupId, groupId));
                 ActRead.child(actId).setValue(false);
             }
             myRef = database.getReference("/Users/" + key + "/Groups/" + groupId + "/name/");

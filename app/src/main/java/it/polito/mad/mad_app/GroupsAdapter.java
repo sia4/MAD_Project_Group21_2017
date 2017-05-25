@@ -91,6 +91,7 @@ public class GroupsAdapter extends RecyclerView.Adapter<GroupsAdapter.MyViewHold
                             System.out.println("--->id"+s);
                             if(map_read.get(s)==false){
                                 n++;
+                                Log.d("GroupsAdapter","stampa n"+n);
                             }
                         }
                         if(n>0){
