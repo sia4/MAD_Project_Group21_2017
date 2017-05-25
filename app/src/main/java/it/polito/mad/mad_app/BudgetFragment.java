@@ -24,7 +24,6 @@ import java.util.Map;
 
 import it.polito.mad.mad_app.model.Balance;
 import it.polito.mad.mad_app.model.BalanceData;
-import it.polito.mad.mad_app.model.MainData;
 
 public class BudgetFragment extends Fragment {
 
@@ -84,14 +83,27 @@ public class BudgetFragment extends Fragment {
                         String name = (String) ((Map<String, Object>) k.getValue()).get("name");
                         float value;
                         if (((Map<String, Object>) k.getValue()).get("value") instanceof Double) {
+
                             Double v = (Double) ((Map<String, Object>) k.getValue()).get("value");
                             value = v.floatValue();
+                            users.add(new Balance(k.getKey(), name, value, groupId));
+                            bAdapter.notifyDataSetChanged();
+
                         } else {
+
                             String v = (String) ((Map<String, Object>) k.getValue()).get("value");
-                            value = Float.parseFloat(v);
+                            if (v != null) {
+
+                                value = Float.parseFloat(v);
+                                users.add(new Balance(k.getKey(), name, value, groupId));
+                                bAdapter.notifyDataSetChanged();
+
+                            } else {
+                                System.out.println("ERROR Budget Fragment: " + "Line 95 - " + k.toString()); //TODO ATTENZIONE
+                            }
+
                         }
-                        users.add(new Balance(k.getKey(), name, value, groupId));
-                        bAdapter.notifyDataSetChanged();
+
                         //progressBar.setVisibility(view.INVISIBLE);
                         //System.out.println("Value is: " + map.get("u1"));
                         //Log.d(TAG, "Value is: " + value);
