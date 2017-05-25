@@ -431,10 +431,10 @@ public class InsertUserToGroupActivity extends AppCompatActivity {
     private void onInviteClicked(String email) {
 
         Intent intent = new AppInviteInvitation.IntentBuilder("Invite your friends!")
-                .setMessage("You have been invited to AllaRomana (mail: "+ email+")")
-                .setEmailHtmlContent("Hi! I invited you to join a group on AllaRomana. Download the app and SignIn with the email "+ email +" to join the group. See you on AllaRomana!")
+                .setMessage("You have been invited to YourSlice (mail: "+ email+")")
+                .setEmailHtmlContent("Hi! I invited you to join a group on YourSlice. Download the app and SignIn with the email "+ email +" to join the group. See you on YourSlice!")
                 .setDeepLink(Uri.EMPTY)
-                .setEmailSubject("Invite you on AllaRomana")
+                .setEmailSubject("Invite you on YourSlice")
                 .build();
 
 

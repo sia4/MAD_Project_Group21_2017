@@ -55,7 +55,7 @@ public class    HistoryFragment extends Fragment {
         recyclerView.setLayoutManager(new LinearLayoutManager(context));
 
         recyclerView.addItemDecoration(new it.polito.mad.mad_app.DividerItemDecoration(context, LinearLayoutManager.VERTICAL));
-        recyclerView.addOnItemTouchListener(new RecyclerTouchListener(context, recyclerView, new RecyclerTouchListener.ClickListener() {
+        /*recyclerView.addOnItemTouchListener(new RecyclerTouchListener(context, recyclerView, new RecyclerTouchListener.ClickListener() {
             @Override
             public void onClick(View view, int position) {
 
@@ -77,7 +77,7 @@ public class    HistoryFragment extends Fragment {
             public void onLongClick(View view, int position) {
 
             }
-        }));
+        }));*/
 
 
 

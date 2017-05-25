@@ -122,8 +122,12 @@ public class GroupInfoActivity extends AppCompatActivity {
 
                     requestPermissions(new String[]{android.Manifest.permission.READ_EXTERNAL_STORAGE,android.Manifest.permission.WRITE_EXTERNAL_STORAGE},
                             MY_PERMISSIONS_REQUEST_READ_CONTACTS);
+
+                    Log.d("Group Info Activity","ho richiesto i permessi");
                     return;
                 }
+
+                Log.d("Group Info Activity","ho già i permessi");
                 LoadImage();
             }
         });
@@ -609,7 +613,7 @@ public class GroupInfoActivity extends AppCompatActivity {
                         e.printStackTrace();
                     }
                     System.out.println("................." + photo);
-                    ImageView imageG = (ImageView) findViewById(R.id.ImageG);
+                    ImageView imageG = (ImageView) findViewById(R.id.im_g);
                     imageG.setImageBitmap(photo);
 
                 }else{
@@ -634,8 +638,11 @@ public class GroupInfoActivity extends AppCompatActivity {
     @Override
     public void onRequestPermissionsResult(int requestCode,
                                            String permissions[], int[] grantResults) {
+
+        Log.d("Group Info Activity","dentro on request permission result");
         switch (requestCode) {
             case 1: {
+                Log.d("Group Info Activity","case 1");
                 // If request is cancelled, the result arrays are empty.
                 if (grantResults.length > 0
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED && grantResults[1]==PackageManager.PERMISSION_GRANTED) {
@@ -763,7 +770,7 @@ public class GroupInfoActivity extends AppCompatActivity {
     }
 
     public void LoadImage(){
-        final File root = new File(Environment.getExternalStorageDirectory() + File.separator + "MyDir" + File.separator);
+        final File root = new File(Environment.getExternalStorageDirectory() + File.separator + "YourSlice" + File.separator);
         root.mkdirs();
         final String fname = "img_"+ System.currentTimeMillis() + ".jpg";
         final File sdImageMainDirectory = new File(root, fname);

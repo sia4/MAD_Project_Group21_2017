@@ -35,6 +35,7 @@ import java.util.List;
  */
 
 public class ImageMethod {
+
     public static List<Intent> require_image(Uri outputFileUri,PackageManager p) {
 
         final List<Intent> cameraIntents = new ArrayList<Intent>();

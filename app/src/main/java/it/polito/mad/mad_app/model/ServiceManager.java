@@ -91,7 +91,7 @@ public class ServiceManager extends Service {
                                         resultIntent = new Intent(c, MainActivity.class);
                                         NotificationCompat.Builder mBuilder =
                                                 new NotificationCompat.Builder(c)
-                                                        .setContentTitle("AllaRomana")
+                                                        .setContentTitle("YourSlice")
                                                         .setContentText(printText)
                                                         //.setLargeIcon(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_stat_ac_unit))
                                                         .setSmallIcon(R.drawable.logo_white) //TODO qui è sostanzialmento dove specifico l'icona da impostare.
@@ -187,7 +187,7 @@ public class ServiceManager extends Service {
                                                 }
                                                 NotificationCompat.Builder mBuilder =
                                                         new NotificationCompat.Builder(c)
-                                                                .setContentTitle("AllaRomana")
+                                                                .setContentTitle("YourSlice")
                                                                 .setContentText(printText)
                                                                 //.setLargeIcon(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_stat_ac_unit))
                                                                 .setSmallIcon(R.drawable.logo_white) //TODO qui è sostanzialmento dove specifico l'icona da impostare.

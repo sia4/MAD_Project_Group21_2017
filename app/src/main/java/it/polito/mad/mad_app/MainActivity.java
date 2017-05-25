@@ -107,6 +107,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             }
         };
 
+        /*
         DatabaseReference connectedRef = FirebaseDatabase.getInstance().getReference(".info/connected");
         connectedRef.addValueEventListener(new ValueEventListener() {
             @Override
@@ -123,7 +124,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             public void onCancelled(DatabaseError error) {
 
             }
-        });
+        });*/
 
         super.onCreate(savedInstanceState);
         Log.d("MainActivity","sono poco prima del serice");

@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Alla Romana</string>
+    <string name="app_name">YourSlice</string>
     <string name="title_activity_insert_ex">InsertExActivity</string>
     <string name="test" />
     <string name="title_activity_expense_info">ExpenseInfoActivity</string>
@@ -40,8 +40,8 @@
     <string name="action_settings">Settings</string>
 
     <!-- Invitation related strings -->
-    <string name="invitation_title">AllaRomana: You are invited to join to a group!</string>
-    <string name="invitation_cta">Download AllaRomana</string>
+    <string name="invitation_title">YourSlice: You are invited to join to a group!</string>
+    <string name="invitation_cta">Download YourSlice</string>
     <string name="title_activity_user_information">UserInformationActivity</string>
     <string name="title_activity_pol">PolActivity</string>
     <string name="insert_email">Insert email</string>

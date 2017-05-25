@@ -8,6 +8,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Parcelable;
+import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -42,6 +43,7 @@ import com.google.firebase.storage.UploadTask;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
@@ -55,7 +57,9 @@ import it.polito.mad.mad_app.model.Currencies;
 import it.polito.mad.mad_app.model.ExpenseData;
 import it.polito.mad.mad_app.model.UserData;
 
+import static it.polito.mad.mad_app.model.ImageMethod.circle_image;
 import static it.polito.mad.mad_app.model.ImageMethod.create_image;
+import static it.polito.mad.mad_app.model.ImageMethod.performCrop;
 import static it.polito.mad.mad_app.model.ImageMethod.require_image;
 
 
@@ -279,35 +283,29 @@ public class InsertExActivity extends AppCompatActivity {
 
         String s = "";
         load=(Button) findViewById(R.id.load_ex);
-        load.setOnClickListener(new View.OnClickListener() {
-
+        load.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View arg0) {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && checkSelfPermission(android.Manifest.permission.READ_EXTERNAL_STORAGE)
-                        != PackageManager.PERMISSION_GRANTED) {
+                        != PackageManager.PERMISSION_GRANTED &&  checkSelfPermission(android.Manifest.permission.WRITE_EXTERNAL_STORAGE) !=PackageManager.PERMISSION_GRANTED ) {
                     if (shouldShowRequestPermissionRationale(
                             android.Manifest.permission.READ_EXTERNAL_STORAGE)) {
                     }
 
-                    requestPermissions(new String[]{android.Manifest.permission.READ_EXTERNAL_STORAGE},
+                    requestPermissions(new String[]{android.Manifest.permission.READ_EXTERNAL_STORAGE,android.Manifest.permission.WRITE_EXTERNAL_STORAGE},
                             MY_PERMISSIONS_REQUEST_READ_CONTACTS);
+
+                    Log.d("Group Info Activity","ho richiesto i permessi");
                     return;
                 }
-                final File root = new File(Environment.getExternalStorageDirectory() + File.separator + "MyDir" + File.separator);
-                root.mkdirs();
-                final String fname = "img_"+ System.currentTimeMillis() + ".jpg";
-                final File sdImageMainDirectory = new File(root, fname);
-                outputFileUri = Uri.fromFile(sdImageMainDirectory);
-                final PackageManager pManager = getPackageManager();
-                List<Intent> cameraIntents=require_image(outputFileUri,pManager);
-                final Intent chooserIntent = Intent.createChooser(cameraIntents.get(cameraIntents.size()-1), "Select Source");
-                cameraIntents.remove(cameraIntents.size()-1);
-                chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, cameraIntents.toArray(new Parcelable[cameraIntents.size()]));
-                startActivityForResult(chooserIntent, 1);
+
+                Log.d("Group Info Activity","ho già i permessi");
+                LoadImage();
             }
         });
 
     }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -326,67 +324,96 @@ public class InsertExActivity extends AppCompatActivity {
                         isCamera = action.equals(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
                     }
                 }
-                if (isCamera) {
-                    imageUrl = outputFileUri;
+
+                if (isCamera) {imageUrl = outputFileUri;
                     ImageC = true;
                     final PackageManager pManager = getPackageManager();
-                    //Intent cropIntent=performCrop(imageUrl,pManager);
-                    /*if(cropIntent!=null){
+                    Intent cropIntent=performCrop(imageUrl,pManager);
+                    if(cropIntent!=null){
                         final Intent cIntent = Intent.createChooser(cropIntent, "Tha image should be cropped,select a source");
                         startActivityForResult(cIntent , 2);
                     }
                     else{
                         Toast toast = Toast.makeText(this, "This device doesn't support the crop action!", Toast.LENGTH_SHORT);
                         toast.show();
-                    }*/
+                    }
+
                 } else {
                     if (data != null) {
                         ImageC = true;
                         selectedImageUri = data.getData();
                         imageUrl= selectedImageUri;
                         final PackageManager pManager = getPackageManager();
-                        //Intent cropIntent=performCrop(imageUrl,pManager);
-                        /*if(cropIntent!=null){
-                            startActivityForResult(cropIntent , 2);
+                        Intent cropIntent=performCrop(imageUrl,pManager);
+                        if(cropIntent!=null){
+                            final Intent cIntent = Intent.createChooser(cropIntent, "Tha image should be cropped,select a source");
+                            startActivityForResult(cIntent , 2);
                         }
                         else{
                             Toast toast = Toast.makeText(this, "This device doesn't support the crop action!", Toast.LENGTH_SHORT);
                             toast.show();
-                        }*/
-
+                        }
                     }
 
                 }
             }else if(requestCode==CROP_PIC){
                 Bundle extras = data.getExtras();
-                Bitmap thePic = extras.getParcelable("data");
-                ImageView picView = (ImageView) findViewById(R.id.ImageG);
-                picView.setImageBitmap(thePic);
-                create_image(outputFileUri,thePic);
-            }
-        }
+                if(extras==null){
+                    selectedImageUri = data.getData();
+                    Bitmap photo = null;
+                    try {
+                        photo = MediaStore.Images.Media.getBitmap(this.getContentResolver(), selectedImageUri);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    System.out.println("................." + photo);
+                    ImageView imageG = (ImageView) findViewById(R.id.ImageG);
+                    imageG.setImageBitmap(photo);
 
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode,
-                                           String permissions[], int[] grantResults) {
-        switch (requestCode) {
-            case 1: {
-                if (grantResults.length > 0
-                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                } else {
-
+                }else{
+                    Bitmap thePic = extras.getParcelable("data");
+                    final ImageView picView = (ImageView) findViewById(R.id.ImageG);
+                    //picView.setImageBitmap(thePic);
+                    create_image(outputFileUri,thePic);
+                    circle_image(getApplicationContext(),picView,outputFileUri);
                 }
-                return;
             }
         }
     }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_done, menu);
         return true;
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           String permissions[], int[] grantResults) {
+
+        Log.d("Group Info Activity","dentro on request permission result");
+        switch (requestCode) {
+            case 1: {
+                Log.d("Group Info Activity","case 1");
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED && grantResults[1]==PackageManager.PERMISSION_GRANTED) {
+                    LoadImage();
+                    // permission was granted, yay! Do the
+                    // contacts-related task you need to do.
+
+                } else {
+
+                    // permission denied, boo! Disable the
+                    // functionality that depends on this permission.
+                }
+                return;
+            }
+
+            // other 'case' lines to check for other
+            // permissions this app might request
+        }
     }
 
     @Override
@@ -682,5 +709,19 @@ public class InsertExActivity extends AppCompatActivity {
                 return super.onOptionsItemSelected(item);
         }
 
+    }
+
+    public void LoadImage(){
+        final File root = new File(Environment.getExternalStorageDirectory() + File.separator + "YourSlice" + File.separator);
+        root.mkdirs();
+        final String fname = "img_"+ System.currentTimeMillis() + ".jpg";
+        final File sdImageMainDirectory = new File(root, fname);
+        outputFileUri = Uri.fromFile(sdImageMainDirectory);
+        final PackageManager pManager = getPackageManager();
+        List<Intent> cameraIntents=require_image(outputFileUri,pManager);
+        final Intent chooserIntent = Intent.createChooser(cameraIntents.get(cameraIntents.size()-1), "Select Source");
+        cameraIntents.remove(cameraIntents.size()-1);
+        chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, cameraIntents.toArray(new Parcelable[cameraIntents.size()]));
+        startActivityForResult(chooserIntent, 1);
     }
 }
