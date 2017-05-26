@@ -35,6 +35,7 @@ import java.util.TreeMap;
 
 public class GroupStatisticsActivity extends AppCompatActivity {
     private String gId, gName, defaultcurrency;
+    private float total=0;
     PieChart PieCategory;
     BarChart BarByDate;
     Map<String, Float> exSum = new TreeMap<>();
@@ -121,7 +122,7 @@ public class GroupStatisticsActivity extends AppCompatActivity {
                         dates.add(Integer.parseInt(formatter2.format(new Date(datemilliseconds))));
 
                         newValue = Float.parseFloat((String) exItem.get("myvalue"));
-
+                        total += newValue;
                         if (exSum.containsKey(category)) {
                             oldValue = exSum.get(category);
                             exSum.put(category, oldValue + newValue);
@@ -184,7 +185,7 @@ public class GroupStatisticsActivity extends AppCompatActivity {
                     BarDataSet barDataSet = new BarDataSet(yEntrysBar, "Date");
                     barDataSet.setValueTextSize(12);
 
-                    barDataSet.setColor(Color.parseColor("#b0bec5"));
+                    barDataSet.setColor(Color.parseColor("#b2dfdb"));
                     Legend legend2 = BarByDate.getLegend();
                     legend.setForm(Legend.LegendForm.CIRCLE);
                     legend.setPosition(Legend.LegendPosition.LEFT_OF_CHART);
@@ -224,7 +225,7 @@ public class GroupStatisticsActivity extends AppCompatActivity {
                 }
 
                 catImg.setImageDrawable(getResources().getDrawable(catToId.get(sss)));
-                String bau ="Category "+sss+"\n"+"Total spent: "+ss;
+                String bau ="Category "+sss+"\n"+"Total spent: "+ss+" / "+total;
                 CatSpec.setText(bau);
             }
 
@@ -252,7 +253,7 @@ public class GroupStatisticsActivity extends AppCompatActivity {
                     }
                 }
                 String sss = r;
-                String bau ="Date "+sss+"\n"+"Total spent: "+ss;
+                String bau ="Date "+sss+"\n"+"Total spent: "+ss+" / "+total;
                 DateSpec.setText(bau);
             }
 
