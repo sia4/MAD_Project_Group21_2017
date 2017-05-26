@@ -359,6 +359,7 @@ public class GroupActivity extends AppCompatActivity {
                         break;
                     case 2:
                         fab.setVisibility(View.INVISIBLE);
+                        break;
                     default:
                         fab.setVisibility(View.VISIBLE);
                         break;
