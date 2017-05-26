@@ -295,8 +295,7 @@ public class PolActivity extends AppCompatActivity {
                                 for(String k : usersid) {
                                     if (!k.equals(FirebaseAuth.getInstance().getCurrentUser().getUid()))
                                     {
-                                        ActRef.child(k).push();
-                                        String actId=ActRef.getKey();
+                                        String actId=ActRef.child(k).push().getKey();
                                         ActRef.child(k).child(actId).setValue(new ActivityData(myname + " " + mysurname, myname + " " + mysurname + " accepted the propose to delete group " + GroupName, Long.toString(System.currentTimeMillis()), "acceptdeletegroup", PolId, GroupId));
                                         ActRead.child(k).child(GroupId).child(actId).setValue(false);
                                     }
@@ -305,8 +304,8 @@ public class PolActivity extends AppCompatActivity {
                                     for(String k : usersid) {
                                         if (!k.equals(FirebaseAuth.getInstance().getCurrentUser().getUid()))
                                         {
-                                            ActRef.child(k).push();
-                                            String actId=ActRef.getKey();
+                                            String actId=ActRef.child(k).push().getKey();
+                                            Log.d("PolActivity","actId="+actId);
                                             ActRef.child(k).child(actId).setValue(new ActivityData(myname + " " + mysurname, "Group " + GroupName + " has been successful deleted", Long.toString(System.currentTimeMillis()), "acceptdeletegroup", PolId, GroupId));
                                             ActRead.child(k).child(GroupId).child(actId).setValue(false);
                                         }
