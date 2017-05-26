@@ -57,7 +57,6 @@ import it.polito.mad.mad_app.model.Currencies;
 import it.polito.mad.mad_app.model.PolData;
 import it.polito.mad.mad_app.model.RecyclerTouchListener;
 import it.polito.mad.mad_app.model.User;
-import it.polito.mad.mad_app.model.UserData;
 
 import static it.polito.mad.mad_app.model.ImageMethod.circle_image;
 import static it.polito.mad.mad_app.model.ImageMethod.create_image;
@@ -174,13 +173,13 @@ public class GroupInfoActivity extends AppCompatActivity {
                         System.out.println("mapnameeeeeeeeeeeeeeeeeeee"+mapname);
                         if(mapname!=null) {
                             buttonDelete.setVisibility(View.GONE);
-                            buttonPoldel.setVisibility(View.VISIBLE);
                             myname = (String)mapname.get("name");
                             mysurname = (String)mapname.get("surname");
                             DatabaseReference ActRef = database.getReference("Activities");
                             DatabaseReference ActRead = database.getReference("ActivitiesRead");
                             DatabaseReference PolRef = database.getReference("Pols").child(gId).push();
                             PolKey = PolRef.getKey();
+                            deletePolId = PolKey;
                             DatabaseReference PolGroup = database.getReference("Groups").child(gId).child("deletePolId");
                             PolGroup.setValue(PolKey);
                             PolData p = new PolData(String.format("%d", users.size()), "1");
@@ -206,6 +205,7 @@ public class GroupInfoActivity extends AppCompatActivity {
 
                             //database.getReference("Groups").child(gId).removeValue();
 
+                            buttonPoldel.setVisibility(View.VISIBLE);
                         }
 
                     }
@@ -381,82 +381,86 @@ public class GroupInfoActivity extends AppCompatActivity {
                         }
                     }
                 }
+                if (g != null) {
 
-                if (g.getCurrencies().size() != 0) {
+                    if (g.getCurrencies().size() != 0) {
 
-                    System.out.println(g.getCurrencies().toString());
+                        System.out.println(g.getCurrencies().toString());
 
-                    for (Entry<String, Float> e : g.getCurrencies().entrySet()) {
-                        if (e.getValue() == 0.0) {
+                        for (Entry<String, Float> e : g.getCurrencies().entrySet()) {
+                            if (e.getValue() == 0.0) {
 
-                            String s = "Primary Currency: " + c.getCurrencyString(e.getKey());
-                            currencies.add(s);
-                        } else {
+                                String s = "Primary Currency: " + c.getCurrencyString(e.getKey());
+                                currencies.add(s);
+                            } else {
 
-                            String s = c.getCurrencyString(e.getKey());
-                            currencies.add(s + " " + e.getValue());
+                                String s = c.getCurrencyString(e.getKey());
+                                currencies.add(s + " " + e.getValue());
+                            }
+
                         }
+                        CurrenciesAdapter cAdapter = new CurrenciesAdapter(currencies);
+                        CurrenciesRecyclerView.setAdapter(cAdapter);
+                        cAdapter.notifyDataSetChanged();
+
+                    } else {
+
+                        Toast.makeText(GroupInfoActivity.this, "No Currencies found!", Toast.LENGTH_LONG).show();
 
                     }
-                    CurrenciesAdapter cAdapter = new CurrenciesAdapter(currencies);
-                    CurrenciesRecyclerView.setAdapter(cAdapter);
-                    cAdapter.notifyDataSetChanged();
 
-                } else {
+                    if (g.showMemberList().size() != 0) {
 
-                    Toast.makeText(GroupInfoActivity.this, "No Currencies found!", Toast.LENGTH_LONG).show();
-
-                }
-
-                if (g.showMemberList().size() != 0) {
-
-                    for (final String k : g.showMemberList()) {
+                        for (final String k : g.showMemberList()) {
 
 
-                        FirebaseDatabase database3 = FirebaseDatabase.getInstance();
-                        DatabaseReference myRef3 = database3.getReference("Users").child(k);
-                        myRef3.addListenerForSingleValueEvent(new ValueEventListener() {
-                            @Override
-                            public void onDataChange(DataSnapshot dataSnapshot) {
+                            FirebaseDatabase database3 = FirebaseDatabase.getInstance();
+                            DatabaseReference myRef3 = database3.getReference("Users").child(k);
+                            myRef3.addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(DataSnapshot dataSnapshot) {
 
-                                Map<String, Object> map3 = (Map<String, Object>) dataSnapshot.getValue();
+                                    Map<String, Object> map3 = (Map<String, Object>) dataSnapshot.getValue();
 
-                                if (map3 != null) {
+                                    if (map3 != null) {
 
-                                    String s = map3.get("name") + " " + map3.get("surname");
-                                    String fav = ((Map<String, String>)((Map<String, Object>)map3.get("Groups")).get(gId)).get("favourite");
-                                    if(fav!=null && fav.equals("yes") && k.equals(FirebaseAuth.getInstance().getCurrentUser().getUid())){
-                                        favourite.setChecked(true);
-                                    }
-                                    String p = null;
+                                        String s = map3.get("name") + " " + map3.get("surname");
+                                        String fav = ((Map<String, String>) ((Map<String, Object>) map3.get("Groups")).get(gId)).get("favourite");
+                                        if (fav != null && fav.equals("yes") && k.equals(FirebaseAuth.getInstance().getCurrentUser().getUid())) {
+                                            favourite.setChecked(true);
+                                        }
+                                        String p = null;
 
-                                    if (map3.get("imagePath") == null) {
-                                        p = "https://firebasestorage.googleapis.com/v0/b/allaromana-3f98e.appspot.com/o/group_default.png?alt=media&token=40bc93f4-6b97-466e-b130-e140f57c5895";
+                                        if (map3.get("imagePath") == null) {
+                                            p = "https://firebasestorage.googleapis.com/v0/b/allaromana-3f98e.appspot.com/o/group_default.png?alt=media&token=40bc93f4-6b97-466e-b130-e140f57c5895";
+                                        } else {
+                                            p = map3.get("imagePath").toString();
+                                        }
+
+                                        users.add(s);
+                                        user_l.add(new User(null, null, map3.get("name").toString(), map3.get("surname").toString(), p));
+                                        usersId.add(k);
+                                        uAdapter.notifyDataSetChanged();
+
                                     } else {
-                                        p = map3.get("imagePath").toString();
+
+                                        Toast.makeText(GroupInfoActivity.this, "no user key found!", Toast.LENGTH_LONG).show();
+
                                     }
-
-                                    users.add(s);
-                                    user_l.add(new User(null, null, map3.get("name").toString(), map3.get("surname").toString(), p));
-                                    usersId.add(k);
-                                    uAdapter.notifyDataSetChanged();
-
-                                } else {
-
-                                    Toast.makeText(GroupInfoActivity.this, "no user key found!", Toast.LENGTH_LONG).show();
 
                                 }
 
-                            }
-
-                            @Override
-                            public void onCancelled(DatabaseError error) {
-                                // Failed to read value
-                                //log.w(TAG, "Failed to read value.", error.toException());
-                            }
-                        });
+                                @Override
+                                public void onCancelled(DatabaseError error) {
+                                    // Failed to read value
+                                    //log.w(TAG, "Failed to read value.", error.toException());
+                                }
+                            });
+                        }
                     }
+
                 }
+
             }
 
             @Override

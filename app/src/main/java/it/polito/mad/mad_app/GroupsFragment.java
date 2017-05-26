@@ -188,13 +188,15 @@ public class GroupsFragment extends Fragment {
                         MainData.getInstance().clearBalanceByGroupByKey(tmpkey);
                         final FirebaseDatabase database3 = FirebaseDatabase.getInstance();
                         DatabaseReference myRef3 = database3.getReference("Balance").child(tmpkey).child(FirebaseAuth.getInstance().getCurrentUser().getUid());
+                        System.out.println("Balance" + "> " + tmpkey + " > " + FirebaseAuth.getInstance().getCurrentUser().getUid());
+
                         myRef3.addValueEventListener(new ValueEventListener() {
                             @Override
                             public void onDataChange(DataSnapshot dataSnapshot) {
 
                                 balancemap = (Map<String, Map<String, Object>>) dataSnapshot.getValue();
                                 if (balancemap != null) {
-                                    System.out.println("MAPPAAAAAAAAAAHAHHAHAH +" + balancemap);
+                                    System.out.println("GroupsFragment L198 +" + balancemap);
                                     for (String u : balancemap.keySet()) {
 
                                         if (balancemap.get(u).get("value") != null) {
