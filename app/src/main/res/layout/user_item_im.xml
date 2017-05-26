@@ -11,6 +11,7 @@
         android:id="@+id/name_u_lis"
         android:layout_width="match_parent"
         android:layout_height="60sp"
+        android:layout_marginLeft="16dp"
         android:gravity="center_vertical"
         android:textSize="20sp"
         />

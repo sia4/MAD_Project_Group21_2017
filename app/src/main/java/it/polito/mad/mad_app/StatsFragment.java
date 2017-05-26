@@ -1,12 +1,15 @@
 package it.polito.mad.mad_app;
 
-import android.content.Intent;
+import android.content.Context;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
-import android.view.MenuItem;
+import android.support.v4.app.Fragment;
+import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -19,9 +22,10 @@ import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.PieData;
 import com.github.mikephil.charting.data.PieDataSet;
-
 import com.github.mikephil.charting.highlight.Highlight;
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -31,10 +35,17 @@ import com.google.firebase.database.ValueEventListener;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
-public class GroupStatisticsActivity extends AppCompatActivity {
+import it.polito.mad.mad_app.model.Balance;
+import it.polito.mad.mad_app.model.BalanceData;
+
+
+public class StatsFragment extends Fragment{
+
+    Context context;
     private String gId, gName, defaultcurrency;
     private float total=0;
     PieChart PieCategory;
@@ -48,30 +59,20 @@ public class GroupStatisticsActivity extends AppCompatActivity {
     String[] categories = { "Entertainment", "Food and Drinks", "House and Utilities","Clothing","Present","Medical Expenses","Transport","Hotel","Cleaning","General", "Other"};
     String[] xEntrysArray;
     ArrayList<Integer> dates = new ArrayList<>();
+
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_group_statistics);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.group_statistics_toolbar);
-        setSupportActionBar(toolbar);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        final View view = inflater.inflate(R.layout.fragment_stats, container, false);
 
-        if (getSupportActionBar() != null) {
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            getSupportActionBar().setTitle("Group Statistics");
-        }
-
-        Intent i = getIntent();
-        gId = i.getStringExtra("groupId");
-        gName = i.getStringExtra("groupName");
-        defaultcurrency = i.getStringExtra("defaultcurrency");
-
-
-        PieCategory = (PieChart) findViewById(R.id.pieGroupCategory);
+        context = view.getContext();
+        gId = getArguments().getString("GroupId");
+        PieCategory = (PieChart) view.findViewById(R.id.pieGroupCategory);
         PieCategory.setRotationEnabled(true);
         PieCategory.setHoleRadius(50f);
         PieCategory.setTransparentCircleAlpha(0);
 
-        BarByDate = (BarChart) findViewById(R.id.barGroupDate);
+        BarByDate = (BarChart) view.findViewById(R.id.barGroupDate);
 
 
         catToId.put("Entertainment", R.drawable.entertainment);
@@ -86,7 +87,7 @@ public class GroupStatisticsActivity extends AppCompatActivity {
         catToId.put("General", R.drawable.general);
         catToId.put("Other", R.drawable.other);
 
-        catToColor.put("Entertainment",Color.parseColor("#fff59d"));
+        catToColor.put("Entertainment", Color.parseColor("#fff59d"));
         catToColor.put("Food and Drinks", Color.parseColor("#ffab91"));
         catToColor.put("House and Utilities", Color.parseColor("#9fa8da"));
         catToColor.put("Clothing", Color.parseColor("#a5d6a7"));
@@ -209,12 +210,12 @@ public class GroupStatisticsActivity extends AppCompatActivity {
 
             }
         });
-        final TextView CatSpec = (TextView) findViewById(R.id.CategorySpecs);
+        final TextView CatSpec = (TextView) view.findViewById(R.id.CategorySpecs);
         PieCategory.setOnChartValueSelectedListener(new OnChartValueSelectedListener() {
-            ImageView catImg = (ImageView) findViewById(R.id.categoryImg);
+
             @Override
             public void onValueSelected(Entry e, int dataSetIndex, Highlight h) {
-
+                ImageView catImg = (ImageView) view.findViewById(R.id.categoryImg);
                 int pos1 = e.toString().indexOf("(sum): ");
                 String ss = e.toString().substring(pos1 + 7);
                 String sss="";
@@ -224,23 +225,19 @@ public class GroupStatisticsActivity extends AppCompatActivity {
                         break;
                     }
                 }
-                catImg.setVisibility(View.VISIBLE);
-                catImg.setImageDrawable(getResources().getDrawable(catToId.get(sss)));
 
+                catImg.setImageDrawable(getResources().getDrawable(catToId.get(sss)));
                 String bau ="Category "+sss+"\n"+"Total spent: "+ss+" / "+total;
                 CatSpec.setText(bau);
             }
 
             @Override
             public void onNothingSelected() {
-                catImg.setVisibility(View.INVISIBLE);
                 CatSpec.setText("");
             }
 
-
-
         });
-        final TextView DateSpec = (TextView) findViewById(R.id.DataSpecs);
+        final TextView DateSpec = (TextView) view.findViewById(R.id.DataSpecs);
         BarByDate.setOnChartValueSelectedListener(new OnChartValueSelectedListener() {
 
             @Override
@@ -269,21 +266,13 @@ public class GroupStatisticsActivity extends AppCompatActivity {
         });
 
 
+
+
+        return view;
     }
 
-    public boolean onOptionsItemSelected(MenuItem item){
-        Intent i = getIntent();
-
-
-        switch(item.getItemId()){
-            case android.R.id.home:
-                finish();
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
-        }
-
-
+    @Override
+    public void onResume() {
+        super.onResume();
     }
-
 }

@@ -446,28 +446,35 @@ public class InsertExActivity extends AppCompatActivity {
                     Toast.makeText(InsertExActivity.this, "Please insert currency.", Toast.LENGTH_LONG).show();
                 } else if(Tvalue.getText().toString().equals("")) {
                     Toast.makeText(InsertExActivity.this, "Please insert value.", Toast.LENGTH_LONG).show();
-                } else if(category.equals("Select category")) {
+                }  else if(category.equals("Select category")) {
                     Toast.makeText(InsertExActivity.this, "Please insert category.", Toast.LENGTH_LONG).show();
                 } else {
 
-                    cambio = Cambi.get(currency);
-                    Currencies c = new Currencies();
-                    System.out.println("DEBUG - InsertEx - L431 Currency: " + currency);
+                    try {
 
-                    if (c.getCurrencyCode(currency) != null) {
-                        currency = c.getCurrencyCode(currency);
-                    }
+                        if(Float.parseFloat(Tvalue.getText().toString())<=0) {
+                            Toast.makeText(InsertExActivity.this, "Please insert a positive value.", Toast.LENGTH_LONG).show();
+                        } else if(Float.parseFloat(Tvalue.getText().toString())>10000) {
+                            Toast.makeText(InsertExActivity.this, "Please insert a value less tha 10.000.", Toast.LENGTH_LONG).show();
+                        } else {
+                            cambio = Cambi.get(currency);
+                            Currencies c = new Currencies();
+                            System.out.println("DEBUG - InsertEx - L431 Currency: " + currency);
 
-                    value = Double.valueOf(Tvalue.getText().toString());
-                    System.out.println("DEBUG - InsertEx - L434 Value: " + value);
-                    System.out.println("DEBUG - InsertEx - L435 Currency: " + currency);
+                            if (c.getCurrencyCode(currency) != null) {
+                                currency = c.getCurrencyCode(currency);
+                            }
 
-                    if (algorithm.equals("equally")) {
-                        v = value / users.size();
+                            value = Double.valueOf(Tvalue.getText().toString());
+                            System.out.println("DEBUG - InsertEx - L434 Value: " + value);
+                            System.out.println("DEBUG - InsertEx - L435 Currency: " + currency);
 
-                        if (cambio != 0) {
-                            v *= cambio;
-                        }
+                            if (algorithm.equals("equally")) {
+                                v = value / users.size();
+
+                                if (cambio != 0) {
+                                    v *= cambio;
+                                }
 
                         for (UserData k : users) {
                             values.put(k.getuId(), v);
@@ -702,16 +709,21 @@ public class InsertExActivity extends AppCompatActivity {
                         i2.putExtra("groupId", Gname);
                         i2.putExtra("groupName", groupName);
 
-                        setResult(RESULT_OK, i2);
-                        finish();
-                        Log.d("myStorage", "success!");
-                        //}
-                        //return true;
-                    } else {
-                        String p = String.format("problems... flagok: %d, values.size: %d, users.size: %d", flagok, values.size(), users.size());
-                        Toast.makeText(InsertExActivity.this, p, Toast.LENGTH_LONG).show();
-                        return super.onOptionsItemSelected(item);
+                                setResult(RESULT_OK, i2);
+                                finish();
+                                Log.d("myStorage", "success!");
+                                //}
+                                //return true;
+                            } else {
+                                String p = String.format("problems... flagok: %d, values.size: %d, users.size: %d", flagok, values.size(), users.size());
+                                Toast.makeText(InsertExActivity.this, p, Toast.LENGTH_LONG).show();
+                                return super.onOptionsItemSelected(item);
+                            }
+                        }
+                    } catch (NumberFormatException e) {
+                        Toast.makeText(InsertExActivity.this, "Please insert a numeric value.", Toast.LENGTH_LONG).show();
                     }
+
                 }
             default:
                 return super.onOptionsItemSelected(item);

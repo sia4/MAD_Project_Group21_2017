@@ -184,68 +184,71 @@ public class InsertGroupActivity extends AppCompatActivity {
         userbutton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
 
-                disableUsers();
+
 
                 userEmail = Uemail.getText().toString().toLowerCase();
-                quer.equalTo(userEmail).addListenerForSingleValueEvent(new ValueEventListener() {
+                if(!userEmail.equals("")) {
+                    disableUsers();
+                    quer.equalTo(userEmail).addListenerForSingleValueEvent(new ValueEventListener() {
 
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
 
-                        for (DataSnapshot userSnapshot : dataSnapshot.getChildren()) {
+                            for (DataSnapshot userSnapshot : dataSnapshot.getChildren()) {
 
-                            ud = userSnapshot.getValue(User.class);
-                            key = userSnapshot.getKey();
-                        }
-
-                        if (key == null) {
-                            Uemail.setText("");
-                            new AlertDialog.Builder(InsertGroupActivity.this)
-                                    .setTitle("You friend has not downloaded the app, yet!")
-                                    .setMessage("Create the group and invite him later from group options.")
-                                    .setIcon(android.R.drawable.ic_dialog_alert)
-                                    .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-                                        public void onClick(DialogInterface dialog, int whichButton) {                                      }
-                                    }).show();
-
-                        } else {
-                            Uemail.setText("");
-
-                            if(uKey.equals(key)) {
-                                new AlertDialog.Builder(InsertGroupActivity.this)
-                                        .setTitle("Warning!")
-                                        .setMessage("You are already present in this group.")
-                                        .setIcon(android.R.drawable.ic_dialog_alert)
-                                        .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-                                            public void onClick(DialogInterface dialog, int whichButton) {                                      }
-                                        }).show();
-                            } else if(userKeys.containsKey(key)){
-                                new AlertDialog.Builder(InsertGroupActivity.this)
-                                        .setTitle("Warning!")
-                                        .setMessage("The user is already present.")
-                                        .setIcon(android.R.drawable.ic_dialog_alert)
-                                        .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-                                            public void onClick(DialogInterface dialog, int whichButton) {                                      }
-                                        }).show();
-                            } else {
-                                userKeys.put(key, true);
-                                userNames.put(key, ud.getName() + " " + ud.getSurname());
-
-                                usersList.add(ud);
-
-                                uAdapter.notifyDataSetChanged();
+                                ud = userSnapshot.getValue(User.class);
+                                key = userSnapshot.getKey();
                             }
-                            key = null;
+
+                            if (key == null) {
+                                Uemail.setText("");
+                                new AlertDialog.Builder(InsertGroupActivity.this)
+                                        .setTitle("You friend has not downloaded the app, yet!")
+                                        .setMessage("Create the group and invite him later from group options.")
+                                        .setIcon(android.R.drawable.ic_dialog_alert)
+                                        .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                                            public void onClick(DialogInterface dialog, int whichButton) {                                      }
+                                        }).show();
+
+                            } else {
+                                Uemail.setText("");
+
+                                if(uKey.equals(key)) {
+                                    new AlertDialog.Builder(InsertGroupActivity.this)
+                                            .setTitle("Warning!")
+                                            .setMessage("You are already present in this group.")
+                                            .setIcon(android.R.drawable.ic_dialog_alert)
+                                            .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                                                public void onClick(DialogInterface dialog, int whichButton) {                                      }
+                                            }).show();
+                                } else if(userKeys.containsKey(key)){
+                                    new AlertDialog.Builder(InsertGroupActivity.this)
+                                            .setTitle("Warning!")
+                                            .setMessage("The user is already present.")
+                                            .setIcon(android.R.drawable.ic_dialog_alert)
+                                            .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                                                public void onClick(DialogInterface dialog, int whichButton) {                                      }
+                                            }).show();
+                                } else {
+                                    userKeys.put(key, true);
+                                    userNames.put(key, ud.getName() + " " + ud.getSurname());
+
+                                    usersList.add(ud);
+
+                                    uAdapter.notifyDataSetChanged();
+                                }
+                                key = null;
+                            }
+
+                            enableUsers();
                         }
 
-                        enableUsers();
-                    }
+                        @Override
+                        public void onCancelled(DatabaseError eError) {
 
-                    @Override
-                    public void onCancelled(DatabaseError eError) {
-
-                    }
-                });
+                        }
+                    });
+                }
 
             }
 

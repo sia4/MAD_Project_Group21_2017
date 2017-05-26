@@ -299,7 +299,7 @@ public class InsertUserToGroupActivity extends AppCompatActivity {
                                 key=userSnapshot.getKey(); //ritorna la chive dell'utente che quindi
                                 // poi va inserito nell'oggetto gruppo come chiave:true
 
-                                Toast.makeText(InsertUserToGroupActivity.this, key, Toast.LENGTH_LONG).show();
+                                //Toast.makeText(InsertUserToGroupActivity.this, key, Toast.LENGTH_LONG).show();
                             }
                             if(key == null) {
 

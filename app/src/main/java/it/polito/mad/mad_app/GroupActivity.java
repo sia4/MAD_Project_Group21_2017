@@ -44,6 +44,8 @@ import it.polito.mad.mad_app.model.Currencies;
 import it.polito.mad.mad_app.model.Group;
 import it.polito.mad.mad_app.model.PagerAdapterGroup;
 
+import static it.polito.mad.mad_app.model.ImageMethod.circle_image;
+
 
 public class GroupActivity extends AppCompatActivity {
     private ViewPager mViewPager;
@@ -173,6 +175,22 @@ public class GroupActivity extends AppCompatActivity {
                     }
                 });
             }
+        }
+
+        if (gImage != null && gImage.equals("")) {
+            Glide
+                    .with(getApplicationContext())
+                    .load(R.drawable.group_default)
+                    .asBitmap()
+                    .into(new SimpleTarget<Bitmap>(60, 60) {
+                        @Override
+                        public void onResourceReady(Bitmap resource, GlideAnimation glideAnimation) {
+                            RoundedBitmapDrawable circularBitmapDrawable =
+                                    RoundedBitmapDrawableFactory.create(getResources(), resource);
+                            circularBitmapDrawable.setCircular(true);
+                            getSupportActionBar().setLogo(circularBitmapDrawable);
+                        }
+                    });
         }
 
         //final FirebaseDatabase database3 = FirebaseDatabase.getInstance();
@@ -339,6 +357,8 @@ public class GroupActivity extends AppCompatActivity {
                     case 1:
                         fab.setVisibility(View.INVISIBLE);
                         break;
+                    case 2:
+                        fab.setVisibility(View.INVISIBLE);
                     default:
                         fab.setVisibility(View.VISIBLE);
                         break;
@@ -436,13 +456,13 @@ public class GroupActivity extends AppCompatActivity {
                 startActivity(i2);
                 return true;
 
-            case R.id.GroupStatistics:
+            /*case R.id.GroupStatistics:
                 Intent i3 = new Intent(getApplicationContext(), GroupStatisticsActivity.class);
                 i3.putExtra("groupId", gKey);
                 i3.putExtra("groupName", gName);
                 i3.putExtra("defaultcurrency", defaultcurrency);
                 startActivity(i3);
-                return true;
+                return true;*/
 
             default:
                 return super.onOptionsItemSelected(item);

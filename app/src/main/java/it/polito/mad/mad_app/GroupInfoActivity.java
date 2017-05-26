@@ -57,6 +57,7 @@ import it.polito.mad.mad_app.model.Currencies;
 import it.polito.mad.mad_app.model.PolData;
 import it.polito.mad.mad_app.model.RecyclerTouchListener;
 import it.polito.mad.mad_app.model.User;
+import it.polito.mad.mad_app.model.UserData;
 
 import static it.polito.mad.mad_app.model.ImageMethod.circle_image;
 import static it.polito.mad.mad_app.model.ImageMethod.create_image;
@@ -690,8 +691,10 @@ public class GroupInfoActivity extends AppCompatActivity {
                         FirebaseDatabase database3 = FirebaseDatabase.getInstance();
                         DatabaseReference myRef3 = database3.getReference("Groups").child(gId).child("name");
                         myRef3.setValue(newname);
-                        myRef3 = database3.getReference("Users").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("Groups").child(gId).child("name");
-                        myRef3.setValue(newname);
+                        for (String u : usersId) {
+                            myRef3 = database3.getReference("Users").child(u).child("Groups").child(gId).child("name");
+                            myRef3.setValue(newname);
+                        }
 
                         //GD.setName(newname);
                         //MainData.getInstance().changeGroupName(GroupName, newname);

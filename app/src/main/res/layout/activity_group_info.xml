@@ -129,6 +129,7 @@
                             android:layout_marginLeft="16sp"
                             android:layout_marginRight="16sp"
                             android:layout_marginTop="5dp"
+                            android:gravity="center"
                             android:textSize="20sp" />
 
                         <EditText
@@ -139,6 +140,7 @@
                             android:layout_marginLeft="16sp"
                             android:layout_marginRight="16sp"
                             android:layout_marginTop="5dp"
+                            android:gravity="center"
                             android:textSize="20sp"
                             android:visibility="gone" />
 
@@ -147,28 +149,26 @@
 
                 <View style="@style/Divider" />
 
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:src="@drawable/ic_group_members" />
-
-                <TextView
+                <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="20sp"
-                    android:layout_marginLeft="16sp"
-                    android:layout_marginRight="16sp"
-                    android:layout_marginTop="5dp"
-                    android:text="Users:"
-                    android:textSize="13sp" />
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginLeft="16dp"
+                    android:orientation="horizontal">
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/ic_group_members" />
 
-                <android.support.v7.widget.RecyclerView
-                    android:id="@+id/users"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="16sp"
-                    android:layout_marginRight="16sp"
-                    android:orientation="vertical"
-                    android:scrollbars="vertical" />
+                    <android.support.v7.widget.RecyclerView
+                        android:id="@+id/users"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="32sp"
+                        android:layout_marginRight="16sp"
+                        android:orientation="vertical"
+                        android:scrollbars="vertical" />
+                </LinearLayout>
 
                 <Button
                     android:id="@+id/addUserInExistingGroup"

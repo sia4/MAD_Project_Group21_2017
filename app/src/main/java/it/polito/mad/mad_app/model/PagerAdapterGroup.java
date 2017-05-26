@@ -9,6 +9,7 @@ import it.polito.mad.mad_app.ActivitiesFragment;
 import it.polito.mad.mad_app.BudgetFragment;
 import it.polito.mad.mad_app.GroupsFragment;
 import it.polito.mad.mad_app.HistoryFragment;
+import it.polito.mad.mad_app.StatsFragment;
 
 /**
  * Created by Lucia on 11/05/2017.
@@ -35,6 +36,10 @@ public class PagerAdapterGroup  extends FragmentStatePagerAdapter {
                 frag.setArguments(b);
                 //fab.setVisibility(View.INVISIBLE);
                 break;
+            case 2:
+                frag = new StatsFragment();
+                frag.setArguments(b);
+                break;
             default:
                 frag = new HistoryFragment();
                 frag.setArguments(b);
@@ -50,7 +55,7 @@ public class PagerAdapterGroup  extends FragmentStatePagerAdapter {
 
     @Override
     public int getCount() {
-        return 2;
+        return 3;
     }
 
     @Override
@@ -63,6 +68,9 @@ public class PagerAdapterGroup  extends FragmentStatePagerAdapter {
                 break;
             case 1:
                 s="BALANCE";
+                break;
+            case 2:
+                s="STATISTICS";
                 break;
             default:
                 s="HISTORY";

@@ -216,7 +216,7 @@ public class ExpenseInfoActivity extends AppCompatActivity {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 balancemap = (Map<String, Map<String, Map<String, Object>>>) dataSnapshot.getValue();
                 if(balancemap==null) {
-                    Toast.makeText(ExpenseInfoActivity.this, "no balance found!", Toast.LENGTH_LONG).show();
+                    //Toast.makeText(ExpenseInfoActivity.this, "no balance found!", Toast.LENGTH_LONG).show();
                 }
                 else{
                     System.out.println("balancemapppppppppppppppp " + balancemap);
