@@ -108,7 +108,8 @@ public class StatsFragment extends Fragment{
             public void onDataChange(DataSnapshot dataSnapshot) {
                 Map<String, Object> map1 = (Map<String, Object>) dataSnapshot.getValue();
                 if (map1 != null) {
-                    exSum = new TreeMap<>();
+                    exSum.clear();
+                    exSumbyDate.clear();
                     String category;
                     Long datemilliseconds;
                     float oldValue=0, oldValuebyDate=0, newValue=0;
@@ -132,7 +133,7 @@ public class StatsFragment extends Fragment{
                             exSum.put(category, newValue);
                         }
 
-
+                        System.out.println("mappa statistiche by Category: " + exSum);
                         if (exSumbyDate.containsKey(dateString)) {
                             oldValuebyDate = exSumbyDate.get(dateString);
                             exSumbyDate.put(dateString, oldValuebyDate + newValue);
@@ -141,11 +142,12 @@ public class StatsFragment extends Fragment{
                         }
 
                     }
-                    System.out.println("mappa statistiche: " + exSumbyDate);
+                    System.out.println("mappa statistiche by Date: " + exSumbyDate);
                     ArrayList<Integer> color = new ArrayList<>();
                     ArrayList<Entry> yEntrys = new ArrayList<>();
                     ArrayList<BarEntry> yEntrysBar = new ArrayList<>();
                     ArrayList<String> xEntrys = new ArrayList<>();
+                    ArrayList<String> xEntrysBar = new ArrayList<>();
                     int i = 0;
                     for (String r : exSum.keySet()) {
                         color.add(catToColor.get(r));
@@ -155,7 +157,7 @@ public class StatsFragment extends Fragment{
                     }
 
 
-                    PieDataSet pieDataSet = new PieDataSet(yEntrys, "Categories");
+                    PieDataSet pieDataSet = new PieDataSet(yEntrys, "");
                     pieDataSet.setValueTextSize(12);
 
 
@@ -167,6 +169,7 @@ public class StatsFragment extends Fragment{
                     System.out.println("yEntries "+yEntrys);
                     PieData pieData = new PieData(xEntrys, pieDataSet);
                     String description = "";
+                    PieCategory.setNoDataText("No expenses found");
                     PieCategory.setDescription(description);
                     PieCategory.setData(pieData);
                     PieCategory.invalidate();
@@ -174,11 +177,12 @@ public class StatsFragment extends Fragment{
 
                     i = 0;
                     xEntrys.clear();
+                    xEntrysBar.clear();
                     yEntrysBar.clear();
                     xEntrysArray = new String[exSumbyDate.size()];
                     for (String r : exSumbyDate.keySet()) {
                         yEntrysBar.add( new BarEntry(exSumbyDate.get(r), i)  );
-                        xEntrys.add(r);
+                        xEntrysBar.add(r);
                         xEntrysArray[i] = r;
                         i++;
                     }
@@ -192,7 +196,7 @@ public class StatsFragment extends Fragment{
                     legend.setForm(Legend.LegendForm.CIRCLE);
                     legend.setPosition(Legend.LegendPosition.LEFT_OF_CHART);
 
-                    BarData barData = new BarData(xEntrys,barDataSet);
+                    BarData barData = new BarData(xEntrysBar,barDataSet);
                     BarByDate.animateXY(2000,2000);
                     BarByDate.enableScroll();
                     BarByDate.setMinimumWidth(1);
@@ -211,11 +215,12 @@ public class StatsFragment extends Fragment{
             }
         });
         final TextView CatSpec = (TextView) view.findViewById(R.id.CategorySpecs);
+        final ImageView catImg = (ImageView) view.findViewById(R.id.categoryImg);
         PieCategory.setOnChartValueSelectedListener(new OnChartValueSelectedListener() {
 
             @Override
             public void onValueSelected(Entry e, int dataSetIndex, Highlight h) {
-                ImageView catImg = (ImageView) view.findViewById(R.id.categoryImg);
+
                 int pos1 = e.toString().indexOf("(sum): ");
                 String ss = e.toString().substring(pos1 + 7);
                 String sss="";
@@ -225,7 +230,7 @@ public class StatsFragment extends Fragment{
                         break;
                     }
                 }
-
+                catImg.setVisibility(View.VISIBLE);
                 catImg.setImageDrawable(getResources().getDrawable(catToId.get(sss)));
                 String bau ="Category "+sss+"\n"+"Total spent: "+ss+" / "+total;
                 CatSpec.setText(bau);
@@ -233,6 +238,8 @@ public class StatsFragment extends Fragment{
 
             @Override
             public void onNothingSelected() {
+
+                catImg.setVisibility(View.INVISIBLE);
                 CatSpec.setText("");
             }
 

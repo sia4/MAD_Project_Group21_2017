@@ -210,8 +210,9 @@ public class GroupStatisticsActivity extends AppCompatActivity {
             }
         });
         final TextView CatSpec = (TextView) findViewById(R.id.CategorySpecs);
+        final ImageView catImg = (ImageView) findViewById(R.id.categoryImg);
         PieCategory.setOnChartValueSelectedListener(new OnChartValueSelectedListener() {
-            ImageView catImg = (ImageView) findViewById(R.id.categoryImg);
+
             @Override
             public void onValueSelected(Entry e, int dataSetIndex, Highlight h) {
 
@@ -224,7 +225,7 @@ public class GroupStatisticsActivity extends AppCompatActivity {
                         break;
                     }
                 }
-                catImg.setVisibility(View.VISIBLE);
+
                 catImg.setImageDrawable(getResources().getDrawable(catToId.get(sss)));
 
                 String bau ="Category "+sss+"\n"+"Total spent: "+ss+" / "+total;
@@ -233,7 +234,7 @@ public class GroupStatisticsActivity extends AppCompatActivity {
 
             @Override
             public void onNothingSelected() {
-                catImg.setVisibility(View.INVISIBLE);
+                catImg.setVisibility(View.GONE);
                 CatSpec.setText("");
             }
 
