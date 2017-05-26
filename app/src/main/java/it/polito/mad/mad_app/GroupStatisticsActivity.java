@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.github.mikephil.charting.charts.BarChart;
@@ -17,7 +18,7 @@ import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.PieData;
 import com.github.mikephil.charting.data.PieDataSet;
-import com.github.mikephil.charting.data.PieEntry;
+
 import com.github.mikephil.charting.highlight.Highlight;
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
 import com.google.firebase.database.DataSnapshot;
@@ -38,6 +39,9 @@ public class GroupStatisticsActivity extends AppCompatActivity {
     BarChart BarByDate;
     Map<String, Float> exSum = new TreeMap<>();
     Map<String, Float> exSumbyDate = new TreeMap();
+    private Map<String, Integer> catToId = new TreeMap<>();
+    private Map<String, Integer> catToColor = new TreeMap<>();
+
     //TODO OTTENERE LISTA CATEGORIES DA CATEGORIES.XML IN MODO AUTOMATICO
     String[] categories = { "Entertainment", "Food and Drinks", "House and Utilities","Clothing","Present","Medical Expenses","Transport","Hotel","Cleaning","General", "Other"};
     String[] xEntrysArray;
@@ -64,11 +68,33 @@ public class GroupStatisticsActivity extends AppCompatActivity {
         PieCategory.setRotationEnabled(true);
         PieCategory.setHoleRadius(50f);
         PieCategory.setTransparentCircleAlpha(0);
-        PieCategory.setCenterText("Expenses by categories");
-        PieCategory.setCenterTextSize(10);
 
         BarByDate = (BarChart) findViewById(R.id.barGroupDate);
 
+
+        catToId.put("Entertainment", R.drawable.entertainment);
+        catToId.put("Food and Drinks", R.drawable.food);
+        catToId.put("House and Utilities", R.drawable.house);
+        catToId.put("Clothing", R.drawable.clothing);
+        catToId.put("Present", R.drawable.present);
+        catToId.put("Medical Expenses", R.drawable.medical);
+        catToId.put("Transport", R.drawable.transportation);
+        catToId.put("Hotel", R.drawable.hotel);
+        catToId.put("Cleaning", R.drawable.cleaning);
+        catToId.put("General", R.drawable.general);
+        catToId.put("Other", R.drawable.other);
+
+        catToColor.put("Entertainment",Color.parseColor("#fff59d"));
+        catToColor.put("Food and Drinks", Color.parseColor("#ffab91"));
+        catToColor.put("House and Utilities", Color.parseColor("#9fa8da"));
+        catToColor.put("Clothing", Color.parseColor("#a5d6a7"));
+        catToColor.put("Present",Color.parseColor("#f48fb1"));
+        catToColor.put("Medical Expenses", Color.parseColor("#80cbc3"));
+        catToColor.put("Transport", Color.parseColor("#90caf9"));
+        catToColor.put("Hotel", Color.parseColor("#b39ddb"));
+        catToColor.put("Cleaning", Color.parseColor("#80deea"));
+        catToColor.put("General", Color.parseColor("#bcaaa4"));
+        catToColor.put("Other", Color.parseColor("#eeeeee"));
 
 
         //System.out.println("categories " + categories);
@@ -82,7 +108,7 @@ public class GroupStatisticsActivity extends AppCompatActivity {
                     exSum = new TreeMap<>();
                     String category;
                     Long datemilliseconds;
-                    Float oldValue, oldValuebyDate, newValue;
+                    float oldValue=0, oldValuebyDate=0, newValue=0;
                     for (String exId : map1.keySet()) {
                         System.out.println("mappa" + map1.get(exId));
                         Map<String, Object> exItem = (Map<String, Object>) map1.get(exId);
@@ -93,7 +119,7 @@ public class GroupStatisticsActivity extends AppCompatActivity {
                         SimpleDateFormat formatter2 = new SimpleDateFormat("dd");
                         String dateString = formatter.format(new Date(datemilliseconds));
                         dates.add(Integer.parseInt(formatter2.format(new Date(datemilliseconds))));
-                        System.out.println("date expense: "+dateString);
+
                         newValue = Float.parseFloat((String) exItem.get("myvalue"));
 
                         if (exSum.containsKey(category)) {
@@ -113,45 +139,32 @@ public class GroupStatisticsActivity extends AppCompatActivity {
 
                     }
                     System.out.println("mappa statistiche: " + exSumbyDate);
-
-                    ArrayList<PieEntry> yEntrys = new ArrayList<>();
+                    ArrayList<Integer> color = new ArrayList<>();
+                    ArrayList<Entry> yEntrys = new ArrayList<>();
                     ArrayList<BarEntry> yEntrysBar = new ArrayList<>();
                     ArrayList<String> xEntrys = new ArrayList<>();
                     int i = 0;
                     for (String r : exSum.keySet()) {
-                        yEntrys.add(new PieEntry(exSum.get(r), i));
+                        color.add(catToColor.get(r));
+                        yEntrys.add(new Entry(exSum.get(r), i));
+                        xEntrys.add(r);
                         i++;
                     }
 
 
-                    for (int r = 0; r < categories.length; r++) {
-                        xEntrys.add(categories[r]);
-                    }
-
                     PieDataSet pieDataSet = new PieDataSet(yEntrys, "Categories");
-
                     pieDataSet.setValueTextSize(12);
 
-                    ArrayList<Integer> color = new ArrayList<>();
-
-                    color.add(Color.parseColor("#fff59d")); // Entertainment
-                    color.add(Color.parseColor("#ffab91")); // Food & Drinks
-                    color.add(Color.parseColor("#9fa8da")); // House and Utilities
-                    color.add(Color.parseColor("#a5d6a7")); // Clothing
-                    color.add(Color.parseColor("#f48fb1")); // Present
-                    color.add(Color.parseColor("#80cbc3")); // Medical Expenses
-                    color.add(Color.parseColor("#90caf9")); // Transport
-                    color.add(Color.parseColor("#b39ddb")); // Hotel
-                    color.add(Color.parseColor("#80deea")); // Cleaning
-                    color.add(Color.parseColor("#bcaaa4")); // General
-                    color.add(Color.parseColor("#eeeeee")); // Other
 
                     pieDataSet.setColors(color);
+
                     Legend legend = PieCategory.getLegend();
                     legend.setForm(Legend.LegendForm.CIRCLE);
-                    legend.setPosition(Legend.LegendPosition.LEFT_OF_CHART);
-
-                    PieData pieData = new PieData(pieDataSet);
+                    legend.setPosition(Legend.LegendPosition.ABOVE_CHART_CENTER);
+                    System.out.println("yEntries "+yEntrys);
+                    PieData pieData = new PieData(xEntrys, pieDataSet);
+                    String description = "";
+                    PieCategory.setDescription(description);
                     PieCategory.setData(pieData);
                     PieCategory.invalidate();
 
@@ -161,7 +174,7 @@ public class GroupStatisticsActivity extends AppCompatActivity {
                     yEntrysBar.clear();
                     xEntrysArray = new String[exSumbyDate.size()];
                     for (String r : exSumbyDate.keySet()) {
-                        yEntrysBar.add( new BarEntry(dates.get(i), exSumbyDate.get(r))  );
+                        yEntrysBar.add( new BarEntry(exSumbyDate.get(r), i)  );
                         xEntrys.add(r);
                         xEntrysArray[i] = r;
                         i++;
@@ -169,20 +182,19 @@ public class GroupStatisticsActivity extends AppCompatActivity {
 
 
                     BarDataSet barDataSet = new BarDataSet(yEntrysBar, "Date");
-
                     barDataSet.setValueTextSize(12);
-
-
 
                     barDataSet.setColor(Color.parseColor("#b0bec5"));
                     Legend legend2 = BarByDate.getLegend();
                     legend.setForm(Legend.LegendForm.CIRCLE);
                     legend.setPosition(Legend.LegendPosition.LEFT_OF_CHART);
 
-                    BarData barData = new BarData(barDataSet);
-                    //BarByDate.animateXY(2000,2000);
+                    BarData barData = new BarData(xEntrys,barDataSet);
+                    BarByDate.animateXY(2000,2000);
+                    BarByDate.enableScroll();
+                    BarByDate.setMinimumWidth(1);
+                    BarByDate.setDescription("");
                     BarByDate.setData(barData);
-
                     BarByDate.invalidate();
 
 
@@ -197,20 +209,21 @@ public class GroupStatisticsActivity extends AppCompatActivity {
         });
         final TextView CatSpec = (TextView) findViewById(R.id.CategorySpecs);
         PieCategory.setOnChartValueSelectedListener(new OnChartValueSelectedListener() {
-            @Override
-            public void onValueSelected(Entry e, Highlight h) {
 
-                int pos1 = e.toString().indexOf("y: ");
-                String ss = e.toString().substring(pos1 + 2);
-                int i=0;
+            @Override
+            public void onValueSelected(Entry e, int dataSetIndex, Highlight h) {
+                ImageView catImg = (ImageView) findViewById(R.id.categoryImg);
+                int pos1 = e.toString().indexOf("(sum): ");
+                String ss = e.toString().substring(pos1 + 7);
+                String sss="";
                 for(String r : exSum.keySet()){
-                    i++;
                     if(exSum.get(r)==Float.parseFloat(ss)){
-                        pos1 = i;
+                        sss = r;
                         break;
                     }
                 }
-                String sss = categories[pos1];
+
+                catImg.setImageDrawable(getResources().getDrawable(catToId.get(sss)));
                 String bau ="Category "+sss+"\n"+"Total spent: "+ss;
                 CatSpec.setText(bau);
             }
@@ -223,12 +236,12 @@ public class GroupStatisticsActivity extends AppCompatActivity {
         });
         final TextView DateSpec = (TextView) findViewById(R.id.DataSpecs);
         BarByDate.setOnChartValueSelectedListener(new OnChartValueSelectedListener() {
-            @Override
 
-            public void onValueSelected(Entry e, Highlight h) {
+            @Override
+            public void onValueSelected(Entry e, int dataSetIndex, Highlight h) {
                 String r = "";
-                int pos1 = e.toString().indexOf("y: ");
-                String ss = e.toString().substring(pos1 + 2);
+                int pos1 = e.toString().indexOf("(sum): ");
+                String ss = e.toString().substring(pos1 + 7);
                 int i=0;
                 for(String rtmp : exSumbyDate.keySet()){
                     r = rtmp;

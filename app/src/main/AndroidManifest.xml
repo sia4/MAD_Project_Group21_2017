@@ -86,7 +86,7 @@
         <activity
             android:name=".GroupInfoActivity"
             android:parentActivityName=".GroupActivity"
-            android:screenOrientation="sensorPortrait"></activity>
+            android:screenOrientation="sensorPortrait" />
         <activity
             android:name=".InsertCurrencyActivity"
             android:parentActivityName=".MainActivity"
@@ -123,7 +123,7 @@
 
         <receiver android:name=".model.StartFirebaseAtBoot">
             <intent-filter>
-                <action android:name="android.intent.action.BOOT_COMPLETED"></action>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
         </receiver>
 
@@ -131,6 +131,10 @@
             android:name=".GroupStatisticsActivity"
             android:label="@string/title_activity_group_statistics"
             android:screenOrientation="sensorPortrait"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+        <activity
+            android:name=".UserStatisticsActivity"
+            android:label="@string/title_activity_user_statistics"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar"></activity>
     </application>
 

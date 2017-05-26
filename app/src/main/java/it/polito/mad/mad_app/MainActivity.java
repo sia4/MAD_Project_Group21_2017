@@ -531,6 +531,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             i.putExtra("UserInfo","true");
             startActivity(i);
         }
+        else if (id == R.id.nav_statistics && userF!=null) {
+            Intent i = new Intent(MainActivity.this, UserStatisticsActivity.class);
+            i.putExtra("userId", userF.getUid());
+            i.putExtra("UserInfo","true");
+            startActivity(i);
+        }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);

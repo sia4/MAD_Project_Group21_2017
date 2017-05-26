@@ -455,7 +455,7 @@ public class InsertExActivity extends AppCompatActivity {
 
                     cambio = Cambi.get(currency);
                     Currencies c = new Currencies();
-                    currency = c.getCurrencyCode(currency);
+                    currency = c.getCurrencyString(currency);
 
                     value = Double.valueOf(Tvalue.getText().toString());
                     System.out.println("valuebuggggggggggggggggggg " + value);

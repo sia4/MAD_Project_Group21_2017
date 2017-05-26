@@ -23,7 +23,7 @@ import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.PieData;
 import com.github.mikephil.charting.data.PieDataSet;
-import com.github.mikephil.charting.data.PieEntry;
+
 import com.github.mikephil.charting.highlight.Highlight;
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
 import com.google.firebase.auth.FirebaseAuth;
@@ -114,10 +114,10 @@ public class PolActivity extends AppCompatActivity {
 
                     uAdapter.notifyDataSetChanged();
                     yData[1] = users.size();
-                    ArrayList<PieEntry> yEntrys = new ArrayList<>();
+                    ArrayList<Entry> yEntrys = new ArrayList<>();
                     ArrayList<String> xEntrys = new ArrayList<>();
                     for(int r=0; r<yData.length; r++){
-                        yEntrys.add(new PieEntry(yData[r], r));
+                        yEntrys.add(new Entry(yData[r], r));
                     }
 
 
@@ -139,7 +139,7 @@ public class PolActivity extends AppCompatActivity {
                     legend.setForm(Legend.LegendForm.CIRCLE);
                     legend.setPosition(Legend.LegendPosition.LEFT_OF_CHART);
 
-                    PieData pieData = new PieData(pieDataSet);
+                    PieData pieData = new PieData(xData,pieDataSet);
                     PiePol.setData(pieData);
                     PiePol.invalidate();
                 }
@@ -171,10 +171,10 @@ public class PolActivity extends AppCompatActivity {
                     if(Integer.parseInt(totu)==users.size())
                         already.setText("Propose successful completed");
 
-                    ArrayList<PieEntry> yEntrys = new ArrayList<>();
+                    ArrayList<Entry> yEntrys = new ArrayList<>();
                     ArrayList<String> xEntrys = new ArrayList<>();
                     for(int r=0; r<yData.length; r++){
-                        yEntrys.add(new PieEntry(yData[r], r));
+                        yEntrys.add(new Entry(yData[r], r));
                     }
 
 
@@ -196,7 +196,7 @@ public class PolActivity extends AppCompatActivity {
                     legend.setForm(Legend.LegendForm.CIRCLE);
                     legend.setPosition(Legend.LegendPosition.LEFT_OF_CHART);
 
-                    PieData pieData = new PieData(pieDataSet);
+                    PieData pieData = new PieData(xData, pieDataSet);
                     PiePol.setData(pieData);
                     PiePol.invalidate();
 
@@ -230,18 +230,11 @@ public class PolActivity extends AppCompatActivity {
 
 
         PiePol.setOnChartValueSelectedListener(new OnChartValueSelectedListener() {
+
+
             @Override
-            public void onValueSelected(Entry e, Highlight h) {
-                /*
-                int pos1 = e.toString().indexOf("(sum): ");
-                String ss = e.toString().substring(pos1 + 7);
-                for(int r = 0; r<yData.length; r++){
-                    if(yData[r]==Float.parseFloat(ss)){
-                        pos1 = r;
-                    }
-                }
-                String sss = xData[pos1];
-            */
+            public void onValueSelected(Entry e, int dataSetIndex, Highlight h) {
+
             }
 
             @Override

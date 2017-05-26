@@ -41,14 +41,25 @@
 
         android:layout_marginTop="22dp"
         android:textSize="25sp" />
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center">
+            <com.github.mikephil.charting.charts.PieChart
+                android:layout_width="match_parent"
+                android:layout_height="300dp"
+                android:id="@+id/pieGroupCategory">
+                </com.github.mikephil.charting.charts.PieChart>
 
-    <com.github.mikephil.charting.charts.PieChart
-        android:layout_width="match_parent"
-        android:layout_height="300dp"
-        android:layout_marginTop="30dp"
-        android:id="@+id/pieGroupCategory">
-        </com.github.mikephil.charting.charts.PieChart>
+            <ImageView
+                android:id="@+id/categoryImg"
+                android:layout_width="130dp"
+                android:layout_height="130dp"
+                android:elevation="10dp"
+                android:layout_centerInParent="true"
+                />
 
+        </RelativeLayout>
         <TextView
             android:id="@+id/CategorySpecs"
             android:layout_width="match_parent"
@@ -62,7 +73,6 @@
             android:layout_height="wrap_content"
             android:gravity="center"
             android:text="Expenses by date"
-
             android:layout_marginTop="22dp"
             android:textSize="25sp" />
         <com.github.mikephil.charting.charts.BarChart

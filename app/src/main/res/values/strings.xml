@@ -54,5 +54,6 @@
     <string name="surname">Surname</string>
     <string name="title_activity_group_statistics">GroupStatisticsActivity</string>
     <string name="stat_group">Expenses by categories</string>
+    <string name="title_activity_user_statistics">UserStatisticsActivity</string>
 
 </resources>

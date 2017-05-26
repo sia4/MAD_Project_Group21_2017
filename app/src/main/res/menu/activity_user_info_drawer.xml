@@ -24,6 +24,10 @@
 
     <item android:title="Your setting">
         <menu>
+            <item
+                android:id="@+id/nav_statistics"
+                android:icon="@drawable/stat50"
+                android:title="Statistics" />
 
             <item
                 android:id="@+id/nav_setting"

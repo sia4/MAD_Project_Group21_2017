@@ -34,6 +34,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.TreeMap;
 
 import it.polito.mad.mad_app.model.MainData;
 import it.polito.mad.mad_app.model.RecyclerTouchListener;
@@ -45,6 +46,8 @@ import static android.view.View.VISIBLE;
 
 public class GroupsFragment extends Fragment {
     static private EditText search_text;
+
+    private Map<String, Map<String, Object>> balancemap = new TreeMap<>();
     public class GroupModel implements Comparable<GroupModel> {
         String groupId;
         String groupName;
@@ -113,7 +116,7 @@ public class GroupsFragment extends Fragment {
     private List<GroupModel> groups = new ArrayList<>();
     private List<GroupModel> fav_groups = new ArrayList<>();
     private List<GroupModel> no_fav_groups = new ArrayList<>();
-
+    private Map<String, String> groupsId = new TreeMap<>();
     String uKey = null;
 
     private ProgressBar progressBar;
@@ -166,12 +169,14 @@ public class GroupsFragment extends Fragment {
                     groups.clear();
                     no_fav_groups.clear();
                     fav_groups.clear();
-
-
+                    groupsId.clear();
+                    MainData.getInstance().clearBalanceByGroup();
 
                     Log.d("Groups Fragment", "Svuoto vettore gruppi");
                     for (Map.Entry<String, Object> k : map.entrySet()) {
+
                         String name = (String) ((Map<String, Object>) k.getValue()).get("name");
+                        groupsId.put(k.getKey(), name);
                         String imagePath = (String) ((Map<String, Object>) k.getValue()).get("imagePath");
                         String lastOperation = (String) ((Map<String, Object>) k.getValue()).get("lastOperation");
                         String dateLastOperation = (String) ((Map<String, Object>) k.getValue()).get("dateLastOperation");
@@ -181,6 +186,44 @@ public class GroupsFragment extends Fragment {
                             lastOperation = "";
                         if(dateLastOperation == null)
                             dateLastOperation = "";
+
+                        final String tmpkey = k.getKey();
+                        MainData.getInstance().clearBalanceByGroupByKey(tmpkey);
+                        final FirebaseDatabase database3 = FirebaseDatabase.getInstance();
+                        DatabaseReference myRef3 = database3.getReference("Balance").child(tmpkey).child(FirebaseAuth.getInstance().getCurrentUser().getUid());
+                        myRef3.addValueEventListener(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                                balancemap = (Map<String, Map<String, Object>>) dataSnapshot.getValue();
+                                if (balancemap != null) {
+                                    System.out.println("MAPPAAAAAAAAAAHAHHAHAH +" + balancemap);
+                                    for (String u : balancemap.keySet()) {
+                                        float tttt = Float.parseFloat(balancemap.get(u).get("value").toString());
+                                        MainData.getInstance().addToBalanceByGroup(tttt, tmpkey);
+                                    }
+
+                                }
+                                else{
+                                   MainData.getInstance().addToBalanceByGroup(0, tmpkey);
+                                }
+                            }
+                            @Override
+                            public void onCancelled(DatabaseError databaseError) {
+
+                            }
+                        });
+
+
+
+
+
+
+
+
+
+
+
 
                         Log.d("Groups Fragment", "dati: " + name + " " + lastOperation + " " + dateLastOperation);
 
@@ -207,7 +250,7 @@ public class GroupsFragment extends Fragment {
                         groups.clear();
                         groups.addAll(fav_groups);
                         groups.addAll(no_fav_groups);
-
+                        MainData.getInstance().setMyGroupsId(groupsId);
                         Log.d("Groups Fragment", "Notify Data Set Changed sull'adapter");
                         gAdapter.notifyDataSetChanged();
                         progressBar.setVisibility(INVISIBLE);
