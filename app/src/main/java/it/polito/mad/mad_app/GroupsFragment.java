@@ -8,8 +8,6 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,7 +15,6 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -199,8 +196,12 @@ public class GroupsFragment extends Fragment {
                                 if (balancemap != null) {
                                     System.out.println("MAPPAAAAAAAAAAHAHHAHAH +" + balancemap);
                                     for (String u : balancemap.keySet()) {
-                                        float tttt = Float.parseFloat(balancemap.get(u).get("value").toString());
-                                        MainData.getInstance().addToBalanceByGroup(tttt, tmpkey);
+
+                                        if (balancemap.get(u).get("value") != null) {
+                                            float tttt = Float.parseFloat(balancemap.get(u).get("value").toString());
+                                            MainData.getInstance().addToBalanceByGroup(tttt, tmpkey);
+                                        }
+
                                     }
 
                                 }

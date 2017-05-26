@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
-import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,13 +23,14 @@ import java.util.Locale;
 import java.util.Map;
 
 import it.polito.mad.mad_app.model.Balance;
-import it.polito.mad.mad_app.model.BalanceData;
-import it.polito.mad.mad_app.model.MainData;
+import it.polito.mad.mad_app.model.Currencies;
 
 public class BudgetAdapter extends RecyclerView.Adapter<BudgetAdapter.MyViewHolder> {
 
     //private List<BalanceData> budgetData;
     private List<Balance> budgetData=new ArrayList<>();
+    private String DefaultCurrency;
+    private String gKey;
     //private List<BalanceData> budgetDataC; //contiene i record in valute diverse
 
 
@@ -53,8 +53,10 @@ public class BudgetAdapter extends RecyclerView.Adapter<BudgetAdapter.MyViewHold
     }
 
 
-    public BudgetAdapter(List<Balance> budgetData/*, List<BalanceData> budgetCData*/) {
+    public BudgetAdapter(List<Balance> budgetData, String DefaultCurrency, String gKey) {
         this.budgetData = budgetData;
+        this.DefaultCurrency = DefaultCurrency;
+        this.gKey = gKey;
         //this.budgetDataC = budgetCData;
     }
 
@@ -70,9 +72,8 @@ public class BudgetAdapter extends RecyclerView.Adapter<BudgetAdapter.MyViewHold
 
     @Override
     public void onBindViewHolder(final MyViewHolder holder, final int position) {
-         final Balance budget = budgetData.get(position);
+        final Balance budget = budgetData.get(position);
         final float n=budget.getValue();
-        holder.value_cred_deb.setText(String.format(Locale.US, "%.2f", budget.getValue()) + " " /* budget.getCurrency()*/);
 
 
         FirebaseDatabase database = FirebaseDatabase.getInstance();
@@ -87,10 +88,39 @@ public class BudgetAdapter extends RecyclerView.Adapter<BudgetAdapter.MyViewHold
                     String name = (String) map.get("name");
                     String surname = (String) map.get("surname");
 
-                    if (n > 0)
+                    if (n > 0) {
                         holder.name_cred_deb.setText(name + " " + surname +" owns you:");
-                    else
+                    } else {
                         holder.name_cred_deb.setText("You own to " + name + " " + surname + ":");
+                    }
+
+                    if (DefaultCurrency == null) {
+
+                        FirebaseDatabase database = FirebaseDatabase.getInstance();
+                        DatabaseReference myRef2 = database.getReference("Groups").child(gKey).child("primaryCurrency");
+                        myRef2.addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(DataSnapshot dataSnapshot) {
+                                String pC = (String) dataSnapshot.getValue();
+                                if (pC != null) {
+                                    DefaultCurrency = pC;
+                                    Currencies tmp = new Currencies();
+                                    String symbol = tmp.getCurrencySymbol(DefaultCurrency);
+                                    holder.value_cred_deb.setText(String.format(Locale.US, "%.2f", budget.getValue()) + symbol);
+                                }
+                            }
+
+                            @Override
+                            public void onCancelled(DatabaseError error) {
+                            }
+                        });
+                    } else {
+
+                        Currencies tmp = new Currencies();
+                        String symbol = tmp.getCurrencySymbol(DefaultCurrency);
+                        holder.value_cred_deb.setText(String.format(Locale.US, "%.2f", budget.getValue()) + symbol);
+
+                    }
                 }
             }
 
@@ -125,6 +155,9 @@ public class BudgetAdapter extends RecyclerView.Adapter<BudgetAdapter.MyViewHold
                         intent.putExtra("uKey", budget.getKey());
                         intent.putExtra("uname", budget.getName());
                         intent.putExtra("value", Float.toString(budget.getValue()));
+                        Currencies tmp = new Currencies();
+                        String symbol = tmp.getCurrencySymbol(DefaultCurrency);
+                        intent.putExtra("defaultcurrency", symbol);
                         //intent.putExtra("currency", currency);
                         v.getContext().startActivity(intent);
                     }

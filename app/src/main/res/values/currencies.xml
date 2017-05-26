@@ -2,10 +2,10 @@
 <resources>
 
     <string-array name="currencies">
-        <item>Euro EUR €</item>
-        <item>US Dollars USD $</item>
-        <item>Pounds GBP £</item>
-        <item>Yen JPY ¥</item>
+        <item>EUR €</item>
+        <item>USD $</item>
+        <item>GBP £</item>
+        <item>JPY ¥</item>
 
 
         <!--<item> Argentina, Pesos

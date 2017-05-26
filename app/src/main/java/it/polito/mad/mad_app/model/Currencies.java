@@ -14,13 +14,19 @@ import java.util.TreeMap;
 public class Currencies {
 
     private Map<String, String> Currencies = new TreeMap<>();
+    private Map<String, String> Symbols = new TreeMap<>();
 
     public Currencies() {
 
-        this.Currencies.put("EUR", "Euro EUR €");
-        this.Currencies.put("USD", "US Dollars USD $");
-        this.Currencies.put("GBP", "Pounds GBP £");
-        this.Currencies.put("JPY", "Yen JPY ¥");
+        this.Currencies.put("EUR", "EUR €");
+        this.Currencies.put("USD", "USD $");
+        this.Currencies.put("GBP", "GBP £");
+        this.Currencies.put("JPY", "JPY ¥");
+
+        this.Symbols.put("EUR", "€");
+        this.Symbols.put("USD", "$");
+        this.Symbols.put("GBP", "£");
+        this.Symbols.put("JPY", "¥");
 
     }
 
@@ -46,10 +52,10 @@ public class Currencies {
 
         } else {
 
-            return "null";
+            return null;
 
         }
-        return "null";
+        return null;
 
 
     }
@@ -67,6 +73,10 @@ public class Currencies {
         }
 
         return l;
+    }
+
+    public String getCurrencySymbol(String s) {
+        return Symbols.get(s);
     }
 
 }

@@ -84,7 +84,7 @@ public class InsertExActivity extends AppCompatActivity {
     private Map<String, Map<String, Map<String, Object>>> balancemap;
     private double v = 0, v1 = 0;
     private Map<String, Double> values = new TreeMap<>();
-    private String defaultcurrency;
+    private String defaultcurrency = new String("");
     private FirebaseAuth mAuth = FirebaseAuth.getInstance();
     private List<UserData> users;
     private Map<String,UserData>m_users=new TreeMap<>();
@@ -99,6 +99,7 @@ public class InsertExActivity extends AppCompatActivity {
     private Uri imageUrl;
     private Button load;
     private Map<String, Float> Cambi = new TreeMap<>();
+    private Currencies model_currencies;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -122,6 +123,7 @@ public class InsertExActivity extends AppCompatActivity {
         Gname = intent.getStringExtra("groupId");
         groupName = intent.getStringExtra("groupName");
         groupImage=intent.getStringExtra("imagePath");
+        defaultcurrency = intent.getStringExtra("defaultcurrency");
 
         String cname = intent.getStringExtra("name");
         String cdescr = intent.getStringExtra("description");
@@ -200,22 +202,17 @@ public class InsertExActivity extends AppCompatActivity {
         final List<String> Currencies = new ArrayList<>();
         Currencies.add("Select currency");
 
-        // Create an ArrayAdapter using the string array and a default spinner layout
         FirebaseDatabase database4 = FirebaseDatabase.getInstance();
         DatabaseReference myRef4 = database4.getReference("Groups").child(Gname);
         myRef4.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                Map<String, Object> map = (Map<String, Object>) dataSnapshot.getValue();
                 it.polito.mad.mad_app.model.Group g = dataSnapshot.getValue(it.polito.mad.mad_app.model.Group.class);
 
-                if(map!=null) {
-                    defaultcurrency = (String) map.get("defaultcurrency");
-                } else {
-                    System.out.println("Errore InsertExActivity: Non riesco a prendere la Mappa");
-                }
-
                 if (g != null) {
+                    if (defaultcurrency.equals("")) {
+                        defaultcurrency = g.getPrimaryCurrency();
+                    }
                     Currencies.addAll(g.getCurrencies().keySet());
                     Cambi.putAll(g.getCurrencies());
 
@@ -445,7 +442,7 @@ public class InsertExActivity extends AppCompatActivity {
 
                 if(name.equals("")) {
                     Toast.makeText(InsertExActivity.this, "Please insert name.", Toast.LENGTH_LONG).show();
-                } else if(currency.equals("Select currency")) {
+                } else if (currency.equals("Select currency") || currency.equals(null) || currency.equals("")) {
                     Toast.makeText(InsertExActivity.this, "Please insert currency.", Toast.LENGTH_LONG).show();
                 } else if(Tvalue.getText().toString().equals("")) {
                     Toast.makeText(InsertExActivity.this, "Please insert value.", Toast.LENGTH_LONG).show();
@@ -455,10 +452,15 @@ public class InsertExActivity extends AppCompatActivity {
 
                     cambio = Cambi.get(currency);
                     Currencies c = new Currencies();
-                    currency = c.getCurrencyString(currency);
+                    System.out.println("DEBUG - InsertEx - L431 Currency: " + currency);
+
+                    if (c.getCurrencyCode(currency) != null) {
+                        currency = c.getCurrencyCode(currency);
+                    }
 
                     value = Double.valueOf(Tvalue.getText().toString());
-                    System.out.println("valuebuggggggggggggggggggg " + value);
+                    System.out.println("DEBUG - InsertEx - L434 Value: " + value);
+                    System.out.println("DEBUG - InsertEx - L435 Currency: " + currency);
 
                     if (algorithm.equals("equally")) {
                         v = value / users.size();
@@ -472,6 +474,7 @@ public class InsertExActivity extends AppCompatActivity {
                         }
                         myvalue = v;
                         flagok = 1;
+
                     } else {
                         double algValue, algSum = 0, meValue = 0;
                         int i;
@@ -536,7 +539,9 @@ public class InsertExActivity extends AppCompatActivity {
                     }
 
                     if (flagok == 1 && values.size() == users.size()) {
-                        //Quì inseriamo la nuova ttività relativa all'inserimento della spesa
+
+                        //Quì inseriamo la nuova attività relativa all'inserimento della spesa
+
                         DatabaseReference ActRef = database.getReference("Activities");
                         DatabaseReference ActRead=database.getReference("ActivitiesRead");
                         for(final UserData k:users) {
@@ -548,8 +553,11 @@ public class InsertExActivity extends AppCompatActivity {
                             }
 
                         }
+
                         //Quì inseriamo una nuova spesa con relative immagine, se è stata caricata
-                        myRef.setValue(new ExpenseData(name, description, category, currency, String.format(Locale.US, "%.2f", value), "0.00", algorithm));
+                        ExpenseData ex = new ExpenseData(name, description, category, currency, String.format(Locale.US, "%.2f", value), "0.00", algorithm, defaultcurrency);
+                        System.out.println("DEBUG - InsertEx - L531 ExpenseData: " + ex.toString());
+                        myRef.setValue(ex);
                         final DatabaseReference myRef2 = myRef;
                         myRef.child("creator").setValue(myname + " " + mysurname);
                         myRef.child("creatorId").setValue(mAuth.getCurrentUser().getUid());

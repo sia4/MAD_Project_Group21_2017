@@ -32,6 +32,8 @@ public class BudgetFragment extends Fragment {
     private Context context;
     private String uKey;
     BudgetAdapter bAdapter;
+    private String defaultcurrency;
+    private String gKey;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -41,6 +43,10 @@ public class BudgetFragment extends Fragment {
         context = view.getContext();
         //String GroupName = getArguments().getString("GroupName");
         final String groupId = getArguments().getString("GroupId");
+        defaultcurrency = getArguments().getString("defaultcurrency");
+        gKey = getArguments().getString("gKey");
+        System.out.println("DFLT # BudgetFragment - L46 :" + defaultcurrency);
+
         RecyclerView recyclerView = (RecyclerView) view;
         recyclerView.setLayoutManager(new LinearLayoutManager(context));
         recyclerView.addItemDecoration(new android.support.v7.widget.DividerItemDecoration(getActivity(),
@@ -99,7 +105,7 @@ public class BudgetFragment extends Fragment {
                 //log.w(TAG, "Failed to read value.", error.toException());
             }
         });
-        bAdapter = new BudgetAdapter(users/*, other_currencies*/);//TODO
+        bAdapter = new BudgetAdapter(users, defaultcurrency, gKey);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(context);
         recyclerView.setLayoutManager(mLayoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());

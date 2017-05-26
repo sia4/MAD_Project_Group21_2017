@@ -15,8 +15,9 @@ public class ExpenseData implements Comparable<ExpenseData>{
     private String creator;
     private String contested;
     private String creatorId="0";
+    private String defaultcurrency;
 
-    public ExpenseData(String n, String d, String ca, String cu, String value,String myvalue, String algorithm){
+    public ExpenseData(String n, String d, String ca, String cu, String value, String myvalue, String algorithm, String dflt) {
         this.name = n;
         this.descr = d;
         this.category = ca;
@@ -25,6 +26,7 @@ public class ExpenseData implements Comparable<ExpenseData>{
         this.myvalue = myvalue;
         this.algorithm = algorithm;
         this.date = Long.toString(System.currentTimeMillis());
+        this.defaultcurrency = dflt;
     }
     public String getCreatorId(){return this.creatorId;}
     public void setCreatorId(String id){this.creatorId=id;}
@@ -41,6 +43,10 @@ public class ExpenseData implements Comparable<ExpenseData>{
     public void setCreator(String creator){this.creator = creator;}
     public String getCreator(){return this.creator;}
 
+    public String getDefaultcurrency() {
+        return this.defaultcurrency;
+    }
+
     public String getDescription(){
         return this.descr;
     }
@@ -50,23 +56,20 @@ public class ExpenseData implements Comparable<ExpenseData>{
     }
 
     public String getCurrency(){
-        Currencies c = new Currencies();
-        return c.getCurrencyString(this.currency);
+        return this.currency;
     }
 
-    public String getCurrencyRow() {
-        return this.currency;
+   /* public String getCurrencyRow() {
+        Currencies c = new Currencies();
+        return c.getCurrencyString(this.currency);
+
     }
 
     public String getCurrencySymbol() {
         Currencies c = new Currencies();
-        String Symbol = c.getCurrencyString(this.currency);
-        if (Symbol.length() != 0) {
-            return Symbol.substring(Symbol.length() - 1);
-        } else {
-            return "";
-        }
-    }
+        String Symbol = c.getCurrencySymbol(this.currency);
+        return Symbol;
+    } */
 
     public String getValue(){
         return this.value;
@@ -84,5 +87,11 @@ public class ExpenseData implements Comparable<ExpenseData>{
 
 
         return (int)(o2 - o1);
+    }
+
+    public String toString() {
+
+        String s = "{" + "idEX: " + idEx + ", Name: " + name + ", Descr: " + descr + ", Category: " + category + ", Currency: " + currency + ", Default Currency:" + defaultcurrency + ", Value: " + value + ", Algorithm: " + algorithm + ", Date: " + date + ", Creator: " + creator + ", Contested: " + contested + ", CreatorID: " + creatorId + "}";
+        return s;
     }
 }

@@ -11,6 +11,7 @@ import java.sql.Date;
 import java.text.SimpleDateFormat;
 import java.util.List;
 
+import it.polito.mad.mad_app.model.Currencies;
 import it.polito.mad.mad_app.model.ExpenseData;
 
 public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.MyViewHolder> {
@@ -25,7 +26,6 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.MyViewHo
             name_ex = (TextView) view.findViewById(R.id.name_ex);
             data_ex = (TextView) view.findViewById(R.id.data_ex);
             money_ex = (TextView) view.findViewById(R.id.money_ex);
-
             creator_ex = (TextView) view.findViewById(R.id.creator_ex);
             contested_ex = (TextView) view.findViewById(R.id.contested_ex);
         }
@@ -47,15 +47,19 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.MyViewHo
     @Override
     public void onBindViewHolder(MyViewHolder holder, int position) {
         final ExpenseData expense = expenseData.get(position);
+        System.out.println("HistoryAdapter L49 - " + expense.toString());
         holder.name_ex.setText(expense.getName());
 
         SimpleDateFormat sdf = new SimpleDateFormat("MMM dd, yyyy HH:mm");
         Date resultdate = new Date(new Long(expense.getDate()));
 
         holder.data_ex.setText(sdf.format(resultdate));
-        String tmp = expense.getCurrencySymbol();
-        if (tmp.length() != 0) {
-            holder.money_ex.setText(expense.getValue() + " " + tmp);
+
+        Currencies c_tmp = new Currencies();
+        String symbol = c_tmp.getCurrencySymbol(expense.getCurrency());
+
+        if (symbol != null) {
+            holder.money_ex.setText(expense.getValue() + " " + symbol);
         } else {
             holder.money_ex.setText(expense.getValue());
         }

@@ -99,7 +99,6 @@ public class InsertGroupActivity extends AppCompatActivity {
         setContentView(R.layout.activity_insert_group);
 
         auth = FirebaseAuth.getInstance();
-        //todo chiedere cos'è
         mAuthListener = new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
@@ -108,12 +107,10 @@ public class InsertGroupActivity extends AppCompatActivity {
                     startActivity(new Intent(InsertGroupActivity.this, LoginActivity.class));
                     finish();
                 } else {
-                    // User is signed out
-                    //Log.d(TAG, "onAuthStateChanged:signed_out");
+
                 }
             }
         };
-        //todo fine
 
         final Toolbar toolbar = (Toolbar) findViewById(R.id.insert_group_toolbar);
         setSupportActionBar(toolbar);
@@ -279,7 +276,7 @@ public class InsertGroupActivity extends AppCompatActivity {
                     final PackageManager pManager = getPackageManager();
                     Intent cropIntent=performCrop(imageUrl,pManager);
                     if(cropIntent!=null){
-                        final Intent cIntent = Intent.createChooser(cropIntent, "Tha image should be cropped,select a source");
+                        final Intent cIntent = Intent.createChooser(cropIntent, "The image should be cropped,select a source");
                         startActivityForResult(cIntent , 2);
                     }
                     else{
@@ -422,7 +419,6 @@ public class InsertGroupActivity extends AppCompatActivity {
                                     downloadUrl = taskSnapshot.getDownloadUrl();
 
                                     uploadGroup(groupName, groupDescription, Tcurrency.getSelectedItem().toString(), downloadUrl.toString(), groupId);
-                                      //TODO: aggiungere le cose di currencies alla uploadGroup
                                     Log.d("Insert Group Activity", "insertion success!");
                                     setResult(RESULT_OK, null);
                                     finish();
@@ -451,7 +447,7 @@ public class InsertGroupActivity extends AppCompatActivity {
     private void uploadGroup(String groupN, String groupD, String curr, String imagePath, String groupId) {
 
         Currencies c = new Currencies();
-        String code = c.getCurrencyCode(curr);
+        String code = c.getCurrencyCode(curr); // EUR € --> EUR per l'inserimento in DB
 
         Group G = new Group(groupN, groupD, code);
         G.addMembers(userKeys);

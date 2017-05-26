@@ -40,6 +40,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 
+import it.polito.mad.mad_app.model.Currencies;
 import it.polito.mad.mad_app.model.Group;
 import it.polito.mad.mad_app.model.PagerAdapterGroup;
 
@@ -50,6 +51,7 @@ public class GroupActivity extends AppCompatActivity {
     private ListView lv;
     private float tmppos=0;
     private float tmpneg=0;
+    private String defaultcurrency;
     private Map<String,Map<String,Object>> notification=new TreeMap<>();
     Float pos = (float)10.2;//datigruppo.getPosExpenses();
     Float neg = (float)10.2;//datigruppo.getNegExpenses();
@@ -69,16 +71,35 @@ public class GroupActivity extends AppCompatActivity {
         gKey = intent.getStringExtra("groupId");
         gName = intent.getStringExtra("groupName");
         gImage= intent.getStringExtra("imagePath");
+
+        final String user = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        final FirebaseDatabase database3 = FirebaseDatabase.getInstance();
+
         System.out.println("---->intent"+intent);
         System.out.println("---->intent boooooooo"+intent.getExtras());
+
+        DatabaseReference myRef = database3.getReference("Groups").child(gKey);
+        myRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                g = dataSnapshot.getValue(it.polito.mad.mad_app.model.Group.class);
+                if (g != null) {
+                    defaultcurrency = g.getPrimaryCurrency();
+                    System.out.println("DFLT # GroupActvity - L87" + defaultcurrency);
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError error) {
+            }
+        });
 
         final Bundle b = new Bundle();
         b.putString("GroupId", gKey);
         b.putString("GroupName", gName);
         b.putString("imagePath", gImage);
 
-        final String user=FirebaseAuth.getInstance().getCurrentUser().getUid();
-        final FirebaseDatabase database3 = FirebaseDatabase.getInstance();
+
         final Query notRead=database3.getReference("Activities").child(user).orderByChild("groupId");
         notRead.equalTo(gKey).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -100,17 +121,7 @@ public class GroupActivity extends AppCompatActivity {
 
             }
         });
-        DatabaseReference myRef = database3.getReference("Groups").child(gKey);
-        myRef.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                g = dataSnapshot.getValue(it.polito.mad.mad_app.model.Group.class);
-            }
 
-            @Override
-            public void onCancelled(DatabaseError error) {
-            }
-        });
 
         if(gImage==null) {
 
@@ -182,7 +193,12 @@ public class GroupActivity extends AppCompatActivity {
                      }
 
                      String subtitle = "";
-                     subtitle +=" "+ "They Owe You: " + String.format(Locale.US, "%.2f",tmppos)+ " - You Owe: " + String.format(Locale.US, "%.2f",tmpneg);
+                    Currencies c_tmpp = new Currencies();
+                    String symboll = "";
+                    if (defaultcurrency != null) {
+                        symboll = c_tmpp.getCurrencySymbol(defaultcurrency);
+                    }
+                    subtitle += " " + "They Owe You: " + String.format(Locale.US, "%.2f", tmppos) + " " + symboll + " - You Owe: " + String.format(Locale.US, "%.2f", tmpneg) + " " + symboll;
                     getSupportActionBar().setSubtitle(subtitle);
                     Glide
                             .with(getApplicationContext())
@@ -243,6 +259,9 @@ public class GroupActivity extends AppCompatActivity {
         //getSupportActionBar().setIcon(R.drawable.group_default);
         //getSupportActionBar().setLogo(R.);
         //getSupportActionBar().setDisplayUseLogoEnabled(true);
+        System.out.println(" DFLT # GroupActivity - L251 : " + defaultcurrency);
+        b.putString("defaultcurrency", defaultcurrency);
+        b.putString("gKey", gKey);
         PagerAdapterGroup mPagerAdapter = new PagerAdapterGroup(getSupportFragmentManager(),b);
         mViewPager = (ViewPager) findViewById(R.id.pager_group);
         mViewPager.setAdapter(mPagerAdapter);
@@ -354,6 +373,7 @@ public class GroupActivity extends AppCompatActivity {
                 intent.putExtra("groupId", gKey);
                 intent.putExtra("groupName", gName);
                 intent.putExtra("imagePath",gImage);
+                intent.putExtra("defaultcurrency", defaultcurrency);
                 startActivityForResult(intent, 1);
             }
         });
@@ -412,7 +432,7 @@ public class GroupActivity extends AppCompatActivity {
                 Intent i2 = new Intent(getApplicationContext(), InsertCurrencyActivity.class);
                 i2.putExtra("groupId", gKey);
                 i2.putExtra("groupName", gName);
-                i2.putExtra("defaultcurrency", g.getPrimaryCurrency());
+                i2.putExtra("defaultcurrency", defaultcurrency);
                 startActivity(i2);
                 return true;
 
@@ -420,7 +440,7 @@ public class GroupActivity extends AppCompatActivity {
                 Intent i3 = new Intent(getApplicationContext(), GroupStatisticsActivity.class);
                 i3.putExtra("groupId", gKey);
                 i3.putExtra("groupName", gName);
-                i3.putExtra("defaultcurrency", g.getPrimaryCurrency());
+                i3.putExtra("defaultcurrency", defaultcurrency);
                 startActivity(i3);
                 return true;
 

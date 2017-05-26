@@ -143,7 +143,7 @@ public class GroupData {
         uImport.put(email, algValue);
     }
     public  ExpenseData addExpensive(String name, String descr, String category, String currency, String value, String myvalue, String algorithm){
-        ExpenseData e = new ExpenseData(name, descr, category, currency, value,myvalue, algorithm);
+        ExpenseData e = new ExpenseData(name, descr, category, currency, value, myvalue, algorithm, this.default_currency);
         this.lexpensive.add(e);
         return e;
 

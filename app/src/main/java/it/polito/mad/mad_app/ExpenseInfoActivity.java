@@ -1,13 +1,10 @@
 package it.polito.mad.mad_app;
 
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.RequiresApi;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -24,22 +21,17 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.MutableData;
-import com.google.firebase.database.Transaction;
 import com.google.firebase.database.ValueEventListener;
 
 import java.sql.Date;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Locale;
 import java.util.Map;
 import java.util.TreeMap;
 
 import it.polito.mad.mad_app.model.ActivityData;
+import it.polito.mad.mad_app.model.Currencies;
 import it.polito.mad.mad_app.model.ExpenseData;
-import it.polito.mad.mad_app.model.UserData;
-
-import static java.sql.Types.NULL;
 
 public class ExpenseInfoActivity extends AppCompatActivity {
 
@@ -51,6 +43,7 @@ public class ExpenseInfoActivity extends AppCompatActivity {
     private Map<String, Map<String, Map<String, Object>>> balancemap;
     private FirebaseAuth mAuth = FirebaseAuth.getInstance();
     private Map<String, String> usermapTemp;
+    private String DefaultCurrency;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -65,6 +58,8 @@ public class ExpenseInfoActivity extends AppCompatActivity {
         exid = i.getStringExtra("ExpenseId");
         groupName = i.getStringExtra("groupName");
         final String GroupId = i.getStringExtra("groupId");
+        //DefaultCurrency = i.getStringExtra("defaultcurrency");
+
         image_info=(ImageView) findViewById(R.id.im_ex_info);
         s_ex=(TextView) findViewById(R.id.iMyvalue);
         name_ex = (TextView) findViewById(R.id.exName);
@@ -118,14 +113,17 @@ public class ExpenseInfoActivity extends AppCompatActivity {
                     }
                     category = (String)map.get("category");
                     currency = (String)map.get("currency");
-
+                    DefaultCurrency = (String) map.get("defaultcurrency");
 
                     algorithm = (String)map.get("algorithm");
                     date = (String)map.get("date");
                     System.out.println("groupName Expenseinfo: "+ groupName);
                     name_ex.setText(name);
+                    System.out.println("ExpenseInfo - " + map.toString());
                     String tmp = (String) map.get("currency");
-                    value_ex.setText(value + " "+tmp.substring(tmp.length()-1));
+                    Currencies c_tmp = new Currencies();
+                    String symbol = c_tmp.getCurrencySymbol(tmp);
+                    value_ex.setText(value + " " + symbol);
                     creator_ex.setText(creator);
                     if(description.equals(""))
                         description_ex.setText("  -");
@@ -172,7 +170,20 @@ public class ExpenseInfoActivity extends AppCompatActivity {
                     for(Map.Entry<String, String> e : usermapTemp.entrySet()) {
                         usermap.put(e.getKey(), Float.parseFloat(e.getValue()));
                     }
-                    myvalue_ex.setText(String.format(Locale.US, "%.2f",usermap.get(mAuth.getCurrentUser().getUid())));
+                    if (DefaultCurrency != null) {
+
+                        if (!DefaultCurrency.equals("")) {
+                            Currencies tmpc = new Currencies();
+                            String tmp_symbol = tmpc.getCurrencySymbol(DefaultCurrency);
+                            myvalue_ex.setText(String.format(Locale.US, "%.2f", usermap.get(mAuth.getCurrentUser().getUid())) + " " + tmp_symbol);
+                        } else {
+                            myvalue_ex.setText(String.format(Locale.US, "%.2f", usermap.get(mAuth.getCurrentUser().getUid())));
+                        }
+
+                    } else {
+                        myvalue_ex.setText(String.format(Locale.US, "%.2f", usermap.get(mAuth.getCurrentUser().getUid())));
+                    }
+
 
                     if(usermap.get(mAuth.getCurrentUser().getUid())>0){
                         s_ex.setTextColor(Color.parseColor("#27B011"));
@@ -232,7 +243,7 @@ public class ExpenseInfoActivity extends AppCompatActivity {
                 DatabaseReference myRef2 = myRef.push();
 
 
-                myRef2.setValue(new ExpenseData(name + "(retrieve)", "expense retrieved", category, currency, value, "0.00", algorithm));
+                myRef2.setValue(new ExpenseData(name + "(retrieve)", "expense retrieved", category, currency, value, "0.00", algorithm, DefaultCurrency));
                 myRef2.child("creator").setValue(creator);
                 myRef2.child("missing").setValue("yes");
                 //myRef2.child("value").setValue(value);
@@ -307,6 +318,7 @@ public class ExpenseInfoActivity extends AppCompatActivity {
                 intent.putExtra("name", name);
                 intent.putExtra("value", value);
                 intent.putExtra("description", description);
+                intent.putExtra("defaultcurrency", DefaultCurrency);
                 startActivityForResult(intent, 1);
                 finish();
             }
