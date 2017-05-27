@@ -12,9 +12,11 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -52,14 +54,15 @@ public class GroupsFragment extends Fragment {
         String lastOperation;
         String dateLastOperation;
         String favourite;
-
-        public GroupModel(String groupId, String groupName, String groupUrl, String lastOperation, String dateLastOperation, String favourite) {
+        String archive;
+        public GroupModel(String groupId, String groupName, String groupUrl, String lastOperation, String dateLastOperation, String favourite, String archive) {
             this.groupId = groupId;
             this.groupName = groupName;
             this.groupUrl = groupUrl;
             this.lastOperation = lastOperation;
             this.dateLastOperation = dateLastOperation;
             this.favourite = favourite;
+            this.archive = archive;
         }
 
         public String getGroupId() {
@@ -72,6 +75,7 @@ public class GroupsFragment extends Fragment {
 
         public String getGroupUrl() { return groupUrl; }
         public String getFavourite(){return favourite;}
+        public String getArchive(){return archive;}
         public String getLastOperation() {return lastOperation; }
 
         public String getDateLastOperationWellFormed() {
@@ -123,7 +127,7 @@ public class GroupsFragment extends Fragment {
 
         Context context;
         final View view = inflater.inflate(R.layout.fragment_groups, container, false);
-        final View viewMain = inflater.inflate(R.layout.app_bar_user_info, container, false);
+        final View viewMain = inflater.inflate(R.layout.app_bar_user_info, container);
         search_text = (EditText) viewMain.findViewById(R.id.search_text);
         progressBar = (ProgressBar) view.findViewById(R.id.progress_bar_groups);
 
@@ -179,73 +183,70 @@ public class GroupsFragment extends Fragment {
                         String dateLastOperation = (String) ((Map<String, Object>) k.getValue()).get("dateLastOperation");
                         String missing = (String) ((Map<String, Object>) k.getValue()).get("missing");
                         String favourite = (String) ((Map<String, Object>) k.getValue()).get("favourite");
-                        if(lastOperation == null)
+                        String archive = (String) ((Map<String, Object>) k.getValue()).get("archive");
+                        if (lastOperation == null)
                             lastOperation = "";
-                        if(dateLastOperation == null)
+                        if (dateLastOperation == null)
                             dateLastOperation = "";
+                        if (missing != null && missing.equals("no")) {
 
-                        final String tmpkey = k.getKey();
-                        MainData.getInstance().clearBalanceByGroupByKey(tmpkey);
-                        final FirebaseDatabase database3 = FirebaseDatabase.getInstance();
-                        DatabaseReference myRef3 = database3.getReference("Balance").child(tmpkey).child(FirebaseAuth.getInstance().getCurrentUser().getUid());
-                        System.out.println("Balance" + "> " + tmpkey + " > " + FirebaseAuth.getInstance().getCurrentUser().getUid());
+                            final String tmpkey = k.getKey();
+                            MainData.getInstance().clearBalanceByGroupByKey(tmpkey);
+                            final FirebaseDatabase database3 = FirebaseDatabase.getInstance();
+                            DatabaseReference myRef3 = database3.getReference("Balance").child(tmpkey).child(FirebaseAuth.getInstance().getCurrentUser().getUid());
+                            System.out.println("Balance" + "> " + tmpkey + " > " + FirebaseAuth.getInstance().getCurrentUser().getUid());
 
-                        myRef3.addValueEventListener(new ValueEventListener() {
-                            @Override
-                            public void onDataChange(DataSnapshot dataSnapshot) {
+                            myRef3.addValueEventListener(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(DataSnapshot dataSnapshot) {
 
-                                balancemap = (Map<String, Map<String, Object>>) dataSnapshot.getValue();
-                                if (balancemap != null) {
-                                    System.out.println("GroupsFragment L198 +" + balancemap);
-                                    for (String u : balancemap.keySet()) {
+                                    balancemap = (Map<String, Map<String, Object>>) dataSnapshot.getValue();
+                                    if (balancemap != null) {
+                                        System.out.println("GroupsFragment L198 +" + balancemap);
+                                        for (String u : balancemap.keySet()) {
 
-                                        if (balancemap.get(u).get("value") != null) {
-                                            float tttt = Float.parseFloat(balancemap.get(u).get("value").toString());
-                                            MainData.getInstance().addToBalanceByGroup(tttt, tmpkey);
+                                            if (balancemap.get(u).get("value") != null) {
+                                                float tttt = Float.parseFloat(balancemap.get(u).get("value").toString());
+                                                MainData.getInstance().addToBalanceByGroup(tttt, tmpkey);
+                                            }
+
                                         }
 
+                                    } else {
+                                        MainData.getInstance().addToBalanceByGroup(0, tmpkey);
                                     }
+                                }
+
+                                @Override
+                                public void onCancelled(DatabaseError databaseError) {
 
                                 }
-                                else{
-                                   MainData.getInstance().addToBalanceByGroup(0, tmpkey);
-                                }
-                            }
-                            @Override
-                            public void onCancelled(DatabaseError databaseError) {
+                            });
 
-                            }
-                        });
-
-
-
-
-
-
-
-
-
-
+                        }
 
 
                         Log.d("Groups Fragment", "dati: " + name + " " + lastOperation + " " + dateLastOperation);
-
-                        if(name.contains(MainData.getInstance().getGroupsFragmentData())) {
-                            if (missing == null) {
-                                if (favourite != null && favourite.equals("yes"))
-                                    fav_groups.add(new GroupModel(k.getKey(), name, imagePath, lastOperation, dateLastOperation, favourite));
-
-                                else
-                                    no_fav_groups.add(new GroupModel(k.getKey(), name, imagePath, lastOperation, dateLastOperation, favourite));
-                            } else {
-                                if (missing.equals("no")) {
+                        if((archive == null &&MainData.getInstance().getGroupFragmentArchive().equals("yes"))|| (archive!=null && !archive.equals(MainData.getInstance().getGroupFragmentArchive())))
+                        {
+                            if (name.contains(MainData.getInstance().getGroupsFragmentData())) {
+                                if (missing == null) {
                                     if (favourite != null && favourite.equals("yes"))
-                                        fav_groups.add(new GroupModel(k.getKey(), name, imagePath, lastOperation, dateLastOperation, favourite));
-                                    else
-                                        no_fav_groups.add(new GroupModel(k.getKey(), name, imagePath, lastOperation, dateLastOperation, favourite));
+                                        fav_groups.add(new GroupModel(k.getKey(), name, imagePath, lastOperation, dateLastOperation, favourite, archive));
 
+                                    else
+                                        no_fav_groups.add(new GroupModel(k.getKey(), name, imagePath, lastOperation, dateLastOperation, favourite, archive));
+                                } else {
+                                    if ((missing != null && missing.equals("no"))) {
+                                        if (favourite != null && favourite.equals("yes"))
+                                            fav_groups.add(new GroupModel(k.getKey(), name, imagePath, lastOperation, dateLastOperation, favourite, archive));
+                                        else
+                                            no_fav_groups.add(new GroupModel(k.getKey(), name, imagePath, lastOperation, dateLastOperation, favourite, archive));
+
+                                    }
                                 }
                             }
+
                         }
 
                         Collections.sort(no_fav_groups);
@@ -280,17 +281,24 @@ public class GroupsFragment extends Fragment {
                 final String k = groups.get(position).getGroupId();
                 final String n = groups.get(position).getGroupName();
                 final String imagePath=groups.get(position).getGroupUrl();
+                final String archive = groups.get(position).getArchive();
                 Intent intent = new Intent().setClass(view.getContext(), GroupActivity.class);
 
                 intent.putExtra("groupId", k);
                 intent.putExtra("groupName", n);
                 intent.putExtra("imagePath", imagePath);
+                intent.putExtra("archive", archive);
                 view.getContext().startActivity(intent);
             }
 
             @Override
             public void onLongClick(View view, int position) {
-
+                /*
+                Button archive = (Button) viewMain.findViewById(R.id.archive_button);
+                archive.setVisibility(viewMain.VISIBLE);
+                archive.setVisibility(View.VISIBLE);
+                archive.setVisibility(view.VISIBLE);
+                */
             }
         }));
 

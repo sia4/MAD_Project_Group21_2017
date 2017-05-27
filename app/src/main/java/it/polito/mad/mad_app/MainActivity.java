@@ -107,24 +107,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             }
         };
 
-        /*
-        DatabaseReference connectedRef = FirebaseDatabase.getInstance().getReference(".info/connected");
-        connectedRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot snapshot) {
-                boolean connected = snapshot.getValue(Boolean.class);
-                if (connected) {
-                    Log.d("Connection listener", "connected");
-                } else {
-                    Toast.makeText(MainActivity.this, "Connection error! Some functions will not be available!", Toast.LENGTH_LONG).show();
-                }
-            }
 
-            @Override
-            public void onCancelled(DatabaseError error) {
-
-            }
-        });*/
 
         super.onCreate(savedInstanceState);
         Log.d("MainActivity","sono poco prima del serice");
@@ -447,6 +430,58 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
                     }
                 });
+                final Button back_archive = (Button) findViewById(R.id.back_archive);
+                back_archive.setOnClickListener(new View.OnClickListener(){
+
+
+                    @Override
+                    public void onClick(View v) {
+                        TextView archive_text = (TextView) findViewById(R.id.archive_text);
+                        MainData.getInstance().setGroupFragmentArchive("yes");
+                        archive_text.setVisibility(View.GONE);
+                        back_archive.setVisibility(View.GONE);
+
+                        PagerAdapter mPagerAdapter = new PagerAdapter(getSupportFragmentManager());
+                        final TabLayout tabL = (TabLayout) findViewById(R.id.tabs);
+                        final TabLayout.OnTabSelectedListener OnT=new TabLayout.OnTabSelectedListener(){
+                            @Override
+                            public void onTabSelected(TabLayout.Tab tab) {
+                                mViewPager.setCurrentItem(tab.getPosition());
+
+                            }
+
+                            @Override
+                            public void onTabUnselected(TabLayout.Tab tab) {
+
+                            }
+
+                            @Override
+                            public void onTabReselected(TabLayout.Tab tab) {
+
+                            }
+                        };
+                        mViewPager = (ViewPager) findViewById(R.id.pager);
+                        mViewPager.setAdapter(mPagerAdapter);
+                        tabL.setupWithViewPager(mViewPager);
+                        mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+                            @Override
+                            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+                                tabL.addOnTabSelectedListener(OnT);
+                            }
+
+                            @Override
+                            public void onPageSelected(int position) {
+
+                            }
+
+                            @Override
+                            public void onPageScrollStateChanged(int state) {
+
+                            }
+                        });
+
+                    }
+                });
             }
         }
     }
@@ -537,7 +572,57 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             i.putExtra("UserInfo","true");
             startActivity(i);
         }
+        else if (id == R.id.nav_archive && userF!=null) {
+            MainData.getInstance().setGroupFragmentArchive("no");
+            TextView archive_text = (TextView) findViewById(R.id.archive_text);
+            Button archive_back = (Button) findViewById(R.id.back_archive);
+            archive_text.setVisibility(View.VISIBLE);
+            archive_back.setVisibility(View.VISIBLE);
 
+            PagerAdapter mPagerAdapter = new PagerAdapter(getSupportFragmentManager());
+            final TabLayout tabL = (TabLayout) findViewById(R.id.tabs);
+            final TabLayout.OnTabSelectedListener OnT=new TabLayout.OnTabSelectedListener(){
+                @Override
+                public void onTabSelected(TabLayout.Tab tab) {
+                    mViewPager.setCurrentItem(tab.getPosition());
+
+                }
+
+                @Override
+                public void onTabUnselected(TabLayout.Tab tab) {
+
+                }
+
+                @Override
+                public void onTabReselected(TabLayout.Tab tab) {
+
+                }
+            };
+            mViewPager = (ViewPager) findViewById(R.id.pager);
+            mViewPager.setAdapter(mPagerAdapter);
+            tabL.setupWithViewPager(mViewPager);
+            mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+                @Override
+                public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+                    tabL.addOnTabSelectedListener(OnT);
+                }
+
+                @Override
+                public void onPageSelected(int position) {
+
+                }
+
+                @Override
+                public void onPageScrollStateChanged(int state) {
+
+                }
+            });
+
+
+
+
+
+        }
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;

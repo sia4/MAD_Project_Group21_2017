@@ -16,6 +16,7 @@ public class MainData {
     private Map<String, GroupData> lGroups = new TreeMap<>();
     private Map<String, UserData> lUser = new TreeMap<>();
     private String GroupsFragmentData ="";
+    private String GroupFragmentArchive="yes";
     private Map<String, String> myGroupsId = new TreeMap<>();
     private Map<String, Float> balanceByGroupsPos = new TreeMap<>();
     private Map<String, Float> balanceByGroupsNeg = new TreeMap<>();
@@ -34,6 +35,9 @@ public class MainData {
 
     public void setGroupsFragmentData(String search_text){this.GroupsFragmentData=search_text;}
     public String getGroupsFragmentData(){return  this.GroupsFragmentData;}
+
+    public void setGroupFragmentArchive(String archive){this.GroupFragmentArchive=archive;}
+    public String getGroupFragmentArchive(){return  this.GroupFragmentArchive;}
 
     public void setMyGroupsId(Map<String, String> gIds){this.myGroupsId = gIds; }
     public Map<String, String> getMyGroupsId(){return this.myGroupsId;}

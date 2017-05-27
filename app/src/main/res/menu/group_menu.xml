@@ -12,6 +12,15 @@
         android:id="@+id/addcurrency"
         android:title="Add Currency"
         app:itemTextColor="@color/primaryTextColor"></item>
+    <item
+        android:id="@+id/addToArchive"
+        android:title="Add to archive"
+        app:itemTextColor="@color/primaryTextColor"></item>
+    <item
+        android:id="@+id/removeFromArchive"
+        android:title="Remove from archive"
+        android:visible="false"
+        app:itemTextColor="@color/primaryTextColor"></item>
     <!--<item
         android:id="@+id/GroupStatistics"
         android:title="Statistics"

@@ -29,6 +29,25 @@
                 android:visibility="gone"
 
                 android:layout_weight="0.5" />
+            <Button
+                android:id="@+id/back_archive"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_gravity="left"
+                android:background="@drawable/back64"
+                android:visibility="gone"
+
+                android:layout_weight="0.5" />
+
+            <Button
+                android:id="@+id/archive_button"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_gravity="right"
+                android:background="@drawable/archive"
+                android:visibility="gone"
+
+                android:layout_weight="0.5" />
 
             <EditText
                 android:id="@+id/search_text"
@@ -45,7 +64,18 @@
                 android:hint="Search..."
                 android:textColorHint="#FFFFFF"
                 />
-
+            <TextView
+                android:id="@+id/archive_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.2"
+                android:gravity="left"
+                android:textAlignment="gravity"
+                android:textSize="20sp"
+                android:textColor="#FFFFFF"
+                android:visibility="gone"
+                android:text="    Archive"
+                />
         </android.support.v7.widget.Toolbar>
 
         <android.support.design.widget.TabLayout

@@ -49,7 +49,7 @@ import static it.polito.mad.mad_app.model.ImageMethod.circle_image;
 
 public class GroupActivity extends AppCompatActivity {
     private ViewPager mViewPager;
-    private String gName, gKey,gImage;
+    private String gName, gKey,gImage, gArchive;
     private ListView lv;
     private float tmppos=0;
     private float tmpneg=0;
@@ -73,6 +73,7 @@ public class GroupActivity extends AppCompatActivity {
         gKey = intent.getStringExtra("groupId");
         gName = intent.getStringExtra("groupName");
         gImage= intent.getStringExtra("imagePath");
+        gArchive = intent.getStringExtra("archive");
 
         final String user = FirebaseAuth.getInstance().getCurrentUser().getUid();
         final FirebaseDatabase database3 = FirebaseDatabase.getInstance();
@@ -431,6 +432,14 @@ public class GroupActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.group_menu, menu);
+        MenuItem remove = (MenuItem) menu.findItem(R.id.removeFromArchive);
+        MenuItem add = (MenuItem) menu.findItem(R.id.addToArchive);
+
+        if(gArchive!=null && gArchive.equals("yes")) {
+            remove.setVisible(true);
+            add.setVisible(false);
+        }
+
         return true;
     }
 
@@ -457,6 +466,16 @@ public class GroupActivity extends AppCompatActivity {
                 startActivity(i2);
                 return true;
 
+            case R.id.addToArchive:
+                FirebaseDatabase.getInstance().getReference("Users").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("Groups").child(gKey).child("archive").setValue("yes");
+                Toast.makeText(GroupActivity.this, "Group added to archive", Toast.LENGTH_LONG).show();
+
+                return true;
+            case R.id.removeFromArchive:
+                FirebaseDatabase.getInstance().getReference("Users").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("Groups").child(gKey).child("archive").setValue("no");
+                Toast.makeText(GroupActivity.this, "Group removed from archive", Toast.LENGTH_LONG).show();
+
+                return true;
             /*case R.id.GroupStatistics:
                 Intent i3 = new Intent(getApplicationContext(), GroupStatisticsActivity.class);
                 i3.putExtra("groupId", gKey);
@@ -469,19 +488,5 @@ public class GroupActivity extends AppCompatActivity {
                 return super.onOptionsItemSelected(item);
         }
     }
-    /*startActivity(new Intent(
-            getApplicationContext(),GroupOptionActivity.class
-                ));*/
+
 }
-/*Intent intent = new Intent().setClass(view.getContext(), ExpenseInfoActivity.class);
-                intent.putExtra("name", expense.getName());
-                intent.putExtra("category", expense.getCategory());
-                intent.putExtra("currency", expense.getCurrency());
-                intent.putExtra("algorithm", expense.getAlgorithm());
-                intent.putExtra("description", expense.getDescription());
-                //String.format("%.2f", expense.getMyvalue())
-                intent.putExtra("myvalue",String.format("%.2f", expense.getMyvalue()) );
-                intent.putExtra("value", String.format("%.2f", expense.getValue()));
-                intent.putExtra("creator", MainData.getInstance().getMyName());//TODO change with getCreator
-                intent.putExtra("date", expense.getDate());
-                view.getContext().startActivity(intent);*/

@@ -28,6 +28,10 @@
                 android:id="@+id/nav_statistics"
                 android:icon="@drawable/stat50"
                 android:title="Statistics" />
+            <item
+                android:id="@+id/nav_archive"
+                android:icon="@drawable/archive"
+                android:title="Archive" />
 
             <item
                 android:id="@+id/nav_setting"
