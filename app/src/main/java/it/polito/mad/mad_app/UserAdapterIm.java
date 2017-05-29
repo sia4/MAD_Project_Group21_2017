@@ -52,7 +52,13 @@ public class UserAdapterIm  extends RecyclerView.Adapter<UserAdapterIm.MyViewHol
 
     @Override
     public void onBindViewHolder(final  UserAdapterIm.MyViewHolder holder, int position) {
-        String s=usersData.get(position).getName()+ " "+usersData.get(position).getSurname();
+
+        String s = null;
+        if(!usersData.get(position).getName().equals(""))
+            s = usersData.get(position).getName()+ " "+usersData.get(position).getSurname();
+        else
+            s = usersData.get(position).getEmail();
+
         holder.name.setText(s);
         String p=usersData.get(position).getImagePath();
 

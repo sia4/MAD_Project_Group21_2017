@@ -413,7 +413,7 @@ public class InsertUserToGroupActivity extends AppCompatActivity {
                 FirebaseDatabase database = FirebaseDatabase.getInstance();
                 DatabaseReference myRef = database.getReference("/Invites");
                 String inviteId = myRef.push().getKey();
-                myRef.setValue(gPath);
+                //myRef.setValue(gPath);
                 Invite invite = new Invite(email, gId, gName, gPath);
                 myRef.child(inviteId).setValue(invite);
 
@@ -434,7 +434,7 @@ public class InsertUserToGroupActivity extends AppCompatActivity {
                 .setMessage("You have been invited to YourSlice (mail: "+ email+")")
                 .setEmailHtmlContent("Hi! I invited you to join a group on YourSlice. Download the app and SignIn with the email "+ email +" to join the group. See you on YourSlice!")
                 .setDeepLink(Uri.EMPTY)
-                .setEmailSubject("Invite you on YourSlice")
+                .setEmailSubject("Your are invited on YourSlice")
                 .build();
 
 

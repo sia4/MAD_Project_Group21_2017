@@ -1,5 +1,6 @@
 package it.polito.mad.mad_app;
 
+import android.content.ActivityNotFoundException;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -53,6 +54,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 
+import it.polito.mad.mad_app.model.Invite;
 import it.polito.mad.mad_app.model.ActivityData;
 import it.polito.mad.mad_app.model.Currencies;
 import it.polito.mad.mad_app.model.Group;
@@ -83,6 +85,9 @@ public class InsertGroupActivity extends AppCompatActivity {
 
     private Map<String,String>userNames = new TreeMap<>();
     private Map<String,Boolean>userKeys = new TreeMap<>();
+
+    private String[] newUsers = new String[10];
+    int iU;
 
     private UserAdapterIm uAdapter = null;
     String uKey = null;
@@ -201,13 +206,29 @@ public class InsertGroupActivity extends AppCompatActivity {
                             }
 
                             if (key == null) {
-                                Uemail.setText("");
+
                                 new AlertDialog.Builder(InsertGroupActivity.this)
                                         .setTitle("You friend has not downloaded the app, yet!")
                                         .setMessage("Create the group and invite him later from group options.")
                                         .setIcon(android.R.drawable.ic_dialog_alert)
                                         .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-                                            public void onClick(DialogInterface dialog, int whichButton) {                                      }
+                                            public void onClick(DialogInterface dialog, int whichButton) {
+                                                if(iU < 9) {
+                                                    String newUserEmail = Uemail.getText().toString().toLowerCase().trim();
+                                                    newUsers[iU++] = newUserEmail;
+                                                    Uemail.setText("");
+                                                    usersList.add(new User(newUserEmail, newUserEmail, "", ""));
+                                                    uAdapter.notifyDataSetChanged();
+                                                } else {
+                                                    new AlertDialog.Builder(InsertGroupActivity.this)
+                                                            .setTitle("Error!")
+                                                            .setMessage("You can add at least 10 new users!")
+                                                            .setIcon(android.R.drawable.ic_dialog_alert)
+                                                            .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                                                                public void onClick(DialogInterface dialog, int whichButton) {}
+                                                            }).show();
+                                                }
+                                            }
                                         }).show();
 
                             } else {
@@ -498,6 +519,32 @@ public class InsertGroupActivity extends AppCompatActivity {
                     myRef.setValue(userNames.get(k));
                     myRef = database.getReference("/Balance/" + groupId + "/" + key + "/" + k + "/" + "value");
                     myRef.setValue("0.00");
+                }
+            }
+
+            for(String s : newUsers) {
+
+                if (s == null)
+                    break;
+                Log.d("Insert Group Activity", "Sono qui");
+                DatabaseReference myRef2 = database.getReference("/Invites/");
+
+                String inviteId = myRef2.push().getKey();
+                Log.d("Insert Group Activity", inviteId);
+                Invite invite = new Invite(s, groupId, G.getName(), null);
+                myRef2.child(inviteId).setValue(invite);
+            }
+
+            if(iU != 0) {
+                Intent emailIntent = new Intent(Intent.ACTION_SEND_MULTIPLE);
+                emailIntent.setType("message/rfc822");
+                emailIntent.putExtra(android.content.Intent.EXTRA_EMAIL, newUsers);
+                emailIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, "Your are invited on YourSlice");
+                emailIntent.putExtra(Intent.EXTRA_TEXT, "Hi! I invited you to join a group on YourSlice. Download the app and SignIn with this email to join the group. See you on YourSlice!");
+                try {
+                    startActivity(emailIntent);
+                } catch (ActivityNotFoundException e) {
+                    Toast.makeText(InsertGroupActivity.this, "There are no email clients installed.", Toast.LENGTH_SHORT).show();
                 }
             }
         }
