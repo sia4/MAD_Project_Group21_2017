@@ -278,7 +278,7 @@ public class PolActivity extends AppCompatActivity {
                                         {
                                             ActRef.child(k).push();
                                             String actId=ActRef.getKey();
-                                            ActRef.child(k).child(actId).setValue(new ActivityData(myname + " " + mysurname, myname + " " + mysurname + " has been successful deleted from group " + GroupName, Long.toString(System.currentTimeMillis()), "acceptleavegroup", PolId, GroupId));
+                                            ActRef.child(k).child(actId).setValue(new ActivityData(myname + " " + mysurname, myname + " " + mysurname + " has been successful deleted from group " + GroupName, Long.toString(System.currentTimeMillis()), "leavedgroup", PolId, GroupId));
                                             ActRead.child(k).child(GroupId).child(actId).setValue(false);
                                         }
                                     }
@@ -306,7 +306,7 @@ public class PolActivity extends AppCompatActivity {
                                         {
                                             String actId=ActRef.child(k).push().getKey();
                                             Log.d("PolActivity","actId="+actId);
-                                            ActRef.child(k).child(actId).setValue(new ActivityData(myname + " " + mysurname, "Group " + GroupName + " has been successful deleted", Long.toString(System.currentTimeMillis()), "acceptdeletegroup", PolId, GroupId));
+                                            ActRef.child(k).child(actId).setValue(new ActivityData(myname + " " + mysurname, "Group " + GroupName + " has been successful deleted", Long.toString(System.currentTimeMillis()), "deletedgroup", PolId, GroupId));
                                             ActRead.child(k).child(GroupId).child(actId).setValue(false);
                                         }
 

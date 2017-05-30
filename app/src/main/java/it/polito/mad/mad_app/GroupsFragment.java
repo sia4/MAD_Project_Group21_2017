@@ -26,6 +26,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import org.ocpsoft.prettytime.PrettyTime;
+
 import java.sql.Date;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -92,6 +94,19 @@ public class GroupsFragment extends Fragment {
             return dateLastOperation;
         }
 
+        public String getRelativeData(){
+            if(!dateLastOperation.equals("")) {
+                PrettyTime prettyTime = new PrettyTime(Locale.US);
+                String ago = prettyTime.format(new Date(Long.parseLong(dateLastOperation)));
+                return ago;
+            }
+            else
+            {
+                return dateLastOperation;
+            }
+
+
+        }
         @Override
         public int compareTo(@NonNull GroupModel o) {
 

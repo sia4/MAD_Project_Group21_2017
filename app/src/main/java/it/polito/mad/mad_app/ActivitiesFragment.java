@@ -37,11 +37,27 @@ public class ActivitiesFragment extends Fragment {
     private Map<String,Map<String,Object>> act_read=new TreeMap<>();
     private Map<String, Map<String, Object>> userGroups = new TreeMap<>();
     private  Map<String, Map<String, String>> activitiesMap;
+    private Map<String, Integer> actToId = new TreeMap<>();
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
         final View view = inflater.inflate(R.layout.fragment_activities, container, false);
+
+
+
+
+        actToId.put("addGroup", R.drawable.entertainment);
+        actToId.put("contest", R.drawable.food);
+        actToId.put("deletegroup", R.drawable.house);
+        actToId.put("leavegroup", R.drawable.clothing);
+        actToId.put("expense", R.drawable.present);
+        actToId.put("acceptleavegroup", R.drawable.medical);
+        actToId.put("leavedgroup", R.drawable.medical);
+        actToId.put("acceptdeletegroup", R.drawable.medical);
+        actToId.put("deletedgroup", R.drawable.medical);
+        actToId.put("welcome", R.drawable.medical);
+
 
         Context context;
         context = view.getContext();
@@ -85,6 +101,7 @@ public class ActivitiesFragment extends Fragment {
                                             if(act_read!=null){
 
                                                 String tmpc, tmpt, tmpd, tmpty, tmpid, tmpgid;
+                                                int imgId;
                                                 int toRead = 0;
                                                 for(final String j : activitiesMap.keySet()){
                                                     tmpc = activitiesMap.get(j).get("creator");
@@ -93,6 +110,8 @@ public class ActivitiesFragment extends Fragment {
                                                     tmpty = activitiesMap.get(j).get("type");
                                                     tmpid = activitiesMap.get(j).get("itemId");
                                                     tmpgid = activitiesMap.get(j).get("groupId");
+                                                    //if(tmpty!=null)
+                                                        // imgId = actToId.get(tmpty);
                                                     final ActivityData a = new ActivityData(tmpc, tmpt, tmpd, tmpty, tmpid, tmpgid);
                                                     Log.d("ActivitiesFragment","cerco di capire"+act_read.toString());
                                                     if(act_read.get(tmpgid)!=null){

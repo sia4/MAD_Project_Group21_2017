@@ -110,7 +110,7 @@ public class GroupsAdapter extends RecyclerView.Adapter<GroupsAdapter.MyViewHold
                 }
             });
         }
-        holder.date.setText(g.getDateLastOperationWellFormed());
+        holder.date.setText(g.getRelativeData());
         holder.operation.setText(g.getLastOperation());
         if(g.getFavourite()!=null && g.getFavourite().equals("yes"))
             holder.favourite.setVisibility(View.VISIBLE);

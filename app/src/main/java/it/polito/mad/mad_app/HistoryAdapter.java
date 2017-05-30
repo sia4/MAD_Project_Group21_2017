@@ -7,9 +7,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import org.ocpsoft.prettytime.PrettyTime;
+
 import java.sql.Date;
 import java.text.SimpleDateFormat;
 import java.util.List;
+import java.util.Locale;
 
 import it.polito.mad.mad_app.model.Currencies;
 import it.polito.mad.mad_app.model.ExpenseData;
@@ -52,8 +55,9 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.MyViewHo
 
         SimpleDateFormat sdf = new SimpleDateFormat("MMM dd, yyyy HH:mm");
         Date resultdate = new Date(new Long(expense.getDate()));
-
-        holder.data_ex.setText(sdf.format(resultdate));
+        PrettyTime prettyTime = new PrettyTime(Locale.US);
+        String ago = prettyTime.format(resultdate);
+        holder.data_ex.setText(ago);
 
         Currencies c_tmp = new Currencies();
         String symbol = c_tmp.getCurrencySymbol(expense.getCurrency());

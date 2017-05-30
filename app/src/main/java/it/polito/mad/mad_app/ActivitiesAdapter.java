@@ -6,31 +6,41 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.FirebaseDatabase;
 
+import org.ocpsoft.prettytime.PrettyTime;
+
 import java.sql.Date;
 import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
+import java.util.TreeMap;
 
 import it.polito.mad.mad_app.model.ActivityData;
 import it.polito.mad.mad_app.model.BalanceData;
+
 
 public class ActivitiesAdapter extends RecyclerView.Adapter<ActivitiesAdapter.MyViewHolder> {
 
     private List<ActivityData> activityData;
 
+
+
     public class MyViewHolder extends RecyclerView.ViewHolder {
         public TextView date, text;
+        public ImageView image;
         public Button viewMore;
         public MyViewHolder(View view) {
             super(view);
             date = (TextView) view.findViewById(R.id.date_act);
             text = (TextView) view.findViewById(R.id.text_act);
             viewMore = (Button) view.findViewById(R.id.AcceptActivity);
+            image = (ImageView) view.findViewById(R.id.activity_im);
         }
     }
 
@@ -54,9 +64,11 @@ public class ActivitiesAdapter extends RecyclerView.Adapter<ActivitiesAdapter.My
 
         SimpleDateFormat sdf = new SimpleDateFormat("MMM dd,yyyy HH:mm", Locale.ITALIAN);
         Date resultdate = new Date(Long.valueOf(activity.getDate()));
-
-        holder.date.setText(sdf.format(resultdate));
+        PrettyTime prettyTime = new PrettyTime(Locale.US);
+        String ago = prettyTime.format(resultdate);
+        holder.date.setText(ago);
         holder.text.setText(activity.getText());
+        //holder.image.setImageDrawable();
         if(activity.getType().equals("deletegroup")||activity.getType().equals("leavegroup")){
             holder.viewMore.setVisibility(View.VISIBLE);
         }

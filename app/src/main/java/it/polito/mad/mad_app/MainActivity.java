@@ -436,13 +436,17 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
                     @Override
                     public void onClick(View v) {
+                        MenuItem item1 = menu.findItem(R.id.action_search);
+                        item1.setVisible(true);
+                        FloatingActionButton addGroup = (FloatingActionButton)findViewById(R.id.addGroup);
                         TextView archive_text = (TextView) findViewById(R.id.archive_text);
                         MainData.getInstance().setGroupFragmentArchive("yes");
                         archive_text.setVisibility(View.GONE);
                         back_archive.setVisibility(View.GONE);
-
+                        addGroup.setVisibility(View.VISIBLE);
                         PagerAdapter mPagerAdapter = new PagerAdapter(getSupportFragmentManager());
                         final TabLayout tabL = (TabLayout) findViewById(R.id.tabs);
+                        tabL.setVisibility(View.VISIBLE);
                         final TabLayout.OnTabSelectedListener OnT=new TabLayout.OnTabSelectedListener(){
                             @Override
                             public void onTabSelected(TabLayout.Tab tab) {
@@ -575,12 +579,17 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         else if (id == R.id.nav_archive && userF!=null) {
             MainData.getInstance().setGroupFragmentArchive("no");
             TextView archive_text = (TextView) findViewById(R.id.archive_text);
+            FloatingActionButton addGroup = (FloatingActionButton)findViewById(R.id.addGroup);
             Button archive_back = (Button) findViewById(R.id.back_archive);
+            MenuItem item1 = menu.findItem(R.id.action_search);
+            item1.setVisible(false);
+
             archive_text.setVisibility(View.VISIBLE);
             archive_back.setVisibility(View.VISIBLE);
-
+            addGroup.setVisibility(View.GONE);
             PagerAdapter mPagerAdapter = new PagerAdapter(getSupportFragmentManager());
             final TabLayout tabL = (TabLayout) findViewById(R.id.tabs);
+            tabL.setVisibility(View.GONE);
             final TabLayout.OnTabSelectedListener OnT=new TabLayout.OnTabSelectedListener(){
                 @Override
                 public void onTabSelected(TabLayout.Tab tab) {
