@@ -32,13 +32,14 @@ public class ActivitiesAdapter extends RecyclerView.Adapter<ActivitiesAdapter.My
 
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
-        public TextView date, text;
+        public TextView date, text, value;
         public ImageView image;
         public Button viewMore;
         public MyViewHolder(View view) {
             super(view);
             date = (TextView) view.findViewById(R.id.date_act);
             text = (TextView) view.findViewById(R.id.text_act);
+            value = (TextView) view.findViewById(R.id.text_value);
             viewMore = (Button) view.findViewById(R.id.AcceptActivity);
             image = (ImageView) view.findViewById(R.id.activity_im);
         }
@@ -60,7 +61,7 @@ public class ActivitiesAdapter extends RecyclerView.Adapter<ActivitiesAdapter.My
     @Override
     public void onBindViewHolder(MyViewHolder holder, int position) {
         ActivityData activity = activityData.get(position);
-
+        int imgId = activity.getImgId();
 
         SimpleDateFormat sdf = new SimpleDateFormat("MMM dd,yyyy HH:mm", Locale.ITALIAN);
         Date resultdate = new Date(Long.valueOf(activity.getDate()));
@@ -68,14 +69,20 @@ public class ActivitiesAdapter extends RecyclerView.Adapter<ActivitiesAdapter.My
         String ago = prettyTime.format(resultdate);
         holder.date.setText(ago);
         holder.text.setText(activity.getText());
-        //holder.image.setImageDrawable();
+        holder.image.setImageResource(imgId);
+
         if(activity.getType().equals("deletegroup")||activity.getType().equals("leavegroup")){
             holder.viewMore.setVisibility(View.VISIBLE);
         }
         else{
             holder.viewMore.setVisibility(View.GONE);
         }
-
+        if(activity.getType().equals("expense")){
+            String v = activity.getItemValue();
+            if(v!=null && v!=""){
+                holder.value.setText(v);
+            }
+        }
         if(activity.getRead()==false){
             holder.itemView.setBackgroundColor(Color.parseColor("#E8F5E9"));
         }else{

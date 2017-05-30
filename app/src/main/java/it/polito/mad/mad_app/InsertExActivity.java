@@ -555,7 +555,9 @@ public class InsertExActivity extends AppCompatActivity {
                             if(!k.getuId().equals(FirebaseAuth.getInstance().getCurrentUser().getUid()))
                             {
                                 String actId=ActRef.child(k.getuId()).push().getKey();
-                                ActRef.child(k.getuId()).child(actId).setValue(new ActivityData(myname + " " + mysurname, myname + " " + mysurname + " added a new expense in group " + groupName, Long.toString(System.currentTimeMillis()), "expense", refkey, Gname));
+                                Currencies cc = new Currencies();
+                                ActivityData a = new ActivityData(myname + " " + mysurname, myname + " " + mysurname + " added a new expense in group " + groupName, Long.toString(System.currentTimeMillis()), "expense", refkey, Gname, String.format(Locale.US, "%.2f", value)+" "+cc.getCurrencySymbol(currency));
+                                ActRef.child(k.getuId()).child(actId).setValue(a);
                                 ActRead.child(k.getuId()).child(Gname).child(actId).setValue(false);
                             }
 

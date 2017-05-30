@@ -47,16 +47,16 @@ public class ActivitiesFragment extends Fragment {
 
 
 
-        actToId.put("addGroup", R.drawable.entertainment);
-        actToId.put("contest", R.drawable.food);
-        actToId.put("deletegroup", R.drawable.house);
-        actToId.put("leavegroup", R.drawable.clothing);
-        actToId.put("expense", R.drawable.present);
-        actToId.put("acceptleavegroup", R.drawable.medical);
-        actToId.put("leavedgroup", R.drawable.medical);
-        actToId.put("acceptdeletegroup", R.drawable.medical);
-        actToId.put("deletedgroup", R.drawable.medical);
-        actToId.put("welcome", R.drawable.medical);
+        actToId.put("addgroup", R.drawable.addgroup);
+        actToId.put("contest", R.drawable.contest);
+        actToId.put("deletegroup", R.drawable.deletegroup);
+        actToId.put("leavegroup", R.drawable.leavegroup); //proposta
+        actToId.put("expense", R.drawable.expense);
+        actToId.put("acceptleavegroup", R.drawable.leavegroup);
+        actToId.put("leavedgroup", R.drawable.leavegroup);
+        actToId.put("acceptdeletegroup", R.drawable.deletegroup);
+        actToId.put("deletedgroup", R.drawable.deletegroup);
+        actToId.put("welcome", R.mipmap.logo);
 
 
         Context context;
@@ -100,8 +100,8 @@ public class ActivitiesFragment extends Fragment {
                                             act_read=(Map<String,Map<String,Object>>) dataSnapshot.getValue();
                                             if(act_read!=null){
 
-                                                String tmpc, tmpt, tmpd, tmpty, tmpid, tmpgid;
-                                                int imgId;
+                                                String tmpc, tmpt, tmpd, tmpty, tmpid, tmpgid, value;
+                                                int imgId=0;
                                                 int toRead = 0;
                                                 for(final String j : activitiesMap.keySet()){
                                                     tmpc = activitiesMap.get(j).get("creator");
@@ -110,9 +110,11 @@ public class ActivitiesFragment extends Fragment {
                                                     tmpty = activitiesMap.get(j).get("type");
                                                     tmpid = activitiesMap.get(j).get("itemId");
                                                     tmpgid = activitiesMap.get(j).get("groupId");
-                                                    //if(tmpty!=null)
-                                                        // imgId = actToId.get(tmpty);
-                                                    final ActivityData a = new ActivityData(tmpc, tmpt, tmpd, tmpty, tmpid, tmpgid);
+                                                    value = activitiesMap.get(j).get("itemValue");
+                                                    System.out.println("tipo notifica: "+tmpty);
+                                                    if(tmpty!=null)
+                                                        imgId = actToId.get(tmpty);
+                                                    final ActivityData a = new ActivityData(tmpc, tmpt, tmpd, tmpty, tmpid, tmpgid, imgId, value);
                                                     Log.d("ActivitiesFragment","cerco di capire"+act_read.toString());
                                                     if(act_read.get(tmpgid)!=null){
                                                         if(act_read.get(tmpgid).get(j)!=null&&(boolean)act_read.get(tmpgid).get(j)==true){
