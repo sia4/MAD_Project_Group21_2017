@@ -4,13 +4,14 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.*;
+import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -18,13 +19,16 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
+
 import it.polito.mad.mad_app.model.ActivityData;
 import it.polito.mad.mad_app.model.RecyclerTouchListener;
+
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
 
@@ -45,17 +49,15 @@ public class ActivitiesFragment extends Fragment {
         final View view = inflater.inflate(R.layout.fragment_activities, container, false);
 
 
-
-
-        actToId.put("addgroup", R.drawable.addgroup);
-        actToId.put("contest", R.drawable.contest);
-        actToId.put("deletegroup", R.drawable.deletegroup);
-        actToId.put("leavegroup", R.drawable.leavegroup); //proposta
-        actToId.put("expense", R.drawable.expense);
-        actToId.put("acceptleavegroup", R.drawable.leavegroup);
-        actToId.put("leavedgroup", R.drawable.leavegroup);
-        actToId.put("acceptdeletegroup", R.drawable.deletegroup);
-        actToId.put("deletedgroup", R.drawable.deletegroup);
+        actToId.put("addgroup", R.drawable.ic_notifica_groupadd); // aggiunto membro al gruppo
+        actToId.put("contest", R.drawable.ic_notifica_expensecontested); // spesa contestata
+        actToId.put("deletegroup", R.drawable.ic_notifica_groupdelete); //proposta
+        actToId.put("leavegroup", R.drawable.ic_notifica_groupleave); //proposta
+        actToId.put("expense", R.drawable.ic_notifica_expensenew);
+        actToId.put("acceptleavegroup", R.drawable.ic_notifica_groupleave);
+        actToId.put("leavedgroup", R.drawable.ic_notifica_groupleave);
+        actToId.put("acceptdeletegroup", R.drawable.ic_notifica_groupdeleted);
+        actToId.put("deletedgroup", R.drawable.ic_notifica_groupdelete);
         actToId.put("welcome", R.mipmap.logo);
 
 
