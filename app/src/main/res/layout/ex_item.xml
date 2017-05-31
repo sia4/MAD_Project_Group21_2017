@@ -4,13 +4,156 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:focusable="true"
-    android:paddingLeft="10dp"
-    android:paddingRight="10dp"
-    android:paddingTop="20dp"
-    android:paddingBottom="20dp"
     android:clickable="true"
     android:layout_height="wrap_content">
-    <TextView
+
+    <android.support.v7.widget.CardView
+        android:id="@+id/card_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginBottom="5dp"
+        android:elevation="5dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="10dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:orientation="horizontal">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="0.3"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/data_ex"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="left"
+                        android:text="Data"
+                        android:textSize="13sp" />
+                    <TextView
+                        android:id="@+id/name_ex"
+                        android:layout_margin="5dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Title"
+                        android:textColor="@color/primaryTextColor"
+                        android:textSize="20sp" />
+                    <TextView
+                        android:id="@+id/money_ex"
+                        android:layout_margin="5dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="right"
+                        android:text="Money"
+                        android:textSize="19sp" />
+                    <Button
+                        android:id="@+id/exDeny"
+                        android:background="@android:color/transparent"
+                        android:layout_width="40sp"
+                        android:textSize="15sp"
+                        android:layout_height="35sp"
+                        android:textColor="#CD6858"
+                        android:text="Deny" />
+                    <Button
+                        android:id="@+id/exContested"
+                        android:clickable="false"
+                        android:visibility="gone"
+                        android:background="@android:color/transparent"
+                        android:layout_width="90sp"
+                        android:textSize="15sp"
+                        android:layout_height="35sp"
+                        android:textColor="#CD6858"
+                        android:text="Contested" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="0.7">
+
+                    <ImageView
+                        android:id="@+id/imCat"
+                        android:layout_gravity="center_vertical"
+                        android:layout_width="85dp"
+                        android:layout_height="85dp" />
+                </LinearLayout>
+            </LinearLayout>
+            <LinearLayout
+                android:id="@+id/info"
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                >
+                      <LinearLayout
+                          android:layout_weight="0.3"
+                          android:layout_marginLeft="3dp"
+                        android:layout_width="match_parent"
+                        android:orientation="vertical"
+                        android:layout_height="match_parent">
+                        <TextView
+                            android:id="@+id/descrip_ex"
+                            android:layout_width="wrap_content"
+                            android:layout_height="22sp"
+                            android:gravity="right"
+                            android:textSize="16sp"
+                            android:text="Descrizione"
+                            />
+                        <TextView
+                            android:id="@+id/algorithm_ex"
+                            android:layout_width="wrap_content"
+                            android:layout_height="22sp"
+                            android:gravity="right"
+                            android:textSize="16sp"
+                            android:text="Algoritmo"
+                            />
+                          <TextView
+                              android:layout_width="wrap_content"
+                              android:layout_height="22sp"
+                              android:gravity="left"
+                              android:textSize="16sp"
+                              android:text="You Slice:"
+                              />
+                          <TextView
+                              android:id="@+id/creator_ex"
+                              android:layout_width="wrap_content"
+                              android:layout_height="26sp"
+                              android:gravity="left"
+                              android:textSize="16sp"
+                              android:text="You Slice:"
+                              />
+                    </LinearLayout>
+                    <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_weight="0.7"
+                            android:layout_height="match_parent"
+                        android:weightSum="1">
+
+                        <ImageView
+                            android:id="@+id/iPhoto"
+                            android:layout_width="65dp"
+                            android:layout_height="65dp"
+                            android:layout_weight="0.63" />
+                    </LinearLayout>
+            </LinearLayout>
+        </LinearLayout>
+    </android.support.v7.widget.CardView>
+    <!--<TextView
         android:id="@+id/contested_ex"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -67,12 +210,12 @@
             android:gravity="left"
             android:textSize="16sp"
             />
-        <!--<TextView
+        <!-<TextView
             android:id="@+id/algorithm_ex"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="right"
             android:textSize="16sp"
-            />-->
-    </LinearLayout>
+            />
+    </LinearLayout> -->
 </LinearLayout>

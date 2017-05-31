@@ -88,6 +88,9 @@
             android:parentActivityName=".GroupActivity"
             android:screenOrientation="sensorPortrait" />
         <activity
+            android:name=".FullImageActivity"
+            android:screenOrientation="sensorPortrait" />
+        <activity
             android:name=".InsertCurrencyActivity"
             android:parentActivityName=".MainActivity"
             android:screenOrientation="sensorPortrait" />

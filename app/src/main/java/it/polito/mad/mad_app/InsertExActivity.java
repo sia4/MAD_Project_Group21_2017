@@ -556,7 +556,7 @@ public class InsertExActivity extends AppCompatActivity {
                             {
                                 String actId=ActRef.child(k.getuId()).push().getKey();
                                 Currencies cc = new Currencies();
-                                ActivityData a = new ActivityData(myname + " " + mysurname, "new expense in group " + groupName, Long.toString(System.currentTimeMillis()), "expense", refkey, Gname, String.format(Locale.US, "%.2f", value)+" "+cc.getCurrencySymbol(currency));
+                                ActivityData a = new ActivityData(myname + " " + mysurname, "<b>New expense</b> in group " + groupName, Long.toString(System.currentTimeMillis()), "expense", refkey, Gname, String.format(Locale.US, "%.2f", value)+" "+currency);
                                 ActRef.child(k.getuId()).child(actId).setValue(a);
                                 ActRead.child(k.getuId()).child(Gname).child(actId).setValue(false);
                             }
