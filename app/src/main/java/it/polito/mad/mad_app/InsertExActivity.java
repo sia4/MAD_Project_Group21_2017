@@ -2,6 +2,7 @@ package it.polito.mad.mad_app;
 
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.database.DataSetObserver;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Build;
@@ -18,6 +19,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -25,6 +27,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
+import android.widget.SpinnerAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -55,6 +58,8 @@ import it.polito.mad.mad_app.model.ActivityData;
 import it.polito.mad.mad_app.model.Balance;
 import it.polito.mad.mad_app.model.Currencies;
 import it.polito.mad.mad_app.model.ExpenseData;
+import it.polito.mad.mad_app.model.ItemData;
+import it.polito.mad.mad_app.model.MainData;
 import it.polito.mad.mad_app.model.UserData;
 
 import static it.polito.mad.mad_app.model.ImageMethod.circle_image;
@@ -199,7 +204,16 @@ public class InsertExActivity extends AppCompatActivity {
         System.out.println("2");
 
         Spinner spinner = (Spinner) findViewById(R.id.Currency);
+        Spinner spinnerCat = (Spinner) findViewById(R.id.Category);
         final List<String> Currencies = new ArrayList<>();
+        final List<ItemData> Categories = new ArrayList<>();
+        Categories.add(new ItemData("Select category", R.mipmap.logo ));
+        int i=0;
+        for(i=0; i<MainData.getInstance().getCategories().size();i++ ){
+            Categories.add(new ItemData(MainData.getInstance().getCategories().get(i),MainData.getInstance().getCatToId().get(i) ));
+        }
+
+
         Currencies.add("Select currency");
 
         FirebaseDatabase database4 = FirebaseDatabase.getInstance();
@@ -229,8 +243,13 @@ public class InsertExActivity extends AppCompatActivity {
         System.out.println("3");
 
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, R.layout.currency_item, Currencies);
+        it.polito.mad.mad_app.SpinnerAdapter adapterCat = new it.polito.mad.mad_app.SpinnerAdapter(this, R.layout.category_item, R.id.category_name, (ArrayList<ItemData>) Categories);
+
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);
+
+        //adapterCat.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinnerCat.setAdapter(adapterCat);
 
         final Spinner Talgorithm = (Spinner)findViewById(R.id.ChooseAlgorithm);
         final Spinner Tcurrency = (Spinner) findViewById(R.id.Currency);
@@ -436,7 +455,9 @@ public class InsertExActivity extends AppCompatActivity {
                 int flagok = 1;
                 name = Tname.getText().toString();
                 description = Tdescription.getText().toString();
-                category = Tcategory.getSelectedItem().toString();
+                ItemData categorytmp = (ItemData)Tcategory.getSelectedItem();
+                category = categorytmp.getText();
+                System.out.println("itemdata: "+categorytmp + " category: "+category);
                 currency = Tcurrency.getSelectedItem().toString();
                 algorithm = Talgorithm.getSelectedItem().toString();
 
@@ -556,7 +577,7 @@ public class InsertExActivity extends AppCompatActivity {
                             {
                                 String actId=ActRef.child(k.getuId()).push().getKey();
                                 Currencies cc = new Currencies();
-                                ActivityData a = new ActivityData(myname + " " + mysurname, "<b>New expense</b> in group " + groupName, Long.toString(System.currentTimeMillis()), "expense", refkey, Gname, String.format(Locale.US, "%.2f", value)+" "+currency);
+                                ActivityData a = new ActivityData(myname + " " + mysurname, "New expense in group " + groupName, Long.toString(System.currentTimeMillis()), "expense", refkey, Gname, String.format(Locale.US, "%.2f", value)+" "+currency);
                                 ActRef.child(k.getuId()).child(actId).setValue(a);
                                 ActRead.child(k.getuId()).child(Gname).child(actId).setValue(false);
                             }

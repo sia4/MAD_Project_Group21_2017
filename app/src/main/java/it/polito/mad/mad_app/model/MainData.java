@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
+import it.polito.mad.mad_app.R;
+
 
 public class MainData {
 
@@ -21,6 +23,8 @@ public class MainData {
     private Map<String, Float> balanceByGroupsPos = new TreeMap<>();
     private Map<String, Float> balanceByGroupsNeg = new TreeMap<>();
 
+    private List<String> Categories = new ArrayList<>();
+    private List<Integer> catToId = new ArrayList<>();
     public static MainData getInstance() {
         return ourInstance;
     }
@@ -29,10 +33,36 @@ public class MainData {
         myEmail = "marco.rossi@gmail.it";
         myName = "Marco";
         mySurname = "Rossi (Me)";
+        this.Categories.add("Entertainment");
+        this.Categories.add("Food and Drinks");
+        this.Categories.add("House and Utilities");
+        this.Categories.add("Clothing");
+        this.Categories.add("Present");
+        this.Categories.add("Medical Expenses");
+        this.Categories.add("Transport");
+        this.Categories.add("Hotel");
+        this.Categories.add("Cleaning");
+        this.Categories.add("General");
+        this.Categories.add("Other");
+
+        catToId.add(R.drawable.entertainment);
+        catToId.add(R.drawable.food);
+        catToId.add(R.drawable.house);
+        catToId.add(R.drawable.clothing);
+        catToId.add(R.drawable.present);
+        catToId.add(R.drawable.medical);
+        catToId.add(R.drawable.transportation);
+        catToId.add(R.drawable.hotel);
+        catToId.add(R.drawable.cleaning);
+        catToId.add(R.drawable.general);
+        catToId.add(R.drawable.other);
+
+
     }
 
 
-
+    public List<String> getCategories(){return  this.Categories;}
+    public List<Integer> getCatToId(){return  this.catToId;}
     public void setGroupsFragmentData(String search_text){this.GroupsFragmentData=search_text;}
     public String getGroupsFragmentData(){return  this.GroupsFragmentData;}
 
