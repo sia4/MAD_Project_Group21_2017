@@ -114,6 +114,7 @@ public class ActivitiesFragment extends Fragment {
                                                     System.out.println("tipo notifica: "+tmpty);
                                                     if(tmpty!=null)
                                                         imgId = actToId.get(tmpty);
+                                                    if(value==null) value = "";
                                                     final ActivityData a = new ActivityData(tmpc, tmpt, tmpd, tmpty, tmpid, tmpgid, imgId, value);
                                                     Log.d("ActivitiesFragment","cerco di capire"+act_read.toString());
                                                     if(act_read.get(tmpgid)!=null){
