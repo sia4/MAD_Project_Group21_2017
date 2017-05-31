@@ -129,7 +129,6 @@ public class GroupActivity extends AppCompatActivity {
         if(gImage==null) {
 
             /*gImage=g.getImagePath();
-
             Glide
                     .with(getApplicationContext())
                     .load(gImage)
@@ -143,7 +142,6 @@ public class GroupActivity extends AppCompatActivity {
                                   getSupportActionBar().setLogo(circularBitmapDrawable);
                               }
                           });
-
             */
 
             DatabaseReference Ref_imagePath = database3.getReference("Groups").child(gKey).child("imagePath");
@@ -203,15 +201,15 @@ public class GroupActivity extends AppCompatActivity {
                 balancemap = (Map<String, Map<String, Object>>) dataSnapshot.getValue();
                 if(balancemap!=null) {
                     System.out.println("MAPPAAAAAAAAAAHAHHAHAH +" + balancemap);
-                     for(String u : balancemap.keySet()){
-                         float tttt = Float.parseFloat(balancemap.get(u).get("value").toString());
-                         if(tttt>=0)
-                             tmppos +=  tttt;
-                         else
-                             tmpneg +=tttt;
-                     }
+                    for(String u : balancemap.keySet()){
+                        float tttt = Float.parseFloat(balancemap.get(u).get("value").toString());
+                        if(tttt>=0)
+                            tmppos +=  tttt;
+                        else
+                            tmpneg +=tttt;
+                    }
 
-                     String subtitle = "";
+                    String subtitle = "";
                     Currencies c_tmpp = new Currencies();
                     String symboll = "";
                     if (defaultcurrency != null) {
@@ -264,13 +262,13 @@ public class GroupActivity extends AppCompatActivity {
 
 
 
-         getSupportActionBar().setTitle(" "+gName);
-         //String subtitle = "";
-         //subtitle +=" "+ "They Owe You: " + String.valueOf(tmppos)+ " - You Owe: " + String.valueOf(tmpneg);
+        getSupportActionBar().setTitle(" "+gName);
+        //String subtitle = "";
+        //subtitle +=" "+ "They Owe You: " + String.valueOf(tmppos)+ " - You Owe: " + String.valueOf(tmpneg);
 
 
 
-         //getSupportActionBar().setSubtitle(subtitle);
+        //getSupportActionBar().setSubtitle(subtitle);
 
         //Drawable dr = getResources().getDrawable(R.drawable.group_default);
         //toolbar.setLogo(ContextCompat.getDrawable(getApplicationContext(), R.drawable.group_default));
@@ -289,7 +287,6 @@ public class GroupActivity extends AppCompatActivity {
         FragmentManager fm = getSupportFragmentManager();
         FragmentTransaction transaction = fm.beginTransaction();
         final FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-
         transaction.replace(R.id.group_framelayout, hfrag);
         transaction.commit();*/
         final FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
@@ -303,7 +300,6 @@ public class GroupActivity extends AppCompatActivity {
                                 break;
                             case 1:
                                 frag = new ActivitiesFragment();
-
                                 fab.setVisibility(View.INVISIBLE);
                                 break;
                             default:

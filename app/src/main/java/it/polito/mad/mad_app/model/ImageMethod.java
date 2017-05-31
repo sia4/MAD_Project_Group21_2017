@@ -30,10 +30,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by Lucia on 13/05/2017.
- */
-
 public class ImageMethod {
 
     public static List<Intent> require_image(Uri outputFileUri,PackageManager p) {
