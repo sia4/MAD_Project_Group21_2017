@@ -14,6 +14,7 @@
     android:layout_height="fill_parent"
     android:paddingBottom="65dp"
     android:clipToPadding="false"
+    android:layout_marginTop="10dp"
     tools:context=".HistoryFragment"/>
 
     <TextView

@@ -2,10 +2,12 @@ package it.polito.mad.mad_app.model;
 
 import android.support.annotation.NonNull;
 
+import java.util.Map;
+
 public class ExpenseData implements Comparable<ExpenseData>{
     private String idEx;
     private String name;
-    private String descr;
+    private String description;
     private String category;
     private String currency;
     private String value;
@@ -16,10 +18,11 @@ public class ExpenseData implements Comparable<ExpenseData>{
     private String contested;
     private String creatorId="0";
     private String defaultcurrency;
-
+    private String imagePath;
+    private Map<String,Boolean> users;
     public ExpenseData(String n, String d, String ca, String cu, String value, String myvalue, String algorithm, String dflt) {
         this.name = n;
-        this.descr = d;
+        this.description = d;
         this.category = ca;
         this.currency = cu;
         this.value = value;
@@ -27,6 +30,19 @@ public class ExpenseData implements Comparable<ExpenseData>{
         this.algorithm = algorithm;
         this.date = Long.toString(System.currentTimeMillis());
         this.defaultcurrency = dflt;
+        this.imagePath=null;
+    }
+    public ExpenseData(String n, String d, String ca, String cu, String value, String myvalue, String algorithm, String dflt,String Image) {
+        this.name = n;
+        this.description = d;
+        this.category = ca;
+        this.currency = cu;
+        this.value = value;
+        this.myvalue = myvalue;
+        this.algorithm = algorithm;
+        this.date = Long.toString(System.currentTimeMillis());
+        this.defaultcurrency = dflt;
+        this.imagePath=Image;
     }
     public String getCreatorId(){return this.creatorId;}
     public void setCreatorId(String id){this.creatorId=id;}
@@ -35,6 +51,7 @@ public class ExpenseData implements Comparable<ExpenseData>{
     public void setContested(String i){this.contested=i;}
     public void setMyvalue(String i){this.myvalue = i;}
     public void setDate(String date){this.date = date;}
+    public void setImagePath(String image){this.imagePath=image;}
     public String getContested(){return this.contested;}
     public String getDate(){ return this.date;}
     public String getName(){
@@ -42,13 +59,13 @@ public class ExpenseData implements Comparable<ExpenseData>{
     }
     public void setCreator(String creator){this.creator = creator;}
     public String getCreator(){return this.creator;}
-
+    public String getImagePath(){return this.imagePath;}
     public String getDefaultcurrency() {
         return this.defaultcurrency;
     }
 
     public String getDescription(){
-        return this.descr;
+        return this.description;
     }
 
     public String getCategory(){
@@ -91,7 +108,7 @@ public class ExpenseData implements Comparable<ExpenseData>{
 
     public String toString() {
 
-        String s = "{" + "idEX: " + idEx + ", Name: " + name + ", Descr: " + descr + ", Category: " + category + ", Currency: " + currency + ", Default Currency:" + defaultcurrency + ", Value: " + value + ", Algorithm: " + algorithm + ", Date: " + date + ", Creator: " + creator + ", Contested: " + contested + ", CreatorID: " + creatorId + "}";
+        String s = "{" + "idEX: " + idEx + ", Name: " + name + ", Descr: " + description + ", Category: " + category + ", Currency: " + currency + ", Default Currency:" + defaultcurrency + ", Value: " + value + ", Algorithm: " + algorithm + ", Date: " + date + ", Creator: " + creator + ", Contested: " + contested + ", CreatorID: " + creatorId + "}";
         return s;
     }
 }

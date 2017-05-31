@@ -36,16 +36,17 @@ public class    HistoryFragment extends Fragment {
     static private List<ExpenseData> lex = new ArrayList<>();
     private Map<String, ExpenseData> m_lex = new TreeMap<>();
     private Context context;
-    private HistoryAdapter hAdapter = new HistoryAdapter(lex);
+    private ViewGroup viewgroup;
+    private HistoryAdapter hAdapter;
     private String GroupName, myvalue;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         final View view = inflater.inflate(R.layout.fragment_history, container, false);
-
+        viewgroup=container;
         context = view.getContext();
         lex.clear();
-
+        hAdapter = new HistoryAdapter(lex,viewgroup);
         final RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.expenses);
 
         recyclerView.setItemAnimator(new DefaultItemAnimator());
@@ -54,8 +55,8 @@ public class    HistoryFragment extends Fragment {
 
         recyclerView.setLayoutManager(new LinearLayoutManager(context));
 
-        recyclerView.addItemDecoration(new it.polito.mad.mad_app.DividerItemDecoration(context, LinearLayoutManager.VERTICAL));
-        recyclerView.addOnItemTouchListener(new RecyclerTouchListener(context, recyclerView, new RecyclerTouchListener.ClickListener() {
+        //recyclerView.addItemDecoration(new it.polito.mad.mad_app.DividerItemDecoration(context, LinearLayoutManager.VERTICAL));
+        /*recyclerView.addOnItemTouchListener(new RecyclerTouchListener(context, recyclerView, new RecyclerTouchListener.ClickListener() {
             @Override
             public void onClick(View view, int position) {
 
@@ -77,7 +78,7 @@ public class    HistoryFragment extends Fragment {
             public void onLongClick(View view, int position) {
 
             }
-        }));
+        }));*/
 
         GroupName = this.getArguments().getString("GroupId");
 
@@ -115,6 +116,9 @@ public class    HistoryFragment extends Fragment {
                                         System.out.println("currency" + (String) map3.get("currency"));
                                         final ExpenseData e = new ExpenseData((String) map3.get("name"), (String) map3.get("description"), (String) map3.get("category"), (String) map3.get("currency"), map3.get("value").toString(), map3.get("myvalue").toString(), (String) map3.get("algorithm"), (String) map3.get("defaultcurrency"));
                                         e.setCreator((String) map3.get("creator"));
+                                        if(map3.get("imagePath")!=null){
+                                            e.setImagePath((String) map3.get("imagePath"));
+                                        }
                                         e.setIdEx(k);
                                         e.setDate((String) map3.get("date"));
                                         e.setContested((String) map3.get("contested"));
