@@ -1,10 +1,14 @@
 package it.polito.mad.mad_app;
 
 import android.Manifest;
+import android.app.Dialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
@@ -13,6 +17,8 @@ import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
+import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -21,6 +27,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
@@ -30,6 +37,10 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.animation.GlideAnimation;
+import com.bumptech.glide.request.target.BitmapImageViewTarget;
+import com.bumptech.glide.request.target.SimpleTarget;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
@@ -51,6 +62,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.concurrent.ExecutionException;
 
 import it.polito.mad.mad_app.model.ActivityData;
 import it.polito.mad.mad_app.model.Currencies;
@@ -132,9 +144,6 @@ public class GroupInfoActivity extends AppCompatActivity {
             }
         });
         favourite = (CheckBox) findViewById(R.id.favourite);
-
-
-
 
         favourite.setOnClickListener(new View.OnClickListener(){
 
@@ -369,15 +378,52 @@ public class GroupInfoActivity extends AppCompatActivity {
                     desc.setText(desctmp);
                     if(map.get("imagePath").equals("")){
                         circle_image(getApplicationContext(),im,R.drawable.group_default);
+
                     }
                     else{
-                        String p = (String) map.get("imagePath");
+                        final String p = (String) map.get("imagePath");
                         image = p;
 
                         if (p == null) {
 
                         } else {
                             circle_image(getApplicationContext(),im,p);
+                            im.setOnClickListener(new View.OnClickListener(){
+
+                                @Override
+                                public void onClick(View v){
+
+                                    Log.d("Group Info Activity", p);
+
+                                    Glide.with(getApplicationContext())
+                                            .load(p).asBitmap().into(new SimpleTarget<Bitmap>(1000,1000) {
+                                        @Override
+                                        public void onResourceReady(Bitmap resource, GlideAnimation glideAnimation) {
+                                            Intent intent = new Intent(GroupInfoActivity.this, FullImageActivity.class);
+                                            intent.putExtra("BitmapImage", resource);
+                                            startActivity(intent);
+                                            //image.setImageBitmap(resource); // Possibly runOnUiThread()
+                                        }
+                                    });
+                                    /*
+                                    new AsyncTask<Void, Void, Void>() {
+                                        @Override
+                                        protected Void doInBackground(Void... params) {
+                                            try {
+                                                Bitmap bitmapImageGroup = Glide.with(getApplicationContext())
+                                                        .load(p).asBitmap().into(-1, -1).
+                                                                get();
+                                                showImage(bitmapImageGroup);
+                                            } catch (final ExecutionException e) {
+                                                Log.e("Group Info Activity", e.getMessage());
+                                            } catch (final InterruptedException e) {
+                                                Log.e("Group Info Activity", e.getMessage());
+                                            }
+                                            return null;
+                                        }
+                                    };*/
+                                }
+                            });
                         }
                     }
                 }
@@ -788,5 +834,30 @@ public class GroupInfoActivity extends AppCompatActivity {
         cameraIntents.remove(cameraIntents.size()-1);
         chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, cameraIntents.toArray(new Parcelable[cameraIntents.size()]));
         startActivityForResult(chooserIntent, 1);
+    }
+
+    public void showImage(Bitmap b) {
+
+        Intent intent = new Intent(this, FullImageActivity.class);
+        intent.putExtra("BitmapImage", b);
+        startActivity(intent);
+
+        /*
+        final Dialog nagDialog = new Dialog(GroupInfoActivity.this,android.R.style.Theme_Material_Light_LightStatusBar);
+        nagDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        nagDialog.setCancelable(false);
+        nagDialog.setContentView(R.layout.prewiew_image);
+        //Button btnClose = (Button)nagDialog.findViewById(R.id.btnIvClose);
+        ImageView ivPreview = (ImageView)nagDialog.findViewById(R.id.iv_preview_image);
+        ivPreview.setBackgroundResource(R.drawable.group_default);
+
+        btnClose.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View arg0) {
+
+                nagDialog.dismiss();
+            }
+        });
+        nagDialog.show();*/
     }
 }

@@ -41,5 +41,7 @@ dependencies {
     compile 'com.github.PhilJay:MPAndroidChart:v2.1.6'
     compile 'com.android.volley:volley:1.0.0'
     testCompile 'junit:junit:4.12'
+//    compile 'com.hendraanggrian:collapsingtoolbarlayout-subtitle:0.5.1@aar'
+
 }
 apply plugin: 'com.google.gms.google-services'

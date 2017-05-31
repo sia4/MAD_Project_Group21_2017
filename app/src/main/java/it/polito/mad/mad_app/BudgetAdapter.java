@@ -2,15 +2,21 @@ package it.polito.mad.mad_app;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
+import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -40,7 +46,7 @@ public class BudgetAdapter extends RecyclerView.Adapter<BudgetAdapter.MyViewHold
         public TextView name_cred_deb, value_cred_deb, b;
         public LinearLayout buttonContainer;
         public Button button;
-
+        public ImageView imageView;
 
         public MyViewHolder(View view) {
             super(view);
@@ -48,7 +54,7 @@ public class BudgetAdapter extends RecyclerView.Adapter<BudgetAdapter.MyViewHold
             value_cred_deb = (TextView) view.findViewById(R.id.value_cred_deb);
             //b=(Button) view.findViewById(R.id.Par);
             buttonContainer = (LinearLayout) view.findViewById(R.id.buttonContainer);
-
+            imageView = (ImageView) view.findViewById(R.id.imageBudget);
         }
     }
 
@@ -87,6 +93,23 @@ public class BudgetAdapter extends RecyclerView.Adapter<BudgetAdapter.MyViewHold
                 if(map!=null) {
                     String name = (String) map.get("name");
                     String surname = (String) map.get("surname");
+                    String p = (String) map.get("imagePath");
+
+                    if(p==null)
+                        holder.imageView.setImageResource(R.drawable.group_default);
+                    else {
+                        final Context context = holder.imageView.getContext();
+                        Glide.with(context).load(p).asBitmap().centerCrop().into(new BitmapImageViewTarget(holder.imageView) {
+                            @Override
+                            protected void setResource(Bitmap resource) {
+                                RoundedBitmapDrawable circularBitmapDrawable =
+                                        RoundedBitmapDrawableFactory.create(context.getResources(), resource);
+                                circularBitmapDrawable.setCircular(true);
+
+                                holder.imageView.setImageDrawable(circularBitmapDrawable);
+                            }
+                        });
+                    }
 
                     if (n > 0) {
                         holder.name_cred_deb.setText(name + " " + surname +" owns you:");
@@ -140,6 +163,8 @@ public class BudgetAdapter extends RecyclerView.Adapter<BudgetAdapter.MyViewHold
             if(holder.button==null) {
                 holder.button = new Button(mContext);
                 holder.button.setText("Balance");
+                holder.buttonContainer.setLayoutParams(new LinearLayout.LayoutParams(
+                        LinearLayout.LayoutParams.MATCH_PARENT,LinearLayout.LayoutParams.WRAP_CONTENT));
                 holder.buttonContainer.addView(holder.button);
                 holder.button.setOnClickListener(new View.OnClickListener() {
                     @Override
