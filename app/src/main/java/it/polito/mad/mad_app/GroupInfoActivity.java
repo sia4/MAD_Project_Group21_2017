@@ -396,7 +396,7 @@ public class GroupInfoActivity extends AppCompatActivity {
                                     Log.d("Group Info Activity", p);
 
                                     Glide.with(getApplicationContext())
-                                            .load(p).asBitmap().into(new SimpleTarget<Bitmap>(1000,1000) {
+                                            .load(p).asBitmap().into(new SimpleTarget<Bitmap>(200,200) {
                                         @Override
                                         public void onResourceReady(Bitmap resource, GlideAnimation glideAnimation) {
                                             Intent intent = new Intent(GroupInfoActivity.this, FullImageActivity.class);
