@@ -192,7 +192,7 @@ public class GroupsFragment extends Fragment {
                     for (Map.Entry<String, Object> k : map.entrySet()) {
 
                         String name = (String) ((Map<String, Object>) k.getValue()).get("name");
-                        groupsId.put(k.getKey(), name);
+
                         String imagePath = (String) ((Map<String, Object>) k.getValue()).get("imagePath");
                         String lastOperation = (String) ((Map<String, Object>) k.getValue()).get("lastOperation");
                         String dateLastOperation = (String) ((Map<String, Object>) k.getValue()).get("dateLastOperation");
@@ -204,13 +204,13 @@ public class GroupsFragment extends Fragment {
                         if (dateLastOperation == null)
                             dateLastOperation = "";
                         if (missing != null && missing.equals("no")) {
-
+                            System.out.println("missing:  "+missing);
                             final String tmpkey = k.getKey();
                             MainData.getInstance().clearBalanceByGroupByKey(tmpkey);
                             final FirebaseDatabase database3 = FirebaseDatabase.getInstance();
                             DatabaseReference myRef3 = database3.getReference("Balance").child(tmpkey).child(FirebaseAuth.getInstance().getCurrentUser().getUid());
                             System.out.println("Balance" + "> " + tmpkey + " > " + FirebaseAuth.getInstance().getCurrentUser().getUid());
-
+                            groupsId.put(k.getKey(), name);
                             myRef3.addValueEventListener(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(DataSnapshot dataSnapshot) {
@@ -239,7 +239,7 @@ public class GroupsFragment extends Fragment {
                             });
 
                         }
-
+                        System.out.println("mappa per statistiche:   " + balancemap);
 
                         Log.d("Groups Fragment", "dati: " + name + " " + lastOperation + " " + dateLastOperation);
                         if((archive == null &&MainData.getInstance().getGroupFragmentArchive().equals("yes"))|| (archive!=null && !archive.equals(MainData.getInstance().getGroupFragmentArchive())))
