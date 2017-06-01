@@ -25,6 +25,7 @@ public class MainData {
 
     private List<String> Categories = new ArrayList<>();
     private List<Integer> catToId = new ArrayList<>();
+    private List<Integer> catToIdLow = new ArrayList<>();
     public static MainData getInstance() {
         return ourInstance;
     }
@@ -57,12 +58,25 @@ public class MainData {
         catToId.add(R.drawable.general);
         catToId.add(R.drawable.other);
 
+        catToIdLow.add(R.drawable.ic_category_low_entertainment);
+        catToIdLow.add(R.drawable.ic_category_low_food);
+        catToIdLow.add(R.drawable.ic_category_low_house);
+        catToIdLow.add(R.drawable.ic_category_low_clothing);
+        catToIdLow.add(R.drawable.ic_category_low_present);
+        catToIdLow.add(R.drawable.ic_category_low_medical);
+        catToIdLow.add(R.drawable.ic_category_low_transportation);
+        catToIdLow.add(R.drawable.ic_category_low_hotel);
+        catToIdLow.add(R.drawable.ic_category_low_cleaning);
+        catToIdLow.add(R.drawable.ic_category_low_general);
+        catToIdLow.add(R.drawable.ic_category_low_other);
+
 
     }
 
 
     public List<String> getCategories(){return  this.Categories;}
     public List<Integer> getCatToId(){return  this.catToId;}
+    public List<Integer> getCatToIdLow(){return  this.catToIdLow;}
     public void setGroupsFragmentData(String search_text){this.GroupsFragmentData=search_text;}
     public String getGroupsFragmentData(){return  this.GroupsFragmentData;}
 

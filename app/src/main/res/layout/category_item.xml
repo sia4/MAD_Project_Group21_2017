@@ -11,6 +11,7 @@
         android:layout_height="40sp"
         android:layout_marginRight="5dp"
         android:layout_marginLeft="5dp"
+        android:elevation="5dp"
         />
 
     <TextView

@@ -210,7 +210,7 @@ public class InsertExActivity extends AppCompatActivity {
         Categories.add(new ItemData("Select category", R.mipmap.logo ));
         int i=0;
         for(i=0; i<MainData.getInstance().getCategories().size();i++ ){
-            Categories.add(new ItemData(MainData.getInstance().getCategories().get(i),MainData.getInstance().getCatToId().get(i) ));
+            Categories.add(new ItemData(MainData.getInstance().getCategories().get(i),MainData.getInstance().getCatToIdLow().get(i) ));
         }
 
 
