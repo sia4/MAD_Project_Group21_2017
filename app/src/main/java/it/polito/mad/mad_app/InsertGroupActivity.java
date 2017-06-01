@@ -407,11 +407,7 @@ public class InsertGroupActivity extends AppCompatActivity {
 
                     Toast.makeText(InsertGroupActivity.this, "Please insert group name.", Toast.LENGTH_LONG).show();
 
-                } else if (groupDescription.equals("")) {
-
-                    Toast.makeText(InsertGroupActivity.this, "Please insert group description.", Toast.LENGTH_LONG).show();
-
-                } else if (Tcurrency.getSelectedItem().toString().equals("Select currency")) {
+                } else if (Tcurrency.getSelectedItem().toString().equals("Select favourite currency")) {
 
                     Toast.makeText(InsertGroupActivity.this, "Please insert currency.", Toast.LENGTH_LONG).show();
 

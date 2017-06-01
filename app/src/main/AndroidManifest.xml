@@ -138,7 +138,8 @@
         <activity
             android:name=".UserStatisticsActivity"
             android:label="@string/title_activity_user_statistics"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar"></activity>
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+        <activity android:name=".CreditsActivity"></activity>
     </application>
 
 </manifest>

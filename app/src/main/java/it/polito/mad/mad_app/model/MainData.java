@@ -14,7 +14,7 @@ public class MainData {
     private String myName;
     private String mySurname;
     private String myEmail;
-
+    private String defaultCurrencyForStats;
     private Map<String, GroupData> lGroups = new TreeMap<>();
     private Map<String, UserData> lUser = new TreeMap<>();
     private String GroupsFragmentData ="";
@@ -73,7 +73,8 @@ public class MainData {
 
     }
 
-
+    public String getDefaultCurrencyForStats(){return this.defaultCurrencyForStats;}
+    public void setDefaultCurrencyForStats(String symbol){this.defaultCurrencyForStats = symbol;}
     public List<String> getCategories(){return  this.Categories;}
     public List<Integer> getCatToId(){return  this.catToId;}
     public List<Integer> getCatToIdLow(){return  this.catToIdLow;}

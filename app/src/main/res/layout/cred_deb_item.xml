@@ -12,13 +12,13 @@
     <LinearLayout
         android:id="@+id/buttonContainer"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:layout_marginLeft="20dp"
         android:orientation="vertical">
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:orientation="horizontal">
 
             <TextView
@@ -38,12 +38,15 @@
                 android:gravity="center_vertical|right"
                 android:textSize="@dimen/high_text" />
         </LinearLayout>
-    </LinearLayout>
-    <!--<Button
+        <Button
         android:id="@+id/Par"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_weight="0.9"
-        android:visibility="invisible"/>
-    -->
+        android:layout_gravity="right"
+        android:text="Balance"
+
+        android:visibility="gone"/>
+
+    </LinearLayout>
+
 </LinearLayout>
