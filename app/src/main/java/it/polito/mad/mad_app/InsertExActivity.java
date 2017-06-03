@@ -610,10 +610,19 @@ public class InsertExActivity extends AppCompatActivity {
                         ii = 0;
 
                         for(final UserData k:users){
-                            myRef = database.getReference("/Users/" + k.getuId() + "/Groups/" + Gname + "/lastOperation/");
-                            myRef.setValue(myname + " added an expense.");
-                            myRef = database.getReference("/Users/" + k.getuId() + "/Groups/" + Gname + "/dateLastOperation/");
-                            myRef.setValue(Long.toString(System.currentTimeMillis()).toString());
+                            if(k.getuId().equals(FirebaseAuth.getInstance().getCurrentUser().getUid())){
+                                myRef = database.getReference("/Users/" + k.getuId() + "/Groups/" + Gname + "/lastOperation/");
+                                myRef.setValue("You added an expense.");
+                                myRef = database.getReference("/Users/" + k.getuId() + "/Groups/" + Gname + "/dateLastOperation/");
+                                myRef.setValue(Long.toString(System.currentTimeMillis()).toString());
+
+                            }
+                            else {
+                                myRef = database.getReference("/Users/" + k.getuId() + "/Groups/" + Gname + "/lastOperation/");
+                                myRef.setValue(myname + " added an expense.");
+                                myRef = database.getReference("/Users/" + k.getuId() + "/Groups/" + Gname + "/dateLastOperation/");
+                                myRef.setValue(Long.toString(System.currentTimeMillis()).toString());
+                            }
                         }
 
                         //final float cambio = Cambi.get(currency);

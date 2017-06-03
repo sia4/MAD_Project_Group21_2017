@@ -87,23 +87,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="60sp"
                      />
-                <LinearLayout
-                    android:id="@+id/inset_im_ex"
-                    android:layout_width="wrap_content"
-                    android:orientation="horizontal"
-                    android:layout_height="wrap_content">
-                    <Button
-                        android:id="@+id/load_ex"
-                        android:layout_width="200dp"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:text="Load image" />
-                    <ImageView
-                        android:id="@+id/ImageG"
-                        android:layout_width="100dp"
-                        android:layout_height="100dp"
-                        android:layout_gravity="center" />
-                </LinearLayout>
+
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
@@ -124,7 +108,23 @@
                         android:entries="@array/algorithms"
                         android:gravity="right" />
                 </LinearLayout>
-
+                <LinearLayout
+                    android:id="@+id/inset_im_ex"
+                    android:layout_width="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_height="wrap_content">
+                    <Button
+                        android:id="@+id/load_ex"
+                        android:layout_width="200dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:text="Load image" />
+                    <ImageView
+                        android:id="@+id/ImageG"
+                        android:layout_width="100dp"
+                        android:layout_height="100dp"
+                        android:layout_gravity="center" />
+                </LinearLayout>
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"

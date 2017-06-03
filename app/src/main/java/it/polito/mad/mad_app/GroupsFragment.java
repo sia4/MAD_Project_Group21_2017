@@ -215,6 +215,7 @@ public class GroupsFragment extends Fragment {
 
                                     balancemap = (Map<String, Map<String, Object>>) dataSnapshot.getValue();
                                     if (balancemap != null) {
+                                        MainData.getInstance().clearBalanceByGroupByKey(tmpkey);
                                         System.out.println("GroupsFragment L198 +" + balancemap);
                                         for (String u : balancemap.keySet()) {
 

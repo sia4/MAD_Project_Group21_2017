@@ -100,7 +100,8 @@ public class InsertCurrencyActivity extends AppCompatActivity {
         final RecyclerView CurrencyRecyclerView = (RecyclerView) findViewById(R.id.changes);
         final Spinner spinner = (Spinner) findViewById(R.id.Currency);
         final EditText change = (EditText) findViewById(R.id.change);
-
+        final TextView default_insert = (TextView) findViewById(R.id.default_insert);
+        default_insert.setText(dfltcurrency + " to:");
         CurrencyRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         Currencies.add("Select currency");
         Currencies.addAll(cref.getCurrenciesCodes());
