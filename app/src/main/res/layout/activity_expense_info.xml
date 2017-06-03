@@ -5,8 +5,7 @@
     android:layout_height="match_parent"
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="it.polito.mad.mad_app.ExpenseInfoActivity">
-
-    <android.support.design.widget.AppBarLayout
+     <android.support.design.widget.AppBarLayout
         android:id="@+id/insert_group_bar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -49,197 +48,176 @@
             android:text="Would you like to add a new one?"/>
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:layout_margin="@dimen/activity_margin"
-            android:weightSum="1"
             android:orientation="horizontal">
-            <LinearLayout
+            <TextView
+                android:id="@+id/exName"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="35sp"
                 android:layout_weight="0.4"
-                android:orientation="vertical">
-                <TextView
-                    android:id="@+id/exDate"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:textSize="20sp"/>
-                <TextView
-                    android:id="@+id/exName"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:textSize="32sp"
-                    android:textColor="@color/primaryTextColor"/>
-                <TextView
-                    android:id="@+id/exValue"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:textColor="@color/colorPrimary"
-                    android:textSize="30sp" />
-
-                <TextView
-                    android:id="@+id/iMyvalue"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:textSize="13sp" />
-
-                <TextView
-                    android:id="@+id/exMyvalue"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:textSize="20sp" />
-            </LinearLayout>
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:layout_weight="0.6">
-
-                <ImageView
-                    android:id="@+id/imCat"
-                    android:layout_width="85dp"
-                    android:layout_height="85dp"
-                    android:layout_gravity="right"
-                    android:layout_margin="15dp" />
-
-            </LinearLayout>
-        </LinearLayout>
-        <View style="@style/Divider"
-            android:layout_marginBottom="5dp"
-            android:layout_marginTop="5dp"
-            android:layout_marginRight="15dp"
-            android:layout_marginLeft="15dp"/>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:weightSum="1"
-            android:orientation="horizontal">
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:gravity="left"
+                android:textSize="30sp" />
+            <TextView
+                android:id="@+id/exValue"
+                android:gravity="right"
                 android:layout_weight="0.5"
-                android:orientation="vertical">
-                <TextView
-                    android:id="@+id/iDescription"
-                    android:layout_width="match_parent"
-                    android:layout_height="17sp"
-                    android:text="Description:"
-                    android:textSize="13sp"
-                    android:layout_marginRight="16sp"
-                    android:layout_marginLeft="16sp"
-                    android:layout_marginTop="5dp"/>
-
-                <TextView
-                    android:id="@+id/exDescription"
-                    android:layout_width="match_parent"
-                    android:layout_height="27sp"
-                    android:textSize="20sp"
-                    android:layout_marginRight="16sp"
-                    android:layout_marginLeft="16sp"
-                    android:layout_marginTop="5dp"
-                    android:layout_marginBottom="5dp"/>
-                <TextView
-                    android:id="@+id/iCreator"
-                    android:layout_width="match_parent"
-                    android:layout_height="17sp"
-                    android:text="Payed form:"
-                    android:textSize="13sp"
-                    android:layout_marginRight="16sp"
-                    android:layout_marginLeft="16sp"
-                    android:layout_marginTop="5dp" />
-
-                <TextView
-                    android:id="@+id/exCreator"
-                    android:layout_width="match_parent"
-                    android:layout_height="27sp"
-                    android:textSize="20sp"
-                    android:layout_marginRight="16sp"
-                    android:layout_marginLeft="16sp"
-                    android:layout_marginBottom="5dp"/>
-
-                <!--
-                <TextView
-                    android:id="@+id/iCategory"
-                    android:layout_width="match_parent"
-                    android:layout_height="17sp"
-                    android:text="Category:"
-                    android:textSize="13sp"
-                    android:layout_marginRight="16sp"
-                    android:layout_marginLeft="16sp"
-                    android:layout_marginTop="5dp"/>
-
-                <TextView
-                    android:id="@+id/exCategory"
-                    android:layout_width="match_parent"
-                    android:layout_height="27sp"
-                    android:textSize="20sp"
-                    android:layout_marginRight="16sp"
-                    android:layout_marginLeft="16sp"
-                    android:layout_marginBottom="5dp"/>
-
-                <TextView
-                    android:id="@+id/iCurrency"
-                    android:layout_width="match_parent"
-                    android:layout_height="17sp"
-                    android:text="Currency:"
-                    android:textSize="13sp"
-                    android:layout_marginRight="16sp"
-                    android:layout_marginLeft="16sp"
-                    android:layout_marginTop="5dp"/>
-
-                <TextView
-                    android:id="@+id/exCurrency"
-                    android:layout_width="match_parent"
-                    android:layout_height="27sp"
-                    android:textSize="20sp"
-                    android:layout_marginRight="16sp"
-                    android:layout_marginLeft="16sp"
-                    android:layout_marginBottom="5dp"/>
-                <View style="@style/Divider"/>
-                -->
-                <TextView
-                    android:id="@+id/iAlgorithm"
-                    android:layout_width="match_parent"
-                    android:layout_height="17sp"
-                    android:text="Import divided:"
-                    android:textSize="13sp"
-                    android:layout_marginRight="16sp"
-                    android:layout_marginLeft="16sp"
-                    android:layout_marginTop="5dp"/>
-                <TextView
-                    android:id="@+id/exAlgorithm"
-                    android:layout_width="match_parent"
-                    android:layout_height="27sp"
-                    android:textSize="20sp"
-                    android:layout_marginRight="16sp"
-                    android:layout_marginLeft="16sp"
-                    android:layout_marginBottom="5dp"/>
-            </LinearLayout>
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_weight="0.5">
-                <ImageView
-                    android:id="@+id/im_ex_info"
-                    android:layout_width="85dp"
-                    android:layout_height="85dp"
-                    android:layout_margin="15dp"
-                    android:scaleType="centerCrop"
-                    android:layout_weight="0.63" />
-            </LinearLayout>
+                android:layout_width="match_parent"
+                android:layout_height="35sp"
+                android:textSize="30sp" />
         </LinearLayout>
+        <View style="@style/Divider"/>
+        <TextView
+            android:id="@+id/iCreator"
+            android:layout_width="match_parent"
+            android:layout_height="17sp"
+            android:text="Payed form:"
+            android:textSize="13sp"
+            android:layout_marginRight="16sp"
+            android:layout_marginLeft="16sp"
+            android:layout_marginTop="5dp" />
+
+        <TextView
+            android:id="@+id/exCreator"
+            android:layout_width="match_parent"
+            android:layout_height="27sp"
+            android:textSize="20sp"
+            android:layout_marginRight="16sp"
+            android:layout_marginLeft="16sp"
+            android:layout_marginBottom="5dp"/>
+        <View style="@style/Divider"/>
+        <TextView
+            android:id="@+id/iDescription"
+            android:layout_width="match_parent"
+            android:layout_height="17sp"
+            android:text="Description:"
+            android:textSize="13sp"
+            android:layout_marginRight="16sp"
+            android:layout_marginLeft="16sp"
+            android:layout_marginTop="5dp"/>
+
+        <TextView
+            android:id="@+id/exDescription"
+            android:layout_width="match_parent"
+            android:layout_height="27sp"
+            android:textSize="20sp"
+            android:layout_marginRight="16sp"
+            android:layout_marginLeft="16sp"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="5dp"/>
+        <View style="@style/Divider"/>
+        <TextView
+            android:id="@+id/iCategory"
+            android:layout_width="match_parent"
+            android:layout_height="17sp"
+            android:text="Category:"
+            android:textSize="13sp"
+            android:layout_marginRight="16sp"
+            android:layout_marginLeft="16sp"
+            android:layout_marginTop="5dp"/>
+
+        <TextView
+            android:id="@+id/exCategory"
+            android:layout_width="match_parent"
+            android:layout_height="27sp"
+            android:textSize="20sp"
+            android:layout_marginRight="16sp"
+            android:layout_marginLeft="16sp"
+            android:layout_marginBottom="5dp"/>
+        <View style="@style/Divider"/>
+        <!--
+        <TextView
+            android:id="@+id/iCurrency"
+            android:layout_width="match_parent"
+            android:layout_height="17sp"
+            android:text="Currency:"
+            android:textSize="13sp"
+            android:layout_marginRight="16sp"
+            android:layout_marginLeft="16sp"
+            android:layout_marginTop="5dp"/>
+
+        <TextView
+            android:id="@+id/exCurrency"
+            android:layout_width="match_parent"
+            android:layout_height="27sp"
+            android:textSize="20sp"
+            android:layout_marginRight="16sp"
+            android:layout_marginLeft="16sp"
+            android:layout_marginBottom="5dp"/>
+        <View style="@style/Divider"/>
+        -->
+        <TextView
+            android:id="@+id/iMyvalue"
+            android:layout_width="match_parent"
+            android:layout_height="17sp"
+            android:textSize="13sp"
+            android:layout_marginRight="16sp"
+            android:layout_marginLeft="16sp"
+            android:layout_marginTop="5dp"/>
+
+        <TextView
+            android:id="@+id/exMyvalue"
+            android:layout_width="match_parent"
+            android:layout_height="27sp"
+            android:textSize="20sp"
+            android:layout_marginRight="16sp"
+            android:layout_marginLeft="16sp"
+            android:layout_marginBottom="5dp"/>
+        <View style="@style/Divider"/>
+        <TextView
+            android:id="@+id/iAlgorithm"
+            android:layout_width="match_parent"
+            android:layout_height="17sp"
+            android:text="Import divided:"
+            android:textSize="13sp"
+            android:layout_marginRight="16sp"
+            android:layout_marginLeft="16sp"
+            android:layout_marginTop="5dp"/>
+
+        <TextView
+            android:id="@+id/exAlgorithm"
+            android:layout_width="match_parent"
+            android:layout_height="27sp"
+            android:textSize="20sp"
+            android:layout_marginRight="16sp"
+            android:layout_marginLeft="16sp"
+            android:layout_marginBottom="5dp"/>
+        <View style="@style/Divider"/>
+        <TextView
+            android:id="@+id/iDate"
+            android:layout_width="match_parent"
+            android:layout_height="17sp"
+            android:text="Date"
+            android:textSize="13sp"
+            android:layout_marginRight="16sp"
+            android:layout_marginLeft="16sp"
+            android:layout_marginTop="5dp"/>
+
+        <TextView
+            android:id="@+id/exDate"
+            android:layout_width="match_parent"
+            android:layout_height="27sp"
+            android:textSize="20sp"
+            android:layout_marginRight="16sp"
+            android:layout_marginLeft="16sp"
+            android:layout_marginBottom="5dp"/>
+        <ImageView
+            android:visibility="invisible"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:id="@+id/im_ex_info"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
         <Button
             android:id="@+id/exDeny"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="40sp"
             android:layout_gravity="center"
-            android:layout_margin="@dimen/activity_margin"
             android:background="@color/colorAccent"
-            android:textColor="@android:color/white"
             android:shadowColor="#94A8A0"
             android:shadowDx="0"
             android:shadowDy="0"
+            android:textColor="@android:color/white"
             android:shadowRadius="0"
             android:text="Deny"/>
         <TextView

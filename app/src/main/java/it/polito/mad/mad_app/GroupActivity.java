@@ -161,7 +161,7 @@ public class GroupActivity extends AppCompatActivity {
             DatabaseReference Ref_imagePath = database3.getReference("Groups").child(gKey).child("imagePath");
 
             if (Ref_imagePath == null) {
-                getSupportActionBar().setLogo(R.drawable.group_default);
+                getSupportActionBar().setLogo(R.drawable.group_icon_default);
             } else {
                 Ref_imagePath.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
@@ -193,7 +193,7 @@ public class GroupActivity extends AppCompatActivity {
         if (gImage != null && gImage.equals("")) {
             Glide
                     .with(getApplicationContext())
-                    .load(R.drawable.group_default)
+                    .load(R.drawable.group_icon_default)
                     .asBitmap()
                     .into(new SimpleTarget<Bitmap>(60, 60) {
                         @Override

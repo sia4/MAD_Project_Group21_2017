@@ -197,7 +197,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         Log.d("Main Activity", "Image path: "+p);
                         if (p == null) {
                             Log.d("Main Activity", "Image not present.");
-                            Glide.with(getApplicationContext()).load(R.drawable.group_default).asBitmap().centerCrop().into(new BitmapImageViewTarget(nav_photo) {
+                            Glide.with(getApplicationContext()).load(R.drawable.user_icon_default).asBitmap().centerCrop().into(new BitmapImageViewTarget(nav_photo) {
                                 @Override
                                 protected void setResource(Bitmap resource) {
                                     RoundedBitmapDrawable circularBitmapDrawable =

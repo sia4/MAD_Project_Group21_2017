@@ -95,7 +95,7 @@ public class BudgetAdapter extends RecyclerView.Adapter<BudgetAdapter.MyViewHold
                     String p = (String) map.get("imagePath");
 
                     if(p==null)
-                        holder.imageView.setImageResource(R.drawable.group_default);
+                        holder.imageView.setImageResource(R.drawable.user_icon_default);
                     else {
                         final Context context = holder.imageView.getContext();
                         Glide.with(context).load(p).asBitmap().centerCrop().into(new BitmapImageViewTarget(holder.imageView) {

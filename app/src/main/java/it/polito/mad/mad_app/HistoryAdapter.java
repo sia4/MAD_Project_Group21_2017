@@ -1,5 +1,9 @@
 package it.polito.mad.mad_app;
 
+import android.app.Activity;
+import android.content.Context;
+import android.content.Intent;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.widget.CardView;
@@ -18,6 +22,8 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.animation.GlideAnimation;
+import com.bumptech.glide.request.target.SimpleTarget;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -38,6 +44,7 @@ import it.polito.mad.mad_app.model.ActivityData;
 import it.polito.mad.mad_app.model.Currencies;
 import it.polito.mad.mad_app.model.ExpenseData;
 import it.polito.mad.mad_app.model.ImageMethod;
+import it.polito.mad.mad_app.model.UserData;
 
 
 public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.MyViewHolder> {
@@ -47,6 +54,8 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.MyViewHo
     private ViewGroup view_x;
     private ViewGroup viewgroup;
     private Map<String, Integer> catToId = new TreeMap<>();
+    private String myname,mysurname;
+    private Context context;
     public class MyViewHolder extends RecyclerView.ViewHolder {
         public TextView name_ex, data_ex,  money_ex,creator_ex, yourslice,descrip_ex,algorithm_ex;
         public ImageView imCat;
@@ -84,9 +93,10 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.MyViewHo
     }
 
 
-    public HistoryAdapter(List<ExpenseData> expenseData,ViewGroup viewGroup) {
+    public HistoryAdapter(Context context, List<ExpenseData> expenseData,ViewGroup viewGroup) {
         this.expenseData = expenseData;
         this.viewgroup=viewGroup;
+        this.context = context;
     }
 
     @Override
@@ -148,10 +158,33 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.MyViewHo
             holder.card_view.setBackgroundColor(Color.parseColor("#F2E2E2"));
             holder.b.setVisibility(View.GONE);
         } else {
+            holder.b_contested.setVisibility(View.GONE);
+            holder.card_view.setBackgroundColor(Color.parseColor("#FFFFFF"));
+            holder.b.setVisibility(View.VISIBLE);
         }
         if(expense.getImagePath()!=null){
             Log.d("HistoryAdapter","La foto la vede"+expense.getImagePath());
-            ImageMethod.square_image(holder.iPhoto.getContext(),holder.iPhoto,expense.getImagePath());
+            final String p = expense.getImagePath();
+            ImageMethod.square_image(holder.iPhoto.getContext(),holder.iPhoto,p);
+            holder.iPhoto.setOnClickListener(new View.OnClickListener() {
+
+                 @Override
+                 public void onClick(View v) {
+
+                     Log.d("History Adapter", p);
+
+                     Glide.with(holder.iPhoto.getContext())
+                             .load(p).asBitmap().into(new SimpleTarget<Bitmap>() {
+                         @Override
+                         public void onResourceReady(Bitmap resource, GlideAnimation glideAnimation) {
+                             Intent intent = new Intent(context, FullImageActivity.class);
+                             intent.putExtra("BitmapImage", resource);
+                             context.startActivity(intent);
+                             //image.setImageBitmap(resource); // Possibly runOnUiThread()
+                         }
+                     });
+                 }
+             });
             //Glide.with(holder.iPhoto.getContext()).load(expense.getImagePath()).into(holder.iPhoto);
         }
         //final boolean isExpanded = position==mExpandedPosition;
@@ -204,8 +237,8 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.MyViewHo
                         Map <String, Object> mapname = (Map<String, Object>) dataSnapshot.getValue();
                         System.out.println("mapnameeeeeeeeeeeeeeeeeeee"+mapname);
                         if(mapname!=null) {
-                            String myname = (String)mapname.get("name");
-                            String mysurname = (String)mapname.get("surname");
+                            myname = (String)mapname.get("name");
+                            mysurname = (String)mapname.get("surname");
                             DatabaseReference ActRef = database.getReference("Activities");
                             for(String k : expense.getUsers().keySet()) {
                                 if(!k.equals(FirebaseAuth.getInstance().getCurrentUser().getUid()))
@@ -257,6 +290,21 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.MyViewHo
 
                                 }
 
+                            }
+                        }
+                        FirebaseDatabase database = FirebaseDatabase.getInstance();
+                        DatabaseReference ref_user;
+                        for(final String k:expense.getUsers().keySet()){
+                            if(k.equals(FirebaseAuth.getInstance().getCurrentUser().getUid())){
+                                ref_user = database.getReference("/Users/" + k + "/Groups/" + expense.getGroupId() + "/lastOperation/");
+                                ref_user.setValue("You contested an expense.");
+                                ref_user = database.getReference("/Users/" + k + "/Groups/" + expense.getGroupId() + "/dateLastOperation/");
+                                ref_user.setValue(Long.toString(System.currentTimeMillis()).toString());
+                            }else{
+                                ref_user = database.getReference("/Users/" + k + "/Groups/" + expense.getGroupId() + "/lastOperation/");
+                                ref_user.setValue(myname + " contested an expense.");
+                                ref_user = database.getReference("/Users/" + k + "/Groups/" + expense.getGroupId() + "/dateLastOperation/");
+                                ref_user.setValue(Long.toString(System.currentTimeMillis()).toString());
                             }
                         }
 
