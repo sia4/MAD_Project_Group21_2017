@@ -51,11 +51,12 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_margin="@dimen/activity_margin"
+            android:weightSum="1"
             android:orientation="horizontal">
             <LinearLayout
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="0.5"
+                android:layout_weight="0.4"
                 android:orientation="vertical">
                 <TextView
                     android:id="@+id/exDate"
@@ -74,23 +75,24 @@
                     android:layout_height="wrap_content"
                     android:textColor="@color/colorPrimary"
                     android:textSize="30sp" />
+
                 <TextView
                     android:id="@+id/iMyvalue"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textSize="13sp"/>
+                    android:textSize="13sp" />
 
                 <TextView
                     android:id="@+id/exMyvalue"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textSize="20sp"/>
+                    android:textSize="20sp" />
             </LinearLayout>
             <LinearLayout
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:layout_weight="0.5">
+                android:layout_weight="0.6">
 
                 <ImageView
                     android:id="@+id/imCat"
@@ -106,102 +108,127 @@
             android:layout_marginTop="5dp"
             android:layout_marginRight="15dp"
             android:layout_marginLeft="15dp"/>
-        <TextView
-            android:id="@+id/iDescription"
-            android:layout_width="match_parent"
-            android:layout_height="17sp"
-            android:text="Description:"
-            android:textSize="13sp"
-            android:layout_marginRight="16sp"
-            android:layout_marginLeft="16sp"
-            android:layout_marginTop="5dp"/>
 
-        <TextView
-            android:id="@+id/exDescription"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="27sp"
-            android:textSize="20sp"
-            android:layout_marginRight="16sp"
-            android:layout_marginLeft="16sp"
-            android:layout_marginTop="5dp"
-            android:layout_marginBottom="5dp"/>
-        <TextView
-            android:id="@+id/iCreator"
-            android:layout_width="match_parent"
-            android:layout_height="17sp"
-            android:text="Payed form:"
-            android:textSize="13sp"
-            android:layout_marginRight="16sp"
-            android:layout_marginLeft="16sp"
-            android:layout_marginTop="5dp" />
+            android:layout_height="match_parent"
+            android:weightSum="1"
+            android:orientation="horizontal">
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.5"
+                android:orientation="vertical">
+                <TextView
+                    android:id="@+id/iDescription"
+                    android:layout_width="match_parent"
+                    android:layout_height="17sp"
+                    android:text="Description:"
+                    android:textSize="13sp"
+                    android:layout_marginRight="16sp"
+                    android:layout_marginLeft="16sp"
+                    android:layout_marginTop="5dp"/>
 
-        <TextView
-            android:id="@+id/exCreator"
-            android:layout_width="match_parent"
-            android:layout_height="27sp"
-            android:textSize="20sp"
-            android:layout_marginRight="16sp"
-            android:layout_marginLeft="16sp"
-            android:layout_marginBottom="5dp"/>
+                <TextView
+                    android:id="@+id/exDescription"
+                    android:layout_width="match_parent"
+                    android:layout_height="27sp"
+                    android:textSize="20sp"
+                    android:layout_marginRight="16sp"
+                    android:layout_marginLeft="16sp"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginBottom="5dp"/>
+                <TextView
+                    android:id="@+id/iCreator"
+                    android:layout_width="match_parent"
+                    android:layout_height="17sp"
+                    android:text="Payed form:"
+                    android:textSize="13sp"
+                    android:layout_marginRight="16sp"
+                    android:layout_marginLeft="16sp"
+                    android:layout_marginTop="5dp" />
 
-        <!--
-        <TextView
-            android:id="@+id/iCategory"
-            android:layout_width="match_parent"
-            android:layout_height="17sp"
-            android:text="Category:"
-            android:textSize="13sp"
-            android:layout_marginRight="16sp"
-            android:layout_marginLeft="16sp"
-            android:layout_marginTop="5dp"/>
+                <TextView
+                    android:id="@+id/exCreator"
+                    android:layout_width="match_parent"
+                    android:layout_height="27sp"
+                    android:textSize="20sp"
+                    android:layout_marginRight="16sp"
+                    android:layout_marginLeft="16sp"
+                    android:layout_marginBottom="5dp"/>
 
-        <TextView
-            android:id="@+id/exCategory"
-            android:layout_width="match_parent"
-            android:layout_height="27sp"
-            android:textSize="20sp"
-            android:layout_marginRight="16sp"
-            android:layout_marginLeft="16sp"
-            android:layout_marginBottom="5dp"/>
+                <!--
+                <TextView
+                    android:id="@+id/iCategory"
+                    android:layout_width="match_parent"
+                    android:layout_height="17sp"
+                    android:text="Category:"
+                    android:textSize="13sp"
+                    android:layout_marginRight="16sp"
+                    android:layout_marginLeft="16sp"
+                    android:layout_marginTop="5dp"/>
 
-        <TextView
-            android:id="@+id/iCurrency"
-            android:layout_width="match_parent"
-            android:layout_height="17sp"
-            android:text="Currency:"
-            android:textSize="13sp"
-            android:layout_marginRight="16sp"
-            android:layout_marginLeft="16sp"
-            android:layout_marginTop="5dp"/>
+                <TextView
+                    android:id="@+id/exCategory"
+                    android:layout_width="match_parent"
+                    android:layout_height="27sp"
+                    android:textSize="20sp"
+                    android:layout_marginRight="16sp"
+                    android:layout_marginLeft="16sp"
+                    android:layout_marginBottom="5dp"/>
 
-        <TextView
-            android:id="@+id/exCurrency"
-            android:layout_width="match_parent"
-            android:layout_height="27sp"
-            android:textSize="20sp"
-            android:layout_marginRight="16sp"
-            android:layout_marginLeft="16sp"
-            android:layout_marginBottom="5dp"/>
-        <View style="@style/Divider"/>
-        -->
-        <TextView
-            android:id="@+id/iAlgorithm"
-            android:layout_width="match_parent"
-            android:layout_height="17sp"
-            android:text="Import divided:"
-            android:textSize="13sp"
-            android:layout_marginRight="16sp"
-            android:layout_marginLeft="16sp"
-            android:layout_marginTop="5dp"/>
-        <TextView
-            android:id="@+id/exAlgorithm"
-            android:layout_width="match_parent"
-            android:layout_height="27sp"
-            android:textSize="20sp"
-            android:layout_marginRight="16sp"
-            android:layout_marginLeft="16sp"
-            android:layout_marginBottom="5dp"/>
+                <TextView
+                    android:id="@+id/iCurrency"
+                    android:layout_width="match_parent"
+                    android:layout_height="17sp"
+                    android:text="Currency:"
+                    android:textSize="13sp"
+                    android:layout_marginRight="16sp"
+                    android:layout_marginLeft="16sp"
+                    android:layout_marginTop="5dp"/>
 
+                <TextView
+                    android:id="@+id/exCurrency"
+                    android:layout_width="match_parent"
+                    android:layout_height="27sp"
+                    android:textSize="20sp"
+                    android:layout_marginRight="16sp"
+                    android:layout_marginLeft="16sp"
+                    android:layout_marginBottom="5dp"/>
+                <View style="@style/Divider"/>
+                -->
+                <TextView
+                    android:id="@+id/iAlgorithm"
+                    android:layout_width="match_parent"
+                    android:layout_height="17sp"
+                    android:text="Import divided:"
+                    android:textSize="13sp"
+                    android:layout_marginRight="16sp"
+                    android:layout_marginLeft="16sp"
+                    android:layout_marginTop="5dp"/>
+                <TextView
+                    android:id="@+id/exAlgorithm"
+                    android:layout_width="match_parent"
+                    android:layout_height="27sp"
+                    android:textSize="20sp"
+                    android:layout_marginRight="16sp"
+                    android:layout_marginLeft="16sp"
+                    android:layout_marginBottom="5dp"/>
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_weight="0.5">
+                <ImageView
+                    android:id="@+id/im_ex_info"
+                    android:layout_width="85dp"
+                    android:layout_height="85dp"
+                    android:layout_margin="15dp"
+                    android:scaleType="centerCrop"
+                    android:layout_weight="0.63" />
+            </LinearLayout>
+        </LinearLayout>
         <Button
             android:id="@+id/exDeny"
             android:layout_width="wrap_content"
@@ -224,16 +251,6 @@
             android:layout_marginRight="16sp"
             android:layout_marginLeft="16sp"
             android:layout_marginBottom="5dp"/>
-
-        <ImageView
-            android:id="@+id/im_ex_info"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"
-            android:adjustViewBounds="true"
-            android:cropToPadding="true"
-            android:visibility="invisible" />
 
     </LinearLayout>
 </android.support.v4.widget.NestedScrollView>

@@ -34,6 +34,7 @@ import java.util.TreeMap;
 import it.polito.mad.mad_app.model.ActivityData;
 import it.polito.mad.mad_app.model.Currencies;
 import it.polito.mad.mad_app.model.ExpenseData;
+import it.polito.mad.mad_app.model.ImageMethod;
 
 public class ExpenseInfoActivity extends AppCompatActivity {
 
@@ -116,7 +117,8 @@ public class ExpenseInfoActivity extends AppCompatActivity {
                     if(map.get("imagePath")!=null) {
                         String p=map.get("imagePath").toString();
                         image_info.setVisibility(View.VISIBLE);
-                        Glide.with(getApplicationContext()).load(p).into(image_info);
+                        //Glide.with(getApplicationContext()).load(p).into(image_info);
+                        ImageMethod.square_image(image_info.getContext(),image_info,p);
                     }
                     name = (String)map.get("name");
                     System.out.println("nameeeeeeeeeeeeeee"+name);
@@ -216,8 +218,6 @@ public class ExpenseInfoActivity extends AppCompatActivity {
                     date_ex.setText(ago);
 
                     imCat.setImageDrawable(getResources().getDrawable(catToId.get(category)));
-
-
 
                 }
                 else{
