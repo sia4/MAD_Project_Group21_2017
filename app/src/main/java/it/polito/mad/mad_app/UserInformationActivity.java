@@ -167,7 +167,7 @@ public class UserInformationActivity extends AppCompatActivity {
                             circle_image(getApplicationContext(),im,p);
                         }
                     }else {
-                        circle_image(getApplicationContext(),im,R.drawable.group_default);
+                        circle_image(getApplicationContext(),im,R.drawable.user_icon_default);
                             }
                     }
                 }

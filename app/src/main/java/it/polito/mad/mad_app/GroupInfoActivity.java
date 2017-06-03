@@ -377,7 +377,7 @@ public class GroupInfoActivity extends AppCompatActivity {
                     namet.setText(nametmp);
                     desc.setText(desctmp);
                     if(map.get("imagePath").equals("")){
-                        circle_image(getApplicationContext(),im,R.drawable.group_default);
+                        circle_image(getApplicationContext(),im,R.drawable.group_icon_default);
 
                     }
                     else{
@@ -478,7 +478,7 @@ public class GroupInfoActivity extends AppCompatActivity {
                                         String p = null;
 
                                         if (map3.get("imagePath") == null) {
-                                            p = "https://firebasestorage.googleapis.com/v0/b/allaromana-3f98e.appspot.com/o/group_default.png?alt=media&token=40bc93f4-6b97-466e-b130-e140f57c5895";
+                                            p = null;
                                         } else {
                                             p = map3.get("imagePath").toString();
                                         }

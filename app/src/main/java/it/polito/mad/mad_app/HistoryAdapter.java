@@ -38,6 +38,7 @@ import it.polito.mad.mad_app.model.ActivityData;
 import it.polito.mad.mad_app.model.Currencies;
 import it.polito.mad.mad_app.model.ExpenseData;
 import it.polito.mad.mad_app.model.ImageMethod;
+import it.polito.mad.mad_app.model.UserData;
 
 
 public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.MyViewHolder> {
@@ -47,6 +48,7 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.MyViewHo
     private ViewGroup view_x;
     private ViewGroup viewgroup;
     private Map<String, Integer> catToId = new TreeMap<>();
+    private String myname,mysurname;
     public class MyViewHolder extends RecyclerView.ViewHolder {
         public TextView name_ex, data_ex,  money_ex,creator_ex, yourslice,descrip_ex,algorithm_ex;
         public ImageView imCat;
@@ -147,6 +149,9 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.MyViewHo
             holder.card_view.setBackgroundColor(Color.parseColor("#F2E2E2"));
             holder.b.setVisibility(View.GONE);
         } else {
+            holder.b_contested.setVisibility(View.GONE);
+            holder.card_view.setBackgroundColor(Color.parseColor("#FFFFFF"));
+            holder.b.setVisibility(View.VISIBLE);
         }
         if(expense.getImagePath()!=null){
             Log.d("HistoryAdapter","La foto la vede"+expense.getImagePath());
@@ -203,8 +208,8 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.MyViewHo
                         Map <String, Object> mapname = (Map<String, Object>) dataSnapshot.getValue();
                         System.out.println("mapnameeeeeeeeeeeeeeeeeeee"+mapname);
                         if(mapname!=null) {
-                            String myname = (String)mapname.get("name");
-                            String mysurname = (String)mapname.get("surname");
+                            myname = (String)mapname.get("name");
+                            mysurname = (String)mapname.get("surname");
                             DatabaseReference ActRef = database.getReference("Activities");
                             for(String k : expense.getUsers().keySet()) {
                                 if(!k.equals(FirebaseAuth.getInstance().getCurrentUser().getUid()))
@@ -256,6 +261,21 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.MyViewHo
 
                                 }
 
+                            }
+                        }
+                        FirebaseDatabase database = FirebaseDatabase.getInstance();
+                        DatabaseReference ref_user;
+                        for(final String k:expense.getUsers().keySet()){
+                            if(k.equals(FirebaseAuth.getInstance().getCurrentUser().getUid())){
+                                ref_user = database.getReference("/Users/" + k + "/Groups/" + expense.getGroupId() + "/lastOperation/");
+                                ref_user.setValue("You contested an expense.");
+                                ref_user = database.getReference("/Users/" + k + "/Groups/" + expense.getGroupId() + "/dateLastOperation/");
+                                ref_user.setValue(Long.toString(System.currentTimeMillis()).toString());
+                            }else{
+                                ref_user = database.getReference("/Users/" + k + "/Groups/" + expense.getGroupId() + "/lastOperation/");
+                                ref_user.setValue(myname + " contested an expense.");
+                                ref_user = database.getReference("/Users/" + k + "/Groups/" + expense.getGroupId() + "/dateLastOperation/");
+                                ref_user.setValue(Long.toString(System.currentTimeMillis()).toString());
                             }
                         }
 

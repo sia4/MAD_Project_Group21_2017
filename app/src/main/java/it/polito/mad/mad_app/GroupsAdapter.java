@@ -136,7 +136,7 @@ public class GroupsAdapter extends RecyclerView.Adapter<GroupsAdapter.MyViewHold
         else{
             Log.d("Groups Adapter", "Set immagine di default");
 
-            Glide.with(context).load(R.drawable.group_default).asBitmap().centerCrop().into(new BitmapImageViewTarget(holder.im) {
+            Glide.with(context).load(R.drawable.group_icon_default).asBitmap().centerCrop().into(new BitmapImageViewTarget(holder.im) {
                 @Override
                 protected void setResource(Bitmap resource) {
                     RoundedBitmapDrawable circularBitmapDrawable =

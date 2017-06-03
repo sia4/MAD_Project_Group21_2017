@@ -277,7 +277,13 @@ public class ExpenseInfoActivity extends AppCompatActivity {
 
                     }
                 });
-
+                DatabaseReference ref_user;
+                for(final String k : usermap.keySet()){
+                    ref_user = database.getReference("/Users/" + k + "/Groups/" + GroupId + "/lastOperation/");
+                    ref_user.setValue(myname + " contested an expense.");
+                    ref_user = database.getReference("/Users/" + k + "/Groups/" + GroupId + "/dateLastOperation/");
+                    ref_user.setValue(Long.toString(System.currentTimeMillis()).toString());
+                }
 
 
 

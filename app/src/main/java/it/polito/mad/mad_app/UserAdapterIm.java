@@ -63,7 +63,7 @@ public class UserAdapterIm  extends RecyclerView.Adapter<UserAdapterIm.MyViewHol
         String p=usersData.get(position).getImagePath();
 
         if(p==null)
-            holder.im.setImageResource(R.drawable.group_default);
+            holder.im.setImageResource(R.drawable.user_icon_default);
         else {
             final Context context = holder.name.getContext();
             Glide.with(context).load(p).asBitmap().centerCrop().into(new BitmapImageViewTarget(holder.im) {

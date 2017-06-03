@@ -213,10 +213,11 @@
             android:layout_width="match_parent"
             android:layout_height="40sp"
             android:layout_gravity="center"
-
+            android:background="@color/colorAccent"
             android:shadowColor="#94A8A0"
             android:shadowDx="0"
             android:shadowDy="0"
+            android:textColor="@android:color/white"
             android:shadowRadius="0"
             android:text="Deny"/>
         <TextView
