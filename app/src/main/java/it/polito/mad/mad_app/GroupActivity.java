@@ -71,6 +71,17 @@ public class GroupActivity extends AppCompatActivity {
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
+
+        toolbar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext(), GroupInfoActivity.class);
+                intent.putExtra("groupId", gKey);
+                intent.putExtra("groupName", gName);
+                intent.putExtra("imagePath", gImage);
+                startActivityForResult(intent, 1);
+            }
+        });
         gKey = intent.getStringExtra("groupId");
         gName = intent.getStringExtra("groupName");
         gImage= intent.getStringExtra("imagePath");

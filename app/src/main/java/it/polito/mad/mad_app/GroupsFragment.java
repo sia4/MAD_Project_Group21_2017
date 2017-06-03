@@ -271,13 +271,38 @@ public class GroupsFragment extends Fragment {
                         Log.d("Groups Fragment", "Notify Data Set Changed sull'adapter");
                         gAdapter.notifyDataSetChanged();
                         progressBar.setVisibility(INVISIBLE);
+
+                        if(getView() != null) {
+                            if(groups.isEmpty() && !MainData.getInstance().getGroupFragmentArchive().equals("yes")) {
+                                TextView tv = (TextView) getView().findViewById(R.id.noGroups);
+                                tv.setText("You have no archived groups.");
+                                tv.setVisibility(VISIBLE);
+                            } else if(groups.isEmpty() && MainData.getInstance().getGroupFragmentArchive().equals("yes")) {
+                                TextView tv = (TextView) getView().findViewById(R.id.noGroups);
+                                tv.setVisibility(VISIBLE);
+                            } else  {
+                                TextView tv = (TextView) getView().findViewById(R.id.noGroups);
+                                tv.setVisibility(INVISIBLE);
+                            }
+
+                        }
                     }
                 } else {
                     progressBar.setVisibility(INVISIBLE);
 
                     if(getView() != null) {
-                        TextView tv = (TextView) getView().findViewById(R.id.noGroups);
-                        tv.setVisibility(VISIBLE);
+                        if(groups.isEmpty() && !MainData.getInstance().getGroupFragmentArchive().equals("yes")) {
+                            TextView tv = (TextView) getView().findViewById(R.id.noGroups);
+                            tv.setText("You have no archived groups.");
+                            tv.setVisibility(VISIBLE);
+                        } else if(groups.isEmpty() && MainData.getInstance().getGroupFragmentArchive().equals("yes")) {
+                            TextView tv = (TextView) getView().findViewById(R.id.noGroups);
+                            tv.setVisibility(VISIBLE);
+                        } else  {
+                            TextView tv = (TextView) getView().findViewById(R.id.noGroups);
+                            tv.setVisibility(INVISIBLE);
+                        }
+
                     }
                 }
             }

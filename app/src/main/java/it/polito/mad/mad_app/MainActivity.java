@@ -439,11 +439,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         MenuItem item1 = menu.findItem(R.id.action_search);
                         item1.setVisible(true);
                         FloatingActionButton addGroup = (FloatingActionButton)findViewById(R.id.addGroup);
+                        addGroup.setVisibility(View.VISIBLE);
                         TextView archive_text = (TextView) findViewById(R.id.archive_text);
                         MainData.getInstance().setGroupFragmentArchive("yes");
                         archive_text.setVisibility(View.GONE);
                         back_archive.setVisibility(View.GONE);
-                        addGroup.setVisibility(View.VISIBLE);
                         PagerAdapter mPagerAdapter = new PagerAdapter(getSupportFragmentManager());
                         final TabLayout tabL = (TabLayout) findViewById(R.id.tabs);
                         tabL.setVisibility(View.VISIBLE);
@@ -588,6 +588,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             MenuItem item1 = menu.findItem(R.id.action_search);
             item1.setVisible(false);
 
+            archive_text.setVisibility(View.VISIBLE);
             archive_text.setVisibility(View.VISIBLE);
             archive_back.setVisibility(View.VISIBLE);
             addGroup.setVisibility(View.GONE);
