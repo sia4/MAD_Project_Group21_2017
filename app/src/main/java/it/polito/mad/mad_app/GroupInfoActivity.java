@@ -388,7 +388,7 @@ public class GroupInfoActivity extends AppCompatActivity {
 
                         } else {
                             circle_image(getApplicationContext(),im,p);
-                            im.setOnClickListener(new View.OnClickListener(){
+                            /*im.setOnClickListener(new View.OnClickListener(){
 
                                 @Override
                                 public void onClick(View v){
@@ -404,7 +404,7 @@ public class GroupInfoActivity extends AppCompatActivity {
                                             startActivity(intent);
                                             //image.setImageBitmap(resource); // Possibly runOnUiThread()
                                         }
-                                    });
+                                    });*/
                                     /*
                                     new AsyncTask<Void, Void, Void>() {
                                         @Override
@@ -422,8 +422,8 @@ public class GroupInfoActivity extends AppCompatActivity {
                                             return null;
                                         }
                                     };*/
-                                }
-                            });
+                        //        }
+                        //    });
                         }
                     }
                 }
