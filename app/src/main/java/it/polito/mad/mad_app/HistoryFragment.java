@@ -46,7 +46,7 @@ public class    HistoryFragment extends Fragment {
         viewgroup=container;
         context = view.getContext();
         lex.clear();
-        hAdapter = new HistoryAdapter(lex,viewgroup);
+        hAdapter = new HistoryAdapter(context,lex,viewgroup);
         final RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.expenses);
 
         recyclerView.setItemAnimator(new DefaultItemAnimator());
