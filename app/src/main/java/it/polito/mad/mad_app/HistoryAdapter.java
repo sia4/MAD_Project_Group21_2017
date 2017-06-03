@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.widget.CardView;
@@ -166,6 +167,7 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.MyViewHo
             Log.d("HistoryAdapter","La foto la vede"+expense.getImagePath());
             final String p = expense.getImagePath();
             ImageMethod.square_image(holder.iPhoto.getContext(),holder.iPhoto,p);
+
             holder.iPhoto.setOnClickListener(new View.OnClickListener() {
 
                  @Override
@@ -173,16 +175,9 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.MyViewHo
 
                      Log.d("History Adapter", p);
 
-                     Glide.with(holder.iPhoto.getContext())
-                             .load(p).asBitmap().into(new SimpleTarget<Bitmap>() {
-                         @Override
-                         public void onResourceReady(Bitmap resource, GlideAnimation glideAnimation) {
-                             Intent intent = new Intent(context, FullImageActivity.class);
-                             intent.putExtra("BitmapImage", resource);
-                             context.startActivity(intent);
-                             //image.setImageBitmap(resource); // Possibly runOnUiThread()
-                         }
-                     });
+                     Intent intent = new Intent(context, FullImageActivity.class);
+                     intent.putExtra("imagePath", p);
+                     context.startActivity(intent);
                  }
              });
             //Glide.with(holder.iPhoto.getContext()).load(expense.getImagePath()).into(holder.iPhoto);

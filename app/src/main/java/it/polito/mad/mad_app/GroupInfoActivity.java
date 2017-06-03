@@ -846,7 +846,7 @@ public class GroupInfoActivity extends AppCompatActivity {
         final Dialog nagDialog = new Dialog(GroupInfoActivity.this,android.R.style.Theme_Material_Light_LightStatusBar);
         nagDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         nagDialog.setCancelable(false);
-        nagDialog.setContentView(R.layout.prewiew_image);
+        nagDialog.setContentView(R.layout.activity_prewiew_image);
         //Button btnClose = (Button)nagDialog.findViewById(R.id.btnIvClose);
         ImageView ivPreview = (ImageView)nagDialog.findViewById(R.id.iv_preview_image);
         ivPreview.setBackgroundResource(R.drawable.group_default);
