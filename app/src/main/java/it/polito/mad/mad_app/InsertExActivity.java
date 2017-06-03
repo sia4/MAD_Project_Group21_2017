@@ -61,7 +61,7 @@ import static it.polito.mad.mad_app.model.ImageMethod.circle_image;
 import static it.polito.mad.mad_app.model.ImageMethod.create_image;
 import static it.polito.mad.mad_app.model.ImageMethod.performCrop;
 import static it.polito.mad.mad_app.model.ImageMethod.require_image;
-
+import static it.polito.mad.mad_app.model.ImageMethod.square_image;
 
 
 public class InsertExActivity extends AppCompatActivity {
@@ -322,26 +322,32 @@ public class InsertExActivity extends AppCompatActivity {
                     }
                 }
 
-                if (isCamera) {imageUrl = outputFileUri;
+                if (isCamera) {
+                    imageUrl = outputFileUri;
                     ImageC = true;
-                    final PackageManager pManager = getPackageManager();
-                    Intent cropIntent=performCrop(imageUrl,pManager);
-                    if(cropIntent!=null){
+                    ImageView imageG = (ImageView) findViewById(R.id.ImageG);
+                    square_image(getApplicationContext(),imageG,imageUrl);
+                    //final PackageManager pManager = getPackageManager();
+                    //Intent cropIntent=performCrop(imageUrl,pManager);
+                    /*if(cropIntent!=null){
                         final Intent cIntent = Intent.createChooser(cropIntent, "Tha image should be cropped,select a source");
                         startActivityForResult(cIntent , 2);
                     }
                     else{
                         Toast toast = Toast.makeText(this, "This device doesn't support the crop action!", Toast.LENGTH_SHORT);
                         toast.show();
-                    }
+                    }*/
+
 
                 } else {
                     if (data != null) {
                         ImageC = true;
                         selectedImageUri = data.getData();
                         imageUrl= selectedImageUri;
-                        final PackageManager pManager = getPackageManager();
-                        Intent cropIntent=performCrop(imageUrl,pManager);
+                        ImageView imageG = (ImageView) findViewById(R.id.ImageG);
+                        square_image(getApplicationContext(),imageG,imageUrl);
+                        //final PackageManager pManager = getPackageManager();
+                        /*Intent cropIntent=performCrop(imageUrl,pManager);
                         if(cropIntent!=null){
                             final Intent cIntent = Intent.createChooser(cropIntent, "Tha image should be cropped,select a source");
                             startActivityForResult(cIntent , 2);
@@ -349,7 +355,7 @@ public class InsertExActivity extends AppCompatActivity {
                         else{
                             Toast toast = Toast.makeText(this, "This device doesn't support the crop action!", Toast.LENGTH_SHORT);
                             toast.show();
-                        }
+                        }*/
                     }
 
                 }
@@ -637,7 +643,7 @@ public class InsertExActivity extends AppCompatActivity {
                                 ProgressBar p = (ProgressBar) findViewById(R.id.progress_bar_insertex);
                                 p.setVisibility(View.VISIBLE);
                                 System.out.println(".......carica in" + outputFileUri.toString().substring(7));
-                                InputStream stream = new FileInputStream(new File(outputFileUri.toString().substring(7)));
+                                InputStream stream = new FileInputStream(new File(imageUrl.toString().substring(7)));
                                 StorageReference imageStorage = mStorageRef.child(refkey);
                                 UploadTask uploadTask = imageStorage.putStream(stream);
                                 uploadTask.addOnFailureListener(new OnFailureListener() {

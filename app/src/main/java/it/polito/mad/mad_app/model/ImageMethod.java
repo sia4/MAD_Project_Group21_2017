@@ -102,6 +102,13 @@ public class ImageMethod {
         });
 
     }
+    public static void square_image(final Context c, final ImageView i,Uri p){
+        Glide.with(c).load(p).asBitmap().centerCrop().into(i);
+
+    }
+    public static void square_image(final Context c, final ImageView i,String p){
+        Glide.with(c).load(p).transform( new RotateTransformation( c, 90f )).into(i);
+    }
     public static void circle_image(final Context c, final ImageView i,int p){
         final ImageView im=i;
         Glide.with(c).load(p).asBitmap().centerCrop().into(new BitmapImageViewTarget(im) {

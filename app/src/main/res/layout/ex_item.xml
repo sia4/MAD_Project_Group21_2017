@@ -24,6 +24,7 @@
             android:orientation="vertical">
 
             <LinearLayout
+                android:id="@+id/first_ll"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginTop="10dp"
@@ -62,6 +63,7 @@
                         android:layout_margin="5dp"
                         android:gravity="right"
                         android:text="Money"
+                        android:textColor="@color/colorPrimary"
                         android:textSize="20sp" />
 
                 </LinearLayout>
@@ -69,19 +71,21 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
+                    android:orientation="vertical"
                     android:layout_weight="0.7">
 
                     <ImageView
                         android:id="@+id/imCat"
-                        android:layout_gravity="center_vertical"
                         android:layout_width="85dp"
                         android:layout_height="85dp" />
                 </LinearLayout>
 
             </LinearLayout>
-            <LinearLayout
+            <RelativeLayout
+                android:id="@+id/second_ll"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:orientation="horizontal"
                 android:layout_marginTop="10dp"
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp">
@@ -106,7 +110,23 @@
                     android:text="Contested"
                     android:textColor="#CD6858"
                     android:textSize="15sp"/>
-            </LinearLayout>
+
+                <ImageView
+                    android:id="@+id/arrow_down"
+                    android:layout_width="35dp"
+                    android:layout_height="35dp"
+                    android:layout_marginTop="5dp"
+                    android:layout_alignParentRight="true"
+                    />
+                <ImageView
+                    android:id="@+id/arrow_up"
+                    android:layout_width="35dp"
+                    android:layout_height="35dp"
+                    android:layout_marginTop="5dp"
+                    android:visibility="invisible"
+                    android:layout_alignParentRight="true"
+                    />
+            </RelativeLayout>
             <LinearLayout
                 android:id="@+id/info"
                 android:orientation="horizontal"
@@ -139,6 +159,7 @@
                             android:text="Algoritmo"
                             />
                           <TextView
+                              android:id="@+id/your_slice"
                               android:layout_width="wrap_content"
                               android:layout_margin="5dp"
                               android:layout_height="24sp"
@@ -165,7 +186,9 @@
                         <ImageView
                             android:id="@+id/iPhoto"
                             android:layout_width="65dp"
+                            android:layout_gravity="center"
                             android:layout_height="65dp"
+                            android:scaleType="centerCrop"
                             android:layout_weight="0.63" />
                     </LinearLayout>
             </LinearLayout>

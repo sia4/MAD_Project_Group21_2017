@@ -19,7 +19,9 @@ public class ExpenseData implements Comparable<ExpenseData>{
     private String creatorId="0";
     private String defaultcurrency;
     private String imagePath;
-    private Map<String,Boolean> users;
+    private String groupId;
+    private Map<String,String> users;
+    private String groupName;
     public ExpenseData(String n, String d, String ca, String cu, String value, String myvalue, String algorithm, String dflt) {
         this.name = n;
         this.description = d;
@@ -52,6 +54,8 @@ public class ExpenseData implements Comparable<ExpenseData>{
     public void setMyvalue(String i){this.myvalue = i;}
     public void setDate(String date){this.date = date;}
     public void setImagePath(String image){this.imagePath=image;}
+    public void setUsers(Map<String,String> u){this.users=u;}
+    public Map <String,String> getUsers(){return this.users;}
     public String getContested(){return this.contested;}
     public String getDate(){ return this.date;}
     public String getName(){
@@ -63,19 +67,19 @@ public class ExpenseData implements Comparable<ExpenseData>{
     public String getDefaultcurrency() {
         return this.defaultcurrency;
     }
-
+    public void setGroupId(String id){this.groupId=id;}
     public String getDescription(){
         return this.description;
     }
-
+    public String getGroupId(){return  this.groupId;}
     public String getCategory(){
         return this.category;
     }
-
+    public String getGroupName(){return this.groupName;}
     public String getCurrency(){
         return this.currency;
     }
-
+    public void setGroupName(String gname){this.groupName=gname;}
    /* public String getCurrencyRow() {
         Currencies c = new Currencies();
         return c.getCurrencyString(this.currency);

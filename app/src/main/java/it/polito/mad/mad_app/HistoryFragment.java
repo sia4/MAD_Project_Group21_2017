@@ -38,7 +38,7 @@ public class    HistoryFragment extends Fragment {
     private Context context;
     private ViewGroup viewgroup;
     private HistoryAdapter hAdapter;
-    private String GroupName, myvalue;
+    private String GroupName, myvalue,GName;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -81,6 +81,7 @@ public class    HistoryFragment extends Fragment {
         }));*/
 
         GroupName = this.getArguments().getString("GroupId");
+        GName = this.getArguments().getString("GroupName");
 
         System.out.println("H: " + GroupName);
         FirebaseDatabase database = FirebaseDatabase.getInstance();
@@ -119,10 +120,12 @@ public class    HistoryFragment extends Fragment {
                                         if(map3.get("imagePath")!=null){
                                             e.setImagePath((String) map3.get("imagePath"));
                                         }
+                                        e.setUsers((Map<String, String>) map3.get("users"));
                                         e.setIdEx(k);
                                         e.setDate((String) map3.get("date"));
                                         e.setContested((String) map3.get("contested"));
-
+                                        e.setGroupId(GroupName);
+                                        e.setGroupName(GName);
                                         //System.out.print("currency from e: " + e.getCurrencyRow());
 
                                         if ((String) map3.get("creatorId") != null)
