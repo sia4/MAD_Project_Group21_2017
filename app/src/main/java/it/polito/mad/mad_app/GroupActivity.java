@@ -93,24 +93,6 @@ public class GroupActivity extends AppCompatActivity {
         System.out.println("---->intent"+intent);
         System.out.println("---->intent boooooooo"+intent.getExtras());
 
-        DatabaseReference myRef = database3.getReference("Groups").child(gKey);
-        myRef.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                g = dataSnapshot.getValue(it.polito.mad.mad_app.model.Group.class);
-                if (g != null) {
-                    defaultcurrency = g.getPrimaryCurrency();
-                    System.out.println("DFLT # GroupActvity - L87" + defaultcurrency);
-                    Currencies c = new Currencies();
-                    MainData.getInstance().setDefaultCurrencyForStats(c.getCurrencySymbol(defaultcurrency));
-                }
-            }
-
-            @Override
-            public void onCancelled(DatabaseError error) {
-            }
-        });
-
         final Bundle b = new Bundle();
         b.putString("GroupId", gKey);
         b.putString("GroupName", gName);
@@ -224,15 +206,52 @@ public class GroupActivity extends AppCompatActivity {
                             tmpneg +=tttt;
                     }
 
-                    String subtitle = "";
-                    Currencies c_tmpp = new Currencies();
-                    String symboll = "";
-                    if (defaultcurrency != null) {
-                        symboll = c_tmpp.getCurrencySymbol(defaultcurrency);
-                        MainData.getInstance().setDefaultCurrencyForStats(symboll);
-                    }
-                    subtitle += " " + "They Owe You: " + String.format(Locale.US, "%.2f", tmppos) + " " + symboll + " - You Owe: " + String.format(Locale.US, "%.2f", tmpneg) + " " + symboll;
-                    getSupportActionBar().setSubtitle(subtitle);
+                    //final String subtitle;
+                    final Currencies c_tmpp = new Currencies();
+                    //final String symboll;
+
+                    DatabaseReference myRef = database3.getReference("Groups").child(gKey);
+                    myRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            String symboll = "";
+                            String subtitle = "";
+                            g = dataSnapshot.getValue(it.polito.mad.mad_app.model.Group.class);
+                            if (g != null) {
+                                defaultcurrency = g.getPrimaryCurrency();
+                                System.out.println("DFLT # GroupActvity - L87" + defaultcurrency);
+                                Currencies c = new Currencies();
+                                MainData.getInstance().setDefaultCurrencyForStats(c.getCurrencySymbol(defaultcurrency));
+                                if (defaultcurrency != null) {
+                                    symboll = c_tmpp.getCurrencySymbol(defaultcurrency);
+                                    MainData.getInstance().setDefaultCurrencyForStats(symboll);
+                                }
+                                subtitle += " " + "They Owe You: " + String.format(Locale.US, "%.2f", tmppos) + " " + symboll + " - You Owe: " + String.format(Locale.US, "%.2f", tmpneg) + " " + symboll;
+                                getSupportActionBar().setSubtitle(subtitle);
+
+                                try{
+                                    Field field = Toolbar.class.getDeclaredField( "mSubtitleTextView" );
+                                    field.setAccessible( true );
+                                    TextView subtitleTextView = (TextView)field.get( toolbar );
+                                    subtitleTextView.setEllipsize(TextUtils.TruncateAt.MARQUEE);
+                                    subtitleTextView.setFocusable(true);
+                                    subtitleTextView.setFocusableInTouchMode(true);
+                                    subtitleTextView.requestFocus();
+                                    subtitleTextView.setSingleLine(true);
+                                    subtitleTextView.setSelected(true);
+                                    subtitleTextView.setMarqueeRepeatLimit(1);
+                                    //subtitleTextView.setMarqueeRepeatLimit(-1); //continua all'infinito
+                                }catch (NoSuchFieldException e) {
+                                } catch (IllegalAccessException e) {
+                                }
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(DatabaseError error) {
+                        }
+                    });
+
                     Glide
                             .with(getApplicationContext())
                             .load(gImage)
@@ -246,21 +265,6 @@ public class GroupActivity extends AppCompatActivity {
                                     getSupportActionBar().setLogo(circularBitmapDrawable);
                                 }
                             });
-                    try{
-                        Field field = Toolbar.class.getDeclaredField( "mSubtitleTextView" );
-                        field.setAccessible( true );
-                        TextView subtitleTextView = (TextView)field.get( toolbar );
-                        subtitleTextView.setEllipsize(TextUtils.TruncateAt.MARQUEE);
-                        subtitleTextView.setFocusable(true);
-                        subtitleTextView.setFocusableInTouchMode(true);
-                        subtitleTextView.requestFocus();
-                        subtitleTextView.setSingleLine(true);
-                        subtitleTextView.setSelected(true);
-                        subtitleTextView.setMarqueeRepeatLimit(1);
-                        //subtitleTextView.setMarqueeRepeatLimit(-1); //continua all'infinito
-                    }catch (NoSuchFieldException e) {
-                    } catch (IllegalAccessException e) {
-                    }
 
                 }
                 else{
