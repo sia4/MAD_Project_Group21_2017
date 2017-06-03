@@ -8,6 +8,8 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.Spinner;
@@ -96,56 +98,77 @@ public class InsertCurrencyActivity extends AppCompatActivity {
         getSupportActionBar().setTitle("Insert Currency");
 
         final RecyclerView CurrencyRecyclerView = (RecyclerView) findViewById(R.id.changes);
-        Spinner spinner = (Spinner) findViewById(R.id.Currency);
+        final Spinner spinner = (Spinner) findViewById(R.id.Currency);
+        final EditText change = (EditText) findViewById(R.id.change);
 
         CurrencyRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         Currencies.add("Select currency");
         Currencies.addAll(cref.getCurrenciesCodes());
 
-        RequestQueue queue = Volley.newRequestQueue(this);
-        String url = "http://api.fixer.io/latest?base=" + dfltcurrency;
+        final RequestQueue queue = Volley.newRequestQueue(this);
+        final String url = "http://api.fixer.io/latest?base=" + dfltcurrency;
 
-        JsonObjectRequest jsObjRequest = new JsonObjectRequest
-                (com.android.volley.Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
 
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        try {
-                            System.out.println(response.toString());
-                            String last_update = response.getString("date");
-                            //frase.setText("Changes referred to "+dfltcurrency+" - Last Update: "+last_update);
-                            JSONObject rates = response.getJSONObject("rates");
-                            for (String c : Currencies) {
-                                if (c.equals(response.getString("base")) || c.equals("Select currency")) {
-                                    continue;
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                changes_l.clear();
+                JsonObjectRequest jsObjRequest = new JsonObjectRequest
+                        (com.android.volley.Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
+
+                            @Override
+                            public void onResponse(JSONObject response) {
+                                try {
+                                    System.out.println(response.toString());
+                                    String last_update = response.getString("date");
+                                    //frase.setText("Changes referred to "+dfltcurrency+" - Last Update: "+last_update);
+                                    JSONObject rates = response.getJSONObject("rates");
+                                    for (String c : Currencies) {
+                                        if (c.equals(response.getString("base")) || c.equals("Select currency")) {
+                                            continue;
+                                        }
+                                        //changes_l.add(c + " " + rates.getString(c.toString()));
+                                        if(spinner.getSelectedItem().toString().equals(c)){
+                                            change.setText(rates.getString(c.toString()));
+                                        }
+
+                                    }
+
+                                    System.out.println("Changes:" + changes_l.toString());
+
+                                    cAdapter = new CurrenciesAdapter(changes_l);
+                                    CurrencyRecyclerView.setAdapter(cAdapter);
+                                    cAdapter.notifyDataSetChanged();
+
+                                } catch (Exception e) {
+                                    System.out.println(e.getMessage());
                                 }
-                                changes_l.add(c + " " + rates.getString(c.toString()));
+
                             }
+                        }, new Response.ErrorListener() {
 
-                            System.out.println("Changes:" + changes_l.toString());
+                            @Override
+                            public void onErrorResponse(VolleyError error) {
+                                // TODO Auto-generated method stub
 
-                            cAdapter = new CurrenciesAdapter(changes_l);
-                            CurrencyRecyclerView.setAdapter(cAdapter);
-                            cAdapter.notifyDataSetChanged();
+                            }
+                        });
+                queue.add(jsObjRequest);
 
-                        } catch (Exception e) {
-                            System.out.println(e.getMessage());
-                        }
 
-                    }
-                }, new Response.ErrorListener() {
+            }
 
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        // TODO Auto-generated method stub
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
 
-                    }
-                });
-        queue.add(jsObjRequest);
+            }
+        });
 
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, R.layout.currency_item, Currencies);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);
+
+
 
     }
 
