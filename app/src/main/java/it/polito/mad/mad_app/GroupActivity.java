@@ -42,6 +42,7 @@ import java.util.TreeMap;
 
 import it.polito.mad.mad_app.model.Currencies;
 import it.polito.mad.mad_app.model.Group;
+import it.polito.mad.mad_app.model.MainData;
 import it.polito.mad.mad_app.model.PagerAdapterGroup;
 
 import static it.polito.mad.mad_app.model.ImageMethod.circle_image;
@@ -89,6 +90,8 @@ public class GroupActivity extends AppCompatActivity {
                 if (g != null) {
                     defaultcurrency = g.getPrimaryCurrency();
                     System.out.println("DFLT # GroupActvity - L87" + defaultcurrency);
+                    Currencies c = new Currencies();
+                    MainData.getInstance().setDefaultCurrencyForStats(c.getCurrencySymbol(defaultcurrency));
                 }
             }
 
@@ -214,6 +217,7 @@ public class GroupActivity extends AppCompatActivity {
                     String symboll = "";
                     if (defaultcurrency != null) {
                         symboll = c_tmpp.getCurrencySymbol(defaultcurrency);
+                        MainData.getInstance().setDefaultCurrencyForStats(symboll);
                     }
                     subtitle += " " + "They Owe You: " + String.format(Locale.US, "%.2f", tmppos) + " " + symboll + " - You Owe: " + String.format(Locale.US, "%.2f", tmpneg) + " " + symboll;
                     getSupportActionBar().setSubtitle(subtitle);

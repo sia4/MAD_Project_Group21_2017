@@ -576,6 +576,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             i.putExtra("UserInfo","true");
             startActivity(i);
         }
+        else if (id == R.id.nav_credits && userF!=null) {
+            Intent i = new Intent(MainActivity.this, CreditsActivity.class);
+            startActivity(i);
+        }
         else if (id == R.id.nav_archive && userF!=null) {
             MainData.getInstance().setGroupFragmentArchive("no");
             TextView archive_text = (TextView) findViewById(R.id.archive_text);

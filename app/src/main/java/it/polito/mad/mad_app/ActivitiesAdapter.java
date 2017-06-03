@@ -84,7 +84,7 @@ public class ActivitiesAdapter extends RecyclerView.Adapter<ActivitiesAdapter.My
             }
         }
         if(activity.getRead()==false){
-            holder.itemView.setBackgroundColor(Color.parseColor("#E8F5E9"));
+            holder.itemView.setBackgroundColor(Color.parseColor("#E0F2F1"));
         }else{
             holder.itemView.setBackgroundColor(Color.parseColor("#ffffff"));
         }

@@ -86,7 +86,7 @@
                     android:id="@+id/Category"
                     android:layout_width="match_parent"
                     android:layout_height="60sp"
-                    android:entries="@array/categories" />
+                     />
                 <LinearLayout
                     android:id="@+id/inset_im_ex"
                     android:layout_width="wrap_content"

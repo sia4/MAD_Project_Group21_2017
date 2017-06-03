@@ -41,6 +41,7 @@ import java.util.TreeMap;
 
 import it.polito.mad.mad_app.model.Balance;
 import it.polito.mad.mad_app.model.BalanceData;
+import it.polito.mad.mad_app.model.MainData;
 
 
 public class StatsFragment extends Fragment{
@@ -232,7 +233,7 @@ public class StatsFragment extends Fragment{
                 }
                 catImg.setVisibility(View.VISIBLE);
                 catImg.setImageDrawable(getResources().getDrawable(catToId.get(sss)));
-                String bau ="Category "+sss+"\n"+"Total spent: "+ss+" / "+total;
+                String bau ="Category "+sss+"\n"+"Total spent: "+ss+" "+ MainData.getInstance().getDefaultCurrencyForStats()+" / "+total+" "+ MainData.getInstance().getDefaultCurrencyForStats();
                 CatSpec.setText(bau);
             }
 
@@ -262,7 +263,7 @@ public class StatsFragment extends Fragment{
                     }
                 }
                 String sss = r;
-                String bau ="Date "+sss+"\n"+"Total spent: "+ss+" / "+total;
+                String bau ="Date "+sss+"\n"+"Total spent: "+ss+" "+ MainData.getInstance().getDefaultCurrencyForStats()+" / "+total+" "+ MainData.getInstance().getDefaultCurrencyForStats();
                 DateSpec.setText(bau);
             }
 

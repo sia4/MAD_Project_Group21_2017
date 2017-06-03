@@ -2,6 +2,7 @@
 <resources>
 
     <string-array name="currencies">
+        <item>Select favourite currency</item>
         <item>EUR €</item>
         <item>USD $</item>
         <item>GBP £</item>

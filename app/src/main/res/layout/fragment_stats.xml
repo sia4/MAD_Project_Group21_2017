@@ -22,7 +22,7 @@
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:text="@string/stat_group"
-
+                android:layout_marginBottom="15dp"
                 android:layout_marginTop="22dp"
                 android:textSize="25sp" />
             <RelativeLayout
@@ -51,7 +51,8 @@
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:layout_marginTop="22dp"
-                android:textSize="15sp" />
+                android:textSize="18sp" />
+            <View style="@style/Divider" />
             <TextView
                 android:id="@+id/GroupExByDate"
                 android:layout_width="match_parent"
@@ -59,6 +60,7 @@
                 android:gravity="center"
                 android:text="Expenses by date"
                 android:layout_marginTop="22dp"
+                android:layout_marginBottom="15dp"
                 android:textSize="25sp" />
             <com.github.mikephil.charting.charts.BarChart
                 android:layout_width="match_parent"
@@ -73,7 +75,7 @@
                 android:gravity="center"
                 android:layout_marginTop="22dp"
                 android:layout_marginBottom="60dp"
-                android:textSize="15sp" />
+                android:textSize="18sp" />
         </LinearLayout>
     </android.support.v4.widget.NestedScrollView>
 </android.support.design.widget.CoordinatorLayout>

@@ -52,8 +52,7 @@ public class BudgetAdapter extends RecyclerView.Adapter<BudgetAdapter.MyViewHold
             super(view);
             name_cred_deb = (TextView) view.findViewById(R.id.name_cred_deb);
             value_cred_deb = (TextView) view.findViewById(R.id.value_cred_deb);
-            //b=(Button) view.findViewById(R.id.Par);
-            buttonContainer = (LinearLayout) view.findViewById(R.id.buttonContainer);
+            button =(Button) view.findViewById(R.id.Par);
             imageView = (ImageView) view.findViewById(R.id.imageBudget);
         }
     }
@@ -155,63 +154,32 @@ public class BudgetAdapter extends RecyclerView.Adapter<BudgetAdapter.MyViewHold
 
 
         if(n>0){
-            //System.out.println(budget.getEmail() + "-->" + MainData.getInstance().findUserByMail(budget.getEmail()));
-            //holder.name_cred_deb.setText(MainData.getInstance().findUserByMail(budget.getEmail()).getName() + " owns you:");
 
-            //holder.name_cred_deb.setText(budget.getName()+ " owns you:");
             holder.value_cred_deb.setTextColor(Color.parseColor("#27B011"));
-            if(holder.button==null) {
-                holder.button = new Button(mContext);
-                holder.button.setText("Balance");
-                holder.buttonContainer.setLayoutParams(new LinearLayout.LayoutParams(
-                        LinearLayout.LayoutParams.MATCH_PARENT,LinearLayout.LayoutParams.WRAP_CONTENT));
-                holder.buttonContainer.addView(holder.button);
-                holder.button.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        Balance budget = budgetData.get(position);
-                        Intent intent = new Intent().setClass(v.getContext(), BalanceActivity.class);
-                        String uname = budget.getName()+ " owns you:";
-                        //String umail = budget.getEmail();
-                        String gname = budget.getName();
-                        //String bValue = Float.toString(budget.getValue());
-                        //String currency = budget.getCurrency();
-                        intent.putExtra("gname", budget.getgID());
-                        intent.putExtra("uKey", budget.getKey());
-                        intent.putExtra("uname", budget.getName());
-                        intent.putExtra("value", Float.toString(budget.getValue()));
-                        Currencies tmp = new Currencies();
-                        String symbol = tmp.getCurrencySymbol(DefaultCurrency);
-                        intent.putExtra("defaultcurrency", symbol);
-                        //intent.putExtra("currency", currency);
-                        v.getContext().startActivity(intent);
-                    }
-                });
-            }
-            /*holder.b.setVisibility(View.VISIBLE);
-            holder.b.setText("Balance");
-            holder.b.setOnClickListener(new View.OnClickListener() {
+            holder.button.setVisibility(View.VISIBLE);
+            holder.button.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    Balance budget = budgetData.get(position);
                     Intent intent = new Intent().setClass(v.getContext(), BalanceActivity.class);
-                    String uname = budget.getName();
-                    String gname = budget.getGName();
-                    String bValue = Float.toString(budget.getValue());
-                    String currency = budget.getCurrency();
-                    intent.putExtra("gname",gname);
-                    intent.putExtra("uname",uname);
-                    intent.putExtra("value", bValue);
-                    intent.putExtra("currency", currency);
+                    String uname = budget.getName()+ " owns you:";
+
+                    String gname = budget.getName();
+
+                    intent.putExtra("gname", budget.getgID());
+                    intent.putExtra("uKey", budget.getKey());
+                    intent.putExtra("uname", budget.getName());
+                    intent.putExtra("value", Float.toString(budget.getValue()));
+                    Currencies tmp = new Currencies();
+                    String symbol = tmp.getCurrencySymbol(DefaultCurrency);
+                    intent.putExtra("defaultcurrency", symbol);
                     v.getContext().startActivity(intent);
-                }
-            });*/
+                        }
+                });
         }
         else{
-            if(holder.button!=null){
-                holder.buttonContainer.removeView(holder.button);
-            }
             holder.value_cred_deb.setTextColor(Color.parseColor("#D51111"));
-
+            holder.button.setVisibility(View.GONE);
         }
 
     }
