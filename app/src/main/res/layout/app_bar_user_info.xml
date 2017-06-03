@@ -62,7 +62,8 @@
                 android:textColor="#FFFFFF"
                 android:visibility="gone"
                 android:hint="Search..."
-                android:textColorHint="#FFFFFF"
+                android:textCursorDrawable="@null"
+                android:textColorHint="@color/colorPrimaryLight"
                 />
             <TextView
                 android:id="@+id/archive_text"

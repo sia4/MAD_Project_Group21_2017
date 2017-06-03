@@ -12,11 +12,9 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -273,13 +271,38 @@ public class GroupsFragment extends Fragment {
                         Log.d("Groups Fragment", "Notify Data Set Changed sull'adapter");
                         gAdapter.notifyDataSetChanged();
                         progressBar.setVisibility(INVISIBLE);
+
+                        if(getView() != null) {
+                            if(groups.isEmpty() && !MainData.getInstance().getGroupFragmentArchive().equals("yes")) {
+                                TextView tv = (TextView) getView().findViewById(R.id.noGroups);
+                                tv.setText("You have no archived groups.");
+                                tv.setVisibility(VISIBLE);
+                            } else if(groups.isEmpty() && MainData.getInstance().getGroupFragmentArchive().equals("yes")) {
+                                TextView tv = (TextView) getView().findViewById(R.id.noGroups);
+                                tv.setVisibility(VISIBLE);
+                            } else  {
+                                TextView tv = (TextView) getView().findViewById(R.id.noGroups);
+                                tv.setVisibility(INVISIBLE);
+                            }
+
+                        }
                     }
                 } else {
                     progressBar.setVisibility(INVISIBLE);
 
                     if(getView() != null) {
-                        TextView tv = (TextView) getView().findViewById(R.id.noGroups);
-                        tv.setVisibility(VISIBLE);
+                        if(groups.isEmpty() && !MainData.getInstance().getGroupFragmentArchive().equals("yes")) {
+                            TextView tv = (TextView) getView().findViewById(R.id.noGroups);
+                            tv.setText("You have no archived groups.");
+                            tv.setVisibility(VISIBLE);
+                        } else if(groups.isEmpty() && MainData.getInstance().getGroupFragmentArchive().equals("yes")) {
+                            TextView tv = (TextView) getView().findViewById(R.id.noGroups);
+                            tv.setVisibility(VISIBLE);
+                        } else  {
+                            TextView tv = (TextView) getView().findViewById(R.id.noGroups);
+                            tv.setVisibility(INVISIBLE);
+                        }
+
                     }
                 }
             }

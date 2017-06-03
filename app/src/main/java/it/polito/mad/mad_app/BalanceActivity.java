@@ -1,7 +1,9 @@
 package it.polito.mad.mad_app;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
@@ -23,13 +25,16 @@ public class BalanceActivity extends AppCompatActivity {
 
     private Balance b;
     private String auKey;
+    String uname;
+    String currency;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         Intent i = getIntent();
         String gname = i.getStringExtra("gname");
         String ukey = i.getStringExtra("uKey");
-        String uname = i.getStringExtra("uname");
-        String currency = i.getStringExtra("defaultcurrency");
+        uname = i.getStringExtra("uname");
+        currency = i.getStringExtra("defaultcurrency");
         float v=Float.parseFloat(i.getStringExtra("value"));
 
         FirebaseUser currentFUser = FirebaseAuth.getInstance().getCurrentUser() ;
@@ -85,24 +90,33 @@ public class BalanceActivity extends AppCompatActivity {
                 if(iValue.getText().toString().equals("")) {
                     Toast.makeText(BalanceActivity.this, "Please insert an amount!", Toast.LENGTH_LONG).show();
                 } else {
-                    float insertValue = Float.parseFloat(iValue.getText().toString());
+                    final float insertValue = Float.parseFloat(iValue.getText().toString());
 
                     //if (insertValue > -(MainData.getInstance().getGroup(groupName).getExpense(userName))) {
                        // Toast.makeText(BalanceActivity.this, "The value is too high!", Toast.LENGTH_LONG).show();
                     //} else {
-                        System.out.println("+++++++"+insertValue);
-                        b.setValue(insertValue);
-                        float o=0-b.getValue();
-                        System.out.println("+++++++++"+o);
-                        System.out.println("+++++++++"+b.getValue());
-                        FirebaseDatabase database = FirebaseDatabase.getInstance();
-                        DatabaseReference myRef = database.getReference("/Balance/"+b.getgID()+"/"+auKey+"/"+b.getKey()+"/"+"value");
-                        myRef.setValue(String.format(Locale.US, "%.2f",b.getValue()));
-                        myRef = database.getReference("/Balance/"+b.getgID()+"/"+b.getKey()+"/"+auKey+"/"+"value");
-                        myRef.setValue(String.format(Locale.US, "%.2f", o));
-                        //    Toast.makeText(BalanceActivity.this, String.valueOf(MainData.getInstance().getGroup(groupName).getExpense(userName)+insertValue), Toast.LENGTH_LONG).show();
-                        setResult(RESULT_OK, null);
-                        finish();
+                    new AlertDialog.Builder(BalanceActivity.this)
+                            .setTitle("Warning!")
+                            .setMessage("Are you sure "+uname+" gave you "+insertValue+" "+ currency+"?")
+                            .setIcon(android.R.drawable.ic_dialog_alert)
+                            .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int whichButton) {
+                                    System.out.println("+++++++"+insertValue);
+                                    b.setValue(insertValue);
+                                    float o=0-b.getValue();
+                                    System.out.println("+++++++++"+o);
+                                    System.out.println("+++++++++"+b.getValue());
+                                    FirebaseDatabase database = FirebaseDatabase.getInstance();
+                                    DatabaseReference myRef = database.getReference("/Balance/"+b.getgID()+"/"+auKey+"/"+b.getKey()+"/"+"value");
+                                    myRef.setValue(String.format(Locale.US, "%.2f",b.getValue()));
+                                    myRef = database.getReference("/Balance/"+b.getgID()+"/"+b.getKey()+"/"+auKey+"/"+"value");
+                                    myRef.setValue(String.format(Locale.US, "%.2f", o));
+                                    //    Toast.makeText(BalanceActivity.this, String.valueOf(MainData.getInstance().getGroup(groupName).getExpense(userName)+insertValue), Toast.LENGTH_LONG).show();
+                                    setResult(RESULT_OK, null);
+                                    finish();
+                                }
+                            }).setNegativeButton(android.R.string.cancel, null).show();
+
                     //}
                 }
                 return true;

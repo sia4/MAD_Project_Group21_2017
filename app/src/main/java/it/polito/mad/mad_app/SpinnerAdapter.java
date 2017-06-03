@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import java.util.ArrayList;
 
@@ -29,8 +30,16 @@ public class SpinnerAdapter extends ArrayAdapter<ItemData> {
     public View getView(int position, View convertView, ViewGroup parent ){
         View itemView=inflater.inflate(R.layout.category_item, parent,false);
         ImageView imageView=(ImageView)itemView.findViewById(R.id.category_icon);
-        imageView.setImageResource(list.get(position).getImageId());
         TextView textView=(TextView)itemView.findViewById(R.id.category_name);
+        if(!list.get(position).getText().equals("Select category"))
+            imageView.setImageResource(list.get(position).getImageId());
+        else{
+            imageView.setVisibility(View.GONE);
+            LinearLayout.LayoutParams llp = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+            llp.setMargins(15, 25, 0, 30); // llp.setMargins(left, top, right, bottom);
+            textView.setLayoutParams(llp);
+        }
+
         textView.setText(list.get(position).getText());
         return itemView;
     }

@@ -496,7 +496,7 @@ public class InsertExActivity extends AppCompatActivity {
                             System.out.println("DEBUG - InsertEx - L434 Value: " + value);
                             System.out.println("DEBUG - InsertEx - L435 Currency: " + currency);
 
-                            if (algorithm.equals("equally")) {
+                            if (algorithm.equals("Equally") || algorithm.equals("equally")) {
                                 v = value / users.size();
 
                                 if (cambio != 0) {
@@ -525,7 +525,7 @@ public class InsertExActivity extends AppCompatActivity {
 
                                 algValue = Float.parseFloat(EditValue.getText().toString());
 
-                                if (algorithm.equals("by percentuage")) {
+                                if (algorithm.equals("by Percentuage")) {
                                     double tmp = value * algValue / 100;
                                     if (cambio != 0) {
                                         tmp *= cambio;
@@ -550,22 +550,22 @@ public class InsertExActivity extends AppCompatActivity {
                             algSum += algValue;
                         }
 
-                        if ((algorithm.equals("by percentuage") && algSum == 100)) {
+                        if ((algorithm.equals("by Percentuage") && algSum == 100)) {
 
                             flagok = 1;
                         }
 
-                        if ((algorithm.equals("by import") && algSum == value)) {
+                        if (((algorithm.equals("by import") || algorithm.equals("By import")) && algSum == value)) {
 
                             flagok = 1;
                         }
 
-                        if ((algorithm.equals("by percentuage") && algSum != 100)) {
+                        if ((algorithm.equals("by Percentuage") && algSum != 100)) {
                             flagok = 0;
                             String text = String.format("Percentage sum values must be equal to 100!", algSum, i);
                             Toast.makeText(InsertExActivity.this, text, Toast.LENGTH_LONG).show();
                         }
-                        if ((algorithm.equals("by import") && algSum != value)) {
+                        if (((algorithm.equals("by import") || algorithm.equals("By import")) && algSum != value)) {
                             flagok = 0;
                             Toast.makeText(InsertExActivity.this, "Import sum values must be equal to the total value!", Toast.LENGTH_LONG).show();
                         }

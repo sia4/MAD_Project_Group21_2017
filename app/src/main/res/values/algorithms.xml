@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string-array name="algorithms">
-    <item>equally</item>
-    <item>by percentuage</item>
-    <item>by import</item>
+    <item>Equally</item>
+    <item>By percentuage</item>
+    <item>By import</item>
 
     </string-array>
 

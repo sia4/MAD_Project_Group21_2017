@@ -23,6 +23,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import org.ocpsoft.prettytime.PrettyTime;
+
 import java.sql.Date;
 import java.text.SimpleDateFormat;
 import java.util.Locale;
@@ -32,6 +34,7 @@ import java.util.TreeMap;
 import it.polito.mad.mad_app.model.ActivityData;
 import it.polito.mad.mad_app.model.Currencies;
 import it.polito.mad.mad_app.model.ExpenseData;
+import it.polito.mad.mad_app.model.ImageMethod;
 
 public class ExpenseInfoActivity extends AppCompatActivity {
 
@@ -44,6 +47,9 @@ public class ExpenseInfoActivity extends AppCompatActivity {
     private FirebaseAuth mAuth = FirebaseAuth.getInstance();
     private Map<String, String> usermapTemp;
     private String DefaultCurrency;
+    public ImageView imCat;
+    private Map<String, Integer> catToId = new TreeMap<>();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -66,11 +72,25 @@ public class ExpenseInfoActivity extends AppCompatActivity {
         value_ex = (TextView) findViewById(R.id.exValue);
         creator_ex = (TextView) findViewById(R.id.exCreator);
         description_ex = (TextView) findViewById(R.id.exDescription);
-        category_ex = (TextView) findViewById(R.id.exCategory);
+        //category_ex = (TextView) findViewById(R.id.exCategory);
         //currency_ex = (TextView) findViewById(R.id.exCurrency);
         myvalue_ex = (TextView) findViewById(R.id.exMyvalue);
         algorithm_ex = (TextView) findViewById(R.id.exAlgorithm);
         date_ex = (TextView) findViewById(R.id.exDate);
+        imCat=(ImageView) findViewById(R.id.imCat);
+
+        catToId.put("Entertainment", R.drawable.entertainment);
+        catToId.put("Food and Drinks", R.drawable.food);
+        catToId.put("House and Utilities", R.drawable.house);
+        catToId.put("Clothing", R.drawable.clothing);
+        catToId.put("Present", R.drawable.present);
+        catToId.put("Medical Expenses", R.drawable.medical);
+        catToId.put("Transport", R.drawable.transportation);
+        catToId.put("Hotel", R.drawable.hotel);
+        catToId.put("Cleaning", R.drawable.cleaning);
+        catToId.put("General", R.drawable.general);
+        catToId.put("Other", R.drawable.other);
+
         final TextView Tdeny = (TextView) findViewById(R.id.exContested);
 
         final Button button = (Button) findViewById(R.id.exDeny);
@@ -97,7 +117,8 @@ public class ExpenseInfoActivity extends AppCompatActivity {
                     if(map.get("imagePath")!=null) {
                         String p=map.get("imagePath").toString();
                         image_info.setVisibility(View.VISIBLE);
-                        Glide.with(getApplicationContext()).load(p).into(image_info);
+                        //Glide.with(getApplicationContext()).load(p).into(image_info);
+                        ImageMethod.square_image(image_info.getContext(),image_info,p);
                     }
                     name = (String)map.get("name");
                     System.out.println("nameeeeeeeeeeeeeee"+name);
@@ -115,6 +136,60 @@ public class ExpenseInfoActivity extends AppCompatActivity {
                     currency = (String)map.get("currency");
                     DefaultCurrency = (String) map.get("defaultcurrency");
 
+                    Log.d("Expense Info Activity", "defaultCurrency "+DefaultCurrency);
+                    Log.d("Expense Info Activity", "currency "+currency);
+
+                    final FirebaseDatabase database2 = FirebaseDatabase.getInstance();
+                    DatabaseReference myRef2 = database2.getReference("Expenses").child(GroupId).child(exid);
+                    myRef2.child("users").addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+
+                            usermapTemp = (Map<String, String>) dataSnapshot.getValue();
+
+                            if(usermapTemp !=null) {
+                                for(Map.Entry<String, String> e : usermapTemp.entrySet()) {
+                                    usermap.put(e.getKey(), Float.parseFloat(e.getValue()));
+                                }
+                                if (DefaultCurrency != null) {
+
+                                    if (!DefaultCurrency.equals("")) {
+                                        Currencies tmpc = new Currencies();
+                                        String tmp_symbol = tmpc.getCurrencySymbol(DefaultCurrency);
+                                        myvalue_ex.setText(String.format(Locale.US, "%.2f", usermap.get(mAuth.getCurrentUser().getUid())) + " " + tmp_symbol);
+                                    } else {
+                                        myvalue_ex.setText(String.format(Locale.US, "%.2f", usermap.get(mAuth.getCurrentUser().getUid())));
+                                    }
+
+                                } else {
+                                    myvalue_ex.setText(String.format(Locale.US, "%.2f", usermap.get(mAuth.getCurrentUser().getUid())));
+                                }
+
+
+                    /*
+                    if(usermap.get(mAuth.getCurrentUser().getUid())>0){
+                        s_ex.setTextColor(Color.parseColor("#27B011"));
+                        myvalue_ex.setTextColor(Color.parseColor("#27B011"));
+
+                    }
+                    else{
+                        s_ex.setTextColor(Color.parseColor("#D51111"));
+                        myvalue_ex.setTextColor(Color.parseColor("#D51111"));
+
+                    }*/
+                                System.out.println("usermapppppppppppppppp " + usermap);
+                            } else{
+                                Toast.makeText(ExpenseInfoActivity.this, "no users found!", Toast.LENGTH_LONG).show();
+
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+
+                        }
+                    });
+
                     algorithm = (String)map.get("algorithm");
                     date = (String)map.get("date");
                     System.out.println("groupName Expenseinfo: "+ groupName);
@@ -129,18 +204,20 @@ public class ExpenseInfoActivity extends AppCompatActivity {
                         description_ex.setText("  -");
                     else
                         description_ex.setText(description);
-                    category_ex.setText(category);
+                    //category_ex.setText(category);
                     //currency_ex.setText(currency);
 
                     s_ex.setText("Your part:");
                     algorithm_ex.setText(algorithm);
 
-                    SimpleDateFormat sdf = new SimpleDateFormat("MMM dd, yyyy HH:mm");
-                    Date resultdate = new Date(new Long(date));
+                    SimpleDateFormat sdf = new SimpleDateFormat("MMM dd,yyyy HH:mm", Locale.ITALIAN);
+                    Date resultdate = new Date(Long.valueOf(date));
+                    PrettyTime prettyTime = new PrettyTime(Locale.US);
+                    String ago = prettyTime.format(resultdate);
 
-                    date_ex.setText(sdf.format(resultdate));
+                    date_ex.setText(ago);
 
-
+                    imCat.setImageDrawable(getResources().getDrawable(catToId.get(category)));
 
                 }
                 else{
@@ -158,55 +235,7 @@ public class ExpenseInfoActivity extends AppCompatActivity {
 
 
 
-        final FirebaseDatabase database2 = FirebaseDatabase.getInstance();
-        DatabaseReference myRef2 = database2.getReference("Expenses").child(GroupId).child(exid);
-        myRef2.child("users").addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
 
-                usermapTemp = (Map<String, String>) dataSnapshot.getValue();
-
-                if(usermapTemp !=null) {
-                    for(Map.Entry<String, String> e : usermapTemp.entrySet()) {
-                        usermap.put(e.getKey(), Float.parseFloat(e.getValue()));
-                    }
-                    if (DefaultCurrency != null) {
-
-                        if (!DefaultCurrency.equals("")) {
-                            Currencies tmpc = new Currencies();
-                            String tmp_symbol = tmpc.getCurrencySymbol(DefaultCurrency);
-                            myvalue_ex.setText(String.format(Locale.US, "%.2f", usermap.get(mAuth.getCurrentUser().getUid())) + " " + tmp_symbol);
-                        } else {
-                            myvalue_ex.setText(String.format(Locale.US, "%.2f", usermap.get(mAuth.getCurrentUser().getUid())));
-                        }
-
-                    } else {
-                        myvalue_ex.setText(String.format(Locale.US, "%.2f", usermap.get(mAuth.getCurrentUser().getUid())));
-                    }
-
-
-                    if(usermap.get(mAuth.getCurrentUser().getUid())>0){
-                        s_ex.setTextColor(Color.parseColor("#27B011"));
-                        myvalue_ex.setTextColor(Color.parseColor("#27B011"));
-
-                    }
-                    else{
-                        s_ex.setTextColor(Color.parseColor("#D51111"));
-                        myvalue_ex.setTextColor(Color.parseColor("#D51111"));
-
-                    }
-                    System.out.println("usermapppppppppppppppp " + usermap);
-                    } else{
-                    Toast.makeText(ExpenseInfoActivity.this, "no users found!", Toast.LENGTH_LONG).show();
-
-                }
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
 
         final FirebaseDatabase database3 = FirebaseDatabase.getInstance();
         DatabaseReference myRef3 = database3.getReference("Balance").child(GroupId);
