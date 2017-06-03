@@ -500,7 +500,7 @@ public class InsertExActivity extends AppCompatActivity {
                                 v = value / users.size();
 
                                 if (cambio != 0) {
-                                    v *= cambio;
+                                    v /= cambio;
                                 }
 
                         for (UserData k : users) {
@@ -525,23 +525,23 @@ public class InsertExActivity extends AppCompatActivity {
 
                                 algValue = Float.parseFloat(EditValue.getText().toString());
 
-                                if (algorithm.equals("by Percentuage")) {
+                                if (algorithm.equals("By percentage")) {
                                     double tmp = value * algValue / 100;
                                     if (cambio != 0) {
-                                        tmp *= cambio;
+                                        tmp /= cambio;
                                     }
                                     values.put(users.get(i).getuId(), tmp);
                                     if (users.get(i).getuId().equals(mAuth.getCurrentUser().getUid()))
                                         myvalue = tmp;
                                 } else {
                                     if (cambio != 0) {
-                                        algValue *= cambio;
+                                        algValue /= cambio;
                                     }
                                     values.put(users.get(i).getuId(), algValue);
                                     if (users.get(i).getuId().equals(mAuth.getCurrentUser().getUid())) {
                                         myvalue = value;
                                         if (cambio != 0) {
-                                            myvalue *= cambio;
+                                            myvalue /= cambio;
                                         }
                                     }
 
@@ -550,7 +550,7 @@ public class InsertExActivity extends AppCompatActivity {
                             algSum += algValue;
                         }
 
-                        if ((algorithm.equals("by Percentuage") && algSum == 100)) {
+                        if ((algorithm.equals("By percentage") && algSum == 100)) {
 
                             flagok = 1;
                         }
@@ -560,7 +560,7 @@ public class InsertExActivity extends AppCompatActivity {
                             flagok = 1;
                         }
 
-                        if ((algorithm.equals("by Percentuage") && algSum != 100)) {
+                        if ((algorithm.equals("By percentage") && algSum != 100)) {
                             flagok = 0;
                             String text = String.format("Percentage sum values must be equal to 100!", algSum, i);
                             Toast.makeText(InsertExActivity.this, text, Toast.LENGTH_LONG).show();
@@ -599,7 +599,7 @@ public class InsertExActivity extends AppCompatActivity {
                         myRef.child("creatorId").setValue(mAuth.getCurrentUser().getUid());
                         myRef.child("missing").setValue("no");
                         if(cambio!=0)
-                            myRef.child("myvalue").setValue(String.format(Locale.US, "%.2f", value*cambio));
+                            myRef.child("myvalue").setValue(String.format(Locale.US, "%.2f", value/cambio));
                         else
                             myRef.child("myvalue").setValue(String.format(Locale.US, "%.2f", value));
 

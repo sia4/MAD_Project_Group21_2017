@@ -137,8 +137,9 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.MyViewHo
             holder.descrip_ex.setVisibility(View.GONE);
         }
         String key=FirebaseAuth.getInstance().getCurrentUser().getUid();
-        Map<String,String>u =expense.getUsers();
-        holder.yourslice.setText(u.get(key));
+        Map<String,String> u =expense.getUsers();
+        Currencies c = new Currencies();
+        holder.yourslice.setText(u.get(key) + " " + c.getCurrencySymbol(expense.getDefaultcurrency()));
         holder.creator_ex.setText(expense.getCreator());
         int id=catToId.get(expense.getCategory());
         holder.imCat.setImageDrawable(ResourcesCompat.getDrawable(view_x.getResources(),id,null));

@@ -2,7 +2,7 @@
 <resources>
     <string-array name="algorithms">
     <item>Equally</item>
-    <item>By percentuage</item>
+    <item>By percentage</item>
     <item>By import</item>
 
     </string-array>
