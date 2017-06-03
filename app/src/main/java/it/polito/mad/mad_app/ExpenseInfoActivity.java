@@ -109,10 +109,10 @@ public class ExpenseInfoActivity extends AppCompatActivity {
                     String cont = (String)map.get("contested");
                     if(cont.equals("yes")){
                         Tdeny.setVisibility(View.VISIBLE);
-                        button.setVisibility(View.GONE);
-                        Tdenydescr.setVisibility(View.GONE);
-
-
+                        //button.setVisibility(View.GONE);
+                    }else{
+                        button.setVisibility(View.VISIBLE);
+                        Tdenydescr.setVisibility(View.VISIBLE);
                     }
                     if(map.get("imagePath")!=null) {
                         final String p=map.get("imagePath").toString();
@@ -320,10 +320,17 @@ public class ExpenseInfoActivity extends AppCompatActivity {
                 });
                 DatabaseReference ref_user;
                 for(final String k : usermap.keySet()){
-                    ref_user = database.getReference("/Users/" + k + "/Groups/" + GroupId + "/lastOperation/");
-                    ref_user.setValue(myname + " contested an expense.");
-                    ref_user = database.getReference("/Users/" + k + "/Groups/" + GroupId + "/dateLastOperation/");
-                    ref_user.setValue(Long.toString(System.currentTimeMillis()).toString());
+                    if(k.equals(FirebaseAuth.getInstance().getCurrentUser().getUid())){
+                        ref_user = database.getReference("/Users/" + k + "/Groups/" + GroupId + "/lastOperation/");
+                        ref_user.setValue("You contested an expense.");
+                        ref_user = database.getReference("/Users/" + k + "/Groups/" + GroupId + "/dateLastOperation/");
+                        ref_user.setValue(Long.toString(System.currentTimeMillis()).toString());
+                    }else{
+                        ref_user = database.getReference("/Users/" + k + "/Groups/" + GroupId + "/lastOperation/");
+                        ref_user.setValue(myname + " contested an expense.");
+                        ref_user = database.getReference("/Users/" + k + "/Groups/" + GroupId + "/dateLastOperation/");
+                        ref_user.setValue(Long.toString(System.currentTimeMillis()).toString());
+                    }
                 }
 
 
