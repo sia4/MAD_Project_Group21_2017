@@ -111,7 +111,7 @@ public class StatsFragment extends Fragment{
                 if (map1 != null) {
                     exSum.clear();
                     exSumbyDate.clear();
-                    String category;
+                    String category, contested;
                     Long datemilliseconds;
                     float oldValue=0, oldValuebyDate=0, newValue=0;
                     for (String exId : map1.keySet()) {
@@ -119,6 +119,9 @@ public class StatsFragment extends Fragment{
                         Map<String, Object> exItem = (Map<String, Object>) map1.get(exId);
                         System.out.println("expensestatistic " + exItem);
                         category = (String) exItem.get("category");
+                        contested = (String) exItem.get("contested");
+                        if(contested !=null && contested.equals("yes"))
+                            continue;
                         datemilliseconds = Long.parseLong((String)exItem.get("date"));
                         SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
                         SimpleDateFormat formatter2 = new SimpleDateFormat("dd");
@@ -153,7 +156,7 @@ public class StatsFragment extends Fragment{
                     for (String r : exSum.keySet()) {
                         color.add(catToColor.get(r));
                         yEntrys.add(new Entry(exSum.get(r), i));
-                        xEntrys.add(r);
+                        xEntrys.add("");
                         i++;
                     }
 
@@ -165,9 +168,11 @@ public class StatsFragment extends Fragment{
                     pieDataSet.setColors(color);
 
                     Legend legend = PieCategory.getLegend();
-                    legend.setForm(Legend.LegendForm.CIRCLE);
-                    legend.setPosition(Legend.LegendPosition.ABOVE_CHART_CENTER);
+                    legend.setEnabled(false);
+                    //legend.setForm(Legend.LegendForm.CIRCLE);
+                    //legend.setPosition(Legend.LegendPosition.ABOVE_CHART_CENTER);
                     System.out.println("yEntries "+yEntrys);
+
                     PieData pieData = new PieData(xEntrys, pieDataSet);
                     String description = "";
                     PieCategory.setNoDataText("No expenses found");
@@ -194,6 +199,7 @@ public class StatsFragment extends Fragment{
 
                     barDataSet.setColor(Color.parseColor("#b2dfdb"));
                     Legend legend2 = BarByDate.getLegend();
+                    legend2.setEnabled(false);
                     legend.setForm(Legend.LegendForm.CIRCLE);
                     legend.setPosition(Legend.LegendPosition.LEFT_OF_CHART);
 
