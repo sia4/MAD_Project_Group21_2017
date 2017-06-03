@@ -115,10 +115,22 @@ public class ExpenseInfoActivity extends AppCompatActivity {
 
                     }
                     if(map.get("imagePath")!=null) {
-                        String p=map.get("imagePath").toString();
+                        final String p=map.get("imagePath").toString();
                         image_info.setVisibility(View.VISIBLE);
                         //Glide.with(getApplicationContext()).load(p).into(image_info);
-                        ImageMethod.square_image(image_info.getContext(),image_info,p);
+                        ImageMethod.square_image(image_info.getContext(),image_info, p);
+                        image_info.setOnClickListener(new View.OnClickListener() {
+
+                            @Override
+                            public void onClick(View v) {
+
+                                Log.d("Expense Info Activity", p);
+
+                                Intent intent = new Intent(ExpenseInfoActivity.this, FullImageActivity.class);
+                                intent.putExtra("imagePath", p);
+                                startActivity(intent);
+                            }
+                        });
                     }
                     name = (String)map.get("name");
                     System.out.println("nameeeeeeeeeeeeeee"+name);

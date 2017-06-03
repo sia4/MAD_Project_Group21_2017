@@ -60,11 +60,11 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.MyViewHo
     public class MyViewHolder extends RecyclerView.ViewHolder {
         public TextView name_ex, data_ex,  money_ex,creator_ex, yourslice,descrip_ex,algorithm_ex;
         public ImageView imCat;
-        public ImageView iPhoto;
+        //public ImageView iPhoto;
         public CardView card_view;
         public LinearLayout ll,first_ll;
         public RelativeLayout second_ll;
-        public Button b,b_contested;
+        public Button b,b_contested, bill;
         public ImageView arrow_down,arrow_up;
         public boolean isExpanded;
         public Map<String, Map<String, Map<String, Object>>> balancemap;
@@ -82,7 +82,8 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.MyViewHo
             card_view=(CardView) view.findViewById(R.id.card_view);
             b=(Button) view.findViewById(R.id.exDeny);
             b_contested=(Button) view.findViewById(R.id.exContested);
-            iPhoto=(ImageView) view.findViewById(R.id.iPhoto);
+            bill=(Button) view.findViewById(R.id.exBill);
+            //iPhoto=(ImageView) view.findViewById(R.id.iPhoto);
             arrow_down=(ImageView) view.findViewById(R.id.arrow_down);
             arrow_up=(ImageView) view.findViewById(R.id.arrow_up);
             yourslice=(TextView) view.findViewById(R.id.your_slice);
@@ -140,7 +141,7 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.MyViewHo
         } else {
             holder.money_ex.setText(expense.getValue());
         }
-        holder.algorithm_ex.setText(expense.getAlgorithm());
+        holder.algorithm_ex.setText("Import divided: "+expense.getAlgorithm());
         if(!expense.getDescription().equals("")){
             holder.descrip_ex.setText(expense.getDescription());
         }
@@ -150,25 +151,39 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.MyViewHo
         String key=FirebaseAuth.getInstance().getCurrentUser().getUid();
         Map<String,String> u =expense.getUsers();
         Currencies c = new Currencies();
-        holder.yourslice.setText(u.get(key) + " " + c.getCurrencySymbol(expense.getDefaultcurrency()));
-        holder.creator_ex.setText(expense.getCreator());
+        holder.yourslice.setText("Your slice: "+u.get(key) + " " + c.getCurrencySymbol(expense.getDefaultcurrency()));
+        holder.creator_ex.setText("Created by: "+expense.getCreator());
         int id=catToId.get(expense.getCategory());
         holder.imCat.setImageDrawable(ResourcesCompat.getDrawable(view_x.getResources(),id,null));
         if(expense.getContested() != null && expense.getContested().equals("yes")) {
             holder.b_contested.setVisibility(View.VISIBLE);
             holder.card_view.setBackgroundColor(Color.parseColor("#F2E2E2"));
             holder.b.setVisibility(View.GONE);
+            RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams)holder.bill.getLayoutParams();
+            //params.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+            params.addRule(RelativeLayout.RIGHT_OF, R.id.exContested);
+
+            holder.bill.setLayoutParams(params);
         } else {
             holder.b_contested.setVisibility(View.GONE);
             holder.card_view.setBackgroundColor(Color.parseColor("#FFFFFF"));
             holder.b.setVisibility(View.VISIBLE);
+
+            RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams)holder.bill.getLayoutParams();
+            //params.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+            params.addRule(RelativeLayout.RIGHT_OF, R.id.exDeny);
+
+            holder.bill.setLayoutParams(params);
         }
         if(expense.getImagePath()!=null){
+
+            holder.bill.setVisibility(View.VISIBLE);
+
             Log.d("HistoryAdapter","La foto la vede"+expense.getImagePath());
             final String p = expense.getImagePath();
-            ImageMethod.square_image(holder.iPhoto.getContext(),holder.iPhoto,p);
+            //ImageMethod.square_image(holder.iPhoto.getContext(),holder.iPhoto,p);
 
-            holder.iPhoto.setOnClickListener(new View.OnClickListener() {
+            holder.bill.setOnClickListener(new View.OnClickListener() {
 
                  @Override
                  public void onClick(View v) {
