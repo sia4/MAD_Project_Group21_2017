@@ -93,6 +93,7 @@ public class GroupInfoActivity extends AppCompatActivity {
     private Map<String, String> usersId_m = new TreeMap<>();
     private List<String> usersId = new ArrayList<>();
     private List<String> currencies = new ArrayList();
+    private Map<String, String> currencies_m = new TreeMap<>();
     private Currencies c = new Currencies();
     private int MY_PERMISSIONS_REQUEST_READ_CONTACTS=1;
     private Uri downloadUrl;
@@ -441,14 +442,19 @@ public class GroupInfoActivity extends AppCompatActivity {
                             if (e.getValue() == 0.0) {
 
                                 String s = "Primary Currency: " + c.getCurrencyString(e.getKey());
-                                currencies.add(s);
+                                currencies_m.put(s, s);
+                                currencies.clear();
+                                currencies.addAll(currencies_m.values());
                             } else {
 
                                 String s = c.getCurrencyString(e.getKey());
-                                currencies.add(s + " " + e.getValue());
+                                currencies_m.put(s + " " + e.getValue(), s + " " + e.getValue());
+                                currencies.clear();
+                                currencies.addAll(currencies_m.values());
                             }
 
                         }
+
                         CurrenciesAdapter cAdapter = new CurrenciesAdapter(currencies);
                         CurrenciesRecyclerView.setAdapter(cAdapter);
                         cAdapter.notifyDataSetChanged();
