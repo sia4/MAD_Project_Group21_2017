@@ -186,6 +186,20 @@ public class GroupActivity extends AppCompatActivity {
                             getSupportActionBar().setLogo(circularBitmapDrawable);
                         }
                     });
+        } else if(gImage != null && !gImage.equals("")) {
+            Glide
+                    .with(getApplicationContext())
+                    .load(gImage)
+                    .asBitmap()
+                    .into(new SimpleTarget<Bitmap>(60,60) {
+                        @Override
+                        public void onResourceReady(Bitmap resource, GlideAnimation glideAnimation) {
+                            RoundedBitmapDrawable circularBitmapDrawable =
+                                    RoundedBitmapDrawableFactory.create(getResources(), resource);
+                            circularBitmapDrawable.setCircular(true);
+                            getSupportActionBar().setLogo(circularBitmapDrawable);
+                        }
+                    });
         }
 
         //final FirebaseDatabase database3 = FirebaseDatabase.getInstance();
