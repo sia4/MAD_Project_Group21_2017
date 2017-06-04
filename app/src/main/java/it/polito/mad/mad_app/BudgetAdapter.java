@@ -111,9 +111,9 @@ public class BudgetAdapter extends RecyclerView.Adapter<BudgetAdapter.MyViewHold
                     }
 
                     if (n > 0) {
-                        holder.name_cred_deb.setText(name + " " + surname +" owns you:");
+                        holder.name_cred_deb.setText(name + " " + surname +" owes you:");
                     } else {
-                        holder.name_cred_deb.setText("You own to " + name + " " + surname + ":");
+                        holder.name_cred_deb.setText("You owe to " + name + " " + surname + ":");
                     }
 
                     if (DefaultCurrency == null) {
@@ -162,7 +162,7 @@ public class BudgetAdapter extends RecyclerView.Adapter<BudgetAdapter.MyViewHold
                 public void onClick(View v) {
                     Balance budget = budgetData.get(position);
                     Intent intent = new Intent().setClass(v.getContext(), BalanceActivity.class);
-                    String uname = budget.getName()+ " owns you:";
+                    String uname = budget.getName()+ " owes you:";
 
                     String gname = budget.getName();
 
