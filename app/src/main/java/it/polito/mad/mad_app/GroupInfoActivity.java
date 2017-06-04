@@ -62,6 +62,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.TreeMap;
 import java.util.concurrent.ExecutionException;
 
 import it.polito.mad.mad_app.model.ActivityData;
@@ -87,6 +88,9 @@ public class GroupInfoActivity extends AppCompatActivity {
     private Uri imageUrl;
     private List<User> user_l=new ArrayList<>();
     private List<String> users = new ArrayList();
+    private Map<String, String> users_m = new TreeMap<>();
+    private Map<String, User> user_l_m = new TreeMap<>();
+    private Map<String, String> usersId_m = new TreeMap<>();
     private List<String> usersId = new ArrayList<>();
     private List<String> currencies = new ArrayList();
     private Currencies c = new Currencies();
@@ -353,7 +357,7 @@ public class GroupInfoActivity extends AppCompatActivity {
         desced = (EditText) findViewById(R.id.de_g_ed);
 
         DatabaseReference myRef = database.getReference("Groups").child(gId);
-        myRef.addListenerForSingleValueEvent(new ValueEventListener() {
+        myRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
 
@@ -462,7 +466,7 @@ public class GroupInfoActivity extends AppCompatActivity {
 
                             FirebaseDatabase database3 = FirebaseDatabase.getInstance();
                             DatabaseReference myRef3 = database3.getReference("Users").child(k);
-                            myRef3.addListenerForSingleValueEvent(new ValueEventListener() {
+                            myRef3.addValueEventListener(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(DataSnapshot dataSnapshot) {
 
@@ -483,10 +487,19 @@ public class GroupInfoActivity extends AppCompatActivity {
                                             p = map3.get("imagePath").toString();
                                         }
 
-                                        users.add(s);
-                                        user_l.add(new User(null, null, map3.get("name").toString(), map3.get("surname").toString(), p));
-                                        usersId.add(k);
+                                        users_m.put(s, s);
+                                        usersId_m.put(k, k);
+                                        user_l_m.put(k, new User(null, null, map3.get("name").toString(), map3.get("surname").toString(), p));
+
+
+                                        users.clear();
+                                        usersId.clear();
+                                        user_l.clear();
+                                        users.addAll(users_m.values());
+                                        user_l.addAll(user_l_m.values());
+                                        usersId.addAll(usersId_m.values());
                                         uAdapter.notifyDataSetChanged();
+
 
                                     } else {
 
@@ -503,6 +516,7 @@ public class GroupInfoActivity extends AppCompatActivity {
                                 }
                             });
                         }
+
                     }
 
                 }
