@@ -111,17 +111,17 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.MyViewHo
 
     @Override
     public void onBindViewHolder(final MyViewHolder holder, final int position) {
-        catToId.put("Entertainment", R.drawable.entertainment);
-        catToId.put("Food and Drinks", R.drawable.food);
-        catToId.put("House and Utilities", R.drawable.house);
-        catToId.put("Clothing", R.drawable.clothing);
-        catToId.put("Present", R.drawable.present);
-        catToId.put("Medical Expenses", R.drawable.medical);
-        catToId.put("Transport", R.drawable.transportation);
-        catToId.put("Hotel", R.drawable.hotel);
-        catToId.put("Cleaning", R.drawable.cleaning);
-        catToId.put("General", R.drawable.general);
-        catToId.put("Other", R.drawable.other);
+        catToId.put("Entertainment", R.drawable.ic_category_mid_entertainment);
+        catToId.put("Food and Drinks", R.drawable.ic_category_mid_food);
+        catToId.put("House and Utilities", R.drawable.ic_category_mid_house);
+        catToId.put("Clothing", R.drawable.ic_category_mid_clothing);
+        catToId.put("Present", R.drawable.ic_category_mid_present);
+        catToId.put("Medical Expenses", R.drawable.ic_category_mid_medical);
+        catToId.put("Transport", R.drawable.ic_category_mid_transportation);
+        catToId.put("Hotel", R.drawable.ic_category_mid_hotel);
+        catToId.put("Cleaning", R.drawable.ic_category_mid_cleaning);
+        catToId.put("General", R.drawable.ic_category_mid_general);
+        catToId.put("Other", R.drawable.ic_category_mid_other);
         final ExpenseData expense = expenseData.get(position);
         System.out.println("HistoryAdapter L49 - " + expense.toString());
         holder.name_ex.setText(expense.getName());

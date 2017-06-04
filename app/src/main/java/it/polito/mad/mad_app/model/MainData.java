@@ -46,17 +46,17 @@ public class MainData {
         this.Categories.add("General");
         this.Categories.add("Other");
 
-        catToId.add(R.drawable.entertainment);
-        catToId.add(R.drawable.food);
-        catToId.add(R.drawable.house);
-        catToId.add(R.drawable.clothing);
-        catToId.add(R.drawable.present);
-        catToId.add(R.drawable.medical);
-        catToId.add(R.drawable.transportation);
-        catToId.add(R.drawable.hotel);
-        catToId.add(R.drawable.cleaning);
-        catToId.add(R.drawable.general);
-        catToId.add(R.drawable.other);
+        catToId.add(R.drawable.ic_category_mid_entertainment);
+        catToId.add(R.drawable.ic_category_mid_food);
+        catToId.add(R.drawable.ic_category_mid_house);
+        catToId.add(R.drawable.ic_category_mid_clothing);
+        catToId.add(R.drawable.ic_category_mid_present);
+        catToId.add(R.drawable.ic_category_mid_medical);
+        catToId.add(R.drawable.ic_category_mid_transportation);
+        catToId.add(R.drawable.ic_category_mid_hotel);
+        catToId.add(R.drawable.ic_category_mid_cleaning);
+        catToId.add(R.drawable.ic_category_mid_general);
+        catToId.add(R.drawable.ic_category_mid_other);
 
         catToIdLow.add(R.drawable.ic_category_low_entertainment);
         catToIdLow.add(R.drawable.ic_category_low_food);

@@ -36,7 +36,7 @@ public class SpinnerAdapter extends ArrayAdapter<ItemData> {
         else{
             imageView.setVisibility(View.GONE);
             LinearLayout.LayoutParams llp = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-            llp.setMargins(15, 25, 0, 30); // llp.setMargins(left, top, right, bottom);
+            llp.setMargins(15, 25, 0, 20); // llp.setMargins(left, top, right, bottom);
             textView.setLayoutParams(llp);
         }
 

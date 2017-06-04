@@ -190,7 +190,7 @@ public class GroupActivity extends AppCompatActivity {
 
         //final FirebaseDatabase database3 = FirebaseDatabase.getInstance();
         DatabaseReference myRef3 = database3.getReference("Balance").child(gKey).child(FirebaseAuth.getInstance().getCurrentUser().getUid());
-        myRef3.addValueEventListener(new ValueEventListener() {
+        myRef3.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 balancemap = (Map<String, Map<String, Object>>) dataSnapshot.getValue();

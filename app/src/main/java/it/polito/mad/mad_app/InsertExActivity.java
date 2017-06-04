@@ -753,8 +753,8 @@ public class InsertExActivity extends AppCompatActivity {
                                 //}
                                 //return true;
                             } else {
-                                String p = String.format("problems... flagok: %d, values.size: %d, users.size: %d", flagok, values.size(), users.size());
-                                Toast.makeText(InsertExActivity.this, p, Toast.LENGTH_LONG).show();
+                                //String p = String.format("problems... flagok: %d, values.size: %d, users.size: %d", flagok, values.size(), users.size());
+                                //Toast.makeText(InsertExActivity.this, p, Toast.LENGTH_LONG).show();
                                 return super.onOptionsItemSelected(item);
                             }
                         }
