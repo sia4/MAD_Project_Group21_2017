@@ -89,7 +89,7 @@ public class InsertExActivity extends AppCompatActivity {
     private Map<String, Map<String, Map<String, Object>>> balancemap;
     private double v = 0, v1 = 0;
     private Map<String, Double> values = new TreeMap<>();
-    private String defaultcurrency = new String("");
+    private String defaultcurrency = "";
     private FirebaseAuth mAuth = FirebaseAuth.getInstance();
     private List<UserData> users;
     private Map<String,UserData>m_users=new TreeMap<>();
@@ -128,7 +128,8 @@ public class InsertExActivity extends AppCompatActivity {
         Gname = intent.getStringExtra("groupId");
         groupName = intent.getStringExtra("groupName");
         groupImage=intent.getStringExtra("imagePath");
-        defaultcurrency = intent.getStringExtra("defaultcurrency");
+        if(intent.getStringExtra("defaultcurrency") != null)
+            defaultcurrency = intent.getStringExtra("defaultcurrency");
 
         String cname = intent.getStringExtra("name");
         String cdescr = intent.getStringExtra("description");
