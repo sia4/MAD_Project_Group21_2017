@@ -208,8 +208,8 @@ public class InsertGroupActivity extends AppCompatActivity {
                             if (key == null) {
 
                                 new AlertDialog.Builder(InsertGroupActivity.this)
-                                        .setTitle("You friend has not downloaded the app, yet!")
-                                        .setMessage("Create the group and invite him later from group options.")
+                                        .setTitle("Your friend has not downloaded the app, yet!")
+                                        .setMessage("Do you want to invite him?")
                                         .setIcon(android.R.drawable.ic_dialog_alert)
                                         .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                                             public void onClick(DialogInterface dialog, int whichButton) {
@@ -229,7 +229,7 @@ public class InsertGroupActivity extends AppCompatActivity {
                                                             }).show();
                                                 }
                                             }
-                                        }).show();
+                                        }).setNegativeButton(android.R.string.cancel, null).show();
 
                             } else {
                                 Uemail.setText("");

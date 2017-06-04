@@ -268,7 +268,7 @@ public class GroupActivity extends AppCompatActivity {
 
                 }
                 else{
-                    Toast.makeText(GroupActivity.this, "no balance found!", Toast.LENGTH_LONG).show();
+                    //Toast.makeText(GroupActivity.this, "no balance found!", Toast.LENGTH_LONG).show();
                 }
 
             }
