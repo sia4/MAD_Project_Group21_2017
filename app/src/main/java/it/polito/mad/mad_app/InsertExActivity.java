@@ -103,6 +103,7 @@ public class InsertExActivity extends AppCompatActivity {
     private Boolean ImageC=false;
     private Uri imageUrl;
     private Button load;
+    private Boolean cam;
     private Map<String, Float> Cambi = new TreeMap<>();
     private Currencies model_currencies;
 
@@ -345,8 +346,10 @@ public class InsertExActivity extends AppCompatActivity {
                 if (isCamera) {
                     imageUrl = outputFileUri;
                     ImageC = true;
+                    cam=true;
                     ImageView imageG = (ImageView) findViewById(R.id.ImageG);
                     square_image(getApplicationContext(),imageG,imageUrl);
+                    //System.out.println(".......load in" + imageUrl.toString().substring(7));
                     //final PackageManager pManager = getPackageManager();
                     //Intent cropIntent=performCrop(imageUrl,pManager);
                     /*if(cropIntent!=null){
@@ -361,6 +364,8 @@ public class InsertExActivity extends AppCompatActivity {
 
                 } else {
                     if (data != null) {
+                        //System.out.println(".......carica in" + imageUrl.toString().substring(7));
+                        cam=false;
                         ImageC = true;
                         selectedImageUri = data.getData();
                         imageUrl= selectedImageUri;
@@ -673,8 +678,15 @@ public class InsertExActivity extends AppCompatActivity {
                             try {
                                 ProgressBar p = (ProgressBar) findViewById(R.id.progress_bar_insertex);
                                 p.setVisibility(View.VISIBLE);
-                                System.out.println(".......carica in" + outputFileUri.toString().substring(7));
-                                InputStream stream = new FileInputStream(new File(imageUrl.toString().substring(7)));
+                                InputStream stream;
+                                if(cam){
+                                    stream = new FileInputStream(new File(imageUrl.toString().substring(7)));
+                                    System.out.println(".......carica in" + imageUrl.toString().substring(7));
+                                }else{
+                                    stream=getApplicationContext().getContentResolver().openInputStream(imageUrl);
+                                    //stream = new FileInputStream(new File(imageUrl.toString().substring(9)));
+                                    //System.out.println(".......carica in" + imageUrl.toString().substring(9));
+                                }
                                 StorageReference imageStorage = mStorageRef.child(refkey);
                                 UploadTask uploadTask = imageStorage.putStream(stream);
                                 uploadTask.addOnFailureListener(new OnFailureListener() {
