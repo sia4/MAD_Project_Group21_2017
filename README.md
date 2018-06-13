@@ -1,2 +1,2 @@
-# Project for the Mobile Application Development class
+Project for the Mobile Application Development class
 
