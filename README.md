@@ -1,1 +1,2 @@
-"# Mad_application" 
+# Project for the Mobile Application Development class
+
