@@ -5,4 +5,6 @@ The class is organized in this way: each two week there is a new assignement on 
 
 The application uses Firebase as DB.
 
+[Video] (https://www.youtube.com/watch?v=Qm679e5V1s0)
+
 Group 21: [Siltes](https://github.com/Siltes), [s241968](https://github.com/s241968), [lu-la](https://github.com/lu-la), [sia4](https://github.com/sia4)
