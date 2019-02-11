@@ -79,11 +79,10 @@ public class GroupData {
         }
 
         lBudget.put(email, new BalanceData(email, this.name, tmp, currency));
-        System.out.println("+++ HELLO +++ Inserito :" + email + " " + value + " " + currency);
 
     }
     public void allaRomana(float value, String currency){
-        float quote = value/(lUsers.size()+1);
+        float quote = value/(lUsers.size());
         for (UserData key: lUsers)
              addExpenseToUser(key.getEmail(), quote, currency);
     }
@@ -143,8 +142,8 @@ public class GroupData {
     public void addTouImportMap(String email, int algValue) {
         uImport.put(email, algValue);
     }
-    public  ExpenseData addExpensive(String name, String descr, String category, String currency, float value, float myvalue, String algorithm){
-        ExpenseData e = new ExpenseData(name, descr, category, currency, value,myvalue, algorithm);
+    public  ExpenseData addExpensive(String name, String descr, String category, String currency, String value, String myvalue, String algorithm){
+        ExpenseData e = new ExpenseData(name, descr, category, currency, value, myvalue, algorithm, this.default_currency);
         this.lexpensive.add(e);
         return e;
 

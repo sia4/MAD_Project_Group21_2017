@@ -2,20 +2,11 @@
 <resources>
 
     <string-array name="currencies">
-        <item>Select currency</item>
-         <item>
-            US Dollars
-            USD
-            $</item>
+        <item>Select favourite currency</item>
         <item>EUR €</item>
-        <item>
-            Pounds
-            GBP
-            £</item>
-        <item>
-            Yen
-            JPY
-            ¥</item>
+        <item>USD $</item>
+        <item>GBP £</item>
+        <item>JPY ¥</item>
 
 
         <!--<item> Argentina, Pesos

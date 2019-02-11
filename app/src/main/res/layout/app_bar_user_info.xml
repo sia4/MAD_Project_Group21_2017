@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="it.polito.mad.mad_app.MainActivity">
+
+    <android.support.design.widget.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:theme="@style/AppTheme"
+        android:id="@+id/appBarLayout">
+
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar"
+            app:theme="@style/ToolbarTheme"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="?attr/colorPrimary"
+            app:popupTheme="@style/PopupTheme">
+
+            <Button
+                android:id="@+id/back_search"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_gravity="left"
+                android:background="@drawable/back64"
+                android:visibility="gone"
+
+                android:layout_weight="0.5" />
+            <Button
+                android:id="@+id/back_archive"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_gravity="left"
+                android:background="@drawable/back64"
+                android:visibility="gone"
+
+                android:layout_weight="0.5" />
+
+            <Button
+                android:id="@+id/archive_button"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_gravity="right"
+                android:background="@drawable/archive"
+                android:visibility="gone"
+
+                android:layout_weight="0.5" />
+
+            <EditText
+                android:id="@+id/search_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.2"
+                android:imeOptions="actionSearch"
+                android:gravity="left"
+                android:textAlignment="gravity"
+                android:textSize="20sp"
+                android:inputType="text"
+                android:textColor="#FFFFFF"
+                android:visibility="gone"
+                android:hint="Search..."
+                android:textCursorDrawable="@null"
+                android:textColorHint="@color/colorPrimaryLight"
+                />
+            <TextView
+                android:id="@+id/archive_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.2"
+                android:gravity="left"
+                android:textAlignment="gravity"
+                android:textSize="20sp"
+                android:textColor="#FFFFFF"
+                android:visibility="gone"
+                android:text="    Archive"
+                />
+        </android.support.v7.widget.Toolbar>
+
+        <android.support.design.widget.TabLayout
+            android:id="@+id/tabs"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:theme="@style/ToolbarTheme"
+            app:tabMode="fixed"
+            app:tabMaxWidth="0dp"
+            app:tabGravity="fill">
+
+            <android.support.design.widget.TabItem
+                android:id="@+id/Groups"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Groups" />
+
+            <android.support.design.widget.TabItem
+                android:id="@+id/Activity"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Activity" />
+
+        </android.support.design.widget.TabLayout>
+
+    </android.support.design.widget.AppBarLayout>
+
+    <include layout="@layout/activity_main"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/appBarLayout" />
+
+</RelativeLayout>

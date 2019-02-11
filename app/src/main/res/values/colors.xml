@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="colorPrimary">#009688</color>
-    <color name="colorPrimaryDark">#006064</color>
-    <color name="colorPrimaryLight">#B2EBF2</color>
+    <color name="colorPrimaryDark">#004D40</color>
+    <color name="colorPrimaryLight">#E0F2F1</color>
     <color name="colorAccent">#F44336</color>
     <color name="colorBackgroundLight">#FFFFFF</color>
-<!--    <color name="colorText">#FFFFFF</color>-->
     <color name="primaryTextColor">#212121</color>
     <color name="secondaryTextColor">#757575</color>
     <color name="icons">#FFFFFF</color>
-
+    <color name="selected_comment_background">#ffffffff</color>
+    <color name="comment_background">#ffffffff</color>
     <color name="divider">#BDBDBD</color>
 </resources>

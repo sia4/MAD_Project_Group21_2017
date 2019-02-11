@@ -1,92 +1,21 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--<?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
-
-    <android.support.v7.widget.Toolbar
-
-        android:id="@+id/my_toolbar"
-        android:minHeight="?android:attr/actionBarSize"
-        android:background="@color/colorPrimary"
-        android:layout_width="match_parent"
-        android:layout_height="128dp" />
-
-    <android.support.design.widget.AppBarLayout
-        android:id="@+id/appbar"
-        android:layout_below="@+id/my_toolbar"
-        android:layout_height="wrap_content"
-        android:layout_width="match_parent">
-
-        <android.support.design.widget.TabLayout
-            android:id="@+id/tabs"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:tabMode="scrollable">
-
-            <android.support.design.widget.TabItem
-                android:layout_height="wrap_content"
-                android:layout_width="wrap_content"
-                android:text="Groups"/>
-
-            <android.support.design.widget.TabItem
-                android:layout_height="wrap_content"
-                android:layout_width="wrap_content"
-                android:text="Activities"/>
-
-        </android.support.design.widget.TabLayout>
-
-    </android.support.design.widget.AppBarLayout>
-
-    <ListView
-            android:id="@+id/lv"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_below="@+id/appbar"
-            android:textSize="32sp"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true" />
-
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/addGroup"
-        android:layout_width="50dp"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="true"
-        android:layout_gravity="bottom|end"
-        android:layout_marginBottom="14dp"
-        android:layout_marginEnd="20dp"
-        android:layout_marginRight="20dp"
-        app:srcCompat="@android:drawable/ic_input_add" />
-
-</RelativeLayout>
--->
 <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:tools="http://schemas.android.com/tools"
     tools:context=".MainActivity">
+
     <!--<android.support.design.widget.AppBarLayout
         android:id="@+id/appbar"
         android:layout_below="@+id/my_toolbar"
         android:layout_height="wrap_content"
         android:layout_width="match_parent">-->
 
-    <android.support.design.widget.AppBarLayout
+    <!--<android.support.design.widget.AppBarLayout
         android:id="@+id/main_bar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:theme="@style/AppTheme">
-
-       <!-- <android.support.design.widget.CollapsingToolbarLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            app:contentScrim="?attr/colorPrimary"
-            app:layout_scrollFlags="scroll|exitUntilCollapsed"
-            app:toolbarId="@+id/main_toolbar">-->
 
             <android.support.v7.widget.Toolbar
                 android:id="@+id/main_toolbar"
@@ -94,7 +23,6 @@
                 android:layout_height="?attr/actionBarSize"
                 app:theme="@style/ToolbarTheme"
                 app:popupTheme="@style/PopupTheme"/>
-      <!--  </android.support.design.widget.CollapsingToolbarLayout>-->
 
         <android.support.design.widget.TabLayout
             android:id="@+id/tabs"
@@ -117,9 +45,16 @@
                 android:layout_height="wrap_content"
                 android:text="Activity" />
         </android.support.design.widget.TabLayout>
-    </android.support.design.widget.AppBarLayout>
+    </android.support.design.widget.AppBarLayout>-->
+    <android.support.v4.view.ViewPager
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/pager"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
 
-    <android.support.v4.widget.NestedScrollView
+
+    <!--<android.support.v4.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_behavior="android.support.design.widget.AppBarLayout$ScrollingViewBehavior">
@@ -130,7 +65,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
 
-    </android.support.v4.widget.NestedScrollView>
+    </android.support.v4.widget.NestedScrollView>-->
 
     <!--<ListView
             android:id="@+id/lv"

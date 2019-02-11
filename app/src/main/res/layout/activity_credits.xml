@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="it.polito.mad.mad_app.GroupInfoActivity">
+
+    <android.support.design.widget.AppBarLayout
+        android:id="@+id/insert_group_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:theme="@style/AppTheme">
+
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/credits_toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            app:theme="@style/ToolbarTheme"
+            app:popupTheme="@style/PopupTheme"/>
+
+    </android.support.design.widget.AppBarLayout>
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="794dp"
+            android:layout_gravity="top"
+
+            android:background="@color/colorPrimaryLight"
+            android:orientation="vertical"
+            android:padding="@dimen/activity_horizontal_margin">
+
+            <TextView
+                android:id="@+id/name_app"
+                android:layout_marginTop="80dp"
+                android:layout_marginBottom="20dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                android:textAlignment="gravity"
+                android:text="YourSlice"
+                android:textSize="30sp" />
+
+            <ImageView
+                android:layout_width="wrap_content"
+
+                android:layout_height="250dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginBottom="20dp"
+                android:clickable="false"
+                android:src="@drawable/prova_logo"
+                 />
+            <TextView
+                android:id="@+id/name_credits"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                android:textAlignment="gravity"
+                android:text="Silvia Vitali\nLucia Larocca\nLuca Mazzucco\nEdoardo Operti"
+                android:textSize="15sp" />
+
+
+        </LinearLayout>
+    </android.support.design.widget.CoordinatorLayout>

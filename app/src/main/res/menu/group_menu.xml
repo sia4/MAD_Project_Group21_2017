@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
+
+
+
     <item
         android:id="@+id/options"
         android:title="Options"
@@ -9,4 +12,18 @@
         android:id="@+id/addcurrency"
         android:title="Add Currency"
         app:itemTextColor="@color/primaryTextColor"></item>
+    <item
+        android:id="@+id/addToArchive"
+        android:title="Add to archive"
+        app:itemTextColor="@color/primaryTextColor"></item>
+    <item
+        android:id="@+id/removeFromArchive"
+        android:title="Remove from archive"
+        android:visible="false"
+        app:itemTextColor="@color/primaryTextColor"></item>
+    <!--<item
+        android:id="@+id/GroupStatistics"
+        android:title="Statistics"
+        app:itemTextColor="@color/primaryTextColor"></item>-->
+
 </menu>

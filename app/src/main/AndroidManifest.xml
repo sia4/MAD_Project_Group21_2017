@@ -2,12 +2,19 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="it.polito.mad.mad_app">
 
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-
     <!-- To auto-complete the email text field in the login form with the user's emails -->
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
     <uses-permission android:name="android.permission.READ_PROFILE" />
     <uses-permission android:name="android.permission.READ_CONTACTS" />
+
+    <uses-feature
+        android:name="android.hardware.camera"
+        android:required="true" />
+
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
     <application
         android:allowBackup="true"
@@ -27,25 +34,20 @@
                 android:resource="@xml/file_paths"></meta-data>
         </provider>
         -->
-        <uses-feature android:name="android.hardware.camera"
-            android:required="true" />
-        <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-
-
-        <activity android:name=".LoginActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
 
         <activity
             android:name=".MainActivity"
-            android:label="MainActivity"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:screenOrientation="sensorPortrait">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
         <activity
             android:name=".GroupActivity"
-            android:parentActivityName=".MainActivity">
+            android:parentActivityName=".MainActivity"
+            android:screenOrientation="sensorPortrait">
 
             <!-- The meta-data tag is required if you support API level 15 and lower -->
             <meta-data
@@ -56,11 +58,13 @@
             android:name=".InsertExActivity"
             android:label="@string/title_activity_insert_ex"
             android:parentActivityName=".MainActivity"
+            android:screenOrientation="sensorPortrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".GroupOptionActivity"
             android:label="GroupOptionActivity"
-            android:parentActivityName=".GroupActivity">
+            android:parentActivityName=".GroupActivity"
+            android:screenOrientation="sensorPortrait">
 
             <!-- The meta-data tag is required if you support API level 15 and lower -->
             <meta-data
@@ -71,23 +75,71 @@
             android:name=".InsertGroupActivity"
             android:label="Create Group"
             android:parentActivityName=".MainActivity"
+            android:screenOrientation="sensorPortrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".ExpenseInfoActivity"
             android:label="@string/title_activity_expense_info"
             android:parentActivityName=".GroupActivity"
+            android:screenOrientation="sensorPortrait"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
         <activity
             android:name=".GroupInfoActivity"
-            android:parentActivityName=".MainActivity" />
+            android:parentActivityName=".GroupActivity"
+            android:screenOrientation="sensorPortrait" />
+        <activity
+            android:name=".FullImageActivity"
+            android:screenOrientation="sensorPortrait" />
         <activity
             android:name=".InsertCurrencyActivity"
-            android:parentActivityName=".MainActivity" />
+            android:parentActivityName=".MainActivity"
+            android:screenOrientation="sensorPortrait" />
         <activity
             android:name=".BalanceActivity"
             android:label="@string/title_activity_balance"
+            android:screenOrientation="sensorPortrait"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
-        <activity android:name=".SignInActivity"></activity>
+        <activity
+            android:name=".SignInActivity"
+            android:screenOrientation="sensorPortrait" />
+        <activity
+            android:name=".LoginActivity"
+            android:screenOrientation="sensorPortrait" />
+        <activity
+            android:name=".InsertUserToGroupActivity"
+            android:parentActivityName=".GroupInfoActivity"
+            android:screenOrientation="sensorPortrait" />
+        <activity
+            android:name=".UserInformationActivity"
+            android:label="@string/title_activity_user_information"
+            android:screenOrientation="sensorPortrait"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+        <activity
+            android:name=".PolActivity"
+            android:label="@string/title_activity_pol"
+            android:screenOrientation="sensorPortrait"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+
+        <service
+            android:name=".model.ServiceManager"
+            android:enabled="true" />
+
+        <receiver android:name=".model.StartFirebaseAtBoot">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+            </intent-filter>
+        </receiver>
+
+        <activity
+            android:name=".GroupStatisticsActivity"
+            android:label="@string/title_activity_group_statistics"
+            android:screenOrientation="sensorPortrait"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+        <activity
+            android:name=".UserStatisticsActivity"
+            android:label="@string/title_activity_user_statistics"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+        <activity android:name=".CreditsActivity"></activity>
     </application>
 
 </manifest>

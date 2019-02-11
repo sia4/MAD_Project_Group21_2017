@@ -11,6 +11,7 @@ android {
         versionCode 1
         versionName "1.0"
     }
+
     buildTypes {
         release {
             minifyEnabled false
@@ -21,8 +22,10 @@ android {
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
-    //   compile 'com.android.support:cardview-v7:25.3.1'
     compile 'com.android.support:design:25.3.1'
+    //    compile 'com.hendraanggrian:collapsingtoolbarlayout-subtitle:0.5.1@aar'
+
+    compile 'com.android.support:cardview-v7:25.3.1'
     compile 'com.android.support:design:25.3.1'
     compile 'com.android.support:appcompat-v7:25.3.1'
     compile 'com.android.support.constraint:constraint-layout:1.0.2'
@@ -32,6 +35,13 @@ dependencies {
     compile 'com.google.firebase:firebase-auth:10.0.1'
     compile 'com.google.firebase:firebase-database:10.0.1'
     compile 'com.google.firebase:firebase-core:10.0.1'
+    compile 'com.github.bumptech.glide:glide:3.5.2'
+    compile 'com.google.firebase:firebase-messaging:10.0.1'
+    compile 'com.google.firebase:firebase-invites:10.0.1'
+    compile 'com.google.firebase:firebase-storage:10.0.1'
+    compile 'org.ocpsoft.prettytime:prettytime:4.0.1.Final'
+    compile 'com.github.PhilJay:MPAndroidChart:v2.1.6'
+    compile 'com.android.volley:volley:1.0.0'
     testCompile 'junit:junit:4.12'
 }
 apply plugin: 'com.google.gms.google-services'
